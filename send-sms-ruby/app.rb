@@ -1,5 +1,7 @@
 # app/controllers/sms_controller.rb
 class SmsController < ApplicationController
+  skip_forgery_protection
+
   # Initialize client per request to ensure fresh connection
   before_action :initialize_client
 
