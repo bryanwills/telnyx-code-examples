@@ -1,0 +1,12 @@
+[project]
+name = "function"
+description = "Edge webhook proxy — receive Telnyx voice/SMS webhooks at the edge and forward to your backend"
+version = "1.0.0"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [{ name = "Telnyx", email = "support@telnyx.com" }]
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

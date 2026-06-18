@@ -1,0 +1,9 @@
+[edge_compute]
+func_name = "mcp-telnyx-tools"
+
+[env_vars]
+SERVICE_NAME = "telnyx-mcp"
+VERSION = "1.0.0"
+
+# Secrets (set via CLI):
+# telnyx-edge secrets add TELNYX_API_KEY <key>

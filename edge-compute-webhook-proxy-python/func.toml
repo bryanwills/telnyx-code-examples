@@ -1,0 +1,10 @@
+[edge_compute]
+func_name = "webhook-proxy"
+
+[env_vars]
+FORWARD_URL = ""
+LOG_LEVEL = "info"
+
+# Secrets (set via CLI):
+# telnyx-edge secrets add TELNYX_API_KEY <key>
+# telnyx-edge secrets add FORWARD_SECRET <secret>

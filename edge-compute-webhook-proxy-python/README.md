@@ -1,165 +1,81 @@
 ---
 name: edge-compute-webhook-proxy
 title: "Edge Compute Webhook Proxy"
-description: "Local dev server for testing webhook routing logic before deploying to Telnyx Edge. Includes the Edge function source and deployment instructions."
+description: "Receive Telnyx voice and SMS webhooks at the edge with minimal latency. Validates, enriches with timestamps, HMAC-signs, and forwards to your backend."
 language: python
-framework: flask
-telnyx_products: [Edge Compute, Migration, Number Porting, Voice]
+framework: telnyx-edge (ASGI)
+telnyx_products: [Edge Compute, Voice, Messaging]
+integrations: []
+channel: [voice, sms]
 ---
 
 # Edge Compute Webhook Proxy
 
-Local dev server for testing webhook routing logic before deploying to Telnyx Edge. Includes the Edge function source and deployment instructions.
+Receive Telnyx voice and SMS webhooks at the edge with sub-10ms cold starts. Validates payloads, enriches with edge timestamps, HMAC-signs the forwarded request, and sends to your backend.
 
+**Runs on [Telnyx Edge Compute](https://developers.telnyx.com/docs/edge-compute)** — deploy with `telnyx-edge ship`.
 
 ## Telnyx API Endpoints Used
 
-- **Edge Compute**: `telnyx-edge CLI` — [API reference](https://developers.telnyx.com/docs/edge)
-
-
-## Telnyx Webhook Events
-
-This app handles these [Call Control](https://developers.telnyx.com/docs/api/v2/call-control) and [Messaging](https://developers.telnyx.com/docs/api/v2/messaging) webhook events:
-
-- `call.initiated` — incoming call detected, app answers
-- `call.answered` — call connected, app speaks greeting
-- `call.speak.ended` — TTS finished, app starts listening
-- `call.gather.ended` — caller input received (speech or DTMF)
-- `call.hangup` — call ended, app cleans up session
-- `message.received` — inbound SMS/MMS received
+- **Edge Compute**: `telnyx-edge ship` — [Docs](https://developers.telnyx.com/docs/edge-compute)
+- **Call Control Webhooks**: Events from Call Control Application — [API reference](https://developers.telnyx.com/api/call-control)
+- **Messaging Webhooks**: Events from Messaging Profile — [API reference](https://developers.telnyx.com/api/messaging)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+Phone Call/SMS ──► Telnyx Cloud ──► Edge Function (this app)
+                                          │
+                                    Validate → Enrich → HMAC Sign
+                                          │
+                                          ▼
+                                    Your Backend
+```
+
+## Prerequisites
+
+- [Telnyx Edge Compute CLI](https://github.com/team-telnyx/edge-compute/releases) (`telnyx-edge`)
+- A [Telnyx account](https://portal.telnyx.com/sign-up)
+
+## Quick Start
+
+```bash
+telnyx-edge auth login
+telnyx-edge secrets add FORWARD_SECRET "your-hmac-secret"
+# Edit func.toml — set FORWARD_URL
+telnyx-edge ship
+```
+
+## Project Structure
+
+```
+edge-compute-webhook-proxy-python/
+├── func.toml              # Edge Compute config
+├── pyproject.toml          # Python project metadata
+├── function/
+│   ├── __init__.py
+│   └── func.py            # ASGI handler
+└── README.md
 ```
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` and fill in:
-
-| Variable | Type | Example | Required | Description | Where to get it |
-|----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `VOICE_HANDLER_URL` | `string` | `https://...` | no | voice handler url | — |
-| `MESSAGE_HANDLER_URL` | `string` | `https://...` | no | message handler url | — |
-| `DEFAULT_HANDLER_URL` | `string` | `https://...` | no | default handler url | — |
-
-## Setup
-
-```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/edge-compute-webhook-proxy-python
-cp .env.example .env    # ← fill in your credentials
-pip install -r requirements.txt
-python app.py           # starts on http://localhost:5000
-```
-
-### Docker
-
-```bash
-docker build -t edge-compute-webhook-proxy .
-docker run --env-file .env -p 5000:5000 edge-compute-webhook-proxy
-```
-
-## API Reference
-
-### `GET /edge-source`
-
-Handles `GET /edge-source`.
-
-**Request:**
-
-```bash
-curl http://localhost:5000/edge-source
-```
-
-**Response:**
-
-```json
-{
-  "source": "...",
-  "deploy": "...",
-  "note": "..."
-}
-```
-
-### `GET /routes`
-
-Returns all routes.
-
-**Request:**
-
-```bash
-curl http://localhost:5000/routes
-```
-
-**Response:**
-
-```json
-{
-  "routes": [
-    "..."
-  ]
-}
-```
-
-### `GET /stats`
-
-Returns analytics and aggregate metrics.
-
-**Request:**
-
-```bash
-curl http://localhost:5000/stats
-```
-
-**Response:**
-
-```json
-{
-  "stats": {
-    "total": 12,
-    "completed": 8
-  },
-  "total": 3,
-  "recent": "..."
-}
-```
-
-### `GET /health`
-
-Returns service health and operational metrics.
-
-**Request:**
-
-```bash
-curl http://localhost:5000/health
-```
-
-**Response:**
-
-```json
-{
-  "status": "ok"
-}
-```
+| Variable | Type | Required | Description | How to set |
+|----------|------|----------|-------------|------------|
+| `FORWARD_URL` | `string` | **yes** | Backend URL to forward events to | `func.toml` `[env_vars]` |
+| `FORWARD_SECRET` | `string` | no | HMAC-SHA256 signing secret | `telnyx-edge secrets add` |
 
 ## Webhook Endpoints
 
-### `POST /webhook`
-
-Receives external webhook events.
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Call Control events |
+| `POST` | `/webhooks/sms` | SMS/MMS events |
+| `POST` | `/webhooks/messaging` | Messaging events |
+| `GET` | `/health` | Health check with stats |
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Edge Compute Docs](https://developers.telnyx.com/docs/edge-compute)
+- [Edge Compute Quickstart](https://developers.telnyx.com/docs/edge-compute/quickstart)
+- [Edge CLI Releases](https://github.com/team-telnyx/edge-compute/releases)

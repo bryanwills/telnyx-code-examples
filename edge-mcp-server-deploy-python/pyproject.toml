@@ -1,0 +1,12 @@
+[project]
+name = "function"
+description = "MCP server on Telnyx Edge Compute — expose Telnyx APIs as tools for AI agents"
+version = "1.0.0"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [{ name = "Telnyx", email = "support@telnyx.com" }]
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
