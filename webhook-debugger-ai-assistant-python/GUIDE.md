@@ -62,7 +62,7 @@ Webhook handlers process events from Telnyx:
 ### Business Logic
 
 - **`analyze_recent()`** — Sends conversation context to Telnyx AI Inference and returns the model's response. Uses the OpenAI-compatible chat completions endpoint.
-- **`view_log()`** — Handles the view log logic.
+- **`view_log()`** — Processes view log request and returns result.
 
 ### All Endpoints
 
@@ -73,6 +73,44 @@ Webhook handlers process events from Telnyx:
 | `GET` | `/analyze/recent` | Analyze Recent |
 | `GET` | `/log` | View Log |
 | `GET` | `/health` | Health check |
+
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=300):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.3}, timeout=15)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+@app.route("/catch/<path:subpath>", methods=["GET", "POST", "PUT", "DELETE"])
+def catch_webhook(subpath=""):
+    entry = {"method": request.method, "path": f"/catch/{subpath}", "headers": dict(request.headers),
+        "body": request.get_json(silent=True) or request.data.decode("utf-8", errors="replace")[:5000],
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ"), "query": dict(request.args)}
+    webhook_log.append(entry)
+    if len(webhook_log) > 500:
+        webhook_log.pop(0)
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def catch_webhook(subpath=""):
+    entry = {"method": request.method, "path": f"/catch/{subpath}", "headers": dict(request.headers),
+        "body": request.get_json(silent=True) or request.data.decode("utf-8", errors="replace")[:5000],
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ"), "query": dict(request.args)}
+    webhook_log.append(entry)
+    if len(webhook_log) > 500:
+        webhook_log.pop(0)
+    return jsonify({"status": "caught", "id": len(webhook_log) - 1}), 200
+
+@app.route("/analyze/<int:index>", methods=["GET"])
+def analyze_webhook(index):
+    if index >= len(webhook_log):
+```
+
 
 ## Step 3: Run It
 

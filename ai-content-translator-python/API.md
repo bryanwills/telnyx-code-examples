@@ -32,7 +32,9 @@ Get a specific translation by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Upload audio file as 'audio"
+}
 ```
 
 ---
@@ -56,7 +58,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Job not found"
+}
 ```
 
 ---
@@ -70,7 +74,12 @@ Records use these status values: `complete`, `failed`, `ok`, `partial`, `process
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "total_translations": "example-value",
+  "supported_languages": "example-value",
+  "version": "1.0.0"
+}
 ```
 
 | Status | Meaning |

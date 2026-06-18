@@ -33,7 +33,9 @@ Analyze call.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -45,7 +47,9 @@ Get a specific insights by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "No analyses yet"
+}
 ```
 
 ---
@@ -70,7 +74,10 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "analyses": "example-value"
+}
 ```
 
 | Status | Meaning |

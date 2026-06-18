@@ -83,9 +83,9 @@ Webhook handlers process events from Telnyx:
 
 ### Business Logic
 
-- **`provision_esim()`** — Handles the provision esim logic.
-- **`activate_esim()`** — Handles the activate esim logic.
-- **`get_esim()`** — Handles the get esim logic.
+- **`provision_esim()`** — Processes provision esim request and returns result.
+- **`activate_esim()`** — Processes activate esim request and returns result.
+- **`get_esim()`** — Processes activate esim request and returns result.
 
 ### All Endpoints
 

@@ -110,9 +110,9 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`list_tenants()`** — Handles the list tenants logic.
-- **`tenant_appointments()`** — Handles the tenant appointments logic.
-- **`tenant_stats()`** — Handles the tenant stats logic.
+- **`list_tenants()`** — Returns all tenants with metadata and pagination.
+- **`tenant_appointments()`** — Processes tenant appointments request and returns result.
+- **`tenant_stats()`** — Processes tenant stats request and returns result.
 
 ### All Endpoints
 

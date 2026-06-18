@@ -73,7 +73,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`lookup_caller()`** — Makes an API call and processes the response.
-- **`add_contact()`** — Handles the add contact logic.
+- **`add_contact()`** — Validates input and creates new contact.
 
 ### All Endpoints
 
@@ -82,6 +82,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/webhooks/voice` | Telnyx webhook handler |
 | `POST` | `/contacts` | Add Contact |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        caller = data.get("from", "unknown")
+        caller_info = lookup_caller(caller)
+        active_calls[ccid] = {"caller": caller, "info": caller_info, "state": "holding"}
+        client.calls.actions.answer(ccid)
+        return jsonify({"status": "answering"}), 200
+    elif event_type == "call.answered":
+        call = active_calls.get(ccid)
+        if call:
+            client.calls.actions.speak(ccid, payload="One moment please while we connect you.", voice="female", language_code="en-US")
+            try:
+                agent_resp = requests.post("https://api.telnyx.com/v2/calls", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+                    json={"to": AGENT_NUMBER, "from": MAIN_NUMBER, "connection_id": CONNECTION_ID}, timeout=10)
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def add_contact():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    phone = data.get("phone")
+    contacts_db[phone] = {k: v for k, v in data.items() if k != "phone"}
+    return jsonify({"status": "added"}), 200
+
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status": "ok", "contacts": len(contacts_db), "active": len(active_calls)}), 200
+
+```
+
 
 ## Step 3: Run It
 

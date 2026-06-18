@@ -5,21 +5,30 @@ Voice-Activated IoT Command — call a number, speak commands to control IoT dev
 ## How It Works
 
 ```
+  Phone Call (human)
+        │
+        ▼
   ┌──────────────────┐
-  │ Inbound Phone Call │
-  │ (SIM data /       │
-  │  sensor reading)   │
+  │ Voice Command     │
+  │ (STT via Gather)  │
+  └────────┬─────────┘
+           │ natural language
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Parse command   │
+  │ • Map to action   │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │ AI Classification │
-  │ • Severity level  │
-  │ • Action required │
+  │ IoT Device Action │
+  │ (via SIM command) │
   └────────┬─────────┘
            │
            ▼
-     JSON response
+  TTS confirmation
+  "Warehouse door opened"
 ```
 
 ## Telnyx Products Used
@@ -78,7 +87,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`execute_command()`** — Handles the execute command logic.
+- **`execute_command()`** — Processes execute command request and returns result.
 
 ### All Endpoints
 
@@ -88,6 +97,46 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/devices` | List Devices |
 | `GET` | `/commands` | List Commands |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    call = active_calls.get(ccid)
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        active_calls[ccid] = {"conversation": [{"role": "system", "content": SYSTEM_PROMPT}]}
+        client.calls.actions.answer(ccid)
+        return jsonify({"status": "answering"}), 200
+    elif event_type == "call.answered":
+        client.calls.actions.speak(ccid, payload="IoT Command Center. What would you like to do?", voice="female", language_code="en-US")
+        return jsonify({"status": "greeting"}), 200
+    elif event_type == "call.speak.ended" and call:
+        client.calls.actions.gather(ccid, input_type="speech", end_silence_timeout_secs=2, timeout_secs=15, language_code="en-US")
+        return jsonify({"status": "listening"}), 200
+    elif event_type == "call.gather.ended" and call:
+        speech = data.get("speech", {}).get("result", "")
+        if not speech:
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=150):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.3}, timeout=15)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+def execute_command(device_name, action):
+    device = DEVICES.get(device_name)
+    if not device: return f"Device {device_name} not found"
+    if action in ("open", "close"): device["status"] = action + ("d" if action == "close" else "")
+    elif action in ("on", "off"): device["status"] = action
+    elif action == "status_check": return f"{device_name}: {device['status']}"
+    command_log.append({"device": device_name, "action": action, "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ")})
+    return f"Done: {device_name} set to {action}"
+```
+
 
 ## Step 3: Run It
 

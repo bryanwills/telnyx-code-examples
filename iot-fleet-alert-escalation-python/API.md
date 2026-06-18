@@ -20,7 +20,9 @@ Receive alert.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "No sensor data"
+}
 ```
 
 ---
@@ -50,7 +52,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "No payload"
+}
 ```
 
 ---
@@ -64,7 +68,10 @@ Records use these status values: `briefing`, `call_ended`, `event_received`, `li
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "alerts": "example-value",
+  "total": 3
+}
 ```
 
 | Status | Meaning |

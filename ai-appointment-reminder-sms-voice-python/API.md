@@ -36,7 +36,9 @@ Trigger a new reminders.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -60,7 +62,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "reminders_sent": []
+}
 ```
 
 ---
@@ -74,7 +78,9 @@ Records use these status values: `added`, `cancelled`, `confirmed`, `ended`, `gr
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Status | Meaning |

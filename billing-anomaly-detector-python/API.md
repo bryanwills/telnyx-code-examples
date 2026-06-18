@@ -46,7 +46,9 @@ Run anomaly check.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -58,7 +60,9 @@ Check balance.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "baselines": []
+}
 ```
 
 ---
@@ -92,7 +96,10 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "anomalies": [],
+  "checked_at": "2026-06-18T21:00:00Z"
+}
 ```
 
 | Status | Meaning |

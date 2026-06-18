@@ -35,7 +35,9 @@ Create a new network.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -47,7 +49,9 @@ List all networks.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -59,7 +63,9 @@ Create a new interface.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "example-value"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -70,7 +76,9 @@ Create a new interface.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -82,7 +90,9 @@ Create a new peer.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "example-value"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -94,7 +104,9 @@ Create a new peer.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -106,7 +118,9 @@ Get a specific config by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -145,7 +159,11 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "networks": "example-value",
+  "interfaces": "example-value"
+}
 ```
 
 | Status | Meaning |

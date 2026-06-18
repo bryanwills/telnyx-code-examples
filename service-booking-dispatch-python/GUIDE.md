@@ -98,8 +98,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`ai_respond()`** — Sends conversation context to Telnyx AI Inference and returns the model's response. Uses the OpenAI-compatible chat completions endpoint.
-- **`list_bookings()`** — Handles the list bookings logic.
-- **`assign_tech()`** — Handles the assign tech logic.
+- **`list_bookings()`** — Returns all bookings with metadata and pagination.
+- **`assign_tech()`** — Processes assign tech request and returns result.
 
 ### All Endpoints
 
@@ -110,6 +110,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/bookings/<int:idx>/assign` | Assign Tech |
 | `GET` | `/techs` | List Techs |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def assign_tech(idx):
+    if idx >= len(bookings): return jsonify({"error":"Not found"}), 404
+    data = request.get_json() or {}
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    b = bookings[idx]
+    b["tech"] = data.get("tech_name", "")
+    b["status"] = "assigned"
+    tech = next((t for t in techs if t["name"] == b["tech"]), None)
+    if tech:
+        send_sms(tech["phone"], f"New job assigned: {b['service']}. Customer: {b['caller']}")
+        send_sms(b["caller"], f"ProFix: {tech['name']} has been assigned to your service call.")
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+@app.route("/webhooks/voice", methods=["POST"])
+def handle_voice():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    data = payload.get("data", {})
+    event = data.get("event_type")
+    ccid = data.get("call_control_id")
+    caller = data.get("from", "")
+    if event == "call.initiated" and data.get("direction") == "incoming":
+        requests.post(f"{API}/calls/{ccid}/actions/answer", headers=headers, json={}, timeout=10)
+```
+
 
 ## Step 3: Run It
 

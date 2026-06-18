@@ -74,8 +74,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`get_transcript()`** — Handles the get transcript logic.
-- **`list_transcripts()`** — Handles the list transcripts logic.
+- **`get_transcript()`** — Retrieves call transcript with speaker labels.
+- **`list_transcripts()`** — Returns all transcripts with metadata and pagination.
 
 ### All Endpoints
 
@@ -85,6 +85,42 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/transcripts/<ccid>` | Get Transcript |
 | `GET` | `/transcripts` | List Transcripts |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        active_streams[ccid] = {"caller": data.get("from"), "started": time.time()}
+        transcripts[ccid] = []
+        client.calls.actions.answer(ccid)
+        return jsonify({"status": "answering"}), 200
+    elif event_type == "call.answered":
+        client.calls.actions.transcription_start(ccid, language="en")
+        client.calls.actions.speak(ccid, payload="This call is being transcribed in real time. Go ahead and speak.", voice="female", language_code="en-US")
+        return jsonify({"status": "streaming"}), 200
+    elif event_type == "call.transcription":
+        text = data.get("transcription_data", {}).get("transcript", "")
+        if text and ccid in transcripts:
+            transcripts[ccid].append({"text": text, "time": time.time()})
+```
+
+The main endpoint processes the request:
+
+```python
+def handle_voice():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    event_type = payload.get("data", {}).get("event_type")
+    ccid = payload.get("data", {}).get("call_control_id")
+    data = payload.get("data", {})
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        active_streams[ccid] = {"caller": data.get("from"), "started": time.time()}
+        transcripts[ccid] = []
+```
+
 
 ## Step 3: Run It
 

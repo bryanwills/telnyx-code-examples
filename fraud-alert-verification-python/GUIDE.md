@@ -75,6 +75,44 @@ The entire app is in `app.py` (114 lines). Here's how it's structured:
 - **`list_alerts()`** — list alerts
 - **`health()`** — health
 
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def trigger_alert():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    alert = {"id": len(alerts), "customer_phone": data.get("phone"),
+        "transaction": data.get("transaction", ""), "amount": data.get("amount", 0),
+        "merchant": data.get("merchant", ""), "risk_score": data.get("risk_score", 0),
+        "status": "calling", "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+    alerts.append(alert)
+    try:
+        resp = requests.post(f"{API}/calls", headers=headers,
+            json={"to": alert["customer_phone"], "from": MAIN_NUMBER, "connection_id": CONNECTION_ID,
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+@app.route("/alerts/trigger", methods=["POST"])
+def trigger_alert():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    alert = {"id": len(alerts), "customer_phone": data.get("phone"),
+        "transaction": data.get("transaction", ""), "amount": data.get("amount", 0),
+        "merchant": data.get("merchant", ""), "risk_score": data.get("risk_score", 0),
+        "status": "calling", "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+    alerts.append(alert)
+    try:
+```
+
+
 ## Step 3: Run
 
 ```bash

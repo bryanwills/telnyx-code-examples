@@ -66,7 +66,7 @@ Everything lives in `app.py` (198 lines). Here's what each piece does.
 
 - **`inference()`** — Makes an API call and processes the response.
 - **`tts_generate()`** — Makes an API call and processes the response.
-- **`generate_commercial()`** — Handles the generate commercial logic.
+- **`generate_commercial()`** — Processes generate commercial request and returns result.
 
 ### All Endpoints
 
@@ -77,6 +77,44 @@ Everything lives in `app.py` (198 lines). Here's what each piece does.
 | `GET` | `/commercials` | List Campaigns |
 | `GET` | `/options` | List Options |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def generate_commercial():
+    """Generate a commercial voice-over from a product brief.
+
+    AI writes the script, TTS renders in multiple voices, SMS notifies client.
+    """
+    data = request.get_json() or {}
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    product = data.get("product", "")
+    audience = data.get("audience", "general consumers")
+    tone = data.get("tone", "professional")
+    length = data.get("length", "30s")
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    try:
+        requests.post(f"{API}/messages", headers=HEADERS, json={
+            "from": MAIN_NUMBER, "to": to, "text": text,
+            "messaging_profile_id": MESSAGING_PROFILE_ID
+        }, timeout=10)
+        return True
+    except Exception:
+        return False
+
+
+@app.route("/commercials/generate", methods=["POST"])
+def generate_commercial():
+    """Generate a commercial voice-over from a product brief.
+```
+
 
 ## Step 3: Run It
 

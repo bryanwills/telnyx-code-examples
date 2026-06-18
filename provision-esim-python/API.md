@@ -22,7 +22,9 @@ Provision esim.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -33,7 +35,9 @@ Provision esim.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -45,7 +49,9 @@ Activate esim.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "sim_card_id is required"
+}
 ```
 
 ---
@@ -57,7 +63,9 @@ Get a specific esim by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "sim_card_id is required"
+}
 ```
 
 ---
@@ -69,7 +77,9 @@ List all esims.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "limit must be between 1 and 100"
+}
 ```
 
 ---
@@ -99,7 +109,9 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Status | Meaning |

@@ -38,7 +38,9 @@ Start coaching.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -71,7 +73,9 @@ List all sessions.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -83,7 +87,9 @@ Get a specific session by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "received"
+}
 ```
 
 ---
@@ -95,7 +101,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "not found"
+}
 ```
 
 ---
@@ -109,7 +117,11 @@ Records use these status values: `answered`, `briefing_rep`, `dialing_customer`,
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "active_sessions": "example-value",
+  "total": 3
+}
 ```
 
 | Status | Meaning |

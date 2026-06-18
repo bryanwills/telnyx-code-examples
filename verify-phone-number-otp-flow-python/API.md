@@ -20,7 +20,9 @@ Start verification.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -30,7 +32,9 @@ Start verification.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -42,7 +46,9 @@ Voice fallback.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -52,7 +58,9 @@ Voice fallback.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -64,7 +72,9 @@ Check verification.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -106,7 +116,9 @@ Records use these status values: `invalid_code`, `ok`, `pending`, `sent`, `verif
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Status | Meaning |

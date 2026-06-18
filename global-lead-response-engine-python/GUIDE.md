@@ -92,7 +92,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`number_lookup()`** — Makes an API call and processes the response.
-- **`qualify_lead()`** — Handles the qualify lead logic.
+- **`qualify_lead()`** — Processes qualify lead request and returns result.
 - **`send_follow_up()`** — Makes an API call and processes the response.
 
 ### All Endpoints
@@ -102,6 +102,46 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/webhooks/voice` | Telnyx webhook handler |
 | `GET` | `/leads` | Get Leads |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        caller = data.get("from", "")
+        lookup = number_lookup(caller)
+        country = lookup["country"]
+        lang_config = LANGUAGE_MAP.get(country, DEFAULT_LANG)
+
+        active_calls[call_control_id] = {
+            "caller": caller,
+            "country": country,
+            "language": lang_config["lang"],
+            "greeting": lang_config["greeting"],
+            "conversation": [{"role": "system", "content": (
+                f"You are a multilingual lead qualification agent. The caller is from {country}. "
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=200):
+    """Call Telnyx Inference."""
+    resp = requests.post(
+        INFERENCE_URL,
+        headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.5},
+        timeout=15,
+    )
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+
+def qualify_lead(conversation):
+    """Use inference to qualify the lead based on conversation."""
+```
+
 
 ## Step 3: Run It
 

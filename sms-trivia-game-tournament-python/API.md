@@ -37,7 +37,9 @@ Create a new tournament.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -55,7 +57,9 @@ Next round.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -67,7 +71,9 @@ Leaderboard.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 ---
@@ -96,7 +102,9 @@ Records use these status values: `active`, `answered`, `finished`, `ignored`, `i
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 | Status | Meaning |

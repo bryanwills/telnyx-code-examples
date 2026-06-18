@@ -103,8 +103,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`telnyx_post()`** — Makes an API call and processes the response.
-- **`get_deposition()`** — Handles the get deposition logic.
-- **`get_dep_transcript()`** — Handles the get dep transcript logic.
+- **`get_deposition()`** — Fetches deposition by ID with full details.
+- **`get_dep_transcript()`** — Fetches dep transcript by ID with full details.
 
 ### All Endpoints
 

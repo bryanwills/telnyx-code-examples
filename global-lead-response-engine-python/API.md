@@ -25,7 +25,9 @@ Get a specific leads by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "No payload"
+}
 ```
 
 ---
@@ -37,7 +39,10 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "leads": "example-value",
+  "total": 3
+}
 ```
 
 ---
@@ -51,7 +56,11 @@ Records use these status values: `answering`, `call_ended`, `event_received`, `g
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "active_calls": "example-value",
+  "leads_qualified": "example-value"
+}
 ```
 
 | Status | Meaning |

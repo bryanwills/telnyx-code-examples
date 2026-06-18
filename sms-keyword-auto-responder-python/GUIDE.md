@@ -66,9 +66,9 @@ Webhook handlers process events from Telnyx:
 
 ### Business Logic
 
-- **`list_keywords()`** — Handles the list keywords logic.
-- **`add_keyword()`** — Handles the add keyword logic.
-- **`analytics()`** — Handles the analytics logic.
+- **`list_keywords()`** — Returns all keywords with metadata and pagination.
+- **`add_keyword()`** — Validates input and creates new keyword.
+- **`analytics()`** — Validates input and creates new keyword.
 
 ### All Endpoints
 
@@ -79,6 +79,44 @@ Webhook handlers process events from Telnyx:
 | `GET` | `/keywords` | Add Keyword |
 | `GET` | `/analytics` | Analytics |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if data.get("event_type") != "message.received" or data.get("direction") != "inbound":
+        return jsonify({"status": "ignored"}), 200
+    from_number = data.get("from", {}).get("phone_number", "")
+    text = data.get("text", "").strip().upper()
+    message_log.append({"from": from_number, "text": text, "time": time.strftime("%Y-%m-%dT%H:%M:%SZ")})
+    matched = False
+    for keyword, config in keywords.items():
+        if keyword in text:
+            send_sms(from_number, config["response"])
+            config["count"] += 1
+            matched = True
+            break
+    if not matched:
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def add_keyword():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    keyword = data.get("keyword", "").upper()
+    response = data.get("response", "")
+    keywords[keyword] = {"response": response, "count": 0}
+    return jsonify({"status": "added", "keyword": keyword}), 200
+
+@app.route("/analytics", methods=["GET"])
+def analytics():
+    total = sum(v["count"] for v in keywords.values())
+```
+
 
 ## Step 3: Run It
 

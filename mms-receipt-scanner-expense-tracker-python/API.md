@@ -31,7 +31,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -45,7 +47,11 @@ Records use these status values: `handled`, `ignored`, `no_expenses`, `ok`, `rec
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "users": "example-value",
+  "total_receipts": "example-value"
+}
 ```
 
 | Status | Meaning |

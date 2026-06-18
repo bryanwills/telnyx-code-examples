@@ -29,19 +29,22 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 ## Architecture
 
 ```
+  IoT Panic Button
+        │ trigger event
+        ▼
   ┌──────────────────┐
-  │ Inbound Phone Call │
-  │ (SIM data /       │
-  │  sensor reading)   │
+  │ Alert Dispatcher  │
   └────────┬─────────┘
            │
-           ▼
-  ┌──────────────────┐
-  │ Threshold Check   │
-  └────────┬─────────┘
-           │
-           ▼
-     JSON response
+      ┌────┴────┐
+      ▼         ▼
+  Voice Calls  SMS Alerts
+  (parallel    (all emergency
+   dial list)   contacts)
+      │
+      ▼
+  First to answer
+  gets live briefing
 ```
 
 ## Environment Variables

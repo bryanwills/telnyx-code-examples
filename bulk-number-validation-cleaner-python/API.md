@@ -34,7 +34,9 @@ Validate numbers.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -46,7 +48,9 @@ Validate single.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -83,7 +87,9 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "jobs": []
+}
 ```
 
 | Status | Meaning |

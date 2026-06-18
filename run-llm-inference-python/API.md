@@ -19,7 +19,9 @@ Chat endpoint.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Request body must include 'messages' array"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -43,7 +45,9 @@ Ask endpoint.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Request body must include 'messages' array"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -65,7 +69,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Request body must include 'question"
+}
 ```
 
 ---
@@ -75,7 +81,10 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "model": "moonshotai/Kimi-K2.6"
+}
 ```
 
 | Status | Meaning |

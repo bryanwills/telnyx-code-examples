@@ -37,7 +37,9 @@ Create a new campaign.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -49,7 +51,9 @@ Send campaign.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 ---
@@ -74,7 +78,9 @@ Verification status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -86,7 +92,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -100,7 +108,11 @@ Records use these status values: `created`, `handled`, `ignored`, `ok`, `sent`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "campaigns": "example-value",
+  "opt_outs": "example-value"
+}
 ```
 
 | Status | Meaning |

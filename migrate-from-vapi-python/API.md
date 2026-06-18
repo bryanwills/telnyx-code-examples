@@ -22,7 +22,9 @@ Audit vapi.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "VAPI_API_KEY not configured. Set it to audit your Vapi agents."
+}
 ```
 
 ---
@@ -46,7 +48,9 @@ Migrate agent.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -58,7 +62,10 @@ Voice mapping.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "vapi_to_telnyx": "example-value",
+  "note": "Telnyx also supports ElevenLabs voices via voice.provider='elevenlabs"
+}
 ```
 
 ---
@@ -85,7 +92,9 @@ Get a specific log by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "log": "example-value"
+}
 ```
 
 ---
@@ -110,7 +119,10 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "migrations": "example-value"
+}
 ```
 
 | Status | Meaning |

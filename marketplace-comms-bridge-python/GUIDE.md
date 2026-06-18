@@ -89,6 +89,42 @@ Webhook handlers process events from Telnyx:
 | `GET` | `/flagged` | List Flagged |
 | `GET` | `/health` | Health check |
 
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+def ai_moderate(text):
+    try:
+        resp = requests.post(INFERENCE_URL, headers=headers,
+            json={"model": AI_MODEL, "messages": [
+                {"role": "system", "content": "Check if this marketplace message contains: personal contact info being shared to bypass platform, scam patterns (wire transfer, Western Union, gift cards, timeout=10), abusive language, or off-platform transaction attempts. Reply JSON: {\"safe\": true/false, \"reason\": \"...\"}"},
+                {"role": "user", "content": text}], "max_tokens": 80, "temperature": 0.1}, timeout=15)
+        return json.loads(resp.json()["choices"][0]["message"]["content"].strip().strip("`").replace("json\n",""))
+    except Exception:
+        return {"safe": True, "reason": ""}
+
+@app.route("/webhooks/sms", methods=["POST"])
+```
+
+The main endpoint processes the request:
+
+```python
+def handle_sms():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    data = payload.get("data", {}).get("payload", {})
+    sender = data.get("from", {}).get("phone_number", "")
+    text = data.get("text", "").strip()
+
+    # Check for listing inquiry
+    if text.upper().startswith("LISTING ") or text.upper().startswith("L0"):
+```
+
+
 ## Step 3: Run It
 
 ```bash

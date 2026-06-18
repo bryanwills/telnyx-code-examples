@@ -84,6 +84,42 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/webhooks/voice` | Telnyx webhook handler |
 | `GET` | `/health` | Health check |
 
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+
+        if not event_type or not call_control_id:
+            return jsonify({"error": "Missing event data"}), 400
+
+        # --- Inbound call received ---
+        if event_type == "call.initiated":
+            direction = payload["data"].get("direction")
+            if direction == "incoming":
+                client.calls.actions.answer(call_control_id)
+            return jsonify({"status": "answering"}), 200
+
+        # --- Call answered — greet and start gathering speech ---
+        elif event_type == "call.answered":
+            client.calls.actions.speak(
+```
+
+The main endpoint processes the request:
+
+```python
+def handle_voice_webhook():
+    """Handle all voice webhook events from Telnyx."""
+    try:
+        payload = request.get_json()
+        if not payload:
+            return jsonify({"error": "No payload"}), 400
+
+        event_type = payload.get("data", {}).get("event_type")
+        call_control_id = payload.get("data", {}).get("call_control_id")
+
+```
+
+
 ## Step 3: Run It
 
 ```bash

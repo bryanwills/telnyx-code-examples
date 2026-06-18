@@ -33,7 +33,9 @@ Create a new conference.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -57,7 +59,9 @@ Invite participant.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 ---
@@ -75,7 +79,9 @@ Get a specific summary by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -104,7 +110,9 @@ Records use these status values: `active`, `answering`, `greeting`, `invited`, `
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 | Status | Meaning |

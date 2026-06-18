@@ -20,7 +20,11 @@ Search numbers.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "numbers": "example-value",
+  "features": "example-value",
+  "cost": "example-value"
+}
 ```
 
 ---
@@ -32,7 +36,9 @@ Purchase number.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -54,7 +60,9 @@ List all inventory.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -83,7 +91,9 @@ Records use these status values: `error`, `failed`, `ok`, `ordered`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 | Status | Meaning |

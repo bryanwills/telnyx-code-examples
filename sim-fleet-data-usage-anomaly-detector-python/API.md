@@ -19,7 +19,9 @@ Scan fleet.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "No SIM data available"
+}
 ```
 
 ---
@@ -43,7 +45,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "anomalies": "example-value"
+}
 ```
 
 ---
@@ -53,7 +57,10 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "anomalies_detected": "example-value"
+}
 ```
 
 | Status | Meaning |

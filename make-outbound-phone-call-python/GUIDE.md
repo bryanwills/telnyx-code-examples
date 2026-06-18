@@ -54,13 +54,47 @@ Everything lives in `app.py` (79 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`dial_call_endpoint()`** — Handles the dial call endpoint logic.
+- **`dial_call_endpoint()`** — Processes dial call endpoint request and returns result.
 
 ### All Endpoints
 
 | Method | Path | Purpose |
 |--------|------|---------|
 | `POST` | `/calls/dial` | Dial Call Endpoint |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def dial_call_endpoint():
+    """HTTP endpoint to initiate an outbound call."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    
+    if not data:
+        return jsonify({"error": "Request body required"}), 400
+    
+    to_number = data.get("to")
+    
+    if not to_number:
+```
+
+The main endpoint processes the request:
+
+```python
+def dial_call_endpoint():
+    """HTTP endpoint to initiate an outbound call."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    
+    if not data:
+        return jsonify({"error": "Request body required"}), 400
+    
+    to_number = data.get("to")
+```
+
 
 ## Step 3: Run It
 

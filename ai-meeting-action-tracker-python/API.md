@@ -37,7 +37,9 @@ Create a new meeting.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -64,7 +66,9 @@ Get a specific meeting by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -76,7 +80,9 @@ List all meetings.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "not found"
+}
 ```
 
 ---
@@ -102,7 +108,11 @@ Records use these status values: `active`, `completed`, `dialing`, `joined`, `le
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "active": "example-value",
+  "total": 3
+}
 ```
 
 | Status | Meaning |

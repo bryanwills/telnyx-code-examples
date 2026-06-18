@@ -68,6 +68,40 @@ Everything lives in `app.py` (64 lines). Here's what each piece does.
 | `GET` | `/numbers/inventory` | List Inventory |
 | `GET` | `/health` | Health check |
 
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def purchase_number():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    numbers = data.get("phone_numbers", [])
+    results = []
+    for number in numbers:
+        try:
+            resp = requests.post("https://api.telnyx.com/v2/number_orders", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+                json={"phone_numbers": [{"phone_number": number}]}, timeout=15)
+            if resp.ok:
+                order = resp.json().get("data", {})
+```
+
+The main endpoint processes the request:
+
+```python
+def search_numbers():
+    params = {"filter[country_code]": request.args.get("country", "US"), "filter[features][]": request.args.getlist("features") or ["sms", "voice"],
+        "filter[number_type]": request.args.get("type", "local"), "page[size]": int(request.args.get("limit", 10))}
+    area_code = request.args.get("area_code")
+    if area_code:
+        params["filter[national_destination_code]"] = area_code
+    contains = request.args.get("contains")
+    if contains:
+        params["filter[phone_number][contains]"] = contains
+    try:
+```
+
+
 ## Step 3: Run It
 
 ```bash

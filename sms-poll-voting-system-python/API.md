@@ -35,7 +35,9 @@ Create a new poll.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -61,7 +63,9 @@ Broadcast poll.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 ---
@@ -79,7 +83,9 @@ Results.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -108,7 +114,9 @@ Records use these status values: `active`, `ignored`, `no_poll`, `ok`, `voted`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 | Status | Meaning |

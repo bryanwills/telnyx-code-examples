@@ -75,6 +75,46 @@ Webhook handlers process events from Telnyx:
 |--------|------|---------|
 | `POST` | `/webhooks/sms` | Telnyx webhook handler |
 
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    # Only process inbound SMS events
+    if event_type != "message.received":
+        return jsonify({"status": "ignored", "reason": f"Event type {event_type} not processed"}), 200
+    
+    try:
+        # Process the inbound message
+        message_info = process_inbound_sms(event_data)
+        
+        # Log or store the message (example: print to console)
+        print(f"Received SMS: message_id={message_info['message_id']}")
+        
+        # Return 200 OK to acknowledge receipt to Telnyx
+        return jsonify({
+            "status": "received",
+```
+
+Helper function that handles the core action:
+
+```python
+def process_inbound_sms(event_data: dict) -> dict:
+    """
+    Extract and validate inbound SMS data from webhook event.
+    
+    Args:
+        event_data: The 'data' object from the webhook payload.
+    
+    Returns:
+        Dictionary with extracted message details.
+    """
+    # Extract message attributes from the webhook event
+    message_id = event_data.get("id")
+    from_number = event_data.get("from", {}).get("phone_number")
+    to_number = event_data.get("to", [{}])[0].get("phone_number")
+```
+
+
 ## Step 3: Run It
 
 ```bash

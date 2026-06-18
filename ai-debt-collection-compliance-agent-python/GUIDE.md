@@ -99,7 +99,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`check_compliance()`** — Handles the check compliance logic.
+- **`check_compliance()`** — Processes check compliance request and returns result.
 
 ### All Endpoints
 

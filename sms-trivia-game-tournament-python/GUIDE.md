@@ -89,8 +89,8 @@ Webhook handlers process events from Telnyx:
 ### Business Logic
 
 - **`generate_question()`** — Makes an API call and processes the response.
-- **`next_round()`** — Handles the next round logic.
-- **`leaderboard()`** — Handles the leaderboard logic.
+- **`next_round()`** — Processes next round request and returns result.
+- **`leaderboard()`** — Processes next round request and returns result.
 
 ### All Endpoints
 

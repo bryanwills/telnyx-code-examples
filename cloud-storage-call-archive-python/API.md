@@ -23,7 +23,9 @@ Create a new bucket.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -35,7 +37,9 @@ List all buckets.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -63,7 +67,9 @@ Archive recording.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -105,7 +111,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -119,7 +127,10 @@ Records use these status values: `archived`, `ok`, `queued`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "recordings": "example-value",
+  "total": 3
+}
 ```
 
 | Status | Meaning |

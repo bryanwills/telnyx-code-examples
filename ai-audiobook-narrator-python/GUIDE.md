@@ -62,7 +62,7 @@ Everything lives in `app.py` (198 lines). Here's what each piece does.
 
 - **`inference()`** — Makes an API call and processes the response.
 - **`tts_generate()`** — Makes an API call and processes the response.
-- **`upload_to_storage()`** — Handles the upload to storage logic.
+- **`upload_to_storage()`** — Uploads file to Telnyx Cloud Storage with metadata tags.
 
 ### All Endpoints
 
@@ -73,6 +73,40 @@ Everything lives in `app.py` (198 lines). Here's what each piece does.
 | `GET` | `/books` | List Books |
 | `GET` | `/voices` | List Voices |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def narrate_book():
+    """Submit text for audiobook narration.
+
+    Pipeline: AI chunks into chapters → adds pacing/emotion cues → TTS per chapter → Cloud Storage.
+    """
+    data = request.get_json() or {}
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    title = data.get("title", "Untitled")
+    text = data.get("text", "")
+    voice = data.get("voice", DEFAULT_VOICE)
+    author = data.get("author", "Unknown")
+```
+
+The main endpoint processes the request:
+
+```python
+def narrate_book():
+    """Submit text for audiobook narration.
+
+    Pipeline: AI chunks into chapters → adds pacing/emotion cues → TTS per chapter → Cloud Storage.
+    """
+    data = request.get_json() or {}
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    title = data.get("title", "Untitled")
+    text = data.get("text", "")
+```
+
 
 ## Step 3: Run It
 

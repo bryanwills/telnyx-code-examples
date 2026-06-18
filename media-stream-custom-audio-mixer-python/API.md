@@ -27,7 +27,11 @@ Inject audio.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "id": "abc-123",
+  "status": "active",
+  "created_at": "2026-06-18T21:00:00Z"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -38,7 +42,9 @@ Inject audio.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -50,7 +56,9 @@ List all streams.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -62,7 +70,10 @@ Get a specific log by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "active_streams": [],
+  "count": 3
+}
 ```
 
 ---
@@ -74,7 +85,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "log": "example-value"
+}
 ```
 
 ---
@@ -88,7 +101,10 @@ Records use these status values: `answering`, `ended`, `injecting`, `ok`, `strea
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "active_streams": "example-value"
+}
 ```
 
 | Status | Meaning |

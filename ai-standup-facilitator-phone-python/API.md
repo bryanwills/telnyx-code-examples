@@ -26,7 +26,9 @@ List all standups.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -52,7 +54,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "updates": "example-value"
+}
 ```
 
 ---
@@ -66,7 +70,9 @@ Records use these status values: `answering`, `ended`, `greeting`, `listening`, 
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "message": "No updates today"
+}
 ```
 
 | Status | Meaning |

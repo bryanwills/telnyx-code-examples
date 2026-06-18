@@ -22,7 +22,9 @@ Start deposition.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -34,7 +36,9 @@ Start deposition.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -61,7 +65,9 @@ Get a specific deposition by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -73,7 +79,9 @@ Get dep transcript.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "not found"
+}
 ```
 
 ---
@@ -100,7 +108,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "not found"
+}
 ```
 
 ---
@@ -114,7 +124,11 @@ Records use these status values: `completed`, `dialing`, `joined`, `left`, `list
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "active_depositions": "example-value",
+  "total": 3
+}
 ```
 
 | Status | Meaning |

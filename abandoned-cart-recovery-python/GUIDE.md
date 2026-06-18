@@ -106,8 +106,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`make_call()`** — Makes an API call and processes the response.
-- **`cart_abandoned()`** — Handles the cart abandoned logic.
-- **`run_sms_recovery()`** — Handles the run sms recovery logic.
+- **`cart_abandoned()`** — Processes cart abandoned request and returns result.
+- **`run_sms_recovery()`** — Processes run sms recovery request and returns result.
 
 ### All Endpoints
 

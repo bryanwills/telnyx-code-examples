@@ -64,7 +64,7 @@ Everything lives in `app.py` (91 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`new()`** — Handles the new logic.
+- **`new()`** — Processes new request and returns result.
 
 ## Step 3: Run It
 
@@ -96,6 +96,25 @@ curl http://localhost:5000/health
 Or call your Telnyx number from any phone to trigger the full voice workflow.
 
 Or text your Telnyx number to trigger the SMS workflow.
+
+## Key Code
+
+The edge function handles incoming webhooks at the edge:
+
+```python
+"""Edge Compute Webhook Proxy — receive Telnyx voice/SMS webhooks at the edge, validate, enrich, sign, and forward to your backend with minimal latency."""
+import json
+import hashlib
+import hmac
+import logging
+import os
+import time
+from urllib.request import Request, urlopen
+from urllib.error import URLError
+
+HTTP_SCOPE_TYPE = "http"
+logger = logging.getLogger("webhook-proxy")
+```
 
 ## Going to Production
 

@@ -70,7 +70,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`voicemail_drop()`** — Makes an API call and processes the response.
-- **`list_drops()`** — Handles the list drops logic.
+- **`list_drops()`** — Returns all drops with metadata and pagination.
 
 ### All Endpoints
 
@@ -80,6 +80,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/webhooks/voice` | Telnyx webhook handler |
 | `GET` | `/drops` | List Drops |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    ccid = payload.get("data", {}).get("call_control_id")
+    if event_type == "call.machine.detection.ended":
+        result = payload.get("data", {}).get("result", "")
+        if result in ("machine", "greeting_ended"):
+            requests.post(f"https://api.telnyx.com/v2/calls/{ccid}/actions/playback_start",
+                headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+                json={"audio_url": VOICEMAIL_AUDIO_URL}, timeout=10)
+            for d in drops:
+                if d.get("ccid") == ccid:
+                    d["status"] = "message_playing"
+        else:
+            requests.post(f"https://api.telnyx.com/v2/calls/{ccid}/actions/hangup",
+                headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"}, json={}, timeout=10)
+            for d in drops:
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def voicemail_drop():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    numbers = data.get("numbers", [])
+    results = []
+    for number in numbers:
+        try:
+            resp = requests.post("https://api.telnyx.com/v2/calls", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+                json={"to": number, "from": FROM_NUMBER, "connection_id": CONNECTION_ID, "answering_machine_detection": "detect_beep",
+                    "webhook_url": request.host_url.rstrip("/", timeout=10) + "/webhooks/voice"}, timeout=10)
+            ccid = resp.json().get("data", {}).get("call_control_id")
+```
+
 
 ## Step 3: Run It
 

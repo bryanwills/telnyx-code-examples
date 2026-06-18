@@ -30,21 +30,30 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 ## Architecture
 
 ```
+  Phone Call (human)
+        │
+        ▼
   ┌──────────────────┐
-  │ Inbound Phone Call │
-  │ (SIM data /       │
-  │  sensor reading)   │
+  │ Voice Command     │
+  │ (STT + Gather)    │
+  └────────┬─────────┘
+           │ "turn on lights"
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Parse intent    │
+  │ • Map to device   │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │ AI Classification │
-  │ • Severity level  │
-  │ • Action required │
+  │ IoT SIM Command   │
+  │ (send to device)  │
   └────────┬─────────┘
            │
            ▼
-     JSON response
+  TTS confirmation
+  to caller
 ```
 
 ## Environment Variables

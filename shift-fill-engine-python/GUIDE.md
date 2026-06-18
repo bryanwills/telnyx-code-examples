@@ -83,7 +83,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`call_next()`** — Makes an API call and processes the response.
-- **`open_shift()`** — Handles the open shift logic.
+- **`open_shift()`** — Processes open shift request and returns result.
 
 ### All Endpoints
 
@@ -93,6 +93,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/webhooks/voice` | Telnyx webhook handler |
 | `GET` | `/shifts` | List Shifts |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def open_shift():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    shift = {"id": len(open_shifts), "role": data.get("role", "nurse"),
+        "date": data.get("date"), "time": data.get("time"),
+        "department": data.get("department", ""),
+        "status": "calling", "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "called": [], "declined": []}
+    open_shifts.append(shift)
+    call_next(shift["id"])
+    return jsonify({"shift": shift}), 200
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+def call_next(shift_id):
+    shift = next((s for s in open_shifts if s["id"] == shift_id), None)
+    if not shift or shift["status"] == "filled": return
+    candidates = [e for e in employees if e["role"] == shift["role"] and e["phone"] not in shift.get("declined", [])]
+    candidates.sort(key=lambda x: x["priority"])
+    called = shift.get("called", [])
+    remaining = [c for c in candidates if c["phone"] not in called]
+    if not remaining:
+        shift["status"] = "unfilled"
+        if MANAGER_SLACK:
+            try: requests.post(MANAGER_SLACK, json={"text": f"UNFILLED: {shift['role']} shift {shift['date']} {shift['time']} - all candidates exhausted"}, timeout=5)
+```
+
 
 ## Step 3: Run It
 

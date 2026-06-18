@@ -58,7 +58,7 @@ Everything lives in `app.py` (79 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`set_baselines()`** — Handles the set baselines logic.
+- **`set_baselines()`** — Processes set baselines request and returns result.
 - **`run_anomaly_check()`** — Makes an API call and processes the response.
 - **`check_balance()`** — Makes an API call and processes the response.
 
@@ -72,6 +72,40 @@ Everything lives in `app.py` (79 lines). Here's what each piece does.
 | `GET` | `/balance` | Check Balance |
 | `GET` | `/alerts` | List Alerts |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def set_baselines():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    baselines.update(data)
+    return jsonify({"baselines": baselines}), 200
+
+@app.route("/config", methods=["GET"])
+def get_baselines():
+    return jsonify({"baselines": baselines}), 200
+
+@app.route("/check", methods=["POST"])
+```
+
+The main endpoint processes the request:
+
+```python
+def set_baselines():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    baselines.update(data)
+    return jsonify({"baselines": baselines}), 200
+
+@app.route("/config", methods=["GET"])
+def get_baselines():
+    return jsonify({"baselines": baselines}), 200
+```
+
 
 ## Step 3: Run It
 

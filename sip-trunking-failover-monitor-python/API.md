@@ -31,7 +31,12 @@ Get a specific status by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "active_connection": "example-value",
+  "primary_id": "example-value",
+  "backup_id": "example-value",
+  "recent_checks": "example-value"
+}
 ```
 
 ---
@@ -43,7 +48,11 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "active_trunk": "example-value",
+  "checks": "example-value"
+}
 ```
 
 ---
@@ -57,7 +66,7 @@ Records use these status values: `healthy`, `ok`, `unhealthy`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

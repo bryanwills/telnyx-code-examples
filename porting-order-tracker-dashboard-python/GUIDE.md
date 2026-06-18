@@ -62,7 +62,7 @@ Webhook handlers process events from Telnyx:
 
 ### Business Logic
 
-- **`check_sla_breach()`** — Handles the check sla breach logic.
+- **`check_sla_breach()`** — Processes check sla breach request and returns result.
 - **`submit_order()`** — Makes an API call and processes the response.
 - **`bulk_submit()`** — Makes an API call and processes the response.
 
@@ -77,6 +77,40 @@ Webhook handlers process events from Telnyx:
 | `GET` | `/porting/sla-check` | Sla Check |
 | `GET` | `/porting/dashboard` | Dashboard |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def submit_order():
+    data = request.get_json()
+    try:
+        resp = requests.post(f"{API}/porting_orders", headers=headers,
+            json={"phone_numbers": data.get("phone_numbers", [], timeout=10),
+                "authorized_person": data.get("authorized_person"),
+                "current_provider": data.get("current_provider"),
+                "billing_phone_number": data.get("billing_phone_number"),
+                "customer_reference": data.get("reference", "")}, timeout=15)
+        result = resp.json()
+        order = {"id": result.get("data", {}).get("id"), "numbers": data.get("phone_numbers"),
+            "count": len(data.get("phone_numbers", [])), "provider": data.get("current_provider"),
+```
+
+The main endpoint processes the request:
+
+```python
+def submit_order():
+    data = request.get_json()
+    try:
+        resp = requests.post(f"{API}/porting_orders", headers=headers,
+            json={"phone_numbers": data.get("phone_numbers", [], timeout=10),
+                "authorized_person": data.get("authorized_person"),
+                "current_provider": data.get("current_provider"),
+                "billing_phone_number": data.get("billing_phone_number"),
+                "customer_reference": data.get("reference", "")}, timeout=15)
+        result = resp.json()
+```
+
 
 ## Step 3: Run It
 

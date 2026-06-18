@@ -17,7 +17,9 @@ Send mms.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -29,7 +31,9 @@ Send mms.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -39,7 +43,7 @@ Send mms.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

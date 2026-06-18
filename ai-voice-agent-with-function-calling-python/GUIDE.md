@@ -84,7 +84,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`execute_function()`** — Handles the execute function logic.
+- **`execute_function()`** — Processes execute function request and returns result.
 
 ### All Endpoints
 
@@ -92,6 +92,46 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 |--------|------|---------|
 | `POST` | `/webhooks/voice` | Telnyx webhook handler |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    call = active_calls.get(ccid)
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        active_calls[ccid] = {"caller": data.get("from"), "conversation": [{"role": "system", "content": SYSTEM_PROMPT}]}
+        client.calls.actions.answer(ccid)
+        return jsonify({"status": "answering"}), 200
+    elif event_type == "call.answered":
+        client.calls.actions.speak(ccid, payload="Hi! I can check weather, look up orders, or check your account balance. What do you need?", voice="female", language_code="en-US")
+        return jsonify({"status": "greeting"}), 200
+    elif event_type == "call.speak.ended" and call:
+        client.calls.actions.gather(ccid, input_type="speech", end_silence_timeout_secs=2, timeout_secs=15, language_code="en-US")
+        return jsonify({"status": "listening"}), 200
+    elif event_type == "call.gather.ended" and call:
+        speech = data.get("speech", {}).get("result", "")
+        if not speech:
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=200):
+    payload = {"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.5, "tools": TOOLS}
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"}, json=payload, timeout=20)
+    resp.raise_for_status()
+    choice = resp.json()["choices"][0]
+    msg = choice["message"]
+    if msg.get("tool_calls"):
+        for tc in msg["tool_calls"]:
+            fn = tc["function"]
+            result = execute_function(fn["name"], json.loads(fn.get("arguments", "{}")))
+            messages.append(msg)
+            messages.append({"role": "tool", "tool_call_id": tc["id"], "content": result})
+        return call_inference(messages, max_tokens)
+    return msg["content"]
+```
+
 
 ## Step 3: Run It
 

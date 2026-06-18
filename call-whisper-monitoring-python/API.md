@@ -31,7 +31,9 @@ Initiate call endpoint.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -49,7 +51,9 @@ Get call status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -63,7 +67,9 @@ Records use these status values: `acknowledged`, `answered`, `hangup`, `initiate
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Call not found"
+}
 ```
 
 | Status | Meaning |

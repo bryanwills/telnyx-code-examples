@@ -62,7 +62,7 @@ Everything lives in `app.py` (105 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`calculate_risk()`** — Handles the calculate risk logic.
+- **`calculate_risk()`** — Processes calculate risk request and returns result.
 - **`screen_number()`** — Makes an API call and processes the response.
 - **`screen_inbound_call()`** — Makes an API call and processes the response.
 
@@ -76,6 +76,44 @@ Everything lives in `app.py` (105 lines). Here's what each piece does.
 | `POST` | `/blocklist` | List Blocklist |
 | `GET` | `/screening-log` | Get Log |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if data.get("event_type") == "call.initiated" and data.get("direction") == "incoming":
+        caller = data.get("from", "")
+        if caller in blocked_numbers:
+            screening_log.append({"number": caller, "action": "blocked", "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ")})
+            return jsonify({"action": "reject"}), 200
+        try:
+            resp = requests.get(f"{API}/number_lookup/{caller}", headers=headers,
+                params={"type": "caller-name"}, timeout=5)
+            lookup = resp.json().get("data", {})
+            risk = calculate_risk(lookup)
+            screening_log.append({"number": caller, "risk": risk, "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ")})
+            if risk["action"] == "block":
+                blocked_numbers.add(caller)
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def add_to_blocklist():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    number = data.get("number")
+    blocked_numbers.add(number)
+    return jsonify({"status": "blocked", "number": number}), 200
+
+@app.route("/blocklist", methods=["GET"])
+def list_blocklist():
+    return jsonify({"blocked": list(blocked_numbers)}), 200
+
+```
+
 
 ## Step 3: Run It
 

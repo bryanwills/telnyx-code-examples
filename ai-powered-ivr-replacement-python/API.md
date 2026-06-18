@@ -26,7 +26,9 @@ Setup assistant.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "No payload"
+}
 ```
 
 ---
@@ -38,7 +40,10 @@ Get a specific analytics by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "created",
+  "assistant_id": "example-value"
+}
 ```
 
 ---
@@ -50,7 +55,14 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "total_calls": "example-value",
+  "ai_resolution_rate": "example-value",
+  "transfer_rate": "example-value",
+  "department_distribution": "example-value",
+  "ab_test_results": "example-value",
+  "recent_calls": "example-value"
+}
 ```
 
 ---
@@ -64,7 +76,10 @@ Records use these status values: `created`, `event_received`, `insights_recorded
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "total_calls": "example-value"
+}
 ```
 
 | Status | Meaning |

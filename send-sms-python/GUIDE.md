@@ -57,6 +57,44 @@ Everything lives in `app.py` (74 lines). Here's what each piece does.
 |--------|------|---------|
 | `POST` | `/sms/send` | Send Sms Endpoint |
 
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def send_sms_endpoint():
+    """HTTP endpoint to send single SMS."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    
+    if not data:
+        return jsonify({"error": "Request body required"}), 400
+    
+    to_number = data.get("to")
+    message = data.get("message")
+    
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to_number: str, message: str) -> dict:
+    """Send SMS via Telnyx and return JSON-serializable response data."""
+    from_number = os.getenv("TELNYX_PHONE_NUMBER")
+    if not from_number:
+        raise ValueError("TELNYX_PHONE_NUMBER environment variable not set")
+    
+    # Validate E.164 format to prevent API errors
+    if not to_number.startswith("+"):
+        raise ValueError("Phone number must be in E.164 format (e.g., +15551234567)")
+    
+    # Use client.messages.create() with proper parameters
+    response = client.messages.create(
+        from_=from_number,
+        to=to_number,
+```
+
+
 ## Step 3: Run It
 
 ```bash

@@ -40,7 +40,9 @@ Produce episode.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -81,7 +83,9 @@ Records use these status values: `answering`, `ended`, `ok`, `recorded`, `record
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Status | Meaning |

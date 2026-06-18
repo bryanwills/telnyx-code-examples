@@ -73,8 +73,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`get_available_agent()`** — Handles the get available agent logic.
-- **`queue_status()`** — Handles the queue status logic.
+- **`get_available_agent()`** — Fetches available agent by ID with full details.
+- **`queue_status()`** — Processes queue status request and returns result.
 
 ### All Endpoints
 
@@ -83,6 +83,42 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/webhooks/voice` | Telnyx webhook handler |
 | `GET` | `/queue` | Queue Status |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        active_calls[ccid] = {"caller": data.get("from"), "state": "queued", "queued_at": time.time()}
+        client.calls.actions.answer(ccid)
+        return jsonify({"status": "answering"}), 200
+    elif event_type == "call.answered":
+        agent_num = get_available_agent()
+        if agent_num:
+            agents[agent_num]["status"] = "busy"
+            active_calls[ccid]["state"] = "connecting"
+            client.calls.actions.speak(ccid, payload="Thank you for calling. Connecting you now.", voice="female", language_code="en-US")
+        else:
+            position = len([c for c in active_calls.values() if c.get("state") == "queued"]) 
+            caller_queue.append(ccid)
+```
+
+The main endpoint processes the request:
+
+```python
+def handle_voice():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    event_type = payload.get("data", {}).get("event_type")
+    ccid = payload.get("data", {}).get("call_control_id")
+    data = payload.get("data", {})
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        active_calls[ccid] = {"caller": data.get("from"), "state": "queued", "queued_at": time.time()}
+        client.calls.actions.answer(ccid)
+```
+
 
 ## Step 3: Run It
 

@@ -106,8 +106,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`send_reminders()`** — Handles the send reminders logic.
-- **`list_clients()`** — Handles the list clients logic.
+- **`send_reminders()`** — Delivers reminders via Telnyx API.
+- **`list_clients()`** — Returns all clients with metadata and pagination.
 - **`doc_received()`** — Makes an API call and processes the response.
 
 ### All Endpoints
@@ -121,6 +121,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/clients/<int:idx>/doc-received` | Doc Received |
 | `GET` | `/readiness` | Readiness Dashboard |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def send_reminders():
+    results = []
+    for client in clients:
+        if client["status"] != "docs_pending": continue
+        missing = [d for d in client["docs_needed"] if d not in client["docs_received"]]
+        if not missing:
+            client["status"] = "ready"
+            continue
+        missing_str = ", ".join(missing)
+        send_sms(client["phone"], f"Hi {client['name']}, your tax appointment is {client['appointment']}. We still need: {missing_str}. Please send or upload ASAP. Reply HELP for our secure upload link.")
+        results.append({"client": client["name"], "missing": missing, "appointment": client["appointment"]})
+    return jsonify({"reminders_sent": len(results), "results": results}), 200
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+@app.route("/reminders/send", methods=["POST"])
+def send_reminders():
+    results = []
+    for client in clients:
+        if client["status"] != "docs_pending": continue
+        missing = [d for d in client["docs_needed"] if d not in client["docs_received"]]
+        if not missing:
+            client["status"] = "ready"
+            continue
+        missing_str = ", ".join(missing)
+        send_sms(client["phone"], f"Hi {client['name']}, your tax appointment is {client['appointment']}. We still need: {missing_str}. Please send or upload ASAP. Reply HELP for our secure upload link.")
+```
+
 
 ## Step 3: Run It
 

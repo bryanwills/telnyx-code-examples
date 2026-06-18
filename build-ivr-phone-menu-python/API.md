@@ -28,7 +28,7 @@ Receives Telnyx webhook events.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

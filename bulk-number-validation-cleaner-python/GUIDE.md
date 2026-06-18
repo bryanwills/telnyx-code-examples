@@ -54,7 +54,7 @@ Everything lives in `app.py` (73 lines). Here's what each piece does.
 
 - **`validate_numbers()`** — Makes an API call and processes the response.
 - **`validate_single()`** — Makes an API call and processes the response.
-- **`list_jobs()`** — Handles the list jobs logic.
+- **`list_jobs()`** — Returns all jobs with metadata and pagination.
 
 ### All Endpoints
 
@@ -64,6 +64,40 @@ Everything lives in `app.py` (73 lines). Here's what each piece does.
 | `GET` | `/validate/single/<number>` | Validate Single |
 | `GET` | `/jobs` | List Jobs |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def validate_numbers():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    numbers = data.get("numbers", [])
+    if not numbers:
+        return jsonify({"error": "numbers list required"}), 400
+    job_id = f"JOB-{int(time.time())}"
+    results = {"valid": [], "invalid": [], "mobile": [], "landline": [], "voip": [], "errors": []}
+    for num in numbers[:100]:
+        try:
+            resp = requests.get(f"{API}/number_lookup/{num}", headers=headers, timeout=10)
+```
+
+The main endpoint processes the request:
+
+```python
+def validate_numbers():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    numbers = data.get("numbers", [])
+    if not numbers:
+        return jsonify({"error": "numbers list required"}), 400
+    job_id = f"JOB-{int(time.time())}"
+    results = {"valid": [], "invalid": [], "mobile": [], "landline": [], "voip": [], "errors": []}
+    for num in numbers[:100]:
+```
+
 
 ## Step 3: Run It
 

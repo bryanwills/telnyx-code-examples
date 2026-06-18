@@ -25,7 +25,9 @@ Get a specific results by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -55,7 +57,10 @@ Records use these status values: `answering`, `asking`, `ended`, `listening`, `o
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "results": "example-value",
+  "total": 3
+}
 ```
 
 | Status | Meaning |

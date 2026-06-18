@@ -75,7 +75,7 @@ data = request.get_json()
 
 ### Business Logic
 
-- **`add_subscribers()`** — Handles the add subscribers logic.
+- **`add_subscribers()`** — Validates input and creates new subscribers.
 - **`send_campaign()`** — Makes an API call and processes the response.
 - **`handle_messaging()`** — Makes an API call and processes the response.
 

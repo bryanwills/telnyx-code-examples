@@ -108,7 +108,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`place_reminder_call()`** — Makes an API call and processes the response.
-- **`add_appointment()`** — Handles the add appointment logic.
+- **`add_appointment()`** — Validates input and creates new appointment.
 
 ### All Endpoints
 

@@ -71,6 +71,44 @@ Everything lives in `app.py` (66 lines). Here's what each piece does.
 | `GET` | `/anomalies` | List Anomalies |
 | `GET` | `/health` | Health check |
 
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def scan_fleet():
+    sims = get_sim_usage()
+    if not sims:
+        return jsonify({"error": "No SIM data available"}), 404
+    try:
+        result_json = analyze_usage(sims)
+        found = json.loads(result_json) if isinstance(result_json, str) else result_json
+        if isinstance(found, list) and found:
+            for anomaly in found:
+                anomalies.append({**anomaly, "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ")})
+                if anomaly.get("severity") in ("medium", "high"):
+                    send_alert(f"SIM Anomaly [{anomaly.get('severity', '').upper()}]: {anomaly.get('sim_id', 'unknown')} - {anomaly.get('issue', 'anomaly detected')}")
+```
+
+Helper function that handles the core action:
+
+```python
+def analyze_usage(sims_data):
+    messages = [{"role": "system", "content": "Analyze IoT SIM usage data for anomalies. Look for: sudden spikes, unusual patterns, SIMs using 10x normal data, offline SIMs that should be online. Return JSON array of anomalies: [{sim_id, issue, severity (low/medium/high), recommendation}]"},
+        {"role": "user", "content": json.dumps(sims_data[:50])}]
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": 500, "temperature": 0.2}, timeout=20)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+def send_alert(text):
+    try:
+        requests.post("https://api.telnyx.com/v2/messages", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+            json={"from": ALERT_NUMBER, "to": ALERT_NUMBER, "text": text}, timeout=10)
+    except Exception as e:
+        app.logger.error("Alert failed: %s", e)
+```
+
+
 ## Step 3: Run It
 
 ```bash

@@ -82,9 +82,9 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`generate_meeting_notes()`** — Handles the generate meeting notes logic.
+- **`generate_meeting_notes()`** — Processes generate meeting notes request and returns result.
 - **`join_meeting()`** — Makes an API call and processes the response.
-- **`list_meetings()`** — Handles the list meetings logic.
+- **`list_meetings()`** — Returns all meetings with metadata and pagination.
 
 ### All Endpoints
 
@@ -94,6 +94,46 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/webhooks/voice` | Telnyx webhook handler |
 | `GET` | `/meetings` | List Meetings |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+
+    if event_type == "call.answered" and meeting:
+        meeting["status"] = "recording"
+        # Start real-time transcription
+        client.calls.actions.transcription_start(call_control_id, language="en")
+        return jsonify({"status": "transcribing"}), 200
+
+    elif event_type == "call.transcription" and meeting:
+        text = data.get("transcription_data", {}).get("transcript", "")
+        if text:
+            meeting["transcript"].append({
+                "text": text,
+                "timestamp": time.time() - meeting["start_time"],
+            })
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=500):
+    """Call Telnyx Inference API."""
+    resp = requests.post(
+        INFERENCE_URL,
+        headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.3},
+        timeout=20,
+    )
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+
+def generate_meeting_notes(transcript, participants):
+    """Generate structured meeting notes from transcript."""
+```
+
 
 ## Step 3: Run It
 

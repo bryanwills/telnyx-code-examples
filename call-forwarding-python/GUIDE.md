@@ -70,8 +70,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`get_call_status()`** — Handles the get call status logic.
-- **`hangup_call_endpoint()`** — Handles the hangup call endpoint logic.
+- **`get_call_status()`** — Queries active call state from in-memory session store.
+- **`hangup_call_endpoint()`** — Terminates active call via Call Control hangup.
 - **`health_check()`** — Health check endpoint for monitoring and load balancer probes.
 
 ### All Endpoints
@@ -82,6 +82,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/calls/status/<call_control_id>` | Get Call Status |
 | `POST` | `/calls/hangup/<call_control_id>` | Hangup Call Endpoint |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    try:
+        if event_type == "call.initiated":
+            # Store call metadata for tracking
+            active_calls[call_control_id] = {
+                "from": from_number,
+                "initiated_at": payload.get("data", {}).get("occurred_at"),
+            }
+            
+            # Answer the call automatically
+            answer_call(call_control_id)
+            
+            # Forward to the configured destination
+            forward_to = os.getenv("FORWARD_TO_NUMBER")
+            if not forward_to:
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def hangup_call_endpoint(call_control_id: str):
+    """
+    Manually terminate an active call.
+    
+    Args:
+        call_control_id: The unique identifier for the call to terminate.
+    
+    Returns:
+        JSON with hangup confirmation.
+    """
+    try:
+        result = hangup_call(call_control_id)
+```
+
 
 ## Step 3: Run It
 

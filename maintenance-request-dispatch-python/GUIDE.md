@@ -79,7 +79,7 @@ Webhook handlers process events from Telnyx:
 ### Business Logic
 
 - **`ai_categorize()`** — Sends conversation context to Telnyx AI Inference and returns the model's response. Uses the OpenAI-compatible chat completions endpoint.
-- **`dispatch_vendor()`** — Handles the dispatch vendor logic.
+- **`dispatch_vendor()`** — Processes dispatch vendor request and returns result.
 
 ### All Endpoints
 
@@ -88,6 +88,42 @@ Webhook handlers process events from Telnyx:
 | `POST` | `/webhooks/sms` | Telnyx webhook handler |
 | `GET` | `/work-orders` | List Work Orders |
 | `GET` | `/health` | Health check |
+
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+def ai_categorize(text):
+    try:
+        resp = requests.post(INFERENCE_URL, headers=headers,
+            json={"model": AI_MODEL, "messages": [
+                {"role": "system", "content": "Categorize this maintenance request. Reply JSON only: {\"category\": \"plumbing|electrical|hvac|pest|general\", \"urgency\": \"emergency|routine\", \"estimated_cost\": number, \"summary\": \"brief\"}"},
+                {"role": "user", "content": text}], "max_tokens": 100, "temperature": 0.1}, timeout=15)
+        return json.loads(resp.json()["choices"][0]["message"]["content"].strip().strip("`").replace("json\n",""))
+    except Exception:
+        return {"category": "general", "urgency": "routine", "estimated_cost": 200, "summary": text[:100]}
+
+def dispatch_vendor(category, wo):
+```
+
+The main endpoint processes the request:
+
+```python
+def handle_sms():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    data = payload.get("data", {}).get("payload", {})
+    sender = data.get("from", {}).get("phone_number", "")
+    text = data.get("text", "")
+
+    if sender == MANAGER_NUMBER and text.strip().upper().startswith(("APPROVE", "DENY")):
+        parts = text.strip().split()
+```
+
 
 ## Step 3: Run It
 

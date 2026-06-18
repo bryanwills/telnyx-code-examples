@@ -51,7 +51,9 @@ Override severity.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -63,7 +65,9 @@ Override severity.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 ---
@@ -75,7 +79,10 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "queue_size": "example-value"
+}
 ```
 
 ---
@@ -89,7 +96,7 @@ Records use these status values: `advised_911`, `ok`, `paged_oncall`, `pending_r
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

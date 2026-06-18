@@ -23,7 +23,9 @@ Audit twilio.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "TWILIO_ACCOUNT_SID not configured"
+}
 ```
 
 ---
@@ -35,7 +37,9 @@ Migrate messaging.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "example-value"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -46,7 +50,9 @@ Migrate messaging.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -58,7 +64,9 @@ Migrate numbers.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -102,7 +110,9 @@ Get a specific log by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -131,7 +141,9 @@ Records use these status values: `failed`, `ok`, `port_submitted`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Status | Meaning |

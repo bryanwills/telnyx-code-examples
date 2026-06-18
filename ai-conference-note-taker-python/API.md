@@ -20,7 +20,9 @@ Join meeting.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -32,7 +34,9 @@ Join meeting.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -50,7 +54,9 @@ List all meetings.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "No payload"
+}
 ```
 
 ---
@@ -62,7 +68,11 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "active_meetings": "example-value",
+  "completed": "example-value"
+}
 ```
 
 ---
@@ -76,7 +86,7 @@ Records use these status values: `event_received`, `joining`, `meeting_ended`, `
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

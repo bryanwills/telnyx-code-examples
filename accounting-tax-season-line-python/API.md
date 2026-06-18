@@ -23,7 +23,10 @@ Send reminders.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "reminders_sent": "example-value",
+  "results": []
+}
 ```
 
 ---
@@ -81,7 +84,9 @@ Doc received.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -93,7 +98,9 @@ Readiness dashboard.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -122,7 +129,9 @@ Records use these status values: `docs_pending`, `ok`, `ready`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "clients": []
+}
 ```
 
 | Status | Meaning |

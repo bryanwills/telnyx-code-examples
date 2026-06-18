@@ -54,7 +54,9 @@ Records use these status values: `answering`, `ended`, `greeting`, `listening`, 
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Status | Meaning |

@@ -20,7 +20,14 @@ Call analytics.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "period_days": [],
+  "total_calls": 3,
+  "inbound": "example-value",
+  "outbound": "example-value",
+  "avg_duration_secs": "example-value",
+  "total_minutes": "example-value"
+}
 ```
 
 ---
@@ -32,7 +39,10 @@ Number analytics.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "total_numbers": "example-value",
+  "by_status": []
+}
 ```
 
 ---
@@ -44,7 +54,11 @@ Messaging analytics.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "recent_messages": "example-value",
+  "sent": "example-value",
+  "received": "example-value"
+}
 ```
 
 ---
@@ -68,7 +82,9 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok"
+}
 ```
 
 | Status | Meaning |

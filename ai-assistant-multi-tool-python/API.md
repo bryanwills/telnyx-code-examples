@@ -32,7 +32,9 @@ Chat.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -56,7 +58,9 @@ List tool calls.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "tools": "example-value"
+}
 ```
 
 ---
@@ -86,7 +90,9 @@ Records use these status values: `booked`, `ok`, `processing`, `shipped`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "calls": "example-value"
+}
 ```
 
 | Status | Meaning |

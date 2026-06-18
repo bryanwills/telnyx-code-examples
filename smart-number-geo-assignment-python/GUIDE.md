@@ -56,7 +56,7 @@ Everything lives in `app.py` (78 lines). Here's what each piece does.
 
 - **`search_local_number()`** — Makes an API call and processes the response.
 - **`purchase_number()`** — Makes an API call and processes the response.
-- **`assign_number()`** — Handles the assign number logic.
+- **`assign_number()`** — Processes assign number request and returns result.
 
 ### All Endpoints
 
@@ -67,6 +67,40 @@ Everything lives in `app.py` (78 lines). Here's what each piece does.
 | `GET` | `/inventory` | Inventory |
 | `GET` | `/assignments` | List Assignments |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def assign_number():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    target_area_code = data.get("area_code")
+    use_case = data.get("use_case", "outbound")
+    if target_area_code in number_cache:
+        return jsonify({"number": number_cache[target_area_code], "source": "cache"}), 200
+    number = search_local_number(target_area_code)
+    if not number:
+        return jsonify({"error": f"No numbers available in area code {target_area_code}"}), 404
+    if purchase_number(number):
+```
+
+The main endpoint processes the request:
+
+```python
+def assign_number():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    target_area_code = data.get("area_code")
+    use_case = data.get("use_case", "outbound")
+    if target_area_code in number_cache:
+        return jsonify({"number": number_cache[target_area_code], "source": "cache"}), 200
+    number = search_local_number(target_area_code)
+    if not number:
+```
+
 
 ## Step 3: Run It
 

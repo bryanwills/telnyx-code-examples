@@ -89,7 +89,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`get_results()`** — Handles the get results logic.
+- **`get_results()`** — Retrieves processed results with pagination.
 
 ### All Endpoints
 

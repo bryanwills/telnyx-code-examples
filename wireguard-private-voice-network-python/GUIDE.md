@@ -83,7 +83,7 @@ data = request.get_json()
 
 - **`list_networks()`** — Makes an API call and processes the response.
 - **`get_config()`** — Makes an API call and processes the response.
-- **`topology()`** — Handles the topology logic.
+- **`topology()`** — Processes topology request and returns result.
 
 ### All Endpoints
 

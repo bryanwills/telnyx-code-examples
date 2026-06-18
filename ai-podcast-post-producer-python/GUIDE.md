@@ -78,7 +78,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`produce_episode()`** — Handles the produce episode logic.
+- **`produce_episode()`** — Processes produce episode request and returns result.
 
 ### All Endpoints
 
@@ -88,6 +88,46 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/produce` | Produce Episode |
 | `GET` | `/episodes` | List Episodes |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        client.calls.actions.answer(ccid)
+        return jsonify({"status": "answering"}), 200
+    elif event_type == "call.answered":
+        client.calls.actions.record_start(ccid, format="mp3", channels="dual")
+        client.calls.actions.speak(ccid, payload="Podcast recording started. Speak naturally. The recording will be processed when the call ends.", voice="female", language_code="en-US")
+        return jsonify({"status": "recording"}), 200
+    elif event_type == "call.recording.saved":
+        recording = {"url": data.get("recording_urls", {}).get("mp3"), "duration": data.get("duration_secs"),
+            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+        episodes.append({"recording": recording, "status": "recorded"})
+        return jsonify({"status": "saved"}), 200
+    elif event_type == "call.hangup":
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=800):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.4}, timeout=25)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+@app.route("/webhooks/voice", methods=["POST"])
+def handle_voice():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    event_type = payload.get("data", {}).get("event_type")
+    ccid = payload.get("data", {}).get("call_control_id")
+    data = payload.get("data", {})
+```
+
 
 ## Step 3: Run It
 

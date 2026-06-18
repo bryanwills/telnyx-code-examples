@@ -52,7 +52,7 @@ Everything lives in `app.py` (50 lines). Here's what each piece does.
 ### Business Logic
 
 - **`validate_address()`** — Makes an API call and processes the response.
-- **`assign_e911()`** — Handles the assign e911 logic.
+- **`assign_e911()`** — Processes assign e911 request and returns result.
 
 ### All Endpoints
 
@@ -62,6 +62,40 @@ Everything lives in `app.py` (50 lines). Here's what each piece does.
 | `POST` | `/e911/assign` | Assign E911 |
 | `GET` | `/e911/addresses` | List Addresses |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def validate_address():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    address = {"street_address": data.get("street"), "extended_address": data.get("street2", ""),
+        "locality": data.get("city"), "administrative_area": data.get("state"), "postal_code": data.get("zip"), "country_code": data.get("country", "US")}
+    try:
+        resp = requests.post("https://api.telnyx.com/v2/addresses", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+            json={**address, "address_book": True, "business_name": data.get("business_name", "", timeout=10)}, timeout=15)
+        if resp.ok:
+            result = resp.json().get("data", {})
+            validated_addresses.append(result)
+```
+
+The main endpoint processes the request:
+
+```python
+def validate_address():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    address = {"street_address": data.get("street"), "extended_address": data.get("street2", ""),
+        "locality": data.get("city"), "administrative_area": data.get("state"), "postal_code": data.get("zip"), "country_code": data.get("country", "US")}
+    try:
+        resp = requests.post("https://api.telnyx.com/v2/addresses", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+            json={**address, "address_book": True, "business_name": data.get("business_name", "", timeout=10)}, timeout=15)
+        if resp.ok:
+```
+
 
 ## Step 3: Run It
 

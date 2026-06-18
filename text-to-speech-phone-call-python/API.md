@@ -33,7 +33,9 @@ Initiate call endpoint.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -59,7 +61,9 @@ Speak endpoint.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -71,7 +75,9 @@ Hangup endpoint.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Invalid API key"
+}
 ```
 
 ---
@@ -89,7 +95,9 @@ Get calls status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -103,7 +111,9 @@ Records use these status values: `answered`, `hangup_initiated`, `initiated`, `r
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "active_calls": []
+}
 ```
 
 | Status | Meaning |

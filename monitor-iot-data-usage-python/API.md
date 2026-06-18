@@ -50,7 +50,10 @@ Get a specific sim by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "service": "data-usage-monitor"
+}
 ```
 
 ---
@@ -62,7 +65,10 @@ Get a specific usage by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "data": [],
+  "count": 3
+}
 ```
 
 ---
@@ -74,7 +80,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Invalid API key"
+}
 ```
 
 ---
@@ -110,7 +118,9 @@ Records use these status values: `ok`, `received`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Invalid API key"
+}
 ```
 
 | Status | Meaning |

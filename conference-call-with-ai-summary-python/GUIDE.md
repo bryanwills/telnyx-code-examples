@@ -91,7 +91,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`invite_participant()`** — Makes an API call and processes the response.
-- **`get_summary()`** — Handles the get summary logic.
+- **`get_summary()`** — Fetches summary by ID with full details.
 
 ### All Endpoints
 

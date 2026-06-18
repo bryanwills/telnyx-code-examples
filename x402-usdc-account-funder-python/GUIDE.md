@@ -71,6 +71,40 @@ Everything lives in `app.py` (76 lines). Here's what each piece does.
 | `GET` | `/payments` | List Payments |
 | `GET` | `/health` | Health check |
 
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def get_quote():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    amount = data.get("amount_usd", "50.00")
+    try:
+        resp = requests.post(f"{API}/x402/credit_account/quote", headers=headers,
+            json={"amount_usd": str(amount, timeout=10)}, timeout=15)
+        result = resp.json()
+        result["requested_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+        quotes.append(result)
+        return jsonify(result), resp.status_code
+```
+
+The main endpoint processes the request:
+
+```python
+def get_quote():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    amount = data.get("amount_usd", "50.00")
+    try:
+        resp = requests.post(f"{API}/x402/credit_account/quote", headers=headers,
+            json={"amount_usd": str(amount, timeout=10)}, timeout=15)
+        result = resp.json()
+        result["requested_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+```
+
+
 ## Step 3: Run It
 
 ```bash

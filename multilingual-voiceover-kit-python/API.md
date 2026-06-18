@@ -22,7 +22,9 @@ Create a new kit.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -48,7 +50,9 @@ Get a specific kit by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -72,7 +76,9 @@ Add language.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Kit not found"
+}
 ```
 
 ---
@@ -84,7 +90,9 @@ List all kits.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Kit not found"
+}
 ```
 
 ---
@@ -96,7 +104,16 @@ List all languages.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "languagess": [
+    {
+      "id": "abc-123",
+      "status": "active",
+      "created_at": "2026-06-18T21:00:00Z"
+    }
+  ],
+  "total": 1
+}
 ```
 
 ---
@@ -108,7 +125,12 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "total_kits": "example-value",
+  "supported_languages": "example-value",
+  "version": "1.0.0"
+}
 ```
 
 ---
@@ -122,7 +144,7 @@ Records use these status values: `complete`, `ok`, `pending`, `translated`, `tra
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

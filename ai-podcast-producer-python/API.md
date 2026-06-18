@@ -36,7 +36,9 @@ Start episode.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -48,7 +50,9 @@ Stop episode.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Episode not found"
+}
 ```
 
 ---
@@ -66,7 +70,9 @@ List all episodes.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -78,7 +84,9 @@ Get a specific episode by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Episode not found"
+}
 ```
 
 ---
@@ -90,7 +98,12 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "total_episodes": "example-value",
+  "recording": "example-value",
+  "version": "1.0.0"
+}
 ```
 
 ---
@@ -104,7 +117,7 @@ Records use these status values: `complete`, `dialing`, `ok`, `processing`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

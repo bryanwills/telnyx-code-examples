@@ -25,7 +25,9 @@ List work orders.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -55,7 +57,9 @@ Records use these status values: `approved`, `denied`, `dispatched`, `new`, `ok`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "work_orders": []
+}
 ```
 
 | Status | Meaning |

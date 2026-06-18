@@ -25,7 +25,7 @@ Records use these status values: `error`, `ignored`, `received`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

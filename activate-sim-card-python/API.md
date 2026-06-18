@@ -31,7 +31,9 @@ Get a specific sim by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "data": []
+}
 ```
 
 ---
@@ -53,7 +55,9 @@ Activate sim.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Invalid API key"
+}
 ```
 
 | Status | Meaning |

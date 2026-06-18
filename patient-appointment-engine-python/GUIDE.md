@@ -114,8 +114,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`ai_respond()`** — Sends conversation context to Telnyx AI Inference and returns the model's response. Uses the OpenAI-compatible chat completions endpoint.
-- **`list_appointments()`** — Handles the list appointments logic.
-- **`approve_appointment()`** — Handles the approve appointment logic.
+- **`list_appointments()`** — Returns all appointments with metadata and pagination.
+- **`approve_appointment()`** — Processes approve appointment request and returns result.
 
 ### All Endpoints
 

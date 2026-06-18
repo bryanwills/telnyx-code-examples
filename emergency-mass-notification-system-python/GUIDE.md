@@ -87,6 +87,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/notifications` | List Notifications |
 | `GET` | `/health` | Health check |
 
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    ccid = payload.get("data", {}).get("call_control_id")
+    if event_type == "call.answered":
+        for nid, notif in notifications.items():
+            for phone, d in notif["delivery"].items():
+                if d.get("call_control_id") == ccid:
+                    client.calls.actions.speak(ccid, payload=f"Emergency notification: {notif['message']}. Press 1 to acknowledge.", voice="female", language_code="en-US")
+                    return jsonify({"status": "alerting"}), 200
+        return jsonify({"status": "no_match"}), 200
+    elif event_type == "call.speak.ended":
+        client.calls.actions.gather(ccid, input_type="dtmf speech", timeout_secs=10, min_digits=1, max_digits=1)
+        return jsonify({"status": "waiting_ack"}), 200
+    elif event_type == "call.gather.ended":
+        for nid, notif in notifications.items():
+            for phone, d in notif["delivery"].items():
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def send_notification():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    message = data.get("message", "")
+    contacts = data.get("contacts", [])
+    severity = data.get("severity", "normal")
+    nid = f"NOTIF-{int(time.time())}"
+    delivery = {}
+    for contact in contacts:
+        phone = contact.get("phone")
+        if not phone: continue
+```
+
+
 ## Step 3: Run It
 
 ```bash

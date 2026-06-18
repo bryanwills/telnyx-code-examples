@@ -51,8 +51,8 @@ Everything lives in `app.py` (177 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`send_bulk_sms_endpoint()`** — Handles the send bulk sms endpoint logic.
-- **`bulk_sms_status()`** — Handles the bulk sms status logic.
+- **`send_bulk_sms_endpoint()`** — Delivers bulk sms endpoint via Telnyx API.
+- **`bulk_sms_status()`** — Processes bulk sms status request and returns result.
 
 ### All Endpoints
 
@@ -60,6 +60,40 @@ Everything lives in `app.py` (177 lines). Here's what each piece does.
 |--------|------|---------|
 | `POST` | `/sms/bulk/send` | Send Bulk Sms Endpoint |
 | `GET` | `/sms/bulk/status` | Bulk Sms Status |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def send_bulk_sms_endpoint():
+    """HTTP endpoint to send bulk SMS messages."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    
+    if not data:
+        return jsonify({"error": "Request body required"}), 400
+    
+    recipients = data.get("recipients", [])
+    message = data.get("message")
+    
+```
+
+The main endpoint processes the request:
+
+```python
+def send_bulk_sms_endpoint():
+    """HTTP endpoint to send bulk SMS messages."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    
+    if not data:
+        return jsonify({"error": "Request body required"}), 400
+    
+    recipients = data.get("recipients", [])
+```
+
 
 ## Step 3: Run It
 

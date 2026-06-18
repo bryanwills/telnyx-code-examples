@@ -22,7 +22,9 @@ Generate loa.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -42,7 +44,9 @@ Generate loa.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -54,7 +58,9 @@ Submit and port.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -68,7 +74,9 @@ Submit and port.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -80,7 +88,9 @@ Check portability.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -102,7 +112,9 @@ List all loas.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -114,7 +126,9 @@ Pipeline status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "loas": "example-value"
+}
 ```
 
 ---
@@ -144,7 +158,9 @@ Records use these status values: `generated`, `ok`, `submitted`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "pipeline": "example-value"
+}
 ```
 
 | Status | Meaning |

@@ -25,7 +25,9 @@ List all faxes.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -54,7 +56,9 @@ Records use these status values: `ignored`, `ok`, `processed`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "faxes": "example-value"
+}
 ```
 
 | Status | Meaning |

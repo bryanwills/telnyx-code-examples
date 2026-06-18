@@ -101,7 +101,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 - **`ai_triage()`** — Sends conversation context to Telnyx AI Inference and returns the model's response. Uses the OpenAI-compatible chat completions endpoint.
 - **`page_oncall()`** — Makes an API call and processes the response.
-- **`get_queue()`** — Handles the get queue logic.
+- **`get_queue()`** — Returns call queue with position and wait estimates.
 
 ### All Endpoints
 
@@ -111,6 +111,43 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/triage/queue` | Get Queue |
 | `POST` | `/triage/<int:idx>/override` | Override Severity |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def override_severity(idx):
+    if idx >= len(triage_queue):
+        return jsonify({"error": "Not found"}), 404
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    entry = triage_queue[idx]
+    old = entry["severity"]
+    entry["severity"] = data.get("severity", entry["severity"])
+    entry["override_by"] = data.get("nurse_name", "unknown")
+    entry["override_note"] = data.get("note", "")
+    entry["status"] = "reviewed"
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers,
+        json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+@app.route("/webhooks/voice", methods=["POST"])
+def handle_voice():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    data = payload.get("data", {})
+    event = data.get("event_type")
+    ccid = data.get("call_control_id")
+    caller = data.get("from", "")
+```
+
 
 ## Step 3: Run It
 

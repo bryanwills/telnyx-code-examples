@@ -43,7 +43,9 @@ Initiate transfer.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -55,7 +57,9 @@ Initiate transfer.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -81,7 +85,9 @@ List all calls.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -93,7 +99,11 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "active_calls": "example-value",
+  "pending_transfers": "example-value"
+}
 ```
 
 ---
@@ -107,7 +117,7 @@ Records use these status values: `active`, `answered`, `answering`, `briefing_ag
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

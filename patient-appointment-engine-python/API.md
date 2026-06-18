@@ -39,7 +39,9 @@ List all appointments.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -51,7 +53,10 @@ Approve appointment.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "appointments": [],
+  "pending_review": "example-value"
+}
 ```
 
 ---
@@ -75,7 +80,9 @@ Reject appointment.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 ---
@@ -87,7 +94,9 @@ Create a new copay.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -99,7 +108,9 @@ Create a new copay.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "payment_link": "example-value"
+}
 ```
 
 ---
@@ -111,7 +122,9 @@ Get a specific slots by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "available": []
+}
 ```
 
 ---
@@ -141,7 +154,11 @@ Records use these status values: `confirmed`, `ok`, `pending_review`, `rejected`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "appointments": "example-value",
+  "pending": "example-value"
+}
 ```
 
 | Status | Meaning |

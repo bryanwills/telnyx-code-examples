@@ -83,6 +83,43 @@ Everything lives in `app.py` (209 lines). Here's what each piece does.
 | `GET` | `/jobs` | List Jobs |
 | `GET` | `/health` | Health check |
 
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def repurpose_episode():
+    """Upload a podcast episode audio file. Returns clips, quotes, and social posts.
+
+    Pipeline: STT → AI extract quotes/topics → TTS audiogram clips → SMS distribution.
+    """
+    if "audio" not in request.files:
+        return jsonify({"error": "Upload episode audio as 'audio'"}), 400
+
+    episode_title = request.form.get("title", "Untitled Episode")
+    audio_bytes = request.files["audio"].read()
+
+    job_id = f"rep-{uuid.uuid4().hex[:8]}"
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    try:
+        requests.post(f"{API}/messages", headers=HEADERS, json={
+            "from": MAIN_NUMBER, "to": to, "text": text,
+            "messaging_profile_id": MESSAGING_PROFILE_ID
+        }, timeout=10)
+    except Exception as e:
+        app.logger.error("SMS to %s failed: %s", to, e)
+
+
+@app.route("/repurpose", methods=["POST"])
+def repurpose_episode():
+    """Upload a podcast episode audio file. Returns clips, quotes, and social posts.
+```
+
+
 ## Step 3: Run It
 
 ```bash

@@ -69,7 +69,9 @@ Records use these status values: `added`, `answering`, `connecting`, `ended`, `o
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Status | Meaning |

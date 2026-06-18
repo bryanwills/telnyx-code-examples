@@ -49,13 +49,51 @@ Everything lives in `app.py` (70 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`setup_sip_endpoint()`** — Handles the setup sip endpoint logic.
+- **`setup_sip_endpoint()`** — Processes setup sip endpoint request and returns result.
 
 ### All Endpoints
 
 | Method | Path | Purpose |
 |--------|------|---------|
 | `POST` | `/sip/setup` | Setup Sip Endpoint |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def setup_sip_endpoint():
+    """HTTP endpoint to set up SIP trunking."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    
+    if not data:
+        return jsonify({"error": "Request body required"}), 400
+    
+    name = data.get("name")
+    username = data.get("username")
+    password = data.get("password")
+```
+
+Helper function that handles the core action:
+
+```python
+def create_sip_connection(name: str, username: str, password: str) -> dict:
+    """Create SIP connection via Telnyx and return JSON-serializable response data."""
+    # Validate input to prevent API errors
+    if not name or not username or not password:
+        raise ValueError("Name, username, and password are required")
+    
+    # Use client.sip_connections.create() — NOT client.sip_connections.create()
+    response = client.sip_connections.create(
+        name=name,
+        username=username,
+        password=password,
+    )
+    
+    # Extract serializable data — SDK objects are NOT JSON-serializable
+```
+
 
 ## Step 3: Run It
 

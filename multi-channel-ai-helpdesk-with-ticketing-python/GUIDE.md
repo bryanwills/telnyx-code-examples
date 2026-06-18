@@ -106,9 +106,9 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`get_context()`** — Handles the get context logic.
-- **`handle_messaging()`** — Handles the handle messaging logic.
-- **`list_tickets()`** — Handles the list tickets logic.
+- **`get_context()`** — Fetches context by ID with full details.
+- **`handle_messaging()`** — Routes inbound messages based on content type.
+- **`list_tickets()`** — Returns all tickets with metadata and pagination.
 
 ### All Endpoints
 

@@ -23,7 +23,9 @@ Get a specific quote by ID.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -33,7 +35,9 @@ Get a specific quote by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -45,7 +49,9 @@ Submit payment.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -56,7 +62,9 @@ Submit payment.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -68,7 +76,9 @@ Get a specific balance by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -80,7 +90,15 @@ Payment info.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "chain": "Base",
+  "chain_id": "example-value",
+  "usdc_contract": "example-value",
+  "min_amount": "$5.00",
+  "max_amount": "$10",
+  "quote_expiry": "5 minutes",
+  "steps": "example-value"
+}
 ```
 
 ---
@@ -130,7 +148,9 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "quotes": "example-value"
+}
 ```
 
 | Status | Meaning |

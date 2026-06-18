@@ -32,7 +32,9 @@ Start collection.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -50,7 +52,9 @@ Get a specific logs by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -80,7 +84,9 @@ Records use these status values: `calling`, `dnc_acknowledged`, `ended`, `greeti
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "logs": "example-value"
+}
 ```
 
 | Status | Meaning |

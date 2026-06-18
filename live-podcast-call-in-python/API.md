@@ -37,7 +37,9 @@ Start show.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -55,7 +57,9 @@ Admit next caller.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -79,7 +83,9 @@ Fact check.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Show not found"
+}
 ```
 
 ---
@@ -91,7 +97,9 @@ View queue.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Show not found"
+}
 ```
 
 ---
@@ -103,7 +111,9 @@ List all shows.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -115,7 +125,12 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "active_shows": "example-value",
+  "callers_in_queue": "example-value",
+  "version": "1.0.0"
+}
 ```
 
 ---
@@ -129,7 +144,7 @@ Records use these status values: `live`, `ok`, `queued`, `rejected`, `screening`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

@@ -72,7 +72,7 @@ Everything lives in `app.py` (87 lines). Here's what each piece does.
 
 - **`audit_vapi()`** — Makes an API call and processes the response.
 - **`migrate_agent()`** — Makes an API call and processes the response.
-- **`voice_mapping()`** — Handles the voice mapping logic.
+- **`voice_mapping()`** — Maps voice names to TTS engine voice IDs.
 
 ### All Endpoints
 
@@ -84,6 +84,40 @@ Everything lives in `app.py` (87 lines). Here's what each piece does.
 | `GET` | `/mapping/models` | Model Mapping |
 | `GET` | `/migration-log` | Get Log |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def migrate_agent():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    vapi_config = data.get("vapi_agent", {})
+    voice_id = VOICE_MAP.get(vapi_config.get("voice", ""), "en-US-Neural2-F")
+    model = vapi_config.get("model", "meta-llama/Llama-3.3-70B-Instruct")
+    if "gpt-4" in str(model).lower():
+        model = "meta-llama/Llama-3.3-70B-Instruct"
+    try:
+        resp = requests.post(f"{TELNYX_API}/ai/assistants", headers=telnyx_headers,
+            json={"name": vapi_config.get("name", "Migrated Vapi Agent", timeout=10),
+```
+
+The main endpoint processes the request:
+
+```python
+def audit_vapi():
+    if not VAPI_API_KEY:
+        return jsonify({"error": "VAPI_API_KEY not configured. Set it to audit your Vapi agents."}), 400
+    try:
+        resp = requests.get(f"{VAPI_API}/assistant",
+            headers={"Authorization": f"Bearer {VAPI_API_KEY}"}, timeout=15)
+        agents = resp.json() if resp.ok else []
+        audit = []
+        for agent in agents:
+            audit.append({"id": agent.get("id"), "name": agent.get("name"),
+```
+
 
 ## Step 3: Run It
 

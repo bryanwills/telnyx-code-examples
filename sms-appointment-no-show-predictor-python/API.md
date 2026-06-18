@@ -83,7 +83,9 @@ Records use these status values: `confirmed`, `handled`, `ignored`, `ok`, `sched
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Status | Meaning |

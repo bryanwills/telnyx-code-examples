@@ -78,7 +78,7 @@ data = request.get_json()
 
 - **`analyze_sentiment()`** — Sends conversation context to Telnyx AI Inference and returns the model's response. Uses the OpenAI-compatible chat completions endpoint.
 - **`receive_transcript()`** — Makes an API call and processes the response.
-- **`call_sentiment()`** — Handles the call sentiment logic.
+- **`call_sentiment()`** — Processes call sentiment request and returns result.
 
 ### All Endpoints
 

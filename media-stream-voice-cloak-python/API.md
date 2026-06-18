@@ -64,7 +64,9 @@ List all active.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -76,7 +78,9 @@ Get a specific log by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -105,7 +109,9 @@ Records use these status values: `answering`, `cloaking`, `effect_set`, `ended`,
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "effects": "example-value"
+}
 ```
 
 | Status | Meaning |

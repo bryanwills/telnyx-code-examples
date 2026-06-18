@@ -5,19 +5,22 @@ IoT Panic Button Voice Alert — IoT device triggers SIM-based alert, system cal
 ## How It Works
 
 ```
+  IoT Panic Button
+        │ trigger event
+        ▼
   ┌──────────────────┐
-  │ Inbound Phone Call │
-  │ (SIM data /       │
-  │  sensor reading)   │
+  │ Alert Dispatcher  │
   └────────┬─────────┘
            │
-           ▼
-  ┌──────────────────┐
-  │ Threshold Check   │
-  └────────┬─────────┘
-           │
-           ▼
-     JSON response
+      ┌────┴────┐
+      ▼         ▼
+  Voice Calls  SMS Alerts
+  (parallel    (all emergency
+   dial list)   contacts)
+      │
+      ▼
+  First to answer
+  gets live briefing
 ```
 
 ## Telnyx Products Used
@@ -89,7 +92,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`register_device()`** — Handles the register device logic.
+- **`register_device()`** — Processes register device request and returns result.
 
 ### All Endpoints
 

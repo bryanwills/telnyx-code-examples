@@ -90,8 +90,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`classify_and_summarize()`** — Handles the classify and summarize logic.
-- **`list_voicemails()`** — Handles the list voicemails logic.
+- **`classify_and_summarize()`** — Processes classify and summarize request and returns result.
+- **`list_voicemails()`** — Returns stored voicemails with transcription status.
 
 ### All Endpoints
 
@@ -100,6 +100,46 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/webhooks/voice` | Telnyx webhook handler |
 | `GET` | `/voicemails` | List Voicemails |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        active_calls[ccid] = {"caller": data.get("from", "unknown"), "transcript": []}
+        client.calls.actions.answer(ccid)
+        return jsonify({"status": "answering"}), 200
+    elif event_type == "call.answered":
+        # Try to connect to primary number first, if no answer -> voicemail
+        client.calls.actions.speak(ccid, payload="Hi, I'm not available right now. Please leave a message after the beep and I'll get back to you.", voice="female", language_code="en-US")
+        return jsonify({"status": "greeting"}), 200
+    elif event_type == "call.speak.ended":
+        client.calls.actions.record_start(ccid, format="mp3", channels="single", play_beep=True)
+        client.calls.actions.transcription_start(ccid, language="en")
+        return jsonify({"status": "recording"}), 200
+    elif event_type == "call.transcription":
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=300):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.2}, timeout=15)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+def classify_and_summarize(transcript, caller):
+    messages = [{"role": "system", "content": "Analyze this voicemail. Return JSON: priority (urgent/normal/spam), summary (one sentence), callback_needed (boolean), category (sales/support/personal/automated), caller_sentiment (positive/neutral/negative)."},
+        {"role": "user", "content": f"From: {caller}\nTranscript: {transcript}"}]
+    return call_inference(messages)
+
+def send_sms(to, text):
+    try:
+        requests.post("https://api.telnyx.com/v2/messages", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+```
+
 
 ## Step 3: Run It
 

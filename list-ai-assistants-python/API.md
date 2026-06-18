@@ -17,7 +17,9 @@ List all assistants.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Invalid API key"
+}
 ```
 
 ---
@@ -27,7 +29,7 @@ List all assistants.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

@@ -29,22 +29,25 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 ## Architecture
 
 ```
-  Participants
-    │   │   │
-    ▼   ▼   ▼
-  ┌──────────────────────────┐
-  │  Telnyx Conference Bridge  │
-  │  (mixed audio stream)      │
-  └────────────┬───────────────┘
-               │ media stream
-               ▼
-  ┌──────────────────────────┐
-  │  AI Inference             │
-  │  • Classification / triage│
-  │  • Escalation logic       │
-  └────────────┬───────────────┘
-               │
-               └──► SMS notification
+  IoT Device / SIM
+        │ data event
+        ▼
+  ┌──────────────────┐
+  │ Threshold Check   │
+  └────────┬─────────┘
+           │ exceeds limit
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Classify alert  │
+  │ • Set severity    │
+  └────────┬─────────┘
+           │
+      ┌────┴────┐
+      ▼         ▼
+  Voice Call   SMS Alert
+  (escalation  (all contacts)
+   chain)
 ```
 
 ## Environment Variables

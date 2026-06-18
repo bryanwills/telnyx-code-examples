@@ -55,7 +55,7 @@ Everything lives in `app.py` (103 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`generate_loa()`** — Handles the generate loa logic.
+- **`generate_loa()`** — Processes generate loa request and returns result.
 - **`submit_and_port()`** — Makes an API call and processes the response.
 - **`check_portability()`** — Makes an API call and processes the response.
 
@@ -69,6 +69,40 @@ Everything lives in `app.py` (103 lines). Here's what each piece does.
 | `GET` | `/loa` | List Loas |
 | `GET` | `/pipeline` | Pipeline Status |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def generate_loa():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    loa = LOA_TEMPLATE.format(
+        date=time.strftime("%B %d, %Y"),
+        authorized_person=data.get("authorized_person", ""),
+        current_provider=data.get("current_provider", ""),
+        phone_numbers=", ".join(data.get("phone_numbers", [])),
+        billing_number=data.get("billing_number", ""),
+        account_number=data.get("account_number", ""),
+        service_address=data.get("service_address", ""),
+```
+
+The main endpoint processes the request:
+
+```python
+def generate_loa():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    loa = LOA_TEMPLATE.format(
+        date=time.strftime("%B %d, %Y"),
+        authorized_person=data.get("authorized_person", ""),
+        current_provider=data.get("current_provider", ""),
+        phone_numbers=", ".join(data.get("phone_numbers", [])),
+        billing_number=data.get("billing_number", ""),
+```
+
 
 ## Step 3: Run It
 

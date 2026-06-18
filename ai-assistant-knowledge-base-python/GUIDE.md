@@ -49,9 +49,9 @@ Everything lives in `app.py` (92 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`chunk_text()`** — Handles the chunk text logic.
+- **`chunk_text()`** — Processes chunk text request and returns result.
 - **`get_embedding()`** — Makes an API call and processes the response.
-- **`cosine_sim()`** — Handles the cosine sim logic.
+- **`cosine_sim()`** — Processes cosine sim request and returns result.
 
 ### All Endpoints
 
@@ -61,6 +61,40 @@ Everything lives in `app.py` (92 lines). Here's what each piece does.
 | `POST` | `/ask` | Ask Question |
 | `POST` | `/documents` | List Documents |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def add_document():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    title = data.get("title", f"doc-{int(time.time())}")
+    content = data.get("content", "")
+    if not content:
+        return jsonify({"error": "content required"}), 400
+    doc = {"id": len(documents), "title": title, "length": len(content),
+        "chunks": 0, "added_at": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+    text_chunks = chunk_text(content)
+    for i, chunk in enumerate(text_chunks):
+```
+
+The main endpoint processes the request:
+
+```python
+def add_document():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    title = data.get("title", f"doc-{int(time.time())}")
+    content = data.get("content", "")
+    if not content:
+        return jsonify({"error": "content required"}), 400
+    doc = {"id": len(documents), "title": title, "length": len(content),
+        "chunks": 0, "added_at": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+```
+
 
 ## Step 3: Run It
 

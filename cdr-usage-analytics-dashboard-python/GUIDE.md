@@ -53,8 +53,8 @@ Everything lives in `app.py` (113 lines). Here's what each piece does.
 ### Business Logic
 
 - **`fetch_cdrs()`** — Makes an API call and processes the response.
-- **`get_cdrs()`** — Handles the get cdrs logic.
-- **`usage_summary()`** — Handles the usage summary logic.
+- **`get_cdrs()`** — Fetches cdrs by ID with full details.
+- **`usage_summary()`** — Fetches cdrs by ID with full details.
 
 ### All Endpoints
 
@@ -67,6 +67,23 @@ Everything lives in `app.py` (113 lines). Here's what each piece does.
 | `GET` | `/analytics/ai-insights` | Ai Insights |
 | `GET` | `/analytics/daily` | Daily Breakdown |
 | `GET` | `/health` | Health check |
+
+
+The main endpoint processes the request:
+
+```python
+def get_cdrs():
+    start = request.args.get("start_date", time.strftime("%Y-%m-%d", time.gmtime(time.time() - 86400)))
+    end = request.args.get("end_date", time.strftime("%Y-%m-%d"))
+    return jsonify({"data": fetch_cdrs(start, end), "period": {"start": start, "end": end}}), 200
+
+@app.route("/analytics/summary", methods=["GET"])
+def usage_summary():
+    start = request.args.get("start_date", time.strftime("%Y-%m-%d", time.gmtime(time.time() - 7 * 86400)))
+    end = request.args.get("end_date", time.strftime("%Y-%m-%d"))
+    cdrs = fetch_cdrs(start, end)
+```
+
 
 ## Step 3: Run It
 

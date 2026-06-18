@@ -57,8 +57,8 @@ Everything lives in `app.py` (63 lines). Here's what each piece does.
 ### Business Logic
 
 - **`lookup_number()`** — Makes an API call and processes the response.
-- **`enrich_lead()`** — Handles the enrich lead logic.
-- **`enrich_bulk()`** — Handles the enrich bulk logic.
+- **`enrich_lead()`** — Processes enrich lead request and returns result.
+- **`enrich_bulk()`** — Processes enrich lead request and returns result.
 
 ### All Endpoints
 
@@ -67,6 +67,44 @@ Everything lives in `app.py` (63 lines). Here's what each piece does.
 | `POST` | `/enrich` | Enrich Lead |
 | `POST` | `/enrich/bulk` | Enrich Bulk |
 | `GET` | `/health` | Health check |
+
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=200):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.3}, timeout=15)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+@app.route("/enrich", methods=["POST"])
+def enrich_lead():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    phone = data.get("phone_number")
+    if not phone:
+        return jsonify({"error": "phone_number required"}), 400
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def enrich_lead():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    phone = data.get("phone_number")
+    if not phone:
+        return jsonify({"error": "phone_number required"}), 400
+    lookup = lookup_number(phone)
+    carrier = lookup.get("carrier", {})
+    cnam = lookup.get("caller_name", {})
+    enrichment = {"phone": phone, "carrier_name": carrier.get("name"), "carrier_type": carrier.get("type"), "caller_name": cnam.get("caller_name"), "line_type": lookup.get("phone_number", {}).get("type"), "country": lookup.get("country_code")}
+    msgs = [{"role": "system", "content": "Score this lead based on phone data. Return JSON: lead_quality (hot/warm/cold), reasoning (string), is_mobile (boolean), is_voip (boolean), recommended_channel (sms/voice/email)."},
+```
+
 
 ## Step 3: Run It
 

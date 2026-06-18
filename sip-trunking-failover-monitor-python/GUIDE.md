@@ -71,6 +71,40 @@ Everything lives in `app.py` (61 lines). Here's what each piece does.
 | `GET` | `/status` | Get Status |
 | `GET` | `/health` | Health check |
 
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def health_check():
+    global current_active
+    primary = check_connection(PRIMARY_SIP)
+    backup = check_connection(BACKUP_SIP)
+    entry = {"primary": primary, "backup": backup, "active": current_active, "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+    health_log.append(entry)
+    if primary["status"] == "unhealthy" and current_active == "primary":
+        current_active = "backup"
+        send_alert(f"SIP FAILOVER: Primary trunk down, switching to backup. Check connection {PRIMARY_SIP}")
+        entry["action"] = "failover_to_backup"
+    elif primary["status"] == "healthy" and current_active == "backup":
+        current_active = "primary"
+```
+
+The main endpoint processes the request:
+
+```python
+def health_check():
+    global current_active
+    primary = check_connection(PRIMARY_SIP)
+    backup = check_connection(BACKUP_SIP)
+    entry = {"primary": primary, "backup": backup, "active": current_active, "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+    health_log.append(entry)
+    if primary["status"] == "unhealthy" and current_active == "primary":
+        current_active = "backup"
+        send_alert(f"SIP FAILOVER: Primary trunk down, switching to backup. Check connection {PRIMARY_SIP}")
+        entry["action"] = "failover_to_backup"
+```
+
+
 ## Step 3: Run It
 
 ```bash

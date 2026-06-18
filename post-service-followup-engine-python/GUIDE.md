@@ -122,8 +122,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`update_hubspot()`** — Makes an API call and processes the response.
-- **`send_followup()`** — Handles the send followup logic.
-- **`list_followups()`** — Handles the list followups logic.
+- **`send_followup()`** — Delivers followup via Telnyx API.
+- **`list_followups()`** — Returns all followups with metadata and pagination.
 
 ### All Endpoints
 

@@ -85,8 +85,8 @@ room = rooms.get(room_id)
 
 ### Business Logic
 
-- **`meeting_status()`** — Handles the meeting status logic.
-- **`next_topic()`** — Handles the next topic logic.
+- **`meeting_status()`** — Processes meeting status request and returns result.
+- **`next_topic()`** — Processes next topic request and returns result.
 
 ### All Endpoints
 

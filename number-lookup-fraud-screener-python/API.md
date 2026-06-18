@@ -108,7 +108,11 @@ Records use these status values: `blocked`, `ok`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "number": "example-value",
+  "action": "block",
+  "reason": "blocklisted"
+}
 ```
 
 | Status | Meaning |

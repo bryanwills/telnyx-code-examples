@@ -31,7 +31,9 @@ Create a new connection.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "connections": []
+}
 ```
 
 | Field | Type | Required | Description |
@@ -44,7 +46,9 @@ Create a new connection.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -56,7 +60,9 @@ Get a specific connection by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Invalid API key"
+}
 ```
 
 ---
@@ -66,7 +72,7 @@ Get a specific connection by ID.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

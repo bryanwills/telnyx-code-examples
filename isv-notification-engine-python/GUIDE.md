@@ -79,7 +79,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 - **`send_whatsapp()`** — Makes an API call and processes the response.
 - **`make_voice_call()`** — Makes an API call and processes the response.
-- **`deliver()`** — Handles the deliver logic.
+- **`deliver()`** — Processes deliver request and returns result.
 
 ### All Endpoints
 
@@ -92,6 +92,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `PUT` | `/customers/<cid>/preference` | Update Preference |
 | `GET` | `/notifications` | List Notifications |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def notify():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    result = deliver(data.get("customer_id"), data.get("message", ""), data.get("urgency", "normal"))
+    return jsonify({"notification": result}), 200
+
+@app.route("/notify/bulk", methods=["POST"])
+def bulk_notify():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    resp = requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+    return resp.status_code < 300
+
+def send_whatsapp(to, text):
+    resp = requests.post(f"{API}/messages", headers=headers,
+        json={"from": WHATSAPP_NUMBER or MAIN_NUMBER, "to": to, "text": text, "messaging_profile_id": "", "type": "whatsapp"}, timeout=10)
+    return resp.status_code < 300
+
+def make_voice_call(to, message):
+    try:
+        requests.post(f"{API}/calls", headers=headers,
+            json={"to": to, "from": MAIN_NUMBER, "connection_id": CONNECTION_ID,
+                "client_state": json.dumps({"msg": message}, timeout=10).encode().hex()}, timeout=10)
+```
+
 
 ## Step 3: Run It
 

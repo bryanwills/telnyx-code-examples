@@ -37,7 +37,9 @@ List all refills.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -49,7 +51,9 @@ Approve refill.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "refills": []
+}
 ```
 
 | Field | Type | Required | Description |
@@ -59,7 +63,9 @@ Approve refill.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 ---
@@ -83,7 +89,9 @@ Deny refill.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 ---
@@ -112,7 +120,10 @@ Records use these status values: `approved`, `denied`, `ok`, `pending_pharmacist
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "pending": "example-value"
+}
 ```
 
 | Status | Meaning |

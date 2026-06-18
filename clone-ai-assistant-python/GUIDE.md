@@ -56,8 +56,8 @@ Everything lives in `app.py` (131 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`get_assistant()`** — Handles the get assistant logic.
-- **`clone_assistant_endpoint()`** — Handles the clone assistant endpoint logic.
+- **`get_assistant()`** — Fetches assistant by ID with full details.
+- **`clone_assistant_endpoint()`** — Processes clone assistant endpoint request and returns result.
 
 ### All Endpoints
 
@@ -65,6 +65,40 @@ Everything lives in `app.py` (131 lines). Here's what each piece does.
 |--------|------|---------|
 | `GET` | `/assistants/<assistant_id>` | Get Assistant |
 | `POST` | `/assistants/<assistant_id>/clone` | Clone Assistant Endpoint |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def clone_assistant_endpoint(assistant_id: str):
+    """Clone an existing assistant with optional parameter overrides."""
+    if not assistant_id:
+        return jsonify({"error": "assistant_id is required"}), 400
+    
+    data = request.get_json() or {}
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    
+    # Extract optional override parameters from request body
+    new_name = data.get("name")
+    new_instructions = data.get("instructions")
+```
+
+The main endpoint processes the request:
+
+```python
+def get_assistant(assistant_id: str):
+    """Retrieve details of an assistant before cloning."""
+    if not assistant_id:
+        return jsonify({"error": "assistant_id is required"}), 400
+    
+    try:
+        result = get_assistant_details(assistant_id)
+        return jsonify(result), 200
+        
+    except telnyx.AuthenticationError:
+```
+
 
 ## Step 3: Run It
 

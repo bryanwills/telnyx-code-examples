@@ -89,7 +89,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`extract_deal_signals()`** — Handles the extract deal signals logic.
+- **`extract_deal_signals()`** — Processes extract deal signals request and returns result.
 - **`push_to_crm()`** — Makes an API call and processes the response.
 - **`send_follow_up_sms()`** — Makes an API call and processes the response.
 
@@ -99,6 +99,46 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 |--------|------|---------|
 | `POST` | `/webhooks/voice` | Telnyx webhook handler |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+
+    if not event_type or not call_control_id:
+        return jsonify({"error": "Missing event data"}), 400
+
+    # --- Inbound call: AE calls in with prospect on the line ---
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        active_calls[call_control_id] = {
+            "transcript": [],
+            "prospect_number": data.get("from"),
+            "insights": {},
+        }
+        client.calls.actions.answer(call_control_id)
+        return jsonify({"status": "answering"}), 200
+
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=300):
+    """Call Telnyx Inference API for deal signal extraction."""
+    resp = requests.post(
+        INFERENCE_URL,
+        headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.3},
+        timeout=15,
+    )
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+
+def extract_deal_signals(transcript):
+    """Use inference to extract structured deal signals from conversation."""
+```
+
 
 ## Step 3: Run It
 

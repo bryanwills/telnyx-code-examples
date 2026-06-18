@@ -74,8 +74,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`list_voicemails()`** — Handles the list voicemails logic.
-- **`search_voicemails()`** — Handles the search voicemails logic.
+- **`list_voicemails()`** — Returns stored voicemails with transcription status.
+- **`search_voicemails()`** — Processes search voicemails request and returns result.
 
 ### All Endpoints
 
@@ -85,6 +85,42 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/voicemails` | List Voicemails |
 | `GET` | `/voicemails/search` | Search Voicemails |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        client.calls.actions.answer(ccid)
+        return jsonify({"status": "answering"}), 200
+    elif event_type == "call.answered":
+        client.calls.actions.speak(ccid, payload="Please leave your message after the beep.", voice="female", language_code="en-US")
+        return jsonify({"status": "greeting"}), 200
+    elif event_type == "call.speak.ended":
+        client.calls.actions.record_start(ccid, format="mp3", channels="single", play_beep=True, max_length_secs=120)
+        return jsonify({"status": "recording"}), 200
+    elif event_type == "call.recording.saved":
+        recording_url = data.get("recording_urls", {}).get("mp3", "")
+        caller = data.get("from", {}).get("phone_number", "unknown") if isinstance(data.get("from"), dict) else data.get("from", "unknown")
+        filename = f"voicemail-{int(time.time())}-{caller.replace('+','')}.mp3"
+```
+
+The main endpoint processes the request:
+
+```python
+def handle_voice():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    event_type = payload.get("data", {}).get("event_type")
+    ccid = payload.get("data", {}).get("call_control_id")
+    data = payload.get("data", {})
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        client.calls.actions.answer(ccid)
+        return jsonify({"status": "answering"}), 200
+```
+
 
 ## Step 3: Run It
 

@@ -23,7 +23,10 @@ Submit order.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "order": "example-value",
+  "api": "example-value"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -76,7 +79,12 @@ List all orders.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "order": "example-value",
+  "api": {
+    "key": "value"
+  }
+}
 ```
 
 ---
@@ -94,7 +102,9 @@ Sla check.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -106,7 +116,10 @@ Dashboard.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description",
+  "local": []
+}
 ```
 
 ---
@@ -135,7 +148,9 @@ Records use these status values: `error`, `ok`, `received`, `submitted`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Status | Meaning |

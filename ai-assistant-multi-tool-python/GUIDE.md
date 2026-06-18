@@ -51,7 +51,7 @@ Everything lives in `app.py` (90 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`execute_tool()`** — Handles the execute tool logic.
+- **`execute_tool()`** — Processes execute tool request and returns result.
 - **`chat()`** — Makes an API call and processes the response.
 
 ### All Endpoints
@@ -62,6 +62,40 @@ Everything lives in `app.py` (90 lines). Here's what each piece does.
 | `GET` | `/tools` | List Tools |
 | `GET` | `/tool-calls` | List Tool Calls |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def chat():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    messages = data.get("messages", [])
+    if not messages:
+        return jsonify({"error": "messages required"}), 400
+    system = [{"role": "system", "content": "You are a helpful business assistant with access to CRM, order tracking, and appointment booking tools. Use tools when the user asks about customers, orders, or scheduling."}]
+    try:
+        resp = requests.post(INFERENCE_URL, headers=headers,
+            json={"model": AI_MODEL, "messages": system + messages, "tools": TOOLS,
+                "max_tokens": 400, "temperature": 0.3}, timeout=20)
+```
+
+The main endpoint processes the request:
+
+```python
+def chat():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    messages = data.get("messages", [])
+    if not messages:
+        return jsonify({"error": "messages required"}), 400
+    system = [{"role": "system", "content": "You are a helpful business assistant with access to CRM, order tracking, and appointment booking tools. Use tools when the user asks about customers, orders, or scheduling."}]
+    try:
+        resp = requests.post(INFERENCE_URL, headers=headers,
+```
+
 
 ## Step 3: Run It
 

@@ -76,7 +76,7 @@ data = request.get_json()
 
 - **`get_recordings()`** — Makes an API call and processes the response.
 - **`transcribe_recording()`** — Makes an API call and processes the response.
-- **`list_webinars()`** — Handles the list webinars logic.
+- **`list_webinars()`** — Returns all webinars with metadata and pagination.
 
 ### All Endpoints
 

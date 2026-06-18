@@ -101,9 +101,9 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`audit_transcript()`** — Handles the audit transcript logic.
+- **`audit_transcript()`** — Processes audit transcript request and returns result.
 - **`store_recording()`** — Makes an API call and processes the response.
-- **`get_audit_results()`** — Handles the get audit results logic.
+- **`get_audit_results()`** — Fetches audit results by ID with full details.
 
 ### All Endpoints
 

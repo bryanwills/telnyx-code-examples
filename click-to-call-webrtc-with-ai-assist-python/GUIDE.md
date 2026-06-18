@@ -72,6 +72,40 @@ Everything lives in `app.py` (72 lines). Here's what each piece does.
 | `POST` | `/coaching` | Get Coaching |
 | `GET` | `/health` | Health check |
 
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def get_token():
+    try:
+        resp = requests.post("https://api.telnyx.com/v2/telephony_credentials", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+            json={"connection_id": os.getenv("CONNECTION_ID", timeout=10)}, timeout=10)
+        if resp.ok:
+            return jsonify(resp.json().get("data", {})), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    return jsonify({"error": "Failed to create credential"}), 500
+
+@app.route("/coaching", methods=["POST"])
+def get_coaching():
+```
+
+The main endpoint processes the request:
+
+```python
+def index():
+    return render_template_string(CLICK_TO_CALL_HTML)
+
+@app.route("/webrtc/token", methods=["POST"])
+def get_token():
+    try:
+        resp = requests.post("https://api.telnyx.com/v2/telephony_credentials", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+            json={"connection_id": os.getenv("CONNECTION_ID", timeout=10)}, timeout=10)
+        if resp.ok:
+            return jsonify(resp.json().get("data", {})), 200
+```
+
+
 ## Step 3: Run It
 
 ```bash

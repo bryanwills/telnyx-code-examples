@@ -81,7 +81,7 @@ Webhook handlers process events from Telnyx:
 ### Business Logic
 
 - **`list_ports()`** — Makes an API call and processes the response.
-- **`get_port()`** — Handles the get port logic.
+- **`get_port()`** — Fetches port by ID with full details.
 
 ### All Endpoints
 

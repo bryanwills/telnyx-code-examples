@@ -61,9 +61,9 @@ Everything lives in `app.py` (83 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`add_monitored()`** — Handles the add monitored logic.
-- **`send_check_ins()`** — Handles the send check ins logic.
-- **`handle_reply()`** — Handles the handle reply logic.
+- **`add_monitored()`** — Validates input and creates new monitored.
+- **`send_check_ins()`** — Delivers check ins via Telnyx API.
+- **`handle_reply()`** — Processes inbound SMS reply and routes to correct thread.
 
 ### All Endpoints
 
@@ -75,6 +75,44 @@ Everything lives in `app.py` (83 lines). Here's what each piece does.
 | `POST` | `/check-in/escalate` | Escalate Missed |
 | `GET` | `/status` | Get Status |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if data.get("event_type") != "message.received" or data.get("direction") != "inbound":
+        return jsonify({"status": "ignored"}), 200
+    from_number = data.get("from", {}).get("phone_number", "")
+    text = data.get("text", "").strip().upper()
+    person = monitored.get(from_number)
+    if not person: return jsonify({"status": "unknown"}), 200
+    if "OK" in text or "GOOD" in text or "FINE" in text or "SAFE" in text:
+        person["status"] = "ok"
+        person["last_check_in"] = time.time()
+        person["missed_count"] = 0
+        send_sms(from_number, "Great to hear! Stay safe.")
+    elif "HELP" in text or "SOS" in text:
+        person["status"] = "escalated"
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def add_monitored():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    phone = data.get("phone")
+    monitored[phone] = {"name": data.get("name", ""), "emergency_contact": data.get("emergency_contact", EMERGENCY_CONTACT),
+        "last_check_in": time.time(), "status": "ok", "missed_count": 0}
+    return jsonify({"status": "monitoring", "phone": phone}), 200
+
+@app.route("/check-in/send", methods=["POST"])
+def send_check_ins():
+    results = []
+```
+
 
 ## Step 3: Run It
 

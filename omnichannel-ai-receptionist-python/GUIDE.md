@@ -90,9 +90,9 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`get_customer_history()`** — Handles the get customer history logic.
-- **`handle_messaging()`** — Handles the handle messaging logic.
-- **`list_customers()`** — Handles the list customers logic.
+- **`get_customer_history()`** — Fetches customer history by ID with full details.
+- **`handle_messaging()`** — Routes inbound messages based on content type.
+- **`list_customers()`** — Returns all customers with metadata and pagination.
 
 ### All Endpoints
 
@@ -102,6 +102,46 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/webhooks/messaging` | Telnyx webhook handler |
 | `GET` | `/customers` | List Customers |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        customer = data.get("from", "unknown")
+        ctx = get_customer_history(customer, "voice")
+        # Add channel context for the AI
+        if "sms" in ctx["channels_used"] or "whatsapp" in ctx["channels_used"]:
+            ctx["messages"].append({
+                "role": "system",
+                "content": f"This customer previously contacted us via {', '.join(ctx['channels_used'] - {'voice'})}. Reference prior conversation if relevant.",
+            })
+        client.calls.actions.answer(call_control_id)
+        return jsonify({"status": "answering"}), 200
+
+    elif event_type == "call.answered":
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=200):
+    """Call Telnyx Inference API."""
+    resp = requests.post(
+        INFERENCE_URL,
+        headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.7},
+        timeout=15,
+    )
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+
+def send_message(to, text, media_url=None):
+    """Send SMS or MMS via Telnyx."""
+```
+
 
 ## Step 3: Run It
 

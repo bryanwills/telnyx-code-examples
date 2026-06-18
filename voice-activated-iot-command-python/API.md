@@ -38,7 +38,9 @@ List all commands.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -68,7 +70,9 @@ Records use these status values: `active`, `answering`, `closed`, `ended`, `exec
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "devices": "example-value"
+}
 ```
 
 | Status | Meaning |

@@ -75,9 +75,9 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`add_invoice()`** — Handles the add invoice logic.
+- **`add_invoice()`** — Validates input and creates new invoice.
 - **`run_reminders()`** — Makes an API call and processes the response.
-- **`list_invoices()`** — Handles the list invoices logic.
+- **`list_invoices()`** — Returns all invoices with metadata and pagination.
 
 ### All Endpoints
 
@@ -89,6 +89,43 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/invoices` | List Invoices |
 | `POST` | `/invoices/<int:idx>/paid` | Mark Paid |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def add_invoice():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    inv = {"id": len(invoices), "company": data.get("company"), "contact_phone": data.get("phone"),
+        "amount": data.get("amount", 0), "due_date": data.get("due_date"), "status": "unpaid",
+        "payment_link": data.get("payment_link", ""), "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+    invoices.append(inv)
+    return jsonify({"invoice": inv}), 200
+
+@app.route("/reminders/run", methods=["POST"])
+def run_reminders():
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+@app.route("/invoices", methods=["POST"])
+def add_invoice():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    inv = {"id": len(invoices), "company": data.get("company"), "contact_phone": data.get("phone"),
+        "amount": data.get("amount", 0), "due_date": data.get("due_date"), "status": "unpaid",
+        "payment_link": data.get("payment_link", ""), "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+    invoices.append(inv)
+    return jsonify({"invoice": inv}), 200
+```
+
 
 ## Step 3: Run It
 

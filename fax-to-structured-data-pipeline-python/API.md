@@ -41,7 +41,9 @@ Extract data.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -53,7 +55,9 @@ List all faxes.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -65,7 +69,9 @@ List all extracted.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "faxes": "example-value"
+}
 ```
 
 ---
@@ -95,7 +101,9 @@ Records use these status values: `ok`, `queued`, `received`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "data": "example-value"
+}
 ```
 
 | Status | Meaning |

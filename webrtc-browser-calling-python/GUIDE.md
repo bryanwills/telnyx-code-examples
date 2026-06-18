@@ -63,6 +63,27 @@ Edit `.env` with your Telnyx credentials. Each variable links to where you find 
 
 Everything lives in `app.py` (239 lines). Here's what each piece does.
 
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    
+    if not event_type or not call_control_id:
+        return JSONResponse({"status": "ignored"}, status_code=200)
+    
+    if event_type == "call.initiated":
+        if call_control_id in active_calls:
+            active_calls[call_control_id]["status"] = "initiated"
+    
+    elif event_type == "call.answered":
+        if call_control_id in active_calls:
+            active_calls[call_control_id]["status"] = "answered"
+    
+    elif event_type == "call.hangup":
+        if call_control_id in active_calls:
+```
+
+
 ## Step 3: Run It
 
 ```bash

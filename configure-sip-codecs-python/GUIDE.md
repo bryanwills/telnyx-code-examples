@@ -67,8 +67,8 @@ Everything lives in `app.py` (229 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`list_connections()`** — Handles the list connections logic.
-- **`get_connection()`** — Handles the get connection logic.
+- **`list_connections()`** — Returns all SIP connections with codec settings.
+- **`get_connection()`** — Fetches a single SIP connection by ID.
 
 ### All Endpoints
 

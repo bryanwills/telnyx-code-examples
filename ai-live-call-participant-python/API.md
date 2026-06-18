@@ -39,7 +39,9 @@ Create a new conference.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -73,7 +75,9 @@ List all conferences.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -85,7 +89,9 @@ Get a specific transcript by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -109,7 +115,9 @@ Ask ai.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "not found"
+}
 ```
 
 ---
@@ -121,7 +129,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "not found"
+}
 ```
 
 ---
@@ -135,7 +145,11 @@ Records use these status values: `answered`, `answering`, `dialing`, `hangup`, `
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "active_conferences": "example-value",
+  "total": 3
+}
 ```
 
 | Status | Meaning |

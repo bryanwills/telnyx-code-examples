@@ -34,7 +34,9 @@ Get a specific job by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Upload an audio file as 'audio"
+}
 ```
 
 ---
@@ -46,7 +48,9 @@ Get a specific transcript by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Job not found"
+}
 ```
 
 ---
@@ -58,7 +62,9 @@ List all languages.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Job not found"
+}
 ```
 
 ---
@@ -70,7 +76,9 @@ List all jobs.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "languages": "example-value"
+}
 ```
 
 ---
@@ -82,7 +90,13 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "total_jobs": "example-value",
+  "active": "example-value",
+  "supported_languages": "example-value",
+  "version": "1.0.0"
+}
 ```
 
 ---
@@ -96,7 +110,7 @@ Records use these status values: `complete`, `failed`, `ok`, `synthesizing`, `tr
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

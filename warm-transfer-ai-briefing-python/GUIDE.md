@@ -103,7 +103,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 - **`telnyx_post()`** — Makes an API call and processes the response.
 - **`list_transfers()`** — Transfers the active call to another party — a human agent, specialist, or external number.
-- **`list_calls()`** — Handles the list calls logic.
+- **`list_calls()`** — Returns all calls with metadata and pagination.
 
 ### All Endpoints
 

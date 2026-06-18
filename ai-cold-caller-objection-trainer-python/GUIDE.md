@@ -100,7 +100,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`list_personas()`** — Handles the list personas logic.
+- **`list_personas()`** — Returns all personas with metadata and pagination.
 
 ### All Endpoints
 

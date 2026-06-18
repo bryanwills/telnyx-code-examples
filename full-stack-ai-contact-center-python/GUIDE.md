@@ -87,9 +87,9 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`register_agent()`** — Handles the register agent logic.
-- **`dashboard()`** — Handles the dashboard logic.
-- **`list_queues()`** — Handles the list queues logic.
+- **`register_agent()`** — Processes register agent request and returns result.
+- **`dashboard()`** — Processes dashboard request and returns result.
+- **`list_queues()`** — Processes dashboard request and returns result.
 
 ### All Endpoints
 
@@ -101,6 +101,46 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/queues` | List Queues |
 | `GET` | `/recordings` | List Recordings |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        call_stats["total"] += 1
+        active_calls[ccid] = {"caller": data.get("from"), "start": time.time(), "queue": None, "status": "ivr"}
+        client.calls.actions.answer(ccid)
+        return jsonify({"status": "answering"}), 200
+    elif event_type == "call.answered":
+        client.calls.actions.speak(ccid,
+            payload="Welcome to Acme Corp. Press 1 for Sales, 2 for Support, 3 for Billing.",
+            voice="female", language_code="en-US")
+        return jsonify({"status": "ivr"}), 200
+    elif event_type == "call.speak.ended":
+        call = active_calls.get(ccid, {})
+        if call.get("status") == "ivr":
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=200):
+    resp = requests.post(INFERENCE_URL, headers=headers,
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.3}, timeout=15)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+@app.route("/agents", methods=["POST"])
+def register_agent():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    agent = {"id": data.get("id", f"AGT-{int(time.time())}"), "name": data.get("name"),
+        "queue": data.get("queue", "support"), "status": "available", "calls_handled": 0}
+    queue = queues.get(agent["queue"])
+```
+
 
 ## Step 3: Run It
 

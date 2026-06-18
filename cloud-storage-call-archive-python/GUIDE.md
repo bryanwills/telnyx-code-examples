@@ -85,7 +85,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 - **`list_buckets()`** — Makes an API call and processes the response.
 - **`archive_recording()`** — Makes an API call and processes the response.
-- **`list_archive()`** — Handles the list archive logic.
+- **`list_archive()`** — Returns all archive with metadata and pagination.
 
 ### All Endpoints
 

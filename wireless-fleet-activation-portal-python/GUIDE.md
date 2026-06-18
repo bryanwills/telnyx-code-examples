@@ -54,8 +54,8 @@ Everything lives in `app.py` (61 lines). Here's what each piece does.
 ### Business Logic
 
 - **`list_sims()`** — Makes an API call and processes the response.
-- **`activate_sims()`** — Handles the activate sims logic.
-- **`deactivate_sims()`** — Handles the deactivate sims logic.
+- **`activate_sims()`** — Processes activate sims request and returns result.
+- **`deactivate_sims()`** — Processes deactivate sims request and returns result.
 
 ### All Endpoints
 
@@ -66,6 +66,40 @@ Everything lives in `app.py` (61 lines). Here's what each piece does.
 | `POST` | `/sims/deactivate` | Deactivate Sims |
 | `GET` | `/activation-log` | Get Log |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def activate_sims():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    sim_ids = data.get("sim_ids", [])
+    results = []
+    for sim_id in sim_ids:
+        try:
+            resp = requests.patch(f"https://api.telnyx.com/v2/sim_cards/{sim_id}", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+                json={"status": "active"}, timeout=10)
+            status = "activated" if resp.ok else "failed"
+            results.append({"sim_id": sim_id, "status": status})
+```
+
+The main endpoint processes the request:
+
+```python
+def list_sims():
+    try:
+        resp = requests.get("https://api.telnyx.com/v2/sim_cards", headers={"Authorization": f"Bearer {TELNYX_API_KEY}"},
+            params={"page[size]": 50}, timeout=15)
+        if resp.ok:
+            return jsonify(resp.json()), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    return jsonify({"error": "Failed"}), 500
+
+```
+
 
 ## Step 3: Run It
 

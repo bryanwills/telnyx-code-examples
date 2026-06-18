@@ -75,6 +75,44 @@ Everything lives in `app.py` (85 lines). Here's what each piece does.
 | `GET` | `/enrichments` | List Enrichments |
 | `GET` | `/health` | Health check |
 
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if data.get("event_type") == "call.initiated" and data.get("direction") == "incoming":
+        caller = data.get("from", "")
+        try:
+            resp = requests.get(f"{API}/number_lookup/{caller}",
+                headers=headers, params={"type": "caller-name"}, timeout=10)
+            info = resp.json().get("data", {})
+            enrichment = {"caller": caller,
+                "name": info.get("caller_name", {}).get("caller_name", "Unknown"),
+                "carrier": info.get("carrier", {}).get("name"),
+                "type": info.get("caller_name", {}).get("caller_type"),
+                "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+            enrichment_log.append(enrichment)
+            return jsonify({"enrichment": enrichment}), 200
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def batch_lookup():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    numbers = data.get("numbers", [])
+    results = []
+    for num in numbers[:50]:
+        try:
+            resp = requests.get(f"{API}/number_lookup/{num}",
+                headers=headers, params={"type": "caller-name"}, timeout=15)
+            info = resp.json().get("data", {})
+            results.append({"number": num,
+```
+
+
 ## Step 3: Run It
 
 ```bash

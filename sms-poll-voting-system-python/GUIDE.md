@@ -73,9 +73,9 @@ data = request.get_json()
 
 ### Business Logic
 
-- **`broadcast_poll()`** — Handles the broadcast poll logic.
-- **`handle_vote()`** — Handles the handle vote logic.
-- **`results()`** — Handles the results logic.
+- **`broadcast_poll()`** — Processes broadcast poll request and returns result.
+- **`handle_vote()`** — Processes inbound vote event.
+- **`results()`** — Processes inbound vote event.
 
 ### All Endpoints
 

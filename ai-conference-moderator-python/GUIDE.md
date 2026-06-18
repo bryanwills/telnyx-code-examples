@@ -102,8 +102,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`telnyx_post()`** — Makes an API call and processes the response.
-- **`advance_agenda()`** — Handles the advance agenda logic.
-- **`mute_participant()`** — Handles the mute participant logic.
+- **`advance_agenda()`** — Processes advance agenda request and returns result.
+- **`mute_participant()`** — Processes mute participant request and returns result.
 
 ### All Endpoints
 

@@ -34,7 +34,9 @@ Add endpoint.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "endpoints": "example-value"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -46,7 +48,9 @@ Add endpoint.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -70,7 +74,9 @@ Get failover log.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "results": []
+}
 ```
 
 ---
@@ -82,7 +88,9 @@ Regions.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "log": "example-value"
+}
 ```
 
 ---
@@ -94,7 +102,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -108,7 +118,12 @@ Records use these status values: `added`, `healthy`, `ok`, `unhealthy`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "endpoints": "example-value",
+  "healthy": 3,
+  "failovers": "example-value"
+}
 ```
 
 | Status | Meaning |

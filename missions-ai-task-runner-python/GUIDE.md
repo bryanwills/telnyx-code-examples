@@ -75,6 +75,44 @@ Everything lives in `app.py` (76 lines). Here's what each piece does.
 | `GET` | `/actions` | List Actions |
 | `GET` | `/health` | Health check |
 
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=400):
+    resp = requests.post(INFERENCE_URL, headers=headers,
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.2}, timeout=20)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+@app.route("/run", methods=["POST"])
+def run_ai_task():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    objective = data.get("objective", "")
+    context = data.get("context", {})
+    max_steps = data.get("max_steps", 5)
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def run_ai_task():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    objective = data.get("objective", "")
+    context = data.get("context", {})
+    max_steps = data.get("max_steps", 5)
+    steps = []
+    conversation = [{"role": "system", "content": f"You are a task execution AI. Available actions: {json.dumps(list(AVAILABLE_ACTIONS.keys()))}. Given an objective, plan and execute steps. For each step return JSON: action (string), params (object), reasoning (string). Return action='done' when objective is met."},
+        {"role": "user", "content": f"Objective: {objective}\nContext: {json.dumps(context)}"}]
+    for i in range(max_steps):
+        try:
+```
+
+
 ## Step 3: Run It
 
 ```bash

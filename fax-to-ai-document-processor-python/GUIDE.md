@@ -80,6 +80,46 @@ Everything lives in `app.py` (58 lines). Here's what each piece does.
 | `GET` | `/faxes` | List Faxes |
 | `GET` | `/health` | Health check |
 
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    event_type = data.get("event_type")
+    if event_type == "fax.received":
+        fax_id = data.get("fax_id")
+        from_number = data.get("from")
+        media_url = data.get("media_url")
+        pages = data.get("page_count", 0)
+        messages = [{"role": "system", "content": "A fax has been received. Classify the document type and extract key data. Return JSON: document_type (invoice/contract/medical_form/prescription/legal/other), sender (string), summary (2-3 sentences), key_fields (object of extracted values), priority (low/normal/urgent), action_required (string or null)."},
+            {"role": "user", "content": f"Fax from {from_number}, {pages} pages. Fax ID: {fax_id}"}]
+        try:
+            analysis = call_inference(messages)
+            result = json.loads(analysis)
+        except Exception:
+            result = {"document_type": "unknown", "summary": f"Fax received from {from_number}, {pages} pages"}
+        processed = {"fax_id": fax_id, "from": from_number, "pages": pages, "analysis": result, "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=400):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.2}, timeout=15)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+@app.route("/webhooks/fax", methods=["POST"])
+def handle_fax():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    data = payload.get("data", {})
+    event_type = data.get("event_type")
+    if event_type == "fax.received":
+```
+
+
 ## Step 3: Run It
 
 ```bash

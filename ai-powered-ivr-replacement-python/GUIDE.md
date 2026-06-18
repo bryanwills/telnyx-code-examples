@@ -88,8 +88,8 @@ Webhook handlers process events from Telnyx:
 
 ### Business Logic
 
-- **`setup_assistant()`** — Handles the setup assistant logic.
-- **`get_analytics()`** — Handles the get analytics logic.
+- **`setup_assistant()`** — Processes setup assistant request and returns result.
+- **`get_analytics()`** — Fetches analytics by ID with full details.
 
 ### All Endpoints
 

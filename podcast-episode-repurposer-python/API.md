@@ -34,7 +34,9 @@ Get a specific job by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Upload episode audio as 'audio"
+}
 ```
 
 ---
@@ -82,7 +84,9 @@ List all jobs.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Job not found"
+}
 ```
 
 ---
@@ -94,7 +98,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -108,7 +114,10 @@ Records use these status values: `complete`, `extracting`, `failed`, `generating
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "subscribers": "example-value",
+  "total": 3
+}
 ```
 
 | Status | Meaning |

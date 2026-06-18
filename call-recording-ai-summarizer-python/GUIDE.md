@@ -80,7 +80,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`summarize_recording()`** — Handles the summarize recording logic.
+- **`summarize_recording()`** — Processes summarize recording request and returns result.
 
 ### All Endpoints
 
@@ -90,6 +90,46 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/summarize` | Summarize Recording |
 | `GET` | `/recordings` | List Recordings |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if event_type == "call.recording.saved":
+        recording = {"recording_url": data.get("recording_urls", {}).get("mp3"), "call_control_id": data.get("call_control_id"),
+            "duration": data.get("duration_secs"), "channels": data.get("channels"), "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+        recordings.append(recording)
+        return jsonify({"status": "saved"}), 200
+    return jsonify({"status": "ok"}), 200
+
+@app.route("/summarize", methods=["POST"])
+def summarize_recording():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    transcript = data.get("transcript", "")
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=500):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.2}, timeout=20)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+@app.route("/webhooks/voice", methods=["POST"])
+def handle_voice():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    event_type = payload.get("data", {}).get("event_type")
+    data = payload.get("data", {})
+    if event_type == "call.recording.saved":
+```
+
 
 ## Step 3: Run It
 

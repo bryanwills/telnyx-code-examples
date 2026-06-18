@@ -26,7 +26,9 @@ List all returns.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -38,7 +40,11 @@ Manual approve.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "id": "abc-123",
+  "status": "active",
+  "created_at": "2026-06-18T21:00:00Z"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -50,7 +56,9 @@ Manual approve.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 ---
@@ -79,7 +87,10 @@ Records use these status values: `auto_approved`, `escalated`, `evaluating`, `ex
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "returns": "example-value"
+}
 ```
 
 | Status | Meaning |

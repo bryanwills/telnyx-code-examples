@@ -77,9 +77,9 @@ Webhook handlers process events from Telnyx:
 
 ### Business Logic
 
-- **`get_conversation()`** — Handles the get conversation logic.
-- **`summarize_if_needed()`** — Handles the summarize if needed logic.
-- **`list_conversations()`** — Handles the list conversations logic.
+- **`get_conversation()`** — Fetches conversation by ID with full details.
+- **`summarize_if_needed()`** — Processes summarize if needed request and returns result.
+- **`list_conversations()`** — Returns all conversations with metadata and pagination.
 
 ### All Endpoints
 
@@ -88,6 +88,46 @@ Webhook handlers process events from Telnyx:
 | `POST` | `/webhooks/messaging` | Telnyx webhook handler |
 | `GET` | `/conversations` | List Conversations |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if data.get("event_type") != "message.received" or data.get("direction") != "inbound":
+        return jsonify({"status": "ignored"}), 200
+    from_number = data.get("from", {}).get("phone_number", "")
+    text = data.get("text", "").strip()
+    if not from_number or not text:
+        return jsonify({"status": "ignored"}), 200
+    conv = get_conversation(from_number)
+    conv["messages"].append({"role": "user", "content": text})
+    conv["message_count"] += 1
+    summarize_if_needed(conv)
+    response = call_inference(conv["messages"])
+    conv["messages"].append({"role": "assistant", "content": response})
+    send_sms(from_number, response)
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=200):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.7}, timeout=15)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+def send_sms(to, text):
+    try:
+        requests.post("https://api.telnyx.com/v2/messages", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+            json={"from": BOT_NUMBER, "to": to, "text": text, "messaging_profile_id": os.getenv("MESSAGING_PROFILE_ID", "", timeout=10)}, timeout=10)
+    except requests.RequestException as e:
+        app.logger.error("SMS failed: %s", e)
+
+def get_conversation(phone):
+```
+
 
 ## Step 3: Run It
 

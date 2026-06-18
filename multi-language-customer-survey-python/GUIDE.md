@@ -99,8 +99,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`translate_question()`** — Handles the translate question logic.
-- **`get_results()`** — Handles the get results logic.
+- **`translate_question()`** — Processes translate question request and returns result.
+- **`get_results()`** — Retrieves processed results with pagination.
 
 ### All Endpoints
 

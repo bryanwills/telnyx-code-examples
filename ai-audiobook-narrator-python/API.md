@@ -51,7 +51,9 @@ Get a specific book by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -63,7 +65,9 @@ List all books.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Book not found"
+}
 ```
 
 ---
@@ -75,7 +79,9 @@ List all voices.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "voices": "example-value"
+}
 ```
 
 ---
@@ -87,7 +93,12 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "total_books": "example-value",
+  "bucket": "example-value",
+  "version": "1.0.0"
+}
 ```
 
 ---
@@ -101,7 +112,7 @@ Records use these status values: `chunking`, `complete`, `failed`, `narrating`, 
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

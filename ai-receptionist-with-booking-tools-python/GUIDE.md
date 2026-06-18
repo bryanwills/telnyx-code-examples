@@ -51,7 +51,7 @@ Everything lives in `app.py` (86 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`execute_tool()`** — Handles the execute tool logic.
+- **`execute_tool()`** — Processes execute tool request and returns result.
 - **`chat()`** — Makes an API call and processes the response.
 
 ### All Endpoints
@@ -61,6 +61,40 @@ Everything lives in `app.py` (86 lines). Here's what each piece does.
 | `POST` | `/chat` | Chat |
 | `GET` | `/bookings` | List Bookings |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def chat():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    messages = data.get("messages", [])
+    if not any(m["role"] == "system" for m in messages):
+        messages.insert(0, {"role": "system", "content": "You are a friendly office receptionist with access to a real booking system. Use the tools to check availability and book appointments. Be helpful and concise."})
+    payload = {"model": AI_MODEL, "messages": messages, "tools": TOOLS, "max_tokens": 300, "temperature": 0.5}
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"}, json=payload, timeout=20)
+    resp.raise_for_status()
+    choice = resp.json()["choices"][0]
+    msg = choice["message"]
+```
+
+The main endpoint processes the request:
+
+```python
+def chat():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    messages = data.get("messages", [])
+    if not any(m["role"] == "system" for m in messages):
+        messages.insert(0, {"role": "system", "content": "You are a friendly office receptionist with access to a real booking system. Use the tools to check availability and book appointments. Be helpful and concise."})
+    payload = {"model": AI_MODEL, "messages": messages, "tools": TOOLS, "max_tokens": 300, "temperature": 0.5}
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"}, json=payload, timeout=20)
+    resp.raise_for_status()
+```
+
 
 ## Step 3: Run It
 

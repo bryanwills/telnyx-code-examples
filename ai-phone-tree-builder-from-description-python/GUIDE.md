@@ -72,6 +72,44 @@ Everything lives in `app.py` (66 lines). Here's what each piece does.
 | `POST` | `/generate` | Generate Phone Tree |
 | `GET` | `/health` | Health check |
 
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=800):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.5}, timeout=20)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+@app.route("/generate", methods=["POST"])
+def generate_phone_tree():
+    """Describe your business, get a complete AI Assistant + TeXML phone tree."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    description = data.get("description", "")
+    if not description:
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def generate_phone_tree():
+    """Describe your business, get a complete AI Assistant + TeXML phone tree."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    description = data.get("description", "")
+    if not description:
+        return jsonify({"error": "Provide a business description"}), 400
+
+    messages = [{"role": "system", "content": """You are a phone system architect. Given a business description, generate:
+1. A Telnyx AI Assistant configuration (JSON) with name, instructions, greeting, voice, and insight_settings
+2. A TeXML document (XML) for fallback IVR routing
+```
+
+
 ## Step 3: Run It
 
 ```bash

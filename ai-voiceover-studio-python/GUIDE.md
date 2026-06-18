@@ -74,7 +74,7 @@ Everything lives in `app.py` (239 lines). Here's what each piece does.
 
 - **`inference()`** — Makes an API call and processes the response.
 - **`tts_generate()`** — Makes an API call and processes the response.
-- **`upload_to_storage()`** — Handles the upload to storage logic.
+- **`upload_to_storage()`** — Uploads file to Telnyx Cloud Storage with metadata tags.
 
 ### All Endpoints
 

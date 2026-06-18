@@ -65,7 +65,7 @@ Everything lives in `app.py` (204 lines). Here's what each piece does.
 
 ### Starting the Workflow
 
-**`initiate_call_endpoint()`** — Handles the initiate call endpoint logic.
+**`initiate_call_endpoint()`** — Validates request and dials outbound via Call Control API.
 
 ```python
     data = request.get_json()
@@ -86,9 +86,9 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`speak_endpoint()`** — Handles the speak endpoint logic.
-- **`hangup_endpoint()`** — Handles the hangup endpoint logic.
-- **`get_calls_status()`** — Handles the get calls status logic.
+- **`speak_endpoint()`** — Processes speak endpoint request and returns result.
+- **`hangup_endpoint()`** — Terminates active call via Call Control hangup.
+- **`get_calls_status()`** — Fetches calls status by ID with full details.
 
 ### All Endpoints
 

@@ -77,7 +77,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 - **`make_call()`** — Makes an API call and processes the response.
 - **`run_cycle()`** — Makes an API call and processes the response.
-- **`update_status()`** — Handles the update status logic.
+- **`update_status()`** — Transitions record state and triggers notifications.
 
 ### All Endpoints
 
@@ -89,6 +89,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `PUT` | `/tenants/<int:idx>/status` | Update Status |
 | `GET` | `/collections/log` | Get Log |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def run_cycle():
+    data = request.get_json() or {}
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    day = data.get("day_overdue", 1)
+    results = []
+    for t in tenants:
+        if t["status"] != "overdue": continue
+        entry = {"tenant": t["name"], "unit": t["unit"], "day": day, "at": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+        if day <= 1:
+            try:
+                session = stripe.checkout.Session.create(mode="payment", success_url="https://example.com/paid",
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+def make_call(to, message):
+    try:
+        resp = requests.post(f"{API}/calls", headers=headers,
+            json={"to": to, "from": MAIN_NUMBER, "connection_id": CONNECTION_ID,
+                "client_state": json.dumps({"msg": message}, timeout=10).encode().hex()}, timeout=10)
+        return resp.json().get("data", {}).get("call_control_id")
+    except Exception:
+        return None
+
+@app.route("/collections/run", methods=["POST"])
+def run_cycle():
+```
+
 
 ## Step 3: Run It
 

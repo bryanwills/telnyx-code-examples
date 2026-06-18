@@ -18,7 +18,9 @@ Get a specific assistant by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "assistant_id is required"
+}
 ```
 
 ---
@@ -44,7 +46,9 @@ Clone assistant endpoint.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "assistant_id is required"
+}
 ```
 
 ---
@@ -54,7 +58,7 @@ Clone assistant endpoint.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

@@ -90,6 +90,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/prompt-types` | Get Prompt Types |
 | `GET` | `/health` | Health check |
 
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+
+    if event_type == "call.answered":
+        client_state = {}
+        try:
+            raw = ep.get("client_state", "")
+            if raw:
+                client_state = json.loads(bytes.fromhex(raw).decode())
+        except Exception:
+            pass
+
+        if client_state.get("action") == "preview":
+            script = client_state.get("script", "This is a test prompt.")
+            try:
+                telnyx_post(f"calls/{call_id}/actions/speak", {
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def generate_prompts():
+    """Generate a full IVR prompt set for a business.
+
+    AI writes caller-friendly scripts, TTS renders each prompt.
+    """
+    data = request.get_json() or {}
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    business_name = data.get("business_name", "")
+    business_type = data.get("business_type", "")
+    hours = data.get("hours", "Monday-Friday 9am-5pm")
+    departments = data.get("departments", ["Sales", "Support", "Billing"])
+```
+
+
 ## Step 3: Run It
 
 ```bash

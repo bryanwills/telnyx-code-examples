@@ -97,8 +97,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`ai_respond()`** — Sends conversation context to Telnyx AI Inference and returns the model's response. Uses the OpenAI-compatible chat completions endpoint.
-- **`list_refills()`** — Handles the list refills logic.
-- **`approve_refill()`** — Handles the approve refill logic.
+- **`list_refills()`** — Returns all refills with metadata and pagination.
+- **`approve_refill()`** — Processes approve refill request and returns result.
 
 ### All Endpoints
 
@@ -109,6 +109,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/refills/<int:idx>/approve` | Approve Refill |
 | `POST` | `/refills/<int:idx>/deny` | Deny Refill |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def approve_refill(idx):
+    if idx >= len(refill_requests): return jsonify({"error": "Not found"}), 404
+    req = refill_requests[idx]
+    req["status"] = "approved"
+    req["approved_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+    data = request.get_json() or {}
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    req["pickup_time"] = data.get("pickup_time", "2 hours")
+    send_sms(req["caller"], f"Valley Pharmacy: Your refill is approved and will be ready in {req['pickup_time']}.")
+    return jsonify({"refill": req}), 200
+
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+@app.route("/webhooks/voice", methods=["POST"])
+def handle_voice():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    data = payload.get("data", {})
+    event = data.get("event_type")
+    ccid = data.get("call_control_id")
+    caller = data.get("from", "")
+
+    if event == "call.initiated" and data.get("direction") == "incoming":
+```
+
 
 ## Step 3: Run It
 

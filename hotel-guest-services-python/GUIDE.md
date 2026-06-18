@@ -107,8 +107,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`ai_categorize()`** — Sends conversation context to Telnyx AI Inference and returns the model's response. Uses the OpenAI-compatible chat completions endpoint.
-- **`list_requests()`** — Handles the list requests logic.
-- **`complete_request()`** — Handles the complete request logic.
+- **`list_requests()`** — Returns all requests with metadata and pagination.
+- **`complete_request()`** — Processes complete request request and returns result.
 
 ### All Endpoints
 
@@ -119,6 +119,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/requests` | List Requests |
 | `POST` | `/requests/<int:idx>/complete` | Complete Request |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def complete_request(idx):
+    if idx >= len(service_requests): return jsonify({"error":"Not found"}), 404
+    req = service_requests[idx]
+    req["status"] = "completed"
+    req["completed_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+    send_sms(req["phone"], f"The Grand Hotel: Your {req['department'].replace('_',' ')} request has been fulfilled. Need anything else? Just text this number.")
+    return jsonify({"request": req}), 200
+
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status":"ok","open":sum(1 for r in service_requests if r["status"]=="open")}), 200
+
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+def ai_categorize(text):
+    try:
+        resp = requests.post(INFERENCE_URL, headers=headers,
+            json={"model": AI_MODEL, "messages": [
+                {"role": "system", "content": "Categorize this hotel guest request. Reply JSON: {\"department\": \"room_service|housekeeping|concierge|maintenance\", \"urgency\": \"normal|urgent\", \"summary\": \"brief\"}"},
+                {"role": "user", "content": text}], "max_tokens": 80, "temperature": 0.1}, timeout=15)
+        return json.loads(resp.json()["choices"][0]["message"]["content"].strip().strip("`").replace("json\n",""))
+    except Exception:
+        return {"department": "concierge", "urgency": "normal", "summary": text[:80]}
+
+@app.route("/webhooks/sms", methods=["POST"])
+```
+
 
 ## Step 3: Run It
 

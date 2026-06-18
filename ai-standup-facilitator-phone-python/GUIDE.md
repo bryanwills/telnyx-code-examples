@@ -86,8 +86,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`list_standups()`** — Handles the list standups logic.
-- **`daily_summary()`** — Handles the daily summary logic.
+- **`list_standups()`** — Returns all standups with metadata and pagination.
+- **`daily_summary()`** — Processes daily summary request and returns result.
 
 ### All Endpoints
 
@@ -97,6 +97,46 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/standups` | List Standups |
 | `GET` | `/standups/summary` | Daily Summary |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    call = active_calls.get(ccid)
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        active_calls[ccid] = {"caller": data.get("from"), "conversation": [{"role": "system", "content": SYSTEM_PROMPT}], "start": time.time()}
+        client.calls.actions.answer(ccid)
+        return jsonify({"status": "answering"}), 200
+    elif event_type == "call.answered":
+        client.calls.actions.speak(ccid, payload="Good morning! Ready for your standup update? What did you accomplish yesterday?", voice="female", language_code="en-US")
+        return jsonify({"status": "greeting"}), 200
+    elif event_type == "call.speak.ended" and call:
+        client.calls.actions.gather(ccid, input_type="speech", end_silence_timeout_secs=3, timeout_secs=30, language_code="en-US")
+        return jsonify({"status": "listening"}), 200
+    elif event_type == "call.gather.ended" and call:
+        speech = data.get("speech", {}).get("result", "")
+        if not speech:
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=150):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.5}, timeout=15)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+@app.route("/webhooks/voice", methods=["POST"])
+def handle_voice():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    event_type = payload.get("data", {}).get("event_type")
+    ccid = payload.get("data", {}).get("call_control_id")
+    data = payload.get("data", {})
+```
+
 
 ## Step 3: Run It
 

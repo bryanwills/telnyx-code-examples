@@ -21,7 +21,9 @@ Create a new room.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -35,7 +37,9 @@ Create a new room.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -47,7 +51,9 @@ Start meeting.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Room not found"
+}
 ```
 
 ---
@@ -59,7 +65,9 @@ Meeting status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Room not found"
+}
 ```
 
 ---
@@ -71,7 +79,9 @@ Next topic.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Room not found"
+}
 ```
 
 ---
@@ -100,7 +110,10 @@ Records use these status values: `active`, `all_topics_completed`, `completed`, 
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "rooms": "example-value"
+}
 ```
 
 | Status | Meaning |

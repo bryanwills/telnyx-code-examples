@@ -97,9 +97,9 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`add_to_waitlist()`** — Handles the add to waitlist logic.
-- **`table_ready()`** — Handles the table ready logic.
-- **`list_waitlist()`** — Handles the list waitlist logic.
+- **`add_to_waitlist()`** — Validates input and creates new to waitlist.
+- **`table_ready()`** — Processes table ready request and returns result.
+- **`list_waitlist()`** — Processes table ready request and returns result.
 
 ### All Endpoints
 
@@ -111,6 +111,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/reservations` | List Reservations |
 | `GET` | `/waitlist` | List Waitlist |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def add_to_waitlist():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    entry = {"name": data.get("name"), "phone": data.get("phone"),
+        "party_size": data.get("party_size", 2), "added_at": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "status": "waiting", "estimated_wait": data.get("wait_minutes", 30)}
+    waitlist.append(entry)
+    send_sms(entry["phone"], f"Bella Notte: You're on the waitlist ({entry['party_size']} guests). Estimated wait: ~{entry['estimated_wait']} min. We'll text when your table is ready!")
+    return jsonify({"position": len(waitlist), "entry": entry}), 200
+
+@app.route("/waitlist/<int:idx>/ready", methods=["POST"])
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+@app.route("/webhooks/voice", methods=["POST"])
+def handle_voice():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    data = payload.get("data", {})
+    event = data.get("event_type")
+    ccid = data.get("call_control_id")
+    caller = data.get("from", "")
+    if event == "call.initiated" and data.get("direction") == "incoming":
+        requests.post(f"{API}/calls/{ccid}/actions/answer", headers=headers, json={}, timeout=10)
+```
+
 
 ## Step 3: Run It
 

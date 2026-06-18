@@ -23,7 +23,9 @@ Create a new room.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "example-value"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -37,7 +39,9 @@ Create a new room.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -49,7 +53,9 @@ List all rooms.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -61,7 +67,9 @@ Create a new token.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -73,7 +81,9 @@ Moderate message.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -97,7 +107,9 @@ Get a specific log by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -123,7 +135,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "log": "example-value"
+}
 ```
 
 ---
@@ -137,7 +151,9 @@ Records use these status values: `deleted`, `ok`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "deleted"
+}
 ```
 
 | Status | Meaning |

@@ -68,8 +68,8 @@ Webhook handlers process events from Telnyx:
 ### Business Logic
 
 - **`health_check()`** — Health check endpoint for monitoring and load balancer probes.
-- **`list_sims()`** — Handles the list sims logic.
-- **`get_sim()`** — Handles the get sim logic.
+- **`list_sims()`** — Queries Telnyx IoT API for SIM cards.
+- **`get_sim()`** — Queries Telnyx IoT API for SIM cards.
 
 ### All Endpoints
 
@@ -82,6 +82,44 @@ Webhook handlers process events from Telnyx:
 | `GET` | `/sim-cards/<sim_card_id>/health` | Health check |
 | `POST` | `/sim-cards/<sim_card_id>/activate` | Activate Sim |
 | `POST` | `/webhooks/sim-events` | Telnyx webhook handler |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    # Handle specific event types
+    if event_type == "sim_card.status.changed":
+        sim_id = event_data.get("id")
+        new_status = event_data.get("status")
+        print(f"SIM {sim_id} status changed to {new_status}")
+        
+    elif event_type == "sim_card.data_limit.reached":
+        sim_id = event_data.get("id")
+        print(f"ALERT: SIM {sim_id} has reached its data limit")
+    
+    # Always return 200 to acknowledge receipt
+    return jsonify({"status": "received"}), 200
+
+
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def activate_sim(sim_card_id: str):
+    """Activate a SIM card."""
+    try:
+        response = client.sim_cards.activate(sim_card_id)
+        
+        return jsonify({
+            "id": response.data.id,
+            "status": response.data.status,
+            "message": "SIM card activated successfully",
+        }), 200
+        
+    except telnyx.AuthenticationError:
+```
+
 
 ## Step 3: Run It
 

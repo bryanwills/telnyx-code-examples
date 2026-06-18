@@ -51,7 +51,9 @@ Records use these status values: `answering`, `asking`, `ended`, `grading`, `gre
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Status | Meaning |

@@ -62,7 +62,7 @@ Everything lives in `app.py` (164 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`new()`** — Handles the new logic.
+- **`new()`** — Processes new request and returns result.
 
 ## Step 3: Run It
 
@@ -91,6 +91,27 @@ curl http://localhost:5000/health
 ```
 
 Or text your Telnyx number to trigger the SMS workflow.
+
+## Key Code
+
+The MCP server function runs at the edge:
+
+```python
+"""MCP Server on Telnyx Edge Compute — expose Telnyx APIs (send SMS, make calls, search numbers, run inference) as MCP tools for AI agents."""
+import json
+import os
+import logging
+from urllib.request import Request, urlopen
+from urllib.error import URLError
+
+HTTP_SCOPE_TYPE = "http"
+logger = logging.getLogger("mcp-server")
+TELNYX_API = "https://api.telnyx.com/v2"
+
+TOOLS = [
+    {
+        "name": "send_sms",
+```
 
 ## Going to Production
 

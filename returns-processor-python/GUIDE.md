@@ -80,8 +80,8 @@ Webhook handlers process events from Telnyx:
 ### Business Logic
 
 - **`ai_evaluate_return()`** — Sends conversation context to Telnyx AI Inference and returns the model's response. Uses the OpenAI-compatible chat completions endpoint.
-- **`list_returns()`** — Handles the list returns logic.
-- **`manual_approve()`** — Handles the manual approve logic.
+- **`list_returns()`** — Returns all returns with metadata and pagination.
+- **`manual_approve()`** — Processes manual approve request and returns result.
 
 ### All Endpoints
 
@@ -91,6 +91,44 @@ Webhook handlers process events from Telnyx:
 | `GET` | `/returns` | List Returns |
 | `POST` | `/returns/<int:idx>/approve` | Manual Approve |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def manual_approve(idx):
+    if idx >= len(returns): return jsonify({"error":"Not found"}), 404
+    ret = returns[idx]
+    data = request.get_json() or {}
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    ret["status"] = "manually_approved"
+    ret["approved_by"] = data.get("agent", "unknown")
+    amount = data.get("refund_amount", 0)
+    if amount and STRIPE_API_KEY:
+        try:
+            stripe.Refund.create(amount=int(amount*100), payment_intent=data.get("payment_intent",""))
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+def ai_evaluate_return(description, order_value):
+    try:
+        resp = requests.post(INFERENCE_URL, headers=headers,
+            json={"model": AI_MODEL, "messages": [
+                {"role": "system", "content": f"Evaluate this return request. Order value: ${order_value}. Auto-refund threshold: ${AUTO_REFUND_THRESHOLD}. Reply JSON: {{\"approved\": true/false, \"reason\": \"...\", \"action\": \"refund|exchange|escalate\", \"refund_amount\": number}}"},
+                {"role": "user", "content": description}], "max_tokens": 150, "temperature": 0.1}, timeout=15)
+        return json.loads(resp.json()["choices"][0]["message"]["content"].strip().strip("`").replace("json\n",""))
+    except Exception:
+        return {"approved": False, "reason": "Could not evaluate", "action": "escalate", "refund_amount": 0}
+
+@app.route("/webhooks/sms", methods=["POST"])
+```
+
 
 ## Step 3: Run It
 

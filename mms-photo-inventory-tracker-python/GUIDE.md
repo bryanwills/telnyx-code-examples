@@ -70,8 +70,8 @@ Everything lives in `app.py` (85 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`handle_mms()`** — Handles the handle mms logic.
-- **`list_inventory()`** — Handles the list inventory logic.
+- **`handle_mms()`** — Processes inbound MMS, extracts media, stores attachments.
+- **`list_inventory()`** — Processes inbound MMS, extracts media, stores attachments.
 
 ### All Endpoints
 
@@ -80,6 +80,46 @@ Everything lives in `app.py` (85 lines). Here's what each piece does.
 | `POST` | `/webhooks/messaging` | Telnyx webhook handler |
 | `GET` | `/inventory` | List Inventory |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if data.get("event_type") != "message.received" or data.get("direction") != "inbound":
+        return jsonify({"status": "ignored"}), 200
+    phone = data.get("from", {}).get("phone_number", "")
+    text = data.get("text", "").strip()
+    media = data.get("media", [])
+    if text.upper() == "LIST":
+        if not inventory:
+            send_sms(phone, "Inventory is empty. Send a photo to add items!")
+        else:
+            items = chr(10).join(f"- {i['name']} (qty: {i.get('quantity', '?')})" for i in inventory[-10:])
+            send_sms(phone, f"Recent inventory:\n{items}")
+        return jsonify({"status": "listed"}), 200
+    if media:
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=300):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.2}, timeout=15)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+@app.route("/webhooks/messaging", methods=["POST"])
+def handle_mms():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    data = payload.get("data", {})
+    if data.get("event_type") != "message.received" or data.get("direction") != "inbound":
+        return jsonify({"status": "ignored"}), 200
+```
+
 
 ## Step 3: Run It
 

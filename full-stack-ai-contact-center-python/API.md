@@ -56,7 +56,9 @@ Dashboard.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -92,7 +94,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -106,7 +110,15 @@ Records use these status values: `ai_assist`, `answering`, `available`, `busy`, 
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "total_calls": "example-value",
+  "answered": "example-value",
+  "abandoned": "example-value",
+  "avg_wait_secs": "example-value",
+  "active_calls": "example-value",
+  "queues": [],
+  "recordings": "example-value"
+}
 ```
 
 | Status | Meaning |

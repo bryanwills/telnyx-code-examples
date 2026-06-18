@@ -5,19 +5,25 @@ Production-ready Flask application for device location tracking via Telnyx IoT A
 ## How It Works
 
 ```
+  API Request
+        │
+        ▼
   ┌──────────────────┐
-  │ API Request      │
-  │ (SIM data /       │
-  │  sensor reading)   │
+  │ Telnyx IoT API    │
+  │ • Query SIM       │
+  │ • Get cell tower  │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │ Threshold Check   │
+  │ Location Mapping  │
+  │ • Lat/long        │
+  │ • Geofence check  │
   └────────┬─────────┘
            │
            ▼
-     JSON response
+  JSON response
+  (location + alerts)
 ```
 
 ## Telnyx Products Used
@@ -54,9 +60,9 @@ Everything lives in `app.py` (202 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`list_devices()`** — Handles the list devices logic.
-- **`get_device_location()`** — Handles the get device location logic.
-- **`get_location_only()`** — Handles the get location only logic.
+- **`list_devices()`** — Returns all devices with metadata and pagination.
+- **`get_device_location()`** — Fetches device location by ID with full details.
+- **`get_location_only()`** — Fetches location only by ID with full details.
 
 ### All Endpoints
 
@@ -66,6 +72,23 @@ Everything lives in `app.py` (202 lines). Here's what each piece does.
 | `GET` | `/devices/<sim_card_id>` | Get Device Location |
 | `GET` | `/devices/<sim_card_id>/location` | Get Location Only |
 | `GET` | `/health` | Health check |
+
+
+The main endpoint processes the request:
+
+```python
+def list_devices():
+    """List all SIM cards (devices) in the account."""
+    try:
+        devices = list_all_sim_cards()
+        return jsonify({"devices": devices}), 200
+        
+    except telnyx.AuthenticationError:
+        return jsonify({"error": "Invalid API key"}), 401
+    except telnyx.RateLimitError:
+        return jsonify({"error": "Rate limit exceeded"}), 429
+```
+
 
 ## Step 3: Run It
 

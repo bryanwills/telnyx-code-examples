@@ -87,8 +87,8 @@ data = request.get_json()
 ### Business Logic
 
 - **`send_whatsapp()`** — Makes an API call and processes the response.
-- **`update_status()`** — Handles the update status logic.
-- **`handle_whatsapp()`** — Handles the handle whatsapp logic.
+- **`update_status()`** — Transitions record state and triggers notifications.
+- **`handle_whatsapp()`** — Processes inbound whatsapp event.
 
 ### All Endpoints
 

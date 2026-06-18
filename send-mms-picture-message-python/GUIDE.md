@@ -49,13 +49,47 @@ Everything lives in `app.py` (110 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`send_mms_endpoint()`** — Handles the send mms endpoint logic.
+- **`send_mms_endpoint()`** — Delivers mms endpoint via Telnyx API.
 
 ### All Endpoints
 
 | Method | Path | Purpose |
 |--------|------|---------|
 | `POST` | `/mms/send` | Send Mms Endpoint |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def send_mms_endpoint():
+    """HTTP endpoint to send MMS with media attachments."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    
+    if not data:
+        return jsonify({"error": "Request body required"}), 400
+    
+    to_number = data.get("to")
+    message = data.get("message")
+    media_urls = data.get("media_urls", [])
+```
+
+The main endpoint processes the request:
+
+```python
+def send_mms_endpoint():
+    """HTTP endpoint to send MMS with media attachments."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    
+    if not data:
+        return jsonify({"error": "Request body required"}), 400
+    
+    to_number = data.get("to")
+```
+
 
 ## Step 3: Run It
 

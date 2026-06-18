@@ -103,8 +103,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`telnyx_post()`** — Makes an API call and processes the response.
-- **`get_session_detail()`** — Handles the get session detail logic.
-- **`list_sessions_view()`** — Handles the list sessions view logic.
+- **`get_session_detail()`** — Fetches session detail by ID with full details.
+- **`list_sessions_view()`** — Returns all sessions view with metadata and pagination.
 
 ### All Endpoints
 

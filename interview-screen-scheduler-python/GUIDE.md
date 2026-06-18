@@ -109,8 +109,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`ai_score()`** — Sends conversation context to Telnyx AI Inference and returns the model's response. Uses the OpenAI-compatible chat completions endpoint.
-- **`list_candidates()`** — Handles the list candidates logic.
-- **`advance_candidate()`** — Handles the advance candidate logic.
+- **`list_candidates()`** — Returns all candidates with metadata and pagination.
+- **`advance_candidate()`** — Processes advance candidate request and returns result.
 
 ### All Endpoints
 

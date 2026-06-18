@@ -108,7 +108,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`lookup_number()`** — Makes an API call and processes the response.
-- **`generate_disposition()`** — Handles the generate disposition logic.
+- **`generate_disposition()`** — Processes generate disposition request and returns result.
 - **`send_confirmation_sms()`** — Makes an API call and processes the response.
 
 ### All Endpoints

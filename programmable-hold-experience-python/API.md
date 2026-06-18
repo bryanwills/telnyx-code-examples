@@ -24,7 +24,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -38,7 +40,10 @@ Records use these status values: `answering`, `callback_requested`, `ended`, `gr
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "on_hold": "example-value"
+}
 ```
 
 | Status | Meaning |

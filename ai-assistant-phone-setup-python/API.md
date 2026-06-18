@@ -24,7 +24,9 @@ Create a new assistant.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "example-value"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -41,7 +43,9 @@ Create a new assistant.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -53,7 +57,9 @@ List all assistants.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -65,7 +71,9 @@ Get a specific assistant by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -77,7 +85,9 @@ Update assistant.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -89,7 +99,11 @@ Wire to number.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "id": "abc-123",
+  "status": "active",
+  "created_at": "2026-06-18T21:00:00Z"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -99,7 +113,9 @@ Wire to number.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -135,7 +151,9 @@ List all models.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -160,7 +178,9 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 | Status | Meaning |

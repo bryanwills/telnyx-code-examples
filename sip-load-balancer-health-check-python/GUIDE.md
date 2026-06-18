@@ -59,8 +59,8 @@ Everything lives in `app.py` (73 lines). Here's what each piece does.
 ### Business Logic
 
 - **`health_check()`** — Health check endpoint for monitoring and load balancer probes.
-- **`get_route()`** — Handles the get route logic.
-- **`list_endpoints()`** — Handles the list endpoints logic.
+- **`get_route()`** — Fetches route by ID with full details.
+- **`list_endpoints()`** — Fetches route by ID with full details.
 
 ### All Endpoints
 
@@ -72,6 +72,40 @@ Everything lives in `app.py` (73 lines). Here's what each piece does.
 | `GET` | `/endpoints` | Add Endpoint |
 | `GET` | `/log` | Get Log |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def health_check():
+    results = []
+    for name, ep in endpoints.items():
+        ep["uptime_checks"] += 1
+        try:
+            import socket
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(3)
+            result = sock.connect_ex((ep["host"], ep["port"]))
+            sock.close()
+            healthy = result == 0
+        except Exception:
+```
+
+The main endpoint processes the request:
+
+```python
+def health_check():
+    results = []
+    for name, ep in endpoints.items():
+        ep["uptime_checks"] += 1
+        try:
+            import socket
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(3)
+            result = sock.connect_ex((ep["host"], ep["port"]))
+            sock.close()
+```
+
 
 ## Step 3: Run It
 

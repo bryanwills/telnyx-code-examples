@@ -42,7 +42,9 @@ Create a new mission.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -54,7 +56,10 @@ List all missions.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description",
+  "local": []
+}
 ```
 
 ---
@@ -66,7 +71,9 @@ Get a specific mission by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -96,7 +103,9 @@ Add task.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -108,7 +117,9 @@ Run mission.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -120,7 +131,9 @@ List all runs.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -132,7 +145,16 @@ Mission templates.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "templatess": [
+    {
+      "id": "abc-123",
+      "status": "active",
+      "created_at": "2026-06-18T21:00:00Z"
+    }
+  ],
+  "total": 1
+}
 ```
 
 ---
@@ -157,7 +179,10 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "missions": "example-value"
+}
 ```
 
 | Status | Meaning |

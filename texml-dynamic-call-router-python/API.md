@@ -45,7 +45,9 @@ Add vip.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -68,7 +70,9 @@ List all calls.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -98,7 +102,9 @@ Records use these status values: `added`, `ok`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "calls": "example-value"
+}
 ```
 
 | Status | Meaning |

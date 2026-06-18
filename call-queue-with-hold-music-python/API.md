@@ -25,7 +25,9 @@ Queue status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -55,7 +57,10 @@ Records use these status values: `answering`, `available`, `busy`, `ended`, `ok`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "queue_length": "example-value",
+  "agents": []
+}
 ```
 
 | Status | Meaning |

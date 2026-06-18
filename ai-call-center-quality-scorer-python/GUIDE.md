@@ -64,9 +64,9 @@ Everything lives in `app.py` (85 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`score_call()`** — Handles the score call logic.
-- **`batch_score()`** — Handles the batch score logic.
-- **`list_scorecards()`** — Handles the list scorecards logic.
+- **`score_call()`** — Processes score call request and returns result.
+- **`batch_score()`** — Processes score call request and returns result.
+- **`list_scorecards()`** — Returns all scorecards with metadata and pagination.
 
 ### All Endpoints
 
@@ -77,6 +77,44 @@ Everything lives in `app.py` (85 lines). Here's what each piece does.
 | `GET` | `/scorecards` | List Scorecards |
 | `GET` | `/scorecards/summary` | Summary |
 | `GET` | `/health` | Health check |
+
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=600):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.2}, timeout=20)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+@app.route("/score", methods=["POST"])
+def score_call():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    transcript = data.get("transcript", "")
+    if not transcript:
+        return jsonify({"error": "transcript required"}), 400
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def score_call():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    transcript = data.get("transcript", "")
+    if not transcript:
+        return jsonify({"error": "transcript required"}), 400
+    try:
+        result = call_inference([{"role": "system", "content": SCORECARD_PROMPT}, {"role": "user", "content": transcript}])
+        scorecard = json.loads(result)
+        scorecard["scored_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+        scorecard["call_id"] = data.get("call_id", f"CALL-{int(time.time())}")
+```
+
 
 ## Step 3: Run It
 

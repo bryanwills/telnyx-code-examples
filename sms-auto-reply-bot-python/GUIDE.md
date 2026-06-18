@@ -76,6 +76,42 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/webhooks/sms` | Telnyx webhook handler |
 | `GET` | `/health` | Health check |
 
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+        # Only process incoming messages
+        if event_type != "message.received":
+            return jsonify({"message": "Event ignored"}), 200
+        
+        payload = webhook_data.get("data", {}).get("payload", {})
+        
+        # Extract message details
+        from_number = payload.get("from", {}).get("phone_number")
+        to_number = payload.get("to", [{}])[0].get("phone_number")
+        message_text = payload.get("text", "")
+        
+        if not from_number or not message_text:
+            return jsonify({"error": "Missing required message data"}), 400
+        
+```
+
+The main endpoint processes the request:
+
+```python
+def handle_sms_webhook():
+    """Process incoming SMS webhooks and send automated replies."""
+    try:
+        webhook_data = request.get_json()
+        if not webhook_data:
+            return jsonify({"error": "invalid request body"}), 400
+        
+        if not webhook_data:
+            return jsonify({"error": "No webhook data received"}), 400
+        
+```
+
+
 ## Step 3: Run It
 
 ```bash

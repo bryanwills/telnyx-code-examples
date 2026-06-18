@@ -84,9 +84,9 @@ data = request.get_json()
 
 ### Business Logic
 
-- **`send_campaign()`** — Handles the send campaign logic.
+- **`send_campaign()`** — Delivers campaign via Telnyx API.
 - **`analyze_campaign()`** — Sends conversation context to Telnyx AI Inference and returns the model's response. Uses the OpenAI-compatible chat completions endpoint.
-- **`handle_reply()`** — Handles the handle reply logic.
+- **`handle_reply()`** — Processes inbound SMS reply and routes to correct thread.
 
 ### All Endpoints
 

@@ -103,7 +103,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 - **`telnyx_post()`** — Makes an API call and processes the response.
 - **`inference()`** — Makes an API call and processes the response.
-- **`admit_next_caller()`** — Handles the admit next caller logic.
+- **`admit_next_caller()`** — Processes admit next caller request and returns result.
 
 ### All Endpoints
 

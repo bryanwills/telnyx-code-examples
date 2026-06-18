@@ -53,13 +53,30 @@ Everything lives in `app.py` (53 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`list_assistants()`** — Handles the list assistants logic.
+- **`list_assistants()`** — Returns all assistants with metadata and pagination.
 
 ### All Endpoints
 
 | Method | Path | Purpose |
 |--------|------|---------|
 | `GET` | `/assistants` | List Assistants |
+
+
+The main endpoint processes the request:
+
+```python
+def list_assistants():
+    """Return all AI Assistants as a JSON array."""
+    try:
+        assistants = fetch_assistants()
+        return jsonify(assistants), 200
+
+    except telnyx.AuthenticationError:
+        return jsonify({"error": "Invalid API key"}), 401
+    except telnyx.RateLimitError:
+        return jsonify({"error": "Rate limit exceeded. Please slow down."}), 429
+```
+
 
 ## Step 3: Run It
 

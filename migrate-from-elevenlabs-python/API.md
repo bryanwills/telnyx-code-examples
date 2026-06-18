@@ -23,7 +23,9 @@ Audit elevenlabs.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "ELEVENLABS_API_KEY not configured"
+}
 ```
 
 ---
@@ -35,7 +37,9 @@ Migrate voice.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -46,7 +50,9 @@ Migrate voice.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -58,7 +64,10 @@ Voice mapping.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "mappings": "example-value",
+  "custom_note": "For cloned/custom ElevenLabs voices"
+}
 ```
 
 ---
@@ -70,7 +79,11 @@ Cost comparison.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "id": "abc-123",
+  "status": "active",
+  "created_at": "2026-06-18T21:00:00Z"
+}
 ```
 
 ---
@@ -82,7 +95,9 @@ Test tts.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -105,7 +120,9 @@ Get a specific log by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -134,7 +151,9 @@ Records use these status values: `generated`, `ok`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "log": "example-value"
+}
 ```
 
 | Status | Meaning |

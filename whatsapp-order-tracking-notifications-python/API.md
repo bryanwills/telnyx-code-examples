@@ -20,7 +20,9 @@ Create a new order.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -31,7 +33,9 @@ Create a new order.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -43,7 +47,16 @@ Update status.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "statuss": [
+    {
+      "id": "abc-123",
+      "status": "active",
+      "created_at": "2026-06-18T21:00:00Z"
+    }
+  ],
+  "total": 1
+}
 ```
 
 | Field | Type | Required | Description |
@@ -54,7 +67,9 @@ Update status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Order not found"
+}
 ```
 
 ---
@@ -89,7 +104,9 @@ Records use these status values: `confirmed`, `created`, `ignored`, `ok`, `respo
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Status | Meaning |

@@ -81,9 +81,9 @@ data = request.get_json()
 
 ### Business Logic
 
-- **`subscribe()`** — Handles the subscribe logic.
-- **`advance_all()`** — Handles the advance all logic.
-- **`handle_reply()`** — Handles the handle reply logic.
+- **`subscribe()`** — Processes subscribe request and returns result.
+- **`advance_all()`** — Processes subscribe request and returns result.
+- **`handle_reply()`** — Processes advance all request and returns result.
 
 ### All Endpoints
 

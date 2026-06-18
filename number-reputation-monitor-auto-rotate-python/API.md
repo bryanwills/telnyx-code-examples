@@ -31,7 +31,10 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "scanned": "example-value",
+  "results": []
+}
 ```
 
 ---
@@ -43,7 +46,10 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "numbers": "example-value",
+  "rotations": "example-value"
+}
 ```
 
 ---
@@ -53,7 +59,11 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "numbers_tracked": "example-value",
+  "rotations": "example-value"
+}
 ```
 
 | Status | Meaning |

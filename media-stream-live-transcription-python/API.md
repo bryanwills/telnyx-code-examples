@@ -26,7 +26,9 @@ Get a specific transcript by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -38,7 +40,9 @@ List all transcripts.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 ---
@@ -68,7 +72,10 @@ Records use these status values: `answering`, `ended`, `ok`, `streaming`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "active": "example-value",
+  "completed": "example-value"
+}
 ```
 
 | Status | Meaning |

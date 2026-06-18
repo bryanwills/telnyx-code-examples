@@ -97,8 +97,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`make_confirmation_call()`** — Makes an API call and processes the response.
-- **`send_confirmation()`** — Handles the send confirmation logic.
-- **`escalate_to_voice()`** — Handles the escalate to voice logic.
+- **`send_confirmation()`** — Delivers confirmation via Telnyx API.
+- **`escalate_to_voice()`** — Processes escalate to voice request and returns result.
 
 ### All Endpoints
 

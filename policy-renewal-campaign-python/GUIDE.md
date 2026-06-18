@@ -111,6 +111,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/campaign-log` | Get Log |
 | `GET` | `/health` | Health check |
 
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def run_campaign():
+    data = request.get_json() or {}
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    days_to_expiry = data.get("days_to_expiry", 60)
+    results = []
+    for pol in policies:
+        if pol["status"] != "active": continue
+        entry = {"policy": pol["id"], "name": pol["name"], "days": days_to_expiry,
+            "at": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+        if days_to_expiry >= 60:
+            send_sms(pol["phone"], f"Hi {pol['name']}, your {pol['type']} policy {pol['id']} renews on {pol['expiry']}. Premium: ${pol['premium']}/yr. Questions? Reply or call us at {MAIN_NUMBER}.")
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+@app.route("/campaigns/run", methods=["POST"])
+def run_campaign():
+    data = request.get_json() or {}
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    days_to_expiry = data.get("days_to_expiry", 60)
+    results = []
+    for pol in policies:
+        if pol["status"] != "active": continue
+        entry = {"policy": pol["id"], "name": pol["name"], "days": days_to_expiry,
+            "at": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+```
+
+
 ## Step 3: Run It
 
 ```bash

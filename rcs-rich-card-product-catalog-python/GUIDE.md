@@ -70,8 +70,8 @@ Everything lives in `app.py` (85 lines). Here's what each piece does.
 ### Business Logic
 
 - **`send_rcs_message()`** — Makes an API call and processes the response.
-- **`recommend_products()`** — Handles the recommend products logic.
-- **`handle_rcs()`** — Handles the handle rcs logic.
+- **`recommend_products()`** — Processes recommend products request and returns result.
+- **`handle_rcs()`** — Processes inbound rcs event.
 
 ### All Endpoints
 
@@ -79,6 +79,46 @@ Everything lives in `app.py` (85 lines). Here's what each piece does.
 |--------|------|---------|
 | `POST` | `/webhooks/messaging` | Telnyx webhook handler |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if data.get("event_type") != "message.received" or data.get("direction") != "inbound":
+        return jsonify({"status": "ignored"}), 200
+    from_number = data.get("from", {}).get("phone_number", "")
+    text = data.get("text", "").strip()
+    if not from_number or not text:
+        return jsonify({"status": "ignored"}), 200
+
+    if text.lower() in ["menu", "products", "catalog"]:
+        for product in PRODUCT_CATALOG:
+            send_rcs_message(from_number, f"{product['name']}\n{product['desc']}\n{product['price']}",
+                suggestions=[{"type": "action", "text": f"Learn more about {product['name']}", "url": product['url']}])
+        return jsonify({"status": "catalog_sent"}), 200
+
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=200):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.7}, timeout=15)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+def send_rcs_message(to, text, suggestions=None):
+    payload = {"from": BOT_NUMBER, "to": to, "text": text, "messaging_profile_id": MESSAGING_PROFILE_ID, "type": "rcs"}
+    if suggestions:
+        payload["suggestions"] = suggestions
+    try:
+        requests.post("https://api.telnyx.com/v2/messages", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"}, json=payload, timeout=10)
+    except requests.RequestException as e:
+        app.logger.error("RCS send failed: %s", e)
+```
+
 
 ## Step 3: Run It
 

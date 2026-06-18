@@ -39,7 +39,9 @@ Initiate screen.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -90,7 +92,9 @@ Advance candidate.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -120,7 +124,9 @@ Records use these status values: `call_failed`, `interview_scheduled`, `not_adva
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "candidates": []
+}
 ```
 
 | Status | Meaning |

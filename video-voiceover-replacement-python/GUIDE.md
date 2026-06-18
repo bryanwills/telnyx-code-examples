@@ -73,6 +73,40 @@ Everything lives in `app.py` (214 lines). Here's what each piece does.
 | `GET` | `/jobs` | List Jobs |
 | `GET` | `/health` | Health check |
 
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def replace_voiceover():
+    """Upload audio with existing voice-over, get back improved version.
+
+    Pipeline: STT extract → AI rewrite/improve → TTS re-record.
+    """
+    if "audio" not in request.files:
+        return jsonify({"error": "Upload audio file as 'audio'"}), 400
+
+    mode = request.form.get("mode", "professional")
+    voice = request.form.get("voice", "nova")
+    language = request.form.get("language", "en")
+    title = request.form.get("title", "VO Replacement")
+```
+
+The main endpoint processes the request:
+
+```python
+def replace_voiceover():
+    """Upload audio with existing voice-over, get back improved version.
+
+    Pipeline: STT extract → AI rewrite/improve → TTS re-record.
+    """
+    if "audio" not in request.files:
+        return jsonify({"error": "Upload audio file as 'audio'"}), 400
+
+    mode = request.form.get("mode", "professional")
+    voice = request.form.get("voice", "nova")
+```
+
+
 ## Step 3: Run It
 
 ```bash

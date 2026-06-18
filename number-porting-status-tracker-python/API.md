@@ -21,7 +21,9 @@ List all ports.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -33,7 +35,9 @@ Create a new port.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "example-value"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -61,7 +65,9 @@ Get a specific port by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -73,7 +79,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -87,7 +95,9 @@ Records use these status values: `ok`, `submitted`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 | Status | Meaning |

@@ -63,7 +63,9 @@ Accept intake.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -87,7 +89,9 @@ Decline intake.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "intakes": []
+}
 ```
 
 ---
@@ -117,7 +121,9 @@ Records use these status values: `accepted`, `declined`, `ok`, `pending_review`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 | Status | Meaning |

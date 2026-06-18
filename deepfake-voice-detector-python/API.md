@@ -43,7 +43,9 @@ Force analyze.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -71,7 +73,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -85,7 +89,9 @@ Records use these status values: `analyzed`, `cleared`, `completed`, `deepfake_d
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Call not found"
+}
 ```
 
 | Status | Meaning |

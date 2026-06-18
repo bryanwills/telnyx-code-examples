@@ -68,7 +68,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`set_cloak()`** — Handles the set cloak logic.
+- **`set_cloak()`** — Processes set cloak request and returns result.
 
 ### All Endpoints
 
@@ -80,6 +80,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/active` | List Active |
 | `GET` | `/log` | Get Log |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    ccid = data.get("call_control_id")
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        requests.post(f"{API}/calls/{ccid}/actions/answer", headers=headers, json={}, timeout=10)
+        return jsonify({"status": "answering"}), 200
+    elif event_type == "call.answered":
+        effect = active_cloaks.get(ccid, {}).get("effect", "anonymous")
+        try:
+            requests.post(f"{API}/calls/{ccid}/actions/streaming_start", headers=headers,
+                json={"stream_url": os.getenv("STREAM_WEBSOCKET_URL", "wss://your-server/stream", timeout=10),
+                    "stream_track": "inbound_track"}, timeout=10)
+            active_cloaks[ccid] = {"effect": effect, "started": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+        except Exception:
+            pass
+        return jsonify({"status": "cloaking"}), 200
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def set_cloak(ccid):
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    effect = data.get("effect", "anonymous")
+    if effect not in EFFECTS:
+        return jsonify({"error": f"Unknown effect. Available: {list(EFFECTS.keys())}"}), 400
+    active_cloaks[ccid] = {"effect": effect, "config": EFFECTS[effect],
+        "updated": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+    return jsonify({"status": "effect_set", "effect": effect, "config": EFFECTS[effect]}), 200
+
+@app.route("/effects", methods=["GET"])
+```
+
 
 ## Step 3: Run It
 

@@ -70,8 +70,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`add_identity()`** — Handles the add identity logic.
-- **`list_identities()`** — Handles the list identities logic.
+- **`add_identity()`** — Validates input and creates new identity.
+- **`list_identities()`** — Returns all identities with metadata and pagination.
 
 ### All Endpoints
 
@@ -82,6 +82,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/identities` | List Identities |
 | `GET` | `/calls` | List Calls |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        dialed = data.get("to")
+        identity = identities.get(dialed, {"name": "Default", "greeting": "Hello, how can I help?", "forward_to": None})
+        call_log.append({"dialed": dialed, "identity": identity["name"], "caller": data.get("from"), "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ")})
+        client.calls.actions.answer(ccid)
+        return jsonify({"status": "answering", "identity": identity["name"]}), 200
+    elif event_type == "call.answered":
+        dialed = data.get("to", "")
+        identity = identities.get(dialed, {"greeting": "Hello!", "forward_to": None})
+        client.calls.actions.speak(ccid, payload=identity["greeting"], voice="female", language_code="en-US")
+        return jsonify({"status": "greeting"}), 200
+    elif event_type == "call.speak.ended":
+        dialed = data.get("to", "")
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def add_identity():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    number = data.get("number")
+    identities[number] = {"name": data.get("name"), "greeting": data.get("greeting"), "forward_to": data.get("forward_to"), "hours": data.get("hours", "24/7")}
+    return jsonify({"status": "added", "number": number}), 200
+
+@app.route("/webhooks/voice", methods=["POST"])
+def handle_voice():
+    payload = request.get_json()
+    if not payload:
+```
+
 
 ## Step 3: Run It
 

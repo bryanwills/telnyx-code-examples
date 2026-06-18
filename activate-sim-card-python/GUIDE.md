@@ -55,9 +55,9 @@ Everything lives in `app.py` (117 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`list_sims()`** — Handles the list sims logic.
-- **`get_sim()`** — Handles the get sim logic.
-- **`activate_sim()`** — Handles the activate sim logic.
+- **`list_sims()`** — Queries Telnyx IoT API for SIM cards.
+- **`get_sim()`** — Queries Telnyx IoT API for SIM cards.
+- **`activate_sim()`** — Fetches SIM card details including data usage.
 
 ### All Endpoints
 
@@ -66,6 +66,40 @@ Everything lives in `app.py` (117 lines). Here's what each piece does.
 | `GET` | `/sim-cards` | List Sims |
 | `GET` | `/sim-cards/<sim_card_id>` | Get Sim |
 | `POST` | `/sim-cards/<sim_card_id>/activate` | Activate Sim |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def activate_sim(sim_card_id):
+    """HTTP endpoint to activate a SIM card."""
+    try:
+        result = activate_sim_card(sim_card_id)
+        return jsonify({"message": "SIM card activated successfully", "data": result}), 200
+        
+    except telnyx.AuthenticationError:
+        return jsonify({"error": "Invalid API key"}), 401
+    except telnyx.RateLimitError:
+        return jsonify({"error": "Rate limit exceeded. Please slow down."}), 429
+    except telnyx.APIStatusError as e:
+        return jsonify({"error": "API request failed", "status_code": e.status_code}), e.status_code
+```
+
+The main endpoint processes the request:
+
+```python
+def list_sims():
+    """HTTP endpoint to list all SIM cards."""
+    try:
+        sims = list_sim_cards()
+        return jsonify({"data": sims}), 200
+        
+    except telnyx.AuthenticationError:
+        return jsonify({"error": "Invalid API key"}), 401
+    except telnyx.RateLimitError:
+        return jsonify({"error": "Rate limit exceeded. Please slow down."}), 429
+```
+
 
 ## Step 3: Run It
 

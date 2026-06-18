@@ -63,7 +63,7 @@ Everything lives in `app.py` (84 lines). Here's what each piece does.
 
 - **`setup_bucket()`** — Makes an API call and processes the response.
 - **`upload_media()`** — Makes an API call and processes the response.
-- **`list_media()`** — Handles the list media logic.
+- **`list_media()`** — Returns all media with metadata and pagination.
 
 ### All Endpoints
 
@@ -75,6 +75,40 @@ Everything lives in `app.py` (84 lines). Here's what each piece does.
 | `GET` | `/media/<category>/<name>` | Get Media Url |
 | `GET` | `/ivr-config` | Ivr Config |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def setup_bucket():
+    try:
+        resp = requests.post(f"{STORAGE_API}/buckets", headers=headers,
+            json={"name": BUCKET_NAME, "region": "us-central-1"}, timeout=15)
+        for cat in CATEGORIES:
+            media_catalog[cat] = []
+        return jsonify({"status": "bucket_created", "bucket": BUCKET_NAME,
+            "categories": list(CATEGORIES.keys())}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/upload", methods=["POST"])
+```
+
+The main endpoint processes the request:
+
+```python
+def setup_bucket():
+    try:
+        resp = requests.post(f"{STORAGE_API}/buckets", headers=headers,
+            json={"name": BUCKET_NAME, "region": "us-central-1"}, timeout=15)
+        for cat in CATEGORIES:
+            media_catalog[cat] = []
+        return jsonify({"status": "bucket_created", "bucket": BUCKET_NAME,
+            "categories": list(CATEGORIES.keys())}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+```
+
 
 ## Step 3: Run It
 

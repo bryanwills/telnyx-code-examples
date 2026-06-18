@@ -18,19 +18,25 @@ Production-ready Flask application for device location tracking via Telnyx IoT A
 ## Architecture
 
 ```
+  API Request
+        │
+        ▼
   ┌──────────────────┐
-  │ API Request      │
-  │ (SIM data /       │
-  │  sensor reading)   │
+  │ Telnyx IoT API    │
+  │ • Query SIM       │
+  │ • Get cell tower  │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │ Threshold Check   │
+  │ Location Mapping  │
+  │ • Lat/long        │
+  │ • Geofence check  │
   └────────┬─────────┘
            │
            ▼
-     JSON response
+  JSON response
+  (location + alerts)
 ```
 
 ## Environment Variables

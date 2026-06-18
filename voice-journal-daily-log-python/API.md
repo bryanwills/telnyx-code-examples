@@ -26,7 +26,9 @@ List all entries.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -69,7 +71,9 @@ Records use these status values: `answering`, `captured`, `greeting`, `listening
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "entries": "example-value"
+}
 ```
 
 | Status | Meaning |

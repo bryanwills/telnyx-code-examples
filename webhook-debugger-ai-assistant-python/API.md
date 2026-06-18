@@ -36,7 +36,10 @@ Analyze webhook.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "caught",
+  "id": "abc-123-def-456"
+}
 ```
 
 ---
@@ -48,7 +51,9 @@ Analyze recent.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 ---
@@ -60,7 +65,9 @@ View log.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "No webhooks captured yet"
+}
 ```
 
 ---
@@ -72,7 +79,10 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "webhooks": "example-value",
+  "total": 3
+}
 ```
 
 ---
@@ -86,7 +96,10 @@ Records use these status values: `caught`, `ok`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "webhooks_captured": "example-value"
+}
 ```
 
 | Status | Meaning |

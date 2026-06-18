@@ -64,8 +64,8 @@ data = request.get_json()
 ### Business Logic
 
 - **`send_warmup()`** — Makes an API call and processes the response.
-- **`warmup_status()`** — Handles the warmup status logic.
-- **`reset_daily()`** — Handles the reset daily logic.
+- **`warmup_status()`** — Processes warmup status request and returns result.
+- **`reset_daily()`** — Processes reset daily request and returns result.
 
 ### All Endpoints
 

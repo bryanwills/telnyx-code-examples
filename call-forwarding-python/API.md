@@ -26,7 +26,9 @@ Get call status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -38,7 +40,12 @@ Hangup call endpoint.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "call_control_id": "example-value",
+  "is_alive": "example-value",
+  "state": "example-value",
+  "metadata": "example-value"
+}
 ```
 
 ---
@@ -66,7 +73,9 @@ Records use these status values: `answered`, `call_answered`, `call_ended`, `cal
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Invalid API key"
+}
 ```
 
 | Status | Meaning |

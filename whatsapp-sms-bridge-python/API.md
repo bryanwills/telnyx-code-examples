@@ -21,7 +21,9 @@ Create a new bridge.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -32,7 +34,9 @@ Create a new bridge.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -62,7 +66,9 @@ List all messages.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -88,7 +94,9 @@ Records use these status values: `bridged`, `forwarded`, `ignored`, `no_bridge`,
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "bridges": []
+}
 ```
 
 | Status | Meaning |

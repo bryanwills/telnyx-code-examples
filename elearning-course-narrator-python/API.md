@@ -20,7 +20,9 @@ Create a new course.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -45,7 +47,9 @@ Get a specific course by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -57,7 +61,9 @@ List all courses.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Course not found"
+}
 ```
 
 ---
@@ -69,7 +75,11 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "total_courses": "example-value",
+  "version": "1.0.0"
+}
 ```
 
 ---
@@ -83,7 +93,7 @@ Records use these status values: `complete`, `failed`, `narrating`, `ok`, `struc
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

@@ -33,7 +33,9 @@ Add leads.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -45,7 +47,9 @@ Start campaign.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "No leads in queue"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -55,7 +59,9 @@ Start campaign.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "No leads in queue"
+}
 ```
 
 ---
@@ -73,7 +79,9 @@ Get a specific results by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "No payload"
+}
 ```
 
 ---
@@ -85,7 +93,10 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "results": [],
+  "remaining_leads": "example-value"
+}
 ```
 
 ---
@@ -99,7 +110,12 @@ Records use these status values: `active`, `call_ended`, `calling`, `dialing`, `
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "active_calls": "example-value",
+  "leads_queued": "example-value",
+  "completed": "example-value"
+}
 ```
 
 | Status | Meaning |

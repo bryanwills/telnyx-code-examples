@@ -63,8 +63,8 @@ Everything lives in `app.py` (70 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`receive_fax()`** — Handles the receive fax logic.
-- **`extract_data()`** — Handles the extract data logic.
+- **`receive_fax()`** — Processes receive fax request and returns result.
+- **`extract_data()`** — Processes receive fax request and returns result.
 
 ### All Endpoints
 
@@ -75,6 +75,46 @@ Everything lives in `app.py` (70 lines). Here's what each piece does.
 | `GET` | `/faxes` | List Faxes |
 | `GET` | `/extracted` | List Extracted |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    event_type = data.get("event_type", "")
+    if event_type == "fax.received":
+        fax_entry = {"fax_id": data.get("fax_id"), "from": data.get("from"), "to": data.get("to"),
+            "pages": data.get("page_count"), "media_url": data.get("media_url"), "status": "received",
+            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+        fax_queue.append(fax_entry)
+        return jsonify({"status": "queued", "fax_id": fax_entry["fax_id"]}), 200
+    return jsonify({"status": "ok"}), 200
+
+@app.route("/extract", methods=["POST"])
+def extract_data():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=600):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.1}, timeout=20)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+@app.route("/webhooks/fax", methods=["POST"])
+def receive_fax():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    data = payload.get("data", {})
+    event_type = data.get("event_type", "")
+    if event_type == "fax.received":
+```
+
 
 ## Step 3: Run It
 

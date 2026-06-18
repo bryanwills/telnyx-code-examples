@@ -23,7 +23,9 @@ Create a new meeting.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -38,7 +40,9 @@ Create a new meeting.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -65,7 +69,9 @@ Advance agenda.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -77,7 +83,9 @@ Mute participant.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "not found"
+}
 ```
 
 ---
@@ -89,7 +97,9 @@ List all meetings.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "not found"
+}
 ```
 
 ---
@@ -101,7 +111,9 @@ Get a specific meeting by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "not found"
+}
 ```
 
 ---
@@ -113,7 +125,11 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "active_meetings": "example-value",
+  "total": 3
+}
 ```
 
 ---
@@ -127,7 +143,7 @@ Records use these status values: `active`, `completed`, `dialing`, `gathered`, `
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

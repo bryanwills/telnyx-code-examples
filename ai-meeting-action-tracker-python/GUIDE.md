@@ -103,7 +103,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 - **`telnyx_post()`** — Makes an API call and processes the response.
 - **`post_slack()`** — Makes an API call and processes the response.
-- **`get_meeting()`** — Handles the get meeting logic.
+- **`get_meeting()`** — Fetches meeting by ID with full details.
 
 ### All Endpoints
 

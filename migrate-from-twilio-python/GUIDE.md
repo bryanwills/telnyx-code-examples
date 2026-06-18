@@ -104,6 +104,40 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/migration-log` | Get Log |
 | `GET` | `/health` | Health check |
 
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def migrate_messaging():
+    data = request.get_json()
+    try:
+        resp = requests.post(f"{TELNYX_API}/messaging_profiles", headers=telnyx_headers,
+            json={"name": data.get("name", "Migrated from Twilio"),
+                "webhook_url": data.get("webhook_url", ""),
+                "webhook_api_version": "2"}, timeout=15)
+        result = resp.json()
+        migration_log.append({"action": "create_messaging_profile",
+            "profile_id": result.get("data", {}).get("id"),
+            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ")})
+        return jsonify(result), resp.status_code
+```
+
+The main endpoint processes the request:
+
+```python
+def audit_twilio():
+    if not TWILIO_SID:
+        return jsonify({"error": "TWILIO_ACCOUNT_SID not configured"}), 400
+    audit = {"numbers": [], "messaging_services": [], "applications": []}
+    try:
+        resp = requests.get(f"{TWILIO_API}/IncomingPhoneNumbers.json",
+            auth=(TWILIO_SID, TWILIO_TOKEN), timeout=15)
+        if resp.ok:
+            for num in resp.json().get("incoming_phone_numbers", []):
+                audit["numbers"].append({"number": num.get("phone_number"),
+```
+
+
 ## Step 3: Run It
 
 ```bash

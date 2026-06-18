@@ -33,7 +33,9 @@ Start warmup.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -45,7 +47,9 @@ Send warmup.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -57,7 +61,9 @@ Send warmup.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -96,7 +102,14 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "numbers": [
+    {
+      "id": "abc-123",
+      "status": "active"
+    }
+  ]
+}
 ```
 
 ---
@@ -110,7 +123,10 @@ Records use these status values: `ok`, `reset`, `sent`, `started`, `warming`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "reset",
+  "numbers": "example-value"
+}
 ```
 
 | Status | Meaning |

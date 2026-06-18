@@ -77,9 +77,9 @@ Webhook handlers process events from Telnyx:
 
 ### Business Logic
 
-- **`predict_no_show()`** — Handles the predict no show logic.
-- **`add_appointment()`** — Handles the add appointment logic.
-- **`run_predictions()`** — Handles the run predictions logic.
+- **`predict_no_show()`** — Processes predict no show request and returns result.
+- **`add_appointment()`** — Validates input and creates new appointment.
+- **`run_predictions()`** — Processes run predictions request and returns result.
 
 ### All Endpoints
 
@@ -89,6 +89,46 @@ Webhook handlers process events from Telnyx:
 | `POST` | `/predict` | Run Predictions |
 | `POST` | `/webhooks/messaging` | Telnyx webhook handler |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if data.get("event_type") != "message.received" or data.get("direction") != "inbound":
+        return jsonify({"status": "ignored"}), 200
+    from_number = data.get("from", {}).get("phone_number", "")
+    text = data.get("text", "").strip().upper()
+    patient = patients.get(from_number)
+    if not patient: return jsonify({"status": "unknown_patient"}), 200
+    patient["response_history"].append({"type": "reply", "text": text, "time": time.time()})
+    if "YES" in text:
+        for appt in patient["appointments"]:
+            if appt.get("status") == "scheduled":
+                appt["status"] = "confirmed"
+                break
+        send_sms(from_number, "Confirmed! See you then.")
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=200):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.2}, timeout=15)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+def send_sms(to, text):
+    try:
+        requests.post("https://api.telnyx.com/v2/messages", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+            json={"from": BOT_NUMBER, "to": to, "text": text, "messaging_profile_id": os.getenv("MESSAGING_PROFILE_ID", "", timeout=10)}, timeout=10)
+    except Exception as e:
+        app.logger.error("SMS failed: %s", e)
+
+def predict_no_show(patient_data):
+```
+
 
 ## Step 3: Run It
 

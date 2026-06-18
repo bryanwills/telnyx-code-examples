@@ -73,7 +73,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`get_call_status()`** — Handles the get call status logic.
+- **`get_call_status()`** — Queries active call state from in-memory session store.
 
 ### All Endpoints
 
@@ -81,6 +81,42 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 |--------|------|---------|
 | `POST` | `/webhooks/call` | Telnyx webhook handler |
 | `GET` | `/webhooks/call/status` | Telnyx webhook handler |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+        
+        if not event_type or not call_control_id:
+            return jsonify({"error": "Missing required fields"}), 400
+        
+        # Handle call.initiated — inbound call received
+        if event_type == "call.initiated":
+            initialize_call_state(call_control_id, from_number)
+            # Answer the call
+            client.calls.actions.answer(call_control_id=call_control_id)
+            # Play the main menu prompt
+            menu_prompt = MENU_CONFIG["main"]["prompt"]
+            play_prompt(call_control_id, menu_prompt)
+            # Gather DTMF input
+            gather_dtmf(call_control_id)
+```
+
+The main endpoint processes the request:
+
+```python
+def handle_call_webhook():
+    """Handle inbound call events from Telnyx."""
+    try:
+        payload = request.get_json()
+        if not payload:
+            return jsonify({"error": "invalid request body"}), 400
+        
+        if not payload:
+            return jsonify({"error": "Empty payload"}), 400
+        
+```
+
 
 ## Step 3: Run It
 

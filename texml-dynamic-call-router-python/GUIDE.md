@@ -59,9 +59,9 @@ Everything lives in `app.py` (57 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`route_call()`** — Handles the route call logic.
-- **`handle_recording()`** — Handles the handle recording logic.
-- **`add_vip()`** — Handles the add vip logic.
+- **`route_call()`** — Processes route call request and returns result.
+- **`handle_recording()`** — Processes route call request and returns result.
+- **`add_vip()`** — Validates input and creates new vip.
 
 ### All Endpoints
 
@@ -72,6 +72,40 @@ Everything lives in `app.py` (57 lines). Here's what each piece does.
 | `POST` | `/vip` | Add Vip |
 | `GET` | `/calls` | List Calls |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def route_call():
+    caller = request.form.get("From", "")
+    called = request.form.get("To", "")
+    now = datetime.utcnow()
+    hour = now.hour
+    is_business_hours = 14 <= hour <= 23  # 9am-6pm ET in UTC
+    is_vip = caller in vip_callers
+    call_log.append({"caller": caller, "called": called, "time": now.isoformat(), "business_hours": is_business_hours, "vip": is_vip})
+    if is_vip:
+        texml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<Response><Say voice="female">Welcome back, valued customer. Connecting you now.</Say><Dial><Number>{BUSINESS_HOURS_NUMBER}</Number></Dial></Response>"""
+    elif is_business_hours:
+```
+
+The main endpoint processes the request:
+
+```python
+def route_call():
+    caller = request.form.get("From", "")
+    called = request.form.get("To", "")
+    now = datetime.utcnow()
+    hour = now.hour
+    is_business_hours = 14 <= hour <= 23  # 9am-6pm ET in UTC
+    is_vip = caller in vip_callers
+    call_log.append({"caller": caller, "called": called, "time": now.isoformat(), "business_hours": is_business_hours, "vip": is_vip})
+    if is_vip:
+        texml = f"""<?xml version="1.0" encoding="UTF-8"?>
+```
+
 
 ## Step 3: Run It
 

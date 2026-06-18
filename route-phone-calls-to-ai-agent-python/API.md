@@ -25,7 +25,7 @@ Records use these status values: `answered`, `call_answered`, `call_ended`, `eve
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

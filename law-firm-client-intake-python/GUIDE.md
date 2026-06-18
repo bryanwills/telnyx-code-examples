@@ -99,8 +99,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`ai_respond()`** — Sends conversation context to Telnyx AI Inference and returns the model's response. Uses the OpenAI-compatible chat completions endpoint.
-- **`check_conflict()`** — Handles the check conflict logic.
-- **`accept_intake()`** — Handles the accept intake logic.
+- **`check_conflict()`** — Processes check conflict request and returns result.
+- **`accept_intake()`** — Processes accept intake request and returns result.
 
 ### All Endpoints
 
@@ -111,6 +111,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/intakes/<int:idx>/accept` | Accept Intake |
 | `POST` | `/intakes/<int:idx>/decline` | Decline Intake |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def accept_intake(idx):
+    if idx >= len(intakes): return jsonify({"error":"Not found"}), 404
+    intake = intakes[idx]
+    intake["status"] = "accepted"
+    data = request.get_json() or {}
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    intake["attorney"] = data.get("attorney", "")
+    intake["consultation_time"] = data.get("time", "")
+    send_sms(intake["caller"], f"Harrison & Associates: Your consultation with {intake['attorney']} is scheduled for {intake['consultation_time']}. A $250 retainer deposit is required.")
+    if STRIPE_API_KEY:
+        try:
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+def check_conflict(party_name):
+    return any(c.lower() in party_name.lower() for c in existing_clients)
+
+@app.route("/webhooks/voice", methods=["POST"])
+def handle_voice():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    data = payload.get("data", {})
+    event = data.get("event_type")
+    ccid = data.get("call_control_id")
+```
+
 
 ## Step 3: Run It
 

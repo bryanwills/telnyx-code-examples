@@ -38,7 +38,9 @@ Create a new campaign.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -76,7 +78,9 @@ Send campaign.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -94,7 +98,9 @@ List all subscribers.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Campaign not found"
+}
 ```
 
 ---
@@ -118,7 +124,9 @@ Analytics.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -148,7 +156,11 @@ Records use these status values: `draft`, `ok`, `opted_in`, `opted_out`, `sent`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "total": 3,
+  "active": "example-value",
+  "opted_out": "example-value"
+}
 ```
 
 | Status | Meaning |

@@ -119,6 +119,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/exceptions` | List Exceptions |
 | `GET` | `/health` | Health check |
 
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def check_exceptions():
+    """Webhook from shipping provider - proactively notify customers of delivery issues"""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    tracking = data.get("tracking_number")
+    exception_type = data.get("exception", "delay")
+    customer_phone = data.get("customer_phone")
+    new_eta = data.get("new_eta", "unknown")
+    if customer_phone:
+        if exception_type == "delay":
+            send_sms(customer_phone, f"Update on your order: Your package ({tracking}) has been delayed. New estimated delivery: {new_eta}. We apologize for the inconvenience.")
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    requests.post(f"{API}/messages", headers=headers, json={"from": MAIN_NUMBER, "to": to, "text": text}, timeout=10)
+
+@app.route("/webhooks/sms", methods=["POST"])
+def handle_sms():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    data = payload.get("data", {}).get("payload", {})
+    sender = data.get("from", {}).get("phone_number", "")
+    text = data.get("text", "").strip()
+    order = lookup_order(text)
+    if order:
+        msg = f"Order {order['order_number']}: {order['status'].upper()}"
+```
+
+
 ## Step 3: Run It
 
 ```bash

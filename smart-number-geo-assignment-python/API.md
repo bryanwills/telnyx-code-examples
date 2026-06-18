@@ -21,7 +21,9 @@ Assign number.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -32,7 +34,9 @@ Assign number.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -44,7 +48,9 @@ Lookup and assign.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -54,7 +60,9 @@ Lookup and assign.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -66,7 +74,10 @@ Inventory.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "numbers": "example-value",
+  "total": 3
+}
 ```
 
 ---
@@ -90,7 +101,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "assignments": "example-value"
+}
 ```
 
 ---
@@ -100,7 +113,10 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "cached_numbers": "example-value"
+}
 ```
 
 | Status | Meaning |

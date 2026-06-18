@@ -23,7 +23,9 @@ Create a new brand.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "example-value"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -44,7 +46,9 @@ Create a new brand.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -56,7 +60,9 @@ List all brands.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -68,7 +74,9 @@ Create a new campaign.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "example-value"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -82,7 +90,9 @@ Create a new campaign.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -94,7 +104,9 @@ Update caller id.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "campaigns": []
+}
 ```
 
 | Field | Type | Required | Description |
@@ -104,7 +116,9 @@ Update caller id.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -116,7 +130,12 @@ Stir shaken status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "number": "example-value",
+  "cnam_enabled": "example-value",
+  "caller_id_name": "example-value",
+  "purchased_at": "2026-06-18T21:00:00Z"
+}
 ```
 
 ---
@@ -153,7 +172,10 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "campaigns": "example-value"
+}
 ```
 
 | Status | Meaning |

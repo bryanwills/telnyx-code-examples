@@ -98,6 +98,45 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/memos` | List Memos |
 | `GET` | `/health` | Health check |
 
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        active_calls[ccid] = {"caller": data.get("from"), "raw_text": [], "start": time.time()}
+        client.calls.actions.answer(ccid)
+        return jsonify({"status": "answering"}), 200
+    elif event_type == "call.answered":
+        client.calls.actions.speak(ccid, payload="Voice memo. Speak your memo after the tone. Press pound when finished.", voice="female", language_code="en-US")
+        return jsonify({"status": "greeting"}), 200
+    elif event_type == "call.speak.ended":
+        client.calls.actions.gather(ccid, input_type="speech", end_silence_timeout_secs=5, timeout_secs=120, language_code="en-US", terminating_digit="#")
+        return jsonify({"status": "recording"}), 200
+    elif event_type == "call.gather.ended":
+        call = active_calls.get(ccid)
+        speech = data.get("speech", {}).get("result", "")
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=400):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.3}, timeout=15)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+def send_email(to, subject, body):
+    try:
+        requests.post("https://api.telnyx.com/v2/messages", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+            json={"from": {"email_address": f"memo@{MEMO_NUMBER.replace('+','', timeout=10)}.telnyx.com"} if MEMO_NUMBER else {"email_address": "memo@telnyx.com"},
+                "to": [{"email_address": to}], "subject": subject, "body": body, "type": "email"}, timeout=15)
+    except Exception as e:
+        app.logger.error("Email send failed (expected - may need Telnyx email setup): %s", e)
+```
+
+
 ## Step 3: Run It
 
 ```bash

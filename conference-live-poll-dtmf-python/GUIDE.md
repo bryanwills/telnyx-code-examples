@@ -95,7 +95,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`invite()`** — Makes an API call and processes the response.
-- **`poll_results()`** — Handles the poll results logic.
+- **`poll_results()`** — Processes poll results request and returns result.
 
 ### All Endpoints
 

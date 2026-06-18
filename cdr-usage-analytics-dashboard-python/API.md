@@ -47,7 +47,11 @@ Peak hours.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "id": "abc-123",
+  "status": "active",
+  "created_at": "2026-06-18T21:00:00Z"
+}
 ```
 
 ---
@@ -59,7 +63,11 @@ Top routes.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "id": "abc-123",
+  "status": "active",
+  "created_at": "2026-06-18T21:00:00Z"
+}
 ```
 
 ---
@@ -109,7 +117,9 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "insights": "No data for analysis"
+}
 ```
 
 | Status | Meaning |

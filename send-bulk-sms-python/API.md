@@ -34,7 +34,9 @@ Send bulk sms endpoint.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -46,7 +48,12 @@ Bulk sms status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "service": "Telnyx Bulk SMS",
+  "status": "operational",
+  "rate_limit": "example-value",
+  "delay_between_messages": "example-value"
+}
 ```
 
 ---
@@ -56,7 +63,7 @@ Bulk sms status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

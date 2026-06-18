@@ -78,6 +78,44 @@ Everything lives in `app.py` (186 lines). Here's what each piece does.
 | `GET` | `/languages` | List Languages |
 | `GET` | `/health` | Health check |
 
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def translate_content():
+    """Upload audio and translate to target language with TTS output.
+
+    Multipart form: 'audio' file, 'source' language code, 'target' language code.
+    Pipeline: STT → translate → TTS.
+    """
+    if "audio" not in request.files:
+        return jsonify({"error": "Upload audio file as 'audio'"}), 400
+
+    source = request.form.get("source", "en")
+    target = request.form.get("target", "es")
+
+```
+
+Helper function that handles the core action:
+
+```python
+def translate_content():
+    """Upload audio and translate to target language with TTS output.
+
+    Multipart form: 'audio' file, 'source' language code, 'target' language code.
+    Pipeline: STT → translate → TTS.
+    """
+    if "audio" not in request.files:
+        return jsonify({"error": "Upload audio file as 'audio'"}), 400
+
+    source = request.form.get("source", "en")
+    target = request.form.get("target", "es")
+
+    if target not in LANGUAGES:
+        return jsonify({"error": f"Unsupported language: {target}", "supported": list(LANGUAGES.keys())}), 400
+```
+
+
 ## Step 3: Run It
 
 ```bash

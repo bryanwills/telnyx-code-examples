@@ -22,7 +22,11 @@ Setup bucket.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "bucket_created",
+  "bucket": "example-value",
+  "categories": "example-value"
+}
 ```
 
 ---
@@ -50,7 +54,9 @@ Upload media.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -62,7 +68,10 @@ List all media.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "media": "example-value",
+  "category": "example-value"
+}
 ```
 
 ---
@@ -74,7 +83,10 @@ Get media url.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "url": "https://api.telnyx.com/v2/...",
+  "item": "example-value"
+}
 ```
 
 ---
@@ -86,7 +98,11 @@ Ivr config.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "ivr_prompts": "example-value",
+  "hold_music": "example-value",
+  "usage": "Use these URLs in your TeXML Play or Call Control playback_audio commands"
+}
 ```
 
 ---
@@ -98,7 +114,11 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "total_media": 3,
+  "bucket": "example-value"
+}
 ```
 
 ---
@@ -112,7 +132,7 @@ Records use these status values: `bucket_created`, `ok`, `uploaded`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

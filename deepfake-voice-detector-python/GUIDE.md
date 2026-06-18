@@ -91,7 +91,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`extract_audio_features()`** — Handles the extract audio features logic.
+- **`extract_audio_features()`** — Processes extract audio features request and returns result.
 - **`analyze_with_inference()`** — Sends conversation context to Telnyx AI Inference and returns the model's response. Uses the OpenAI-compatible chat completions endpoint.
 - **`send_alert()`** — Sends notifications through configured channels (SMS, Slack, email) based on event severity.
 
@@ -104,6 +104,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/calls/<call_id>/analyze` | Force Analyze |
 | `GET` | `/calls` | List Calls |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def force_analyze(call_id):
+    """Force analysis of a call's collected audio."""
+    session = sessions.get(call_id)
+    if not session:
+        return jsonify({"error": "Call not found"}), 404
+    if not session["audio_chunks"]:
+        return jsonify({"error": "No audio collected yet"}), 400
+
+    features = extract_audio_features(session["audio_chunks"])
+    result = analyze_with_inference(features, call_id)
+    session["analysis"] = result
+    session["status"] = "deepfake_detected" if result.get("score", 0) >= DETECTION_THRESHOLD else "cleared"
+```
+
+Helper function that handles the core action:
+
+```python
+def analyze_with_inference(features, call_id):
+    """Send extracted features to Telnyx AI Inference for deepfake assessment."""
+    try:
+        resp = requests.post(INFERENCE_URL, headers=HEADERS, json={
+            "model": AI_MODEL,
+            "messages": [
+                {"role": "system", "content": "You are a voice forensics AI. Return only valid JSON."},
+                {"role": "user", "content": ANALYSIS_PROMPT.format(features=json.dumps(features, indent=2, timeout=10))}
+            ],
+            "max_tokens": 500,
+            "temperature": 0.1
+        }, timeout=15)
+        resp.raise_for_status()
+        content = resp.json()["choices"][0]["message"]["content"]
+```
+
 
 ## Step 3: Run It
 

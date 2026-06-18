@@ -66,7 +66,7 @@ data = request.get_json()
 
 - **`list_assistants()`** — Makes an API call and processes the response.
 - **`get_assistant()`** — Makes an API call and processes the response.
-- **`update_assistant()`** — Handles the update assistant logic.
+- **`update_assistant()`** — Patches assistant fields.
 
 ### All Endpoints
 

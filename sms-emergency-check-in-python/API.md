@@ -22,7 +22,9 @@ Add monitored.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -76,7 +78,9 @@ Get a specific status by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -105,7 +109,9 @@ Records use these status values: `escalated`, `handled`, `ignored`, `monitoring`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "sent": []
+}
 ```
 
 | Status | Meaning |

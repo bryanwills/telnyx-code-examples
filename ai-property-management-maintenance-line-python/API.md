@@ -25,7 +25,9 @@ List all orders.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -37,7 +39,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "work_orders": "example-value"
+}
 ```
 
 ---
@@ -51,7 +55,10 @@ Records use these status values: `answering`, `ended`, `greeting`, `listening`, 
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "work_orders": "example-value"
+}
 ```
 
 | Status | Meaning |

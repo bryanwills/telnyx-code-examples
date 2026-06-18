@@ -82,7 +82,7 @@ data = request.get_json()
 
 - **`list_rooms()`** — Makes an API call and processes the response.
 - **`moderate_message()`** — Makes an API call and processes the response.
-- **`get_log()`** — Handles the get log logic.
+- **`get_log()`** — Fetches log by ID with full details.
 
 ### All Endpoints
 

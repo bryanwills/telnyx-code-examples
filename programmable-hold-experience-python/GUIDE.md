@@ -79,6 +79,42 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/webhooks/voice` | Telnyx webhook handler |
 | `GET` | `/health` | Health check |
 
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        active_holds[ccid] = {"start": time.time(), "tip_idx": 0, "caller": data.get("from"), "offered_callback": False}
+        client.calls.actions.answer(ccid)
+        return jsonify({"status": "answering"}), 200
+    elif event_type == "call.answered":
+        wait_min = random.randint(2, 8)
+        client.calls.actions.speak(ccid, payload=f"Thank you for calling. Your estimated wait time is {wait_min} minutes. While you wait, here are some tips. Press 9 at any time for a callback instead.", voice="female", language_code="en-US")
+        return jsonify({"status": "greeting"}), 200
+    elif event_type == "call.speak.ended":
+        hold = active_holds.get(ccid)
+        if hold:
+            elapsed = int(time.time() - hold["start"])
+            if elapsed > 120 and not hold["offered_callback"]:
+```
+
+The main endpoint processes the request:
+
+```python
+def handle_voice():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    event_type = payload.get("data", {}).get("event_type")
+    ccid = payload.get("data", {}).get("call_control_id")
+    data = payload.get("data", {})
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        active_holds[ccid] = {"start": time.time(), "tip_idx": 0, "caller": data.get("from"), "offered_callback": False}
+        client.calls.actions.answer(ccid)
+```
+
+
 ## Step 3: Run It
 
 ```bash

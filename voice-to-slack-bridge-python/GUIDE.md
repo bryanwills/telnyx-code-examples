@@ -92,6 +92,42 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/messages` | List Messages |
 | `GET` | `/health` | Health check |
 
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        active_calls[ccid] = {"caller": data.get("from"), "messages": []}
+        client.calls.actions.answer(ccid)
+        return jsonify({"status": "answering"}), 200
+    elif event_type == "call.answered":
+        client.calls.actions.speak(ccid, payload="Slack bridge. Speak your message after the tone. Press pound when done.", voice="female", language_code="en-US")
+        return jsonify({"status": "greeting"}), 200
+    elif event_type == "call.speak.ended":
+        client.calls.actions.gather(ccid, input_type="speech", end_silence_timeout_secs=3, timeout_secs=60, language_code="en-US", terminating_digit="#")
+        return jsonify({"status": "listening"}), 200
+    elif event_type == "call.gather.ended":
+        call = active_calls.get(ccid)
+        speech = data.get("speech", {}).get("result", "")
+```
+
+The main endpoint processes the request:
+
+```python
+def handle_voice():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    event_type = payload.get("data", {}).get("event_type")
+    ccid = payload.get("data", {}).get("call_control_id")
+    data = payload.get("data", {})
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        active_calls[ccid] = {"caller": data.get("from"), "messages": []}
+        client.calls.actions.answer(ccid)
+```
+
+
 ## Step 3: Run It
 
 ```bash

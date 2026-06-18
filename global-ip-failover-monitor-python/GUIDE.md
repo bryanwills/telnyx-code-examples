@@ -54,7 +54,7 @@ Everything lives in `app.py` (93 lines). Here's what each piece does.
 ### Business Logic
 
 - **`list_endpoints()`** — Makes an API call and processes the response.
-- **`add_endpoint()`** — Handles the add endpoint logic.
+- **`add_endpoint()`** — Validates input and creates new endpoint.
 - **`run_health_check()`** — Health check endpoint for monitoring and load balancer probes.
 
 ### All Endpoints
@@ -67,6 +67,40 @@ Everything lives in `app.py` (93 lines). Here's what each piece does.
 | `GET` | `/failover-log` | Get Failover Log |
 | `GET` | `/regions` | Regions |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def add_endpoint():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    ep_id = data.get("id", f"ep-{int(time.time())}")
+    endpoints[ep_id] = {"id": ep_id, "ip_address": data.get("ip_address"),
+        "region": data.get("region"), "status": "healthy", "checks": 0, "failures": 0}
+    return jsonify({"status": "added", "endpoint": endpoints[ep_id]}), 200
+
+@app.route("/check", methods=["POST"])
+def run_health_check():
+    results = []
+```
+
+The main endpoint processes the request:
+
+```python
+def list_endpoints():
+    try:
+        resp = requests.get(f"{API}/global_ip_assignments", headers=headers, timeout=15)
+        data = resp.json().get("data", [])
+        for ep in data:
+            ep_id = ep.get("id")
+            if ep_id not in endpoints:
+                endpoints[ep_id] = {"id": ep_id, "ip_address": ep.get("ip_address"),
+                    "region": ep.get("region"), "status": "healthy", "checks": 0, "failures": 0}
+        return jsonify({"endpoints": list(endpoints.values())}), 200
+```
+
 
 ## Step 3: Run It
 

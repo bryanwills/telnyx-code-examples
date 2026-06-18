@@ -89,7 +89,7 @@ data = request.get_json()
 ### Business Logic
 
 - **`list_brands()`** — Makes an API call and processes the response.
-- **`update_caller_id()`** — Handles the update caller id logic.
+- **`update_caller_id()`** — Patches caller id fields.
 - **`stir_shaken_status()`** — Makes an API call and processes the response.
 
 ### All Endpoints

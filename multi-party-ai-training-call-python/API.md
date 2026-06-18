@@ -36,7 +36,9 @@ Start training.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -63,7 +65,9 @@ Get session detail.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -91,7 +95,9 @@ List all scenarios.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "not found"
+}
 ```
 
 ---
@@ -103,7 +109,12 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "active_sessions": "example-value",
+  "total": 3,
+  "scenarios": "example-value"
+}
 ```
 
 ---
@@ -117,7 +128,7 @@ Records use these status values: `active`, `completed`, `dialing`, `hangup`, `jo
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

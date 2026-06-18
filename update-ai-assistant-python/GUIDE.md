@@ -68,6 +68,39 @@ Server starts on `http://localhost:5000`.
 curl http://localhost:5000/health
 ```
 
+## Key Code
+
+The update endpoint patches an existing AI Assistant:
+
+```python
+def update_assistant(
+    assistant_id: str,
+    name: str = None,
+    instructions: str = None,
+    model: str = None,
+    enabled_features: list = None,
+) -> dict:
+    """Update an AI assistant and return JSON-serializable response data."""
+    # Build update payload with only provided fields
+    update_params = {}
+    
+    if name is not None:
+        update_params["name"] = name
+async def update_assistant_endpoint(assistant_id: str, request: UpdateAssistantRequest):
+    """HTTP endpoint to update an AI assistant."""
+    try:
+        result = update_assistant(
+            assistant_id=assistant_id,
+            name=request.name,
+            instructions=request.instructions,
+            model=request.model,
+            enabled_features=request.enabled_features,
+        )
+        return result
+        
+    except telnyx.AuthenticationError:
+```
+
 ## Going to Production
 
 This example uses in-memory storage for simplicity. For production:

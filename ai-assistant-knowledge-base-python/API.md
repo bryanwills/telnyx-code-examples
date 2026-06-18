@@ -34,7 +34,9 @@ Add document.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -46,7 +48,10 @@ Ask question.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "documents": [],
+  "total_chunks": "example-value"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -57,7 +62,9 @@ Ask question.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -69,7 +76,9 @@ List all documents.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -99,7 +108,11 @@ Records use these status values: `indexed`, `ok`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "documents": "example-value",
+  "chunks": "example-value"
+}
 ```
 
 | Status | Meaning |

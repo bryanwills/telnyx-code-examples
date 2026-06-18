@@ -24,7 +24,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "No payload"
+}
 ```
 
 ---
@@ -38,7 +40,10 @@ Records use these status values: `answering`, `call_ended`, `event_received`, `g
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "active_calls": "example-value"
+}
 ```
 
 | Status | Meaning |

@@ -21,7 +21,9 @@ Generate commercial.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -48,7 +50,9 @@ Get a specific campaign by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -60,7 +64,9 @@ List all campaigns.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Campaign not found"
+}
 ```
 
 ---
@@ -72,7 +78,10 @@ List all options.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "spot_lengths": "example-value",
+  "tones": "example-value"
+}
 ```
 
 ---
@@ -84,7 +93,11 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "total_campaigns": "example-value",
+  "version": "1.0.0"
+}
 ```
 
 ---
@@ -98,7 +111,7 @@ Records use these status values: `complete`, `failed`, `ok`, `rendering`, `writi
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{"error": "Description of what went wrong"}
 ```
 
 | Status | Meaning |

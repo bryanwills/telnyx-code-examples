@@ -64,7 +64,7 @@ Everything lives in `app.py` (52 lines). Here's what each piece does.
 ### Business Logic
 
 - **`analyze_call()`** — Sends conversation context to Telnyx AI Inference and returns the model's response. Uses the OpenAI-compatible chat completions endpoint.
-- **`get_insights()`** — Handles the get insights logic.
+- **`get_insights()`** — Fetches insights by ID with full details.
 
 ### All Endpoints
 
@@ -73,6 +73,44 @@ Everything lives in `app.py` (52 lines). Here's what each piece does.
 | `POST` | `/analyze` | Analyze Call |
 | `GET` | `/insights` | Get Insights |
 | `GET` | `/health` | Health check |
+
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=600):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.2}, timeout=20)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+@app.route("/analyze", methods=["POST"])
+def analyze_call():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    transcript = data.get("transcript", "")
+    outcome = data.get("outcome", "unknown")
+    if not transcript:
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def analyze_call():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    transcript = data.get("transcript", "")
+    outcome = data.get("outcome", "unknown")
+    if not transcript:
+        return jsonify({"error": "transcript required"}), 400
+    msgs = [{"role": "system", "content": "Analyze this sales call for competitive intelligence. Return JSON: outcome (won/lost/pending), competitors_mentioned (list), competitor_strengths_cited (list of {competitor, strength}), competitor_weaknesses_cited (list of {competitor, weakness}), our_strengths (list), our_weaknesses (list), price_discussed (boolean), price_objection (boolean), decision_factors (list ranked by importance), rep_performance (1-10), win_loss_reason (string), recommendation (string for future calls)."},
+        {"role": "user", "content": f"Outcome: {outcome}\n\nTranscript:\n{transcript}"}]
+    analysis = call_inference(msgs)
+    try:
+```
+
 
 ## Step 3: Run It
 

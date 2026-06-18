@@ -25,7 +25,9 @@ Get audit results.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "No payload"
+}
 ```
 
 ---
@@ -37,7 +39,14 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "total_audited": "example-value",
+  "compliance_rate": "example-value",
+  "violations": "example-value",
+  "avg_risk_score": "example-value",
+  "recent_results": "example-value",
+  "recent_violations": "example-value"
+}
 ```
 
 ---
@@ -51,7 +60,11 @@ Records use these status values: `call_ended`, `event_received`, `ok`, `recordin
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "calls_tracking": "example-value",
+  "total_audited": "example-value"
+}
 ```
 
 | Status | Meaning |

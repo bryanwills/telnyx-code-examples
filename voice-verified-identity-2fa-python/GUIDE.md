@@ -101,6 +101,46 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/webhooks/voice` | Telnyx webhook handler |
 | `GET` | `/health` | Health check |
 
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    # --- Inbound call: look up number, start verification ---
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        caller = data.get("from", "")
+        lookup = number_lookup(caller)
+        carrier = lookup.get("carrier", {}).get("name", "Unknown")
+        number_type = lookup.get("phone_number", {}).get("type", "unknown")
+
+        sessions[call_control_id] = {
+            "caller": caller,
+            "carrier": carrier,
+            "number_type": number_type,
+            "verified": False,
+            "verification_sent": False,
+            "conversation": [{"role": "system", "content": SYSTEM_PROMPT}],
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=150):
+    """Call Telnyx Inference for conversation."""
+    resp = requests.post(
+        INFERENCE_URL,
+        headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.3},
+        timeout=15,
+    )
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+
+@app.route("/webhooks/voice", methods=["POST"])
+def handle_voice():
+```
+
+
 ## Step 3: Run It
 
 ```bash

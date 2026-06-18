@@ -50,8 +50,8 @@ Everything lives in `app.py` (115 lines). Here's what each piece does.
 ### Business Logic
 
 - **`chat_completion()`** — Makes an API call and processes the response.
-- **`simple_ask()`** — Handles the simple ask logic.
-- **`chat_endpoint()`** — Handles the chat endpoint logic.
+- **`simple_ask()`** — Processes simple ask request and returns result.
+- **`chat_endpoint()`** — Processes simple ask request and returns result.
 
 ### All Endpoints
 
@@ -60,6 +60,44 @@ Everything lives in `app.py` (115 lines). Here's what each piece does.
 | `POST` | `/inference/chat` | Chat Endpoint |
 | `POST` | `/inference/ask` | Ask Endpoint |
 | `GET` | `/health` | Health check |
+
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def chat_completion(messages, model=None, max_tokens=500, temperature=0.7):
+    """Send a chat completion request to Telnyx Inference API.
+
+    The API is OpenAI-compatible — same request/response format, different endpoint.
+    """
+    response = requests.post(
+        INFERENCE_URL,
+        headers={
+            "Authorization": f"Bearer {TELNYX_API_KEY}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "model": model or AI_MODEL,
+            "messages": messages,
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def chat_endpoint():
+    """HTTP endpoint for chat completions — pass through to Telnyx Inference."""
+    data = request.get_json()
+    if not data or "messages" not in data:
+        return jsonify({"error": "Request body must include 'messages' array"}), 400
+
+    try:
+        result = chat_completion(
+            messages=data["messages"],
+            model=data.get("model"),
+            max_tokens=data.get("max_tokens", 500),
+            temperature=data.get("temperature", 0.7),
+```
+
 
 ## Step 3: Run It
 

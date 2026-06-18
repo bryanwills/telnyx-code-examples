@@ -48,7 +48,9 @@ List all runs.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -60,7 +62,9 @@ List all actions.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "runs": "example-value"
+}
 ```
 
 ---
@@ -85,7 +89,9 @@ Health check and service status.
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "actions": "example-value"
+}
 ```
 
 | Status | Meaning |

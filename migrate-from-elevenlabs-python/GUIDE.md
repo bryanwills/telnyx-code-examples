@@ -72,8 +72,8 @@ Everything lives in `app.py` (98 lines). Here's what each piece does.
 ### Business Logic
 
 - **`audit_elevenlabs()`** — Makes an API call and processes the response.
-- **`migrate_voice()`** — Handles the migrate voice logic.
-- **`voice_mapping()`** — Handles the voice mapping logic.
+- **`migrate_voice()`** — Processes migrate voice request and returns result.
+- **`voice_mapping()`** — Maps voice names to TTS engine voice IDs.
 
 ### All Endpoints
 
@@ -86,6 +86,40 @@ Everything lives in `app.py` (98 lines). Here's what each piece does.
 | `POST` | `/test-tts` | Test Tts |
 | `GET` | `/migration-log` | Get Log |
 | `GET` | `/health` | Health check |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def migrate_voice():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    el_voice = data.get("elevenlabs_voice_name", "")
+    mapping = VOICE_MAP.get(el_voice, {})
+    if not mapping:
+        return jsonify({"error": f"No auto-mapping for '{el_voice}'. Use /mapping/voices to find similar.",
+            "suggestion": "en-US-Neural2-F (default female) or en-US-Neural2-D (default male)"}), 200
+    telnyx_config = {"voice": {"provider": "telnyx",
+        "settings": {"voice_id": mapping["telnyx"], "speed": data.get("speed", 1.0)}}}
+    migration_log.append({"action": "voice_migration", "from": el_voice,
+```
+
+The main endpoint processes the request:
+
+```python
+def audit_elevenlabs():
+    if not ELEVENLABS_API_KEY:
+        return jsonify({"error": "ELEVENLABS_API_KEY not configured"}), 400
+    try:
+        resp = requests.get("https://api.elevenlabs.io/v1/voices",
+            headers={"xi-api-key": ELEVENLABS_API_KEY}, timeout=15)
+        voices = resp.json().get("voices", []) if resp.ok else []
+        audit = []
+        for v in voices:
+            telnyx_match = VOICE_MAP.get(v.get("name"), {})
+```
+
 
 ## Step 3: Run It
 

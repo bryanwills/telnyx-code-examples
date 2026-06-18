@@ -76,7 +76,7 @@ data = request.get_json()
 
 - **`check_verification()`** — Makes an API call and processes the response.
 - **`escalate_channel()`** — Makes an API call and processes the response.
-- **`cascade_verify()`** — Handles the cascade verify logic.
+- **`cascade_verify()`** — Processes cascade verify request and returns result.
 
 ### All Endpoints
 

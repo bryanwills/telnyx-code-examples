@@ -55,13 +55,47 @@ Everything lives in `app.py` (86 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`chat_endpoint()`** — Handles the chat endpoint logic.
+- **`chat_endpoint()`** — Processes chat endpoint request and returns result.
 
 ### All Endpoints
 
 | Method | Path | Purpose |
 |--------|------|---------|
 | `POST` | `/chat` | Chat Endpoint |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def chat_endpoint():
+    """HTTP endpoint to chat with an AI Assistant."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    
+    if not data:
+        return jsonify({"error": "Request body required"}), 400
+    
+    user_message = data.get("message")
+    assistant_id = data.get("assistant_id") or os.getenv("AI_ASSISTANT_ID")
+    
+```
+
+The main endpoint processes the request:
+
+```python
+def chat_endpoint():
+    """HTTP endpoint to chat with an AI Assistant."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    
+    if not data:
+        return jsonify({"error": "Request body required"}), 400
+    
+    user_message = data.get("message")
+```
+
 
 ## Step 3: Run It
 

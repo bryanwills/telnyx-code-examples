@@ -109,8 +109,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`telnyx_post()`** — Makes an API call and processes the response.
-- **`translate()`** — Handles the translate logic.
-- **`list_sessions()`** — Handles the list sessions logic.
+- **`translate()`** — Processes translate request and returns result.
+- **`list_sessions()`** — Processes translate request and returns result.
 
 ### All Endpoints
 

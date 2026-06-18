@@ -107,7 +107,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 - **`telnyx_post()`** — Makes an API call and processes the response.
 - **`post_slack()`** — Makes an API call and processes the response.
-- **`handle_media()`** — Handles the handle media logic.
+- **`handle_media()`** — Processes inbound media event.
 
 ### All Endpoints
 

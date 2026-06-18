@@ -54,9 +54,9 @@ Everything lives in `app.py` (201 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`request_otp()`** — Handles the request otp logic.
-- **`verify_otp_endpoint()`** — Handles the verify otp endpoint logic.
-- **`otp_status()`** — Handles the otp status logic.
+- **`request_otp()`** — Processes request otp request and returns result.
+- **`verify_otp_endpoint()`** — Processes verify otp endpoint request and returns result.
+- **`otp_status()`** — Processes otp status request and returns result.
 
 ### All Endpoints
 
@@ -65,6 +65,40 @@ Everything lives in `app.py` (201 lines). Here's what each piece does.
 | `POST` | `/auth/request-otp` | Request Otp |
 | `POST` | `/auth/verify-otp` | Verify Otp Endpoint |
 | `GET` | `/auth/otp-status` | Otp Status |
+
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def request_otp():
+    """Request an OTP to be sent to the provided phone number."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    
+    if not data:
+        return jsonify({"error": "Request body required"}), 400
+    
+    phone_number = data.get("phone_number")
+    
+    if not phone_number:
+```
+
+The main endpoint processes the request:
+
+```python
+def request_otp():
+    """Request an OTP to be sent to the provided phone number."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    
+    if not data:
+        return jsonify({"error": "Request body required"}), 400
+    
+    phone_number = data.get("phone_number")
+```
+
 
 ## Step 3: Run It
 

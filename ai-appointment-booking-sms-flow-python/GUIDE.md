@@ -83,6 +83,46 @@ Webhook handlers process events from Telnyx:
 | `GET` | `/bookings` | List Bookings |
 | `GET` | `/health` | Health check |
 
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if data.get("event_type") != "message.received" or data.get("direction") != "inbound":
+        return jsonify({"status": "ignored"}), 200
+    phone = data.get("from", {}).get("phone_number", "")
+    text = data.get("text", "").strip()
+    if not phone: return jsonify({"status": "ignored"}), 200
+    session = sessions.get(phone, {"step": "start"})
+    if text.upper() == "BOOK" or session["step"] == "start":
+        avail = [s for s in slots if s["available"]]
+        if not avail:
+            send_sms(phone, "Sorry, no slots available right now. Check back later!")
+            return jsonify({"status": "no_slots"}), 200
+        msg = "Available times:\n" + chr(10).join(f"{s['id']}. {s['day']} {s['time']}" for s in avail) + "\n\nReply with the number to book."
+        send_sms(phone, msg)
+```
+
+Helper function that handles the core action:
+
+```python
+def send_sms(to, text):
+    try:
+        requests.post("https://api.telnyx.com/v2/messages", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+            json={"from": BOOKING_NUMBER, "to": to, "text": text, "messaging_profile_id": MESSAGING_PROFILE_ID}, timeout=10)
+    except Exception as e:
+        app.logger.error("SMS failed: %s", e)
+
+@app.route("/webhooks/messaging", methods=["POST"])
+def handle_sms():
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "invalid request body"}), 400
+    data = payload.get("data", {})
+    if data.get("event_type") != "message.received" or data.get("direction") != "inbound":
+```
+
+
 ## Step 3: Run It
 
 ```bash

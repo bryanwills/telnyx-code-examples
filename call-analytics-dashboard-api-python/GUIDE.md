@@ -70,6 +70,23 @@ Everything lives in `app.py` (66 lines). Here's what each piece does.
 | `GET` | `/analytics/messaging` | Messaging Analytics |
 | `GET` | `/health` | Health check |
 
+
+The main endpoint processes the request:
+
+```python
+def call_analytics():
+    days = int(request.args.get("days", 7))
+    start = (datetime.utcnow() - timedelta(days=days)).strftime("%Y-%m-%dT00:00:00Z")
+    try:
+        resp = requests.get("https://api.telnyx.com/v2/reports/call_events", headers={"Authorization": f"Bearer {TELNYX_API_KEY}"},
+            params={"filter[start_time][gte]": start, "page[size]": 250}, timeout=30)
+        if resp.ok:
+            data = resp.json().get("data", [])
+            total = len(data)
+            inbound = sum(1 for d in data if d.get("direction") == "inbound")
+```
+
+
 ## Step 3: Run It
 
 ```bash

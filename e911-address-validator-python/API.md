@@ -20,7 +20,9 @@ Validate address.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -36,7 +38,9 @@ Validate address.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -48,7 +52,9 @@ Assign e911.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -59,7 +65,9 @@ Assign e911.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -71,7 +79,9 @@ List all addresses.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "addresses": []
+}
 ```
 
 ---
@@ -100,7 +110,10 @@ Records use these status values: `assigned`, `ok`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "addresses": "example-value"
+}
 ```
 
 | Status | Meaning |

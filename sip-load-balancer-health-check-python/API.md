@@ -94,7 +94,9 @@ Get a specific log by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "results": []
+}
 ```
 
 ---
@@ -120,7 +122,10 @@ Records use these status values: `added`, `healthy`, `ok`, `unknown`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "No healthy endpoints",
+  "fallback": "primary"
+}
 ```
 
 | Status | Meaning |

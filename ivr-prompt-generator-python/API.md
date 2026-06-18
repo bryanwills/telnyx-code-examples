@@ -22,7 +22,9 @@ Generate prompts.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -37,7 +39,9 @@ Generate prompts.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -63,7 +67,9 @@ Preview prompt.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Prompt set not found"
+}
 ```
 
 ---
@@ -81,7 +87,9 @@ Get prompt set.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -93,7 +101,9 @@ Get prompt types.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Not found"
+}
 ```
 
 ---
@@ -105,7 +115,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "types": "example-value"
+}
 ```
 
 ---
@@ -119,7 +131,11 @@ Records use these status values: `calling`, `complete`, `failed`, `ok`, `renderi
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "total_sets": "example-value",
+  "version": "1.0.0"
+}
 ```
 
 | Status | Meaning |

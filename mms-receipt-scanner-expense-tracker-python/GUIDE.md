@@ -72,7 +72,7 @@ Everything lives in `app.py` (102 lines). Here's what each piece does.
 
 ### Business Logic
 
-- **`handle_mms()`** — Handles the handle mms logic.
+- **`handle_mms()`** — Processes inbound MMS, extracts media, stores attachments.
 
 ### All Endpoints
 
@@ -80,6 +80,46 @@ Everything lives in `app.py` (102 lines). Here's what each piece does.
 |--------|------|---------|
 | `POST` | `/webhooks/messaging` | Telnyx webhook handler |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    data = payload.get("data", {})
+    if data.get("event_type") != "message.received" or data.get("direction") != "inbound":
+        return jsonify({"status": "ignored"}), 200
+    from_number = data.get("from", {}).get("phone_number", "")
+    text = data.get("text", "").strip().lower()
+    media = data.get("media", [])
+
+    if not from_number:
+        return jsonify({"status": "ignored"}), 200
+
+    if from_number not in expenses:
+        expenses[from_number] = []
+
+    # Handle commands
+```
+
+The inference helper sends conversation context to Telnyx AI and returns the response:
+
+```python
+def call_inference(messages, max_tokens=300):
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.2}, timeout=15)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+def send_sms(to, text):
+    try:
+        requests.post("https://api.telnyx.com/v2/messages", headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+            json={"from": BOT_NUMBER, "to": to, "text": text}, timeout=10)
+    except requests.RequestException as e:
+        app.logger.error("SMS failed: %s", e)
+
+@app.route("/webhooks/messaging", methods=["POST"])
+```
+
 
 ## Step 3: Run It
 

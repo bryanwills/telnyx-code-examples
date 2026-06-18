@@ -67,7 +67,9 @@ Retake.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -79,7 +81,9 @@ Get a specific project by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Project not found"
+}
 ```
 
 ---
@@ -91,7 +95,9 @@ List all projects.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Project not found"
+}
 ```
 
 ---
@@ -127,7 +133,9 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "styles": "example-value"
+}
 ```
 
 ---
@@ -141,7 +149,12 @@ Records use these status values: `complete`, `directing`, `failed`, `ok`, `rende
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "status": "ok",
+  "total_projects": "example-value",
+  "bucket": "example-value",
+  "version": "1.0.0"
+}
 ```
 
 | Status | Meaning |

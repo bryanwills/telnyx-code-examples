@@ -73,7 +73,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`inject_audio()`** — Makes an API call and processes the response.
-- **`list_streams()`** — Handles the list streams logic.
+- **`list_streams()`** — Returns all streams with metadata and pagination.
 
 ### All Endpoints
 
@@ -84,6 +84,44 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/streams` | List Streams |
 | `GET` | `/stream-log` | Get Log |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+    ccid = data.get("call_control_id")
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        try:
+            requests.post(f"{API}/calls/{ccid}/actions/answer", headers=headers, json={}, timeout=10)
+        except Exception:
+            pass
+        return jsonify({"status": "answering"}), 200
+    elif event_type == "call.answered":
+        try:
+            requests.post(f"{API}/calls/{ccid}/actions/streaming_start", headers=headers,
+                json={"stream_url": os.getenv("STREAM_WEBSOCKET_URL", "wss://your-server/stream", timeout=10),
+                    "stream_track": "both_tracks", "enable_dialogflow": False}, timeout=10)
+            active_streams[ccid] = {"started": time.strftime("%Y-%m-%dT%H:%M:%SZ"), "status": "streaming"}
+        except Exception as e:
+```
+
+The trigger endpoint kicks off the workflow:
+
+```python
+def inject_audio(ccid):
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "invalid request body"}), 400
+    audio_url = data.get("audio_url")
+    if audio_url:
+        try:
+            requests.post(f"{API}/calls/{ccid}/actions/playback_start", headers=headers,
+                json={"audio_url": audio_url, "overlay": data.get("overlay", True, timeout=10)}, timeout=10)
+            return jsonify({"status": "injecting", "audio": audio_url}), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+```
+
 
 ## Step 3: Run It
 

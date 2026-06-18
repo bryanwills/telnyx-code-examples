@@ -22,7 +22,9 @@ Create a new webinar.
 ### Request
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "example-value"
+}
 ```
 
 | Field | Type | Required | Description |
@@ -36,7 +38,9 @@ Create a new webinar.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -48,7 +52,9 @@ Get a specific recordings by ID.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Error description"
+}
 ```
 
 ---
@@ -72,7 +78,9 @@ Transcribe recording.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "invalid request body"
+}
 ```
 
 ---
@@ -126,7 +134,9 @@ Records use these status values: `ok`, `scheduled`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "webinars": "example-value"
+}
 ```
 
 | Status | Meaning |

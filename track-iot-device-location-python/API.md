@@ -32,7 +32,9 @@ Get device location.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "devices": []
+}
 ```
 
 ---
@@ -44,7 +46,9 @@ Get location only.
 ### Response `200`
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Invalid SIM card ID format"
+}
 ```
 
 ---
@@ -72,7 +76,9 @@ Records use these status values: `healthy`, `unhealthy`
 All endpoints return JSON. On error:
 
 ```json
-{ "status": "ok", "data": { } }
+{
+  "error": "Invalid SIM card ID format"
+}
 ```
 
 | Status | Meaning |

@@ -75,8 +75,8 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`analyze_segment()`** — Sends conversation context to Telnyx AI Inference and returns the model's response. Uses the OpenAI-compatible chat completions endpoint.
-- **`dashboard()`** — Handles the dashboard logic.
-- **`api_calls()`** — Handles the api calls logic.
+- **`dashboard()`** — Processes dashboard request and returns result.
+- **`api_calls()`** — Processes dashboard request and returns result.
 
 ### All Endpoints
 
@@ -86,6 +86,46 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/dashboard` | Dashboard |
 | `GET` | `/api/calls` | Api Calls |
 | `GET` | `/health` | Health check |
+
+
+The webhook handler is the core state machine. Each Telnyx event triggers the next action:
+
+```python
+
+    if event_type == "call.initiated" and data.get("direction") == "incoming":
+        call_intel[call_control_id] = {
+            "from_number": data.get("from", "unknown"),
+            "to_number": data.get("to", "unknown"),
+            "transcript": [],
+            "sentiment_scores": [],
+            "avg_sentiment": 0.5,
+            "competitor_mentions": [],
+            "alerts": [],
+            "latest_text": "",
+            "start_time": time.time(),
+            "duration": 0,
+        }
+```
+
+Helper function that handles the core action:
+
+```python
+def analyze_segment(text):
+    """Analyze a transcript segment for sentiment and signals."""
+    messages = [
+        {"role": "system", "content": (
+            "Analyze this call segment. Return JSON: "
+            "sentiment (0.0-1.0, 0=negative, 1=positive), "
+            "competitor_mentioned (string or null), "
+            "objection_detected (boolean), "
+            "buying_signal (boolean), "
+            "suggested_response (string or null — coaching tip for the rep if sentiment is low or objection detected)."
+        )},
+        {"role": "user", "content": text},
+    ]
+    try:
+```
+
 
 ## Step 3: Run It
 

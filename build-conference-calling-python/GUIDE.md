@@ -83,7 +83,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 
 ### Business Logic
 
-- **`add_participant_endpoint()`** — Handles the add participant endpoint logic.
+- **`add_participant_endpoint()`** — Validates input and creates new participant endpoint.
 - **`end_conference_endpoint()`** — Manages the conference bridge — adding participants, muting, and tracking active speakers.
 - **`get_conference_status_endpoint()`** — Manages the conference bridge — adding participants, muting, and tracking active speakers.
 
