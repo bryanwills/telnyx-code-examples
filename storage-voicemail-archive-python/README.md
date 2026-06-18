@@ -4,7 +4,7 @@ title: "Storage Voicemail Archive"
 description: "Storage Voicemail Archive — record voicemails to Telnyx Cloud Storage with search."
 language: python
 framework: flask
-telnyx_products: [Cloud Storage, Migration, Number Porting, Voice]
+telnyx_products: [Cloud Storage, Voice, Call Recording]
 channel: [voice]
 ---
 

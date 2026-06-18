@@ -4,7 +4,7 @@ title: "Maintenance Request Dispatch"
 description: "Tenant texts issue, AI categorizes and estimates cost, auto-dispatches vendor for routine work, manager approves orders over $500 via SMS reply."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [AI Inference, Messaging]
 integrations: [Slack]
 channel: [sms]
 ---

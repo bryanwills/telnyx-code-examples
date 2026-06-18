@@ -4,7 +4,7 @@ title: "Global Lead Response Engine"
 description: "Global Lead Response Engine — multi-language AI qualification with live transfer and omnichannel follow-up."
 language: python
 framework: flask
-telnyx_products: [SMS/MMS, AI Inference, Number Lookup]
+telnyx_products: [Voice AI, SMS/MMS, AI Inference, Number Lookup]
 channel: [voice]
 ---
 

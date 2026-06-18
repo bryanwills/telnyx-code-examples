@@ -4,7 +4,7 @@ title: "Production-ready Flask application for Whisper-based call prompts via Te
 description: "Voice application. Built with Telnyx AI Assistants, Migration, Number Porting, SMS/MMS."
 language: python
 framework: flask
-telnyx_products: [AI Assistants, Migration, Number Porting, SMS/MMS, Voice]
+telnyx_products: [AI Assistants, SMS/MMS, Voice, Call Recording]
 ---
 
 # Production-ready Flask application for Whisper-based call prompts via Telnyx.

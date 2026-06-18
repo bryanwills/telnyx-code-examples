@@ -4,7 +4,7 @@ title: "Service Booking & Dispatch"
 description: "Customer calls HVAC/plumber/electrician, AI checks tech availability, books slot, collects deposit via Stripe, texts confirmation to customer and tech."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference]
+telnyx_products: [Voice, AI Inference, Messaging]
 integrations: [Stripe, Slack]
 channel: [voice]
 ---

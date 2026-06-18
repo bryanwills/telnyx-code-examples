@@ -4,7 +4,7 @@ title: "Law Firm Client Intake"
 description: "AI answers after-hours calls, screens case type, collects facts, runs conflict check, books consultation via Calendly, collects retainer deposit via Stripe."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference]
+telnyx_products: [Voice, AI Inference, Messaging]
 integrations: [Stripe, Calendly, Slack]
 channel: [voice]
 ---

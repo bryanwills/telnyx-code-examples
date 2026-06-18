@@ -4,7 +4,7 @@ title: "Production-ready Flask application for eSIM provisioning via Telnyx."
 description: "Application. Built with Telnyx IoT/SIM, Migration, Number Porting."
 language: python
 framework: flask
-telnyx_products: [IoT/SIM, Migration, Number Porting]
+telnyx_products: [IoT/SIM]
 ---
 
 # Production-ready Flask application for eSIM provisioning via Telnyx.

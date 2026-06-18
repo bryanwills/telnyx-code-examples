@@ -4,7 +4,7 @@ title: "Compliance Call Recorder + AI Auditor"
 description: "Compliance Call Recorder + AI Auditor — auto-record, batch-process with AI, flag violations, create tickets."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference, Call Recording]
 channel: [voice]
 ---
 

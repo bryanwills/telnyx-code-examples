@@ -4,7 +4,7 @@ title: "AI Sales Call with Live CRM Updates"
 description: "AI Sales Call with Live CRM Updates — multi-participant call with real-time deal intelligence."
 language: python
 framework: flask
-telnyx_products: [SMS/MMS, AI Inference]
+telnyx_products: [Voice AI, SMS/MMS, AI Inference]
 channel: [voice]
 ---
 

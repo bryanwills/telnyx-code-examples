@@ -4,7 +4,7 @@ title: "Build a complete voice AI agent with Telnyx"
 description: "Build a complete voice AI agent with Telnyx — inbound call handling, AI conversation, and call control."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 channel: [voice]
 ---
 

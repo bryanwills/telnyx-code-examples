@@ -4,7 +4,7 @@ title: "AI Voice Memo to Email"
 description: "AI Voice Memo to Email — call a number, dictate a memo, AI cleans it up and sends it as a formatted email via Telnyx."
 language: python
 framework: flask
-telnyx_products: [SMS/MMS, AI Inference]
+telnyx_products: [Voice AI, SMS/MMS, AI Inference, Call Recording]
 channel: [voice]
 ---
 

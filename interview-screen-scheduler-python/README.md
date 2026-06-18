@@ -4,7 +4,7 @@ title: "Interview Screen & Scheduler"
 description: "Candidate applies, AI calls for 5-min phone screen, scores answers, books qualified candidates on hiring manager's calendar. Integrates with Greenhouse ATS and Google Calendar."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference]
+telnyx_products: [Voice, AI Inference, Messaging]
 integrations: [Greenhouse, Slack]
 channel: [voice]
 ---

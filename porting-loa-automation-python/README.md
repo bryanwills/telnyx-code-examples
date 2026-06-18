@@ -4,7 +4,7 @@ title: "Porting LOA Automation"
 description: "Porting LOA Automation — automate Letter of Authorization generation and porting order submission."
 language: python
 framework: flask
-telnyx_products: [Migration, Missions, Number Porting]
+telnyx_products: [Missions, Number Porting]
 ---
 
 # Porting LOA Automation

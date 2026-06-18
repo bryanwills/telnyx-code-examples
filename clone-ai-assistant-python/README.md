@@ -4,7 +4,7 @@ title: "Production-ready Flask application for cloning AI Assistants via Telnyx.
 description: "Application. Built with Telnyx AI Assistants, Migration, Number Porting."
 language: python
 framework: flask
-telnyx_products: [AI Assistants, Migration, Number Porting]
+telnyx_products: [AI Assistants]
 ---
 
 # Production-ready Flask application for cloning AI Assistants via Telnyx.

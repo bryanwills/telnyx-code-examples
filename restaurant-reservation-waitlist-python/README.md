@@ -4,7 +4,7 @@ title: "Restaurant Reservation & Waitlist"
 description: "AI answers calls, checks table availability, books or adds to waitlist, texts when table is ready. Host reviews large party requests."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference]
+telnyx_products: [Voice, AI Inference, Messaging]
 integrations: [Slack]
 channel: [voice]
 ---

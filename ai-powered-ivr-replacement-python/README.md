@@ -4,7 +4,7 @@ title: "AI-Powered IVR Replacement"
 description: "AI-Powered IVR Replacement — natural language routing with A/B testing and structured insights."
 language: python
 framework: flask
-telnyx_products: [AI Assistants, Migration, Number Porting]
+telnyx_products: [Voice AI, AI Assistants]
 ---
 
 # AI-Powered IVR Replacement
@@ -29,14 +29,21 @@ This app handles these webhook events ([Call Control docs](https://developers.te
         │
         ▼
   ┌──────────────────┐
-  │ Your App          │
+  │ Telnyx AI         │ ── managed assistant handles call
+  │ Assistants API    │
   └────────┬─────────┘
            │
-           │
-           ├──► Escalation logic
+           ├──► A/B test routing (version A vs B)
            │
            ▼
-     JSON response
+  ┌──────────────────┐
+  │ Natural Language  │ ── voice-driven menu, no DTMF trees
+  │ Call Routing      │
+  └────────┬─────────┘
+           │
+           ├──► Transfer to department
+           ├──► Self-service resolution
+           └──► Voicemail fallback
 ```
 
 ## Environment Variables

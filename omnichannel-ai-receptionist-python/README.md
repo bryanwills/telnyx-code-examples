@@ -4,7 +4,7 @@ title: "Omnichannel AI Receptionist — one AI brain across voice, SMS, and What
 description: "Voice and SMS application powered by Telnyx AI Inference. Built with Telnyx AI Assistants, AI Inference, Migration, Number Porting."
 language: python
 framework: flask
-telnyx_products: [SMS/MMS, AI Inference]
+telnyx_products: [Voice AI, SMS/MMS, AI Inference]
 channel: [voice, sms]
 ---
 

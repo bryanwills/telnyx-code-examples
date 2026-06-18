@@ -4,7 +4,7 @@ title: "Returns Processor"
 description: "Customer texts photo of defective item via MMS, AI evaluates damage, auto-approves low-value refunds via Stripe, escalates high-value to team lead."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [AI Inference, Messaging]
 integrations: [Stripe, Shopify, Slack]
 channel: [sms]
 ---

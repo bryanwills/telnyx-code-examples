@@ -4,7 +4,7 @@ title: "IoT Smart Building Voice Control"
 description: "IoT Smart Building Voice Control — call a number to control building systems via AI + IoT SIMs."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference, Call Recording]
 channel: [voice]
 ---
 

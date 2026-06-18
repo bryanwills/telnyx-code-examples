@@ -4,7 +4,7 @@ title: "Call Recording AI Summarizer"
 description: "Call Recording AI Summarizer — record calls, then summarize and extract action items with AI."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [AI Inference, Call Recording]
 channel: [voice]
 ---
 

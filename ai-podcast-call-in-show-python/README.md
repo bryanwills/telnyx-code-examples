@@ -4,7 +4,7 @@ title: "AI Podcast Call-In Show"
 description: "AI Podcast Call-In Show — callers dial in, AI screens and queues them, host manages live."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 channel: [voice]
 ---
 

@@ -4,7 +4,7 @@ title: "E911 Address Validator — validate and provision E911 addresses via API
 description: "Application. Built with Telnyx E911, Migration, Number Porting."
 language: python
 framework: flask
-telnyx_products: [E911, Migration, Number Porting]
+telnyx_products: [E911]
 ---
 
 # E911 Address Validator — validate and provision E911 addresses via API.

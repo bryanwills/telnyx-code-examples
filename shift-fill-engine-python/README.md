@@ -4,7 +4,7 @@ title: "Shift Fill Engine"
 description: "Open shift triggers calls down the availability list. First to confirm gets it, rest are cancelled. Texts confirmation + notifies manager via Slack."
 language: python
 framework: flask
-telnyx_products: [Voice]
+telnyx_products: [Voice, Messaging]
 integrations: [Slack]
 channel: [voice]
 ---

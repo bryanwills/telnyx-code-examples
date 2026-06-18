@@ -4,7 +4,7 @@ title: "AI Sales Demo Booking Agent"
 description: "AI Sales Demo Booking Agent — inbound calls, AI qualifies the lead, books a demo on the calendar."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 channel: [voice]
 ---
 

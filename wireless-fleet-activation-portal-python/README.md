@@ -4,7 +4,7 @@ title: "Wireless Fleet Activation Portal — bulk activate SIMs with status trac
 description: "Application. Built with Telnyx IoT/SIM, Migration, Number Porting."
 language: python
 framework: flask
-telnyx_products: [IoT/SIM, Migration, Number Porting]
+telnyx_products: [IoT/SIM]
 ---
 
 # Wireless Fleet Activation Portal — bulk activate SIMs with status tracking.

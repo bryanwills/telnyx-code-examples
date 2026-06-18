@@ -4,7 +4,7 @@ title: "E-commerce Order Status Bot"
 description: "Customers call or text order number, get real-time Shopify tracking. AI detects delivery exceptions and proactively texts customers before they call support."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference]
+telnyx_products: [Voice, AI Inference, Messaging]
 integrations: [Shopify, Slack]
 channel: [voice, sms]
 ---

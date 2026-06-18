@@ -4,7 +4,7 @@ title: "AI Voice Survey Sentiment Tracker"
 description: "AI Voice Survey Sentiment Tracker — real-time CSAT scoring from voice tone and word choice."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 channel: [voice]
 ---
 

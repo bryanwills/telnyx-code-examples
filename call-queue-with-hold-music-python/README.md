@@ -4,7 +4,7 @@ title: "Call Queue with Hold Music"
 description: "Call Queue with Hold Music — queue callers with position announcements and hold music, route to agents."
 language: python
 framework: flask
-telnyx_products: [Cloud Storage, Migration, Number Porting, Voice]
+telnyx_products: [Cloud Storage, Voice]
 channel: [voice]
 ---
 

@@ -4,7 +4,7 @@ title: "IoT Fleet Alert Escalation"
 description: "IoT Fleet Alert Escalation — severity-based routing from IoT sensors to SMS, calls, and multi-party conferences."
 language: python
 framework: flask
-telnyx_products: [SMS/MMS, Voice, AI Inference]
+telnyx_products: [SMS/MMS, Voice, AI Inference, Conferencing]
 channel: [voice]
 ---
 

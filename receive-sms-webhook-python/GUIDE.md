@@ -9,14 +9,18 @@ SMS application. Built with Telnyx Migration, Number Porting.
         │
         ▼
   ┌──────────────────┐
-  │ Your App          │
+  │ Telnyx Messaging  │ ── webhook delivery
+  │ Webhook           │
   └────────┬─────────┘
            │
-           │
-           ├──► Data extraction
-           │
            ▼
-     JSON response
+  ┌──────────────────┐
+  │ Validate + Parse  │ ── extract sender, text, media
+  └────────┬─────────┘
+           │
+           ├──► Log message
+           ├──► Process content
+           └──► Auto-reply (optional)
 ```
 
 ## Telnyx Products Used

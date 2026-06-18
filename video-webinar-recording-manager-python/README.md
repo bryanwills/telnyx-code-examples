@@ -4,7 +4,7 @@ title: "Video Webinar Recording Manager"
 description: "Video Webinar Recording Manager — manage video room webinars with automatic recording, transcription, and clip extraction."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [AI Inference, Call Recording]
 ---
 
 # Video Webinar Recording Manager

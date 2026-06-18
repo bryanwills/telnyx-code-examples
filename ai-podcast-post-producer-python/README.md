@@ -4,7 +4,7 @@ title: "AI Podcast Post-Producer"
 description: "AI Podcast Post-Producer — record a podcast over a conference call, then AI generates show notes, timestamps, highlights, and social media clips."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference, Conferencing, Call Recording]
 channel: [voice]
 ---
 

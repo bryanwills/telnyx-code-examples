@@ -4,7 +4,7 @@ title: "Video Voice-Over Replacement"
 description: "Upload audio with existing voice-over. STT extracts the script, AI rewrites/improves it (5 modes: polish, professional, simplify, energize, shorten), TTS re-records with studio quality."
 language: python
 framework: flask
-telnyx_products: [AI Inference, Media Streaming]
+telnyx_products: [AI Inference, Media Streaming, Cloud Storage]
 ---
 
 # Video Voice-Over Replacement

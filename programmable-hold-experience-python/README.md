@@ -4,7 +4,7 @@ title: "Programmable Hold Experience"
 description: "Programmable Hold Experience — custom hold experiences: tips, trivia, estimated wait time, callback offers."
 language: python
 framework: flask
-telnyx_products: [Cloud Storage, Migration, Number Porting, Voice]
+telnyx_products: [Cloud Storage, Voice]
 channel: [voice]
 ---
 

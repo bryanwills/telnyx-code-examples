@@ -4,7 +4,7 @@ title: "Voice-Activated IoT Command"
 description: "Voice-Activated IoT Command — call a number, speak commands to control IoT devices. AI interprets natural language into device actions dispatched via SIM API."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference, Call Recording]
 channel: [voice]
 ---
 

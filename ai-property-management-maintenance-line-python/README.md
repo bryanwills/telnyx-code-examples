@@ -4,7 +4,7 @@ title: "AI Property Management Maintenance Line"
 description: "AI Property Management Maintenance Line — tenants call, AI triages maintenance requests."
 language: python
 framework: flask
-telnyx_products: [SMS/MMS, AI Inference]
+telnyx_products: [Voice AI, SMS/MMS, AI Inference]
 channel: [voice]
 ---
 

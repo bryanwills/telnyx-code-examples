@@ -4,7 +4,7 @@ title: "AI Tech Support Voice Agent — IT helpdesk voice agent with knowledge b
 description: "Voice application powered by Telnyx AI Inference. Built with Telnyx AI Assistants, AI Inference, Migration, Number Porting."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 channel: [voice]
 ---
 

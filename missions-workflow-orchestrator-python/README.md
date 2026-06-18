@@ -4,7 +4,7 @@ title: "Missions Workflow Orchestrator"
 description: "Missions Workflow Orchestrator — create and manage multi-step mission workflows using the Telnyx Missions API."
 language: python
 framework: flask
-telnyx_products: [Migration, Missions, Number Porting, SMS/MMS, Verify, Voice]
+telnyx_products: [Missions, Number Porting, SMS/MMS, Verify, Voice]
 ---
 
 # Missions Workflow Orchestrator

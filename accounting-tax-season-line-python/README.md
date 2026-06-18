@@ -4,7 +4,7 @@ title: "Accounting Firm Tax Season Line"
 description: "Handles scheduling, document checklist reminders, status updates. AI texts clients with missing doc reminders. CPA reviews readiness before appointments."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference]
+telnyx_products: [Voice, AI Inference, Messaging]
 integrations: [Slack]
 channel: [voice, sms]
 ---

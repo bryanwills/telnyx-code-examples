@@ -4,7 +4,7 @@ title: "Production-ready Flask application for monitoring SIM card"
 description: "Production-ready Flask application for monitoring SIM card data usage via Telnyx IoT API."
 language: python
 framework: flask
-telnyx_products: [IoT/SIM, Migration, Number Porting]
+telnyx_products: [IoT/SIM]
 ---
 
 # Production-ready Flask application for monitoring SIM card

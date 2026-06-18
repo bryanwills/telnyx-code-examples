@@ -4,7 +4,7 @@ title: "Fraud Alert & Verification"
 description: "Suspicious transaction triggers voice call to customer, verifies via DTMF, blocks or approves in real-time. Fraud team reviews edge cases via Slack."
 language: python
 framework: flask
-telnyx_products: [Voice]
+telnyx_products: [Voice, Messaging]
 integrations: [Slack]
 channel: [voice, sms]
 ---

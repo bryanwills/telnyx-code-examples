@@ -5,18 +5,23 @@ Receive Telnyx voice and SMS webhooks at the edge with minimal latency. Validate
 ## How It Works
 
 ```
-  API Request
+  Telnyx Webhook Event
+  (voice / SMS / SIM)
         │
         ▼
   ┌──────────────────┐
-  │ Your App          │
+  │ Telnyx Edge       │ ── serverless, <10ms cold start
+  │ (ASGI function)   │
   └────────┬─────────┘
            │
-           │
-           ├──► Summarization
+           ├──► Validate signature
+           ├──► Enrich with metadata
+           ├──► HMAC sign for backend
            │
            ▼
-     Response
+  ┌──────────────────┐
+  │ Your Backend      │ ── receives validated, enriched event
+  └──────────────────┘
 ```
 
 ## Telnyx Products Used

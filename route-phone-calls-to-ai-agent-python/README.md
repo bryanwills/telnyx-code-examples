@@ -4,7 +4,7 @@ title: "Production-ready Flask webhook for handling inbound calls via Telnyx Voi
 description: "Voice application. Built with Telnyx Migration, Number Porting, Voice."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting, Voice]
+telnyx_products: [Voice]
 ---
 
 # Production-ready Flask webhook for handling inbound calls via Telnyx Voice API.

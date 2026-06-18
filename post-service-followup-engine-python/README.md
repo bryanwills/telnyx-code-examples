@@ -4,7 +4,7 @@ title: "Post-Service Follow-Up Engine"
 description: "After appointment, SMS satisfaction survey. Negative responses trigger AI voice callback to understand the issue, then creates ticket in Jira and alerts manager via Slack."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference]
+telnyx_products: [Voice, AI Inference, Messaging]
 integrations: [Jira, HubSpot, Slack]
 channel: [voice, sms]
 ---

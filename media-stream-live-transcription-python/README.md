@@ -4,7 +4,7 @@ title: "Media Stream Live Transcription"
 description: "Media Stream Live Transcription — fork call audio to WebSocket for real-time transcription display."
 language: python
 framework: flask
-telnyx_products: [Media Streaming, Migration, Number Porting, Voice]
+telnyx_products: [Media Streaming, Voice]
 channel: [voice]
 ---
 

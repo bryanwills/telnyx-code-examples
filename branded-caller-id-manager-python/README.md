@@ -4,7 +4,7 @@ title: "Branded Caller ID Manager"
 description: "Branded Caller ID Manager — register, manage, and verify branded calling profiles with STIR/SHAKEN attestation for higher answer rates."
 language: python
 framework: flask
-telnyx_products: [Branded Calling, CNAM Lookup, Migration, Number Porting, Verify]
+telnyx_products: [Branded Calling, CNAM Lookup, Verify]
 ---
 
 # Branded Caller ID Manager

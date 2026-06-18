@@ -4,7 +4,7 @@ title: "Conference Call with AI Summary"
 description: "Conference Call with AI Summary — multi-party conference with transcription and AI post-call summary."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference, Conferencing]
 channel: [voice]
 ---
 

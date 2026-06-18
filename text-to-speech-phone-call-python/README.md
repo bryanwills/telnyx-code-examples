@@ -4,7 +4,7 @@ title: "Production-ready Flask application for text-to-speech calls via Telnyx."
 description: "Voice application. Built with Telnyx Migration, Number Porting, Voice."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting, Voice]
+telnyx_products: [Voice]
 ---
 
 # Production-ready Flask application for text-to-speech calls via Telnyx.

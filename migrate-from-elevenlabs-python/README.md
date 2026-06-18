@@ -4,7 +4,7 @@ title: "Migrate from ElevenLabs"
 description: "Migrate from ElevenLabs — import ElevenLabs voice configurations to Telnyx TTS with voice mapping and cost comparison."
 language: python
 framework: flask
-telnyx_products: [AI Assistants, Migration, Number Porting]
+telnyx_products: [AI Assistants, Migration]
 channel: [voice]
 ---
 

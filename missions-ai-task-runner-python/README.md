@@ -4,7 +4,7 @@ title: "Missions AI Task Runner"
 description: "Missions AI Task Runner — AI-driven task execution within the Telnyx Missions framework. AI decides next steps based on task results."
 language: python
 framework: flask
-telnyx_products: [AI Inference, Number Lookup]
+telnyx_products: [AI Inference, Number Lookup, Messaging]
 ---
 
 # Missions AI Task Runner

@@ -4,7 +4,7 @@ title: "AI Voicemail Transcription & Forwarding"
 description: "AI Voicemail Transcription & Forwarding — voicemail to AI-summarized SMS/email with priority classification."
 language: python
 framework: flask
-telnyx_products: [SMS/MMS, AI Inference]
+telnyx_products: [Voice AI, SMS/MMS, AI Inference, Call Recording]
 channel: [voice]
 ---
 

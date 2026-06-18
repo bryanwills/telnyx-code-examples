@@ -9,14 +9,21 @@ AI-Powered IVR Replacement — natural language routing with A/B testing and str
         │
         ▼
   ┌──────────────────┐
-  │ Your App          │
+  │ Telnyx AI         │ ── managed assistant handles call
+  │ Assistants API    │
   └────────┬─────────┘
            │
-           │
-           ├──► Escalation logic
+           ├──► A/B test routing (version A vs B)
            │
            ▼
-     JSON response
+  ┌──────────────────┐
+  │ Natural Language  │ ── voice-driven menu, no DTMF trees
+  │ Call Routing      │
+  └────────┬─────────┘
+           │
+           ├──► Transfer to department
+           ├──► Self-service resolution
+           └──► Voicemail fallback
 ```
 
 ## Telnyx Products Used

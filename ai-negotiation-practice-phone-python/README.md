@@ -4,7 +4,7 @@ title: "AI Negotiation Practice Phone"
 description: "AI Negotiation Practice Phone — practice salary negotiations, sales deals, or vendor contracts with an AI that plays the opposing side and scores your technique."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 channel: [voice]
 ---
 

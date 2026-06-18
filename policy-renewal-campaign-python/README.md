@@ -4,7 +4,7 @@ title: "Policy Renewal Campaign"
 description: "Automated multi-channel renewal reminders. 60 days: SMS. 30 days: AI voice call reviewing coverage changes. 7 days: urgent SMS. Agent reviews lapsed policies for win-back."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference]
+telnyx_products: [Voice, AI Inference, Messaging]
 integrations: [Stripe, Slack]
 channel: [voice, sms]
 ---

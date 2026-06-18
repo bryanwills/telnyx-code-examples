@@ -4,7 +4,7 @@ title: "Production-ready WebRTC calling application with Telnyx Voice API and Fa
 description: "Voice application. Built with Telnyx Migration, Number Porting, Voice, WebRTC."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting, Voice, WebRTC]
+telnyx_products: [Voice, WebRTC]
 ---
 
 # Production-ready WebRTC calling application with Telnyx Voice API and FastAPI.

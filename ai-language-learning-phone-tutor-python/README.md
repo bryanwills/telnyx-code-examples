@@ -4,7 +4,7 @@ title: "AI Language Learning Phone Tutor"
 description: "AI Language Learning Phone Tutor — call a number, practice a foreign language with AI."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 channel: [voice]
 ---
 

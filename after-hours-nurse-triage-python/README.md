@@ -4,7 +4,7 @@ title: "After-Hours Nurse Triage"
 description: "AI screens symptoms using clinical decision tree, routes urgent to on-call nurse via PagerDuty, queues non-urgent for AM callback. Nurse reviews and overrides AI severity scores."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference]
+telnyx_products: [Voice, AI Inference, Messaging]
 integrations: [PagerDuty, Slack]
 channel: [voice]
 ---

@@ -4,7 +4,7 @@ title: "Multi-Channel AI Helpdesk with Ticketing"
 description: "Multi-Channel AI Helpdesk with Ticketing — voice + SMS + WhatsApp support with auto-ticket creation."
 language: python
 framework: flask
-telnyx_products: [SMS/MMS, AI Inference]
+telnyx_products: [Voice AI, SMS/MMS, AI Inference]
 channel: [voice, sms]
 ---
 

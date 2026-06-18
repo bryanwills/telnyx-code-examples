@@ -4,7 +4,7 @@ title: "Production-ready Flask application for SIP codec configuration via Telny
 description: "Voice application. Built with Telnyx Migration, Number Porting, SIP Trunking."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting, SIP Trunking]
+telnyx_products: [SIP Trunking]
 ---
 
 # Production-ready Flask application for SIP codec configuration via Telnyx.

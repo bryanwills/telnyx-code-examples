@@ -4,7 +4,7 @@ title: "AI Restaurant Reservation Voice Agent"
 description: "AI Restaurant Reservation Voice Agent — handles calls, checks availability, books tables, sends SMS confirmation."
 language: python
 framework: flask
-telnyx_products: [SMS/MMS, AI Inference]
+telnyx_products: [Voice AI, SMS/MMS, AI Inference]
 channel: [voice]
 ---
 

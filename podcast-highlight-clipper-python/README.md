@@ -4,7 +4,7 @@ title: "Podcast Highlight Clipper"
 description: "Upload audio, STT + AI Inference identifies viral moments with virality scoring, TTS generates teaser intros for each clip, SMS distributes highlights to subscriber list."
 language: python
 framework: flask
-telnyx_products: [AI Inference, SMS/MMS, Media Streaming]
+telnyx_products: [AI Inference, SMS/MMS, Media Streaming, Call Recording]
 integrations: [Slack]
 channel: [voice, api]
 ---

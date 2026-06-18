@@ -4,7 +4,7 @@ title: "Smart Number Geo-Assignment"
 description: "Smart Number Geo-Assignment — automatically purchase and assign local numbers based on caller geography to maximize answer rates."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting, Numbers]
+telnyx_products: [Numbers]
 ---
 
 # Smart Number Geo-Assignment

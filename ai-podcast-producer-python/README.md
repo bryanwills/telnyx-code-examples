@@ -4,7 +4,7 @@ title: "AI Podcast Producer"
 description: "Record a multi-host podcast via conference call, transcribe each speaker with STT, generate show notes + chapters + social clips via AI Inference, and produce TTS intro/outro bumpers."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference, Conferencing, Media Streaming]
+telnyx_products: [Voice, AI Inference, Conferencing, Media Streaming, Call Recording]
 integrations: [Slack]
 channel: [voice, api]
 ---

@@ -4,7 +4,7 @@ title: "Voice-to-Slack Bridge"
 description: "Voice-to-Slack Bridge — call a phone number, speak a message, AI transcribes and posts to Slack with urgency tagging."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 integrations: [Slack]
 channel: [voice]
 ---

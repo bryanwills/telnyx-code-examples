@@ -4,7 +4,7 @@ title: "Real-Time Call Intelligence Dashboard"
 description: "Real-Time Call Intelligence Dashboard — live transcription, sentiment analysis, and competitor detection."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 channel: [voice]
 ---
 

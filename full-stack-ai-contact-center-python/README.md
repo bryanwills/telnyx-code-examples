@@ -4,7 +4,7 @@ title: "Full-Stack AI Contact Center"
 description: "Full-Stack AI Contact Center — complete contact center: IVR + queue + AI agent assist + recording + live analytics."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference, Call Recording]
 channel: [voice]
 ---
 

@@ -4,7 +4,7 @@ title: "AI Standup Facilitator Phone"
 description: "AI Standup Facilitator Phone — team members call in their daily standup update. AI collects what they did, what they're doing, and blockers, then summarizes for the team."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 integrations: [Slack]
 channel: [voice]
 ---

@@ -4,7 +4,7 @@ title: "Production-ready SIP failover routing system with Flask and Telnyx."
 description: "Voice application. Built with Telnyx Migration, Number Porting."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting]
+telnyx_products: []
 ---
 
 # Production-ready SIP failover routing system with Flask and Telnyx.

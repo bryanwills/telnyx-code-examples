@@ -4,7 +4,7 @@ title: "Voice-Verified Identity + 2FA"
 description: "Voice-Verified Identity + 2FA — Number Lookup, SMS OTP, and AI-assisted secure transactions."
 language: python
 framework: flask
-telnyx_products: [AI Inference, Number Lookup]
+telnyx_products: [Voice AI, AI Inference, Number Lookup]
 channel: [voice]
 ---
 

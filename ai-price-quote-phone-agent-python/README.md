@@ -4,7 +4,7 @@ title: "AI Price Quote Phone Agent"
 description: "AI Price Quote Phone Agent — caller describes what they need, AI generates a customized price quote in real time with line items."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 channel: [voice]
 ---
 

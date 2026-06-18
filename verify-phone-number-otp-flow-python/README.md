@@ -4,7 +4,7 @@ title: "Verify Phone Number OTP Flow"
 description: "Verify Phone Number OTP Flow — Telnyx Verify API with SMS primary and voice call fallback."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting, Verify]
+telnyx_products: [Verify]
 channel: [voice]
 ---
 

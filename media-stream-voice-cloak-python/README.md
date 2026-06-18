@@ -4,7 +4,7 @@ title: "Media Stream Voice Cloak"
 description: "Media Stream Voice Cloak — real-time voice modification via media streaming API. Apply pitch shift, echo, or anonymization."
 language: python
 framework: flask
-telnyx_products: [Voice]
+telnyx_products: [Voice, Media Streaming]
 channel: [voice]
 ---
 

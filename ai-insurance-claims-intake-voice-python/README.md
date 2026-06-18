@@ -4,7 +4,7 @@ title: "AI Insurance Claims Intake"
 description: "AI Insurance Claims Intake — voice agent collects claim details, classifies, routes to adjuster."
 language: python
 framework: flask
-telnyx_products: [SMS/MMS, AI Inference]
+telnyx_products: [Voice AI, SMS/MMS, AI Inference]
 channel: [voice]
 ---
 

@@ -4,7 +4,7 @@ title: "Conference Live Poll via DTMF"
 description: "Conference Live Poll via DTMF — host asks a question, all conference participants vote by pressing 1-4, results tallied instantly."
 language: python
 framework: flask
-telnyx_products: [Voice]
+telnyx_products: [Voice, Conferencing]
 channel: [voice]
 ---
 

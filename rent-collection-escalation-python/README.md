@@ -4,7 +4,7 @@ title: "Rent Collection Escalation"
 description: "Automated multi-channel rent reminders. Day 1: SMS + Stripe payment link. Day 3: voice call. Day 7: late fee notice. Day 14: manager escalation."
 language: python
 framework: flask
-telnyx_products: [Voice]
+telnyx_products: [Voice, Messaging]
 integrations: [Stripe, Slack]
 channel: [voice]
 ---

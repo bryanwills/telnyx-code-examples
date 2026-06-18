@@ -4,7 +4,7 @@ title: "ISV Notification Engine"
 description: "SaaS platform sends alerts via SMS/voice/WhatsApp based on customer preference and urgency. Multi-channel with fallback cascade and delivery tracking."
 language: python
 framework: flask
-telnyx_products: [Voice]
+telnyx_products: [Voice, Messaging]
 channel: [voice]
 ---
 

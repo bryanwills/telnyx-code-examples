@@ -4,7 +4,7 @@ title: "Migrate from Vapi"
 description: "Migrate from Vapi — import Vapi voice agents to Telnyx AI Assistants with voice, prompt, and tool configuration mapping."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting]
+telnyx_products: [Migration]
 channel: [voice]
 ---
 

@@ -4,7 +4,7 @@ title: "AI Voice Agent with Function Calling"
 description: "AI Voice Agent with Function Calling — voice agent that calls external APIs mid-conversation."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 channel: [voice]
 ---
 

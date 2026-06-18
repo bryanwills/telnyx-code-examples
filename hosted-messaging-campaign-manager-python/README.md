@@ -4,7 +4,7 @@ title: "Hosted Messaging Campaign Manager"
 description: "Hosted Messaging Campaign Manager — manage hosted messaging campaigns with subscriber opt-in/out tracking and delivery analytics."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting, SMS/MMS]
+telnyx_products: [SMS/MMS]
 channel: [sms]
 ---
 

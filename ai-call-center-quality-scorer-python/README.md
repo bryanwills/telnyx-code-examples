@@ -4,7 +4,7 @@ title: "AI Call Center Quality Scorer"
 description: "AI Call Center Quality Scorer — automatically score agent performance from call recordings on compliance, empathy, resolution, and talk-to-listen ratio."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [AI Inference, Call Recording]
 ---
 
 # AI Call Center Quality Scorer

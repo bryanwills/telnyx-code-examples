@@ -4,7 +4,7 @@ title: "Production-ready Flask application for call recording via Telnyx Voice A
 description: "Voice application. Built with Telnyx Migration, Number Porting, Voice."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting, Voice]
+telnyx_products: [Voice, Call Recording]
 ---
 
 # Production-ready Flask application for call recording via Telnyx Voice API.

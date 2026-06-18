@@ -4,7 +4,7 @@ title: "Abandoned Cart Recovery"
 description: "SMS 1h after abandon with incentive, AI voice call 24h later if no purchase. Integrates with Shopify webhooks and Stripe for discount codes."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference]
+telnyx_products: [Voice, AI Inference, Messaging]
 integrations: [Stripe, Shopify]
 channel: [voice, sms]
 ---

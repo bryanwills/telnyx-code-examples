@@ -4,7 +4,7 @@ title: "Production-ready SMS autoresponder using Telnyx webhooks."
 description: "Voice and SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS, Voice."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting, SMS/MMS, Voice]
+telnyx_products: [SMS/MMS, Voice]
 channel: [sms]
 ---
 

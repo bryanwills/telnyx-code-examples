@@ -4,7 +4,7 @@ title: "Deepfake Voice Detector"
 description: "Real-time synthetic speech detection on live phone calls. Captures audio via media streaming, extracts acoustic features, scores deepfake probability with AI Inference, alerts security team via Slack."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference, Media Streaming]
+telnyx_products: [Voice, AI Inference, Media Streaming, Call Recording]
 integrations: [Slack]
 channel: [voice]
 ---

@@ -4,7 +4,7 @@ title: "Billing Anomaly Detector"
 description: "Billing Anomaly Detector — monitor usage and billing for anomalies, alert on cost spikes and unusual patterns."
 language: python
 framework: flask
-telnyx_products: [CDR, Migration, Number Porting, SMS/MMS]
+telnyx_products: [CDR, SMS/MMS]
 ---
 
 # Billing Anomaly Detector

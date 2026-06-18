@@ -4,7 +4,7 @@ title: "Global IP Failover Monitor"
 description: "Global IP Failover Monitor — monitor Global IP endpoints across regions, auto-failover between healthy endpoints."
 language: python
 framework: flask
-telnyx_products: [Migration, Networking, Number Porting]
+telnyx_products: [Networking]
 ---
 
 # Global IP Failover Monitor

@@ -4,7 +4,7 @@ title: "AI Voice-Over Studio"
 description: "Upload a script, select voice/style/pacing, AI adds professional direction cues (pauses, emphasis, pacing), TTS renders the voice-over, stores output in Cloud Storage. Supports multiple takes and retakes."
 language: python
 framework: flask
-telnyx_products: [AI Inference, Cloud Storage]
+telnyx_products: [AI Inference, Cloud Storage, Call Recording]
 ---
 
 # AI Voice-Over Studio

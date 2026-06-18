@@ -5,16 +5,24 @@ SIP Load Balancer Health Check — monitor SIP trunk health across multiple endp
 ## How It Works
 
 ```
-  API Request
-        │
-        ▼
-  ┌──────────────────┐
-  │ Your App          │
-  └────────┬─────────┘
-           │
-           │
-           ▼
-     JSON response
+  SIP Endpoints (3+)
+    │   │   │
+    ▼   ▼   ▼
+  ┌──────────────────────────┐
+  │ Health Check Loop         │
+  │ • TCP probe per endpoint  │
+  │ • Uptime tracking         │
+  │ • Weighted routing table  │
+  └────────────┬──────────────┘
+               │
+      ┌────────┼────────┐
+      ▼        ▼        ▼
+  Primary  Secondary  Tertiary
+  (70%)    (20%)      (10%)
+               │
+               ▼
+  Auto-failover on health failure
+  SMS alert to admin
 ```
 
 ## Telnyx Products Used

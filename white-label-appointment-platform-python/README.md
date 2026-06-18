@@ -4,7 +4,7 @@ title: "White-Label Appointment Platform"
 description: "Multi-tenant SaaS that gives any service business their own AI phone line with booking, reminders, and calendar sync. Each tenant has own number, greeting, and config."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference]
+telnyx_products: [Voice, AI Inference, Messaging]
 channel: [voice]
 ---
 

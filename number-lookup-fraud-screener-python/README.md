@@ -4,7 +4,7 @@ title: "Number Lookup Fraud Screener"
 description: "Number Lookup Fraud Screener — screen inbound calls/messages for fraud indicators using number lookup before connecting."
 language: python
 framework: flask
-telnyx_products: [Number Lookup]
+telnyx_products: [Voice AI, Number Lookup]
 channel: [voice]
 ---
 

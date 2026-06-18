@@ -4,7 +4,7 @@ title: "Media Stream Custom Audio Mixer"
 description: "Media Stream Custom Audio Mixer — mix custom audio into live calls via WebSocket-based media streaming."
 language: python
 framework: flask
-telnyx_products: [Voice]
+telnyx_products: [Voice, Media Streaming]
 channel: [voice]
 ---
 

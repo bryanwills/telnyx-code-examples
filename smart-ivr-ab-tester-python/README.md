@@ -4,7 +4,7 @@ title: "Smart IVR A/B Tester"
 description: "Smart IVR A/B Tester — run two IVR flows simultaneously and track which converts better."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting, Voice]
+telnyx_products: [Voice]
 channel: [voice]
 ---
 

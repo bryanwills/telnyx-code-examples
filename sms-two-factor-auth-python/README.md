@@ -4,7 +4,7 @@ title: "Production-ready OTP 2FA system with Flask and Telnyx SMS."
 description: "SMS application. Built with Telnyx Cloud Storage, Migration, Number Porting, SMS/MMS."
 language: python
 framework: flask
-telnyx_products: [Cloud Storage, Migration, Number Porting, SMS/MMS, Verify]
+telnyx_products: [Cloud Storage, SMS/MMS, Verify]
 ---
 
 # Production-ready OTP 2FA system with Flask and Telnyx SMS.

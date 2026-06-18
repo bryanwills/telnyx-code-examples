@@ -4,7 +4,7 @@ title: "Production-ready Flask application for sending bulk SMS via Telnyx."
 description: "SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting, SMS/MMS]
+telnyx_products: [SMS/MMS]
 channel: [sms]
 ---
 

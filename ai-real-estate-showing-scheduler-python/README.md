@@ -4,7 +4,7 @@ title: "AI Real Estate Showing Scheduler"
 description: "AI Real Estate Showing Scheduler — buyers call or text, AI checks availability and books showings."
 language: python
 framework: flask
-telnyx_products: [SMS/MMS, AI Inference]
+telnyx_products: [Voice AI, SMS/MMS, AI Inference]
 channel: [voice, sms]
 ---
 

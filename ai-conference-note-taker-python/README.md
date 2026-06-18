@@ -4,7 +4,7 @@ title: "AI Conference Note-Taker"
 description: "AI Conference Note-Taker — joins calls, transcribes, extracts action items, sends SMS summaries."
 language: python
 framework: flask
-telnyx_products: [SMS/MMS, Voice, AI Inference]
+telnyx_products: [SMS/MMS, Voice, AI Inference, Conferencing, Call Recording]
 channel: [voice]
 ---
 

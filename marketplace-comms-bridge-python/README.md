@@ -4,7 +4,7 @@ title: "Marketplace Comms Bridge"
 description: "Buyer texts about a listing, AI responds with details, facilitates anonymous buyer-seller connection via masked numbers, handles scheduling. Ops reviews flagged conversations."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [AI Inference, Messaging]
 integrations: [Slack]
 channel: [sms]
 ---

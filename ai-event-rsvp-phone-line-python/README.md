@@ -4,7 +4,7 @@ title: "AI Event RSVP Phone Line"
 description: "AI Event RSVP Phone Line — call to RSVP for an event. AI collects guest info, dietary restrictions, plus-ones, and confirms the reservation."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 channel: [voice]
 ---
 

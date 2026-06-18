@@ -4,7 +4,7 @@ title: "Video Room AI Meeting Moderator"
 description: "Video Room AI Meeting Moderator — create video rooms with AI-powered agenda tracking and time management."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [AI Inference, Call Recording]
 ---
 
 # Video Room AI Meeting Moderator

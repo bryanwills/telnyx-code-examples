@@ -4,7 +4,7 @@ title: "Production-ready Flask webhook endpoint for receiving inbound SMS via Te
 description: "SMS application. Built with Telnyx Migration, Number Porting."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting]
+telnyx_products: []
 channel: [sms]
 ---
 
@@ -29,14 +29,18 @@ This app handles these webhook events ([Messaging docs](https://developers.telny
         │
         ▼
   ┌──────────────────┐
-  │ Your App          │
+  │ Telnyx Messaging  │ ── webhook delivery
+  │ Webhook           │
   └────────┬─────────┘
            │
-           │
-           ├──► Data extraction
-           │
            ▼
-     JSON response
+  ┌──────────────────┐
+  │ Validate + Parse  │ ── extract sender, text, media
+  └────────┬─────────┘
+           │
+           ├──► Log message
+           ├──► Process content
+           └──► Auto-reply (optional)
 ```
 
 ## Environment Variables

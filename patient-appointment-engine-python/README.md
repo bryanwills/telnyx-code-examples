@@ -4,7 +4,7 @@ title: "Patient Appointment Engine"
 description: "AI answers calls, checks availability, books appointments, collects copay via Stripe, sends SMS confirmation. Staff reviews next-day schedule."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference]
+telnyx_products: [Voice, AI Inference, Messaging]
 integrations: [Stripe, Slack]
 channel: [voice]
 ---

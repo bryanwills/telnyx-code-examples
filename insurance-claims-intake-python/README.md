@@ -4,7 +4,7 @@ title: "Insurance Claims Intake"
 description: "Policyholder calls, AI collects incident details, accepts photos via MMS, creates claim, assigns adjuster, texts status updates. Adjuster reviews AI-prepared claim."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference]
+telnyx_products: [Voice, AI Inference, Messaging]
 integrations: [Slack]
 channel: [voice, sms]
 ---

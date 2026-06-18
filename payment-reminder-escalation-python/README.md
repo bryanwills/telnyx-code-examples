@@ -4,7 +4,7 @@ title: "Payment Reminder Escalation"
 description: "Invoice overdue: day 1 SMS, day 7 voice call with payment link, day 14 escalation to collections with full context. Integrates with Stripe/QuickBooks."
 language: python
 framework: flask
-telnyx_products: [Voice]
+telnyx_products: [Voice, Messaging]
 integrations: [Stripe, Slack]
 channel: [voice]
 ---

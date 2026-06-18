@@ -4,7 +4,7 @@ title: "Hotel Guest Services Line"
 description: "Room service, housekeeping, concierge requests via voice or SMS. AI routes and tracks. Staff gets Slack notifications, guest gets SMS when fulfilled."
 language: python
 framework: flask
-telnyx_products: [Voice, AI Inference]
+telnyx_products: [Voice, AI Inference, Messaging]
 integrations: [Slack]
 channel: [voice, sms]
 ---

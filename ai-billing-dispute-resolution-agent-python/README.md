@@ -4,7 +4,7 @@ title: "AI Billing Dispute Resolution Agent"
 description: "AI Billing Dispute Resolution Agent — handles billing questions with account lookup."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 channel: [voice]
 ---
 

@@ -4,7 +4,7 @@ title: "AI Compliance Quiz Phone"
 description: "AI Compliance Quiz Phone — employees call and take a compliance quiz. AI asks questions, evaluates answers, scores pass/fail, records completion."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 channel: [voice]
 ---
 

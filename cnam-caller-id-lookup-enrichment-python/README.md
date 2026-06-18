@@ -4,7 +4,7 @@ title: "CNAM Caller ID Lookup Enrichment"
 description: "CNAM Caller ID Lookup Enrichment — look up CNAM for inbound callers, enrich CRM records with caller identity."
 language: python
 framework: flask
-telnyx_products: [Number Lookup]
+telnyx_products: [Voice AI, Number Lookup]
 channel: [voice]
 ---
 

@@ -4,7 +4,7 @@ title: "WebRTC AI Interpreter for Live Calls"
 description: "WebRTC AI Interpreter for Live Calls — real-time translation between two callers speaking different languages."
 language: python
 framework: flask
-telnyx_products: [AI Inference]
+telnyx_products: [Voice AI, AI Inference]
 channel: [voice]
 ---
 

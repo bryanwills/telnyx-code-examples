@@ -4,7 +4,7 @@ title: "Production-ready Flask application for managing conference calls via Tel
 description: "Application. Built with Telnyx Migration, Number Porting, Voice."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting, Voice]
+telnyx_products: [Voice, Conferencing]
 ---
 
 # Production-ready Flask application for managing conference calls via Telnyx.
