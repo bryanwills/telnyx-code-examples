@@ -72,13 +72,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Fax Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/fax`
 
-### Docker
-
-```bash
-docker build -t fax-to-structured-data-pipeline-python .
-docker run --env-file .env -p 5000:5000 fax-to-structured-data-pipeline-python
-```
-
 ## API Reference
 
 ### `POST /extract`

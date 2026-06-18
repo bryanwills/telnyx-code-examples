@@ -70,13 +70,6 @@ pip install -r requirements.txt
 python app.py
 ```
 
-### Docker
-
-```bash
-docker build -t ai-voiceover-studio-python .
-docker run --env-file .env -p 5000:5000 ai-voiceover-studio-python
-```
-
 ## API Reference
 
 ### `POST /projects/create`
@@ -102,7 +95,6 @@ curl http://localhost:5000/health
 ```json
 {"status": "ok"}
 ```
-
 
 ## Troubleshooting
 

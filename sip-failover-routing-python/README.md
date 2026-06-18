@@ -73,13 +73,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t sip-failover-routing-python .
-docker run --env-file .env -p 5000:5000 sip-failover-routing-python
-```
-
 ## API Reference
 
 ### `GET /sip/connections`

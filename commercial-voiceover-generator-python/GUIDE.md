@@ -78,7 +78,6 @@ Everything lives in `app.py` (198 lines). Here's what each piece does.
 | `GET` | `/options` | List Options |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -109,12 +108,10 @@ def send_sms(to, text):
     except Exception:
         return False
 
-
 @app.route("/commercials/generate", methods=["POST"])
 def generate_commercial():
     """Generate a commercial voice-over from a product brief.
 ```
-
 
 ## Step 3: Run It
 

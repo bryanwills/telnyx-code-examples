@@ -79,7 +79,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/webhooks/voice` | Telnyx webhook handler |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -113,7 +112,6 @@ def handle_voice():
         active_holds[ccid] = {"start": time.time(), "tip_idx": 0, "caller": data.get("from"), "offered_callback": False}
         client.calls.actions.answer(ccid)
 ```
-
 
 ## Step 3: Run It
 

@@ -76,7 +76,6 @@ Everything lives in `app.py` (84 lines). Here's what each piece does.
 | `GET` | `/ivr-config` | Ivr Config |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -108,7 +107,6 @@ def setup_bucket():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 ```
-
 
 ## Step 3: Run It
 

@@ -88,13 +88,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t ai-property-management-maintenance-line-python .
-docker run --env-file .env -p 5000:5000 ai-property-management-maintenance-line-python
-```
-
 ## API Reference
 
 ### `GET /work-orders`

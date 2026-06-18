@@ -78,13 +78,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Messaging Profile** → Inbound Webhook URL → `https://<id>.ngrok.io/webhooks/sms`
 
-### Docker
-
-```bash
-docker build -t mms-receipt-scanner-expense-tracker-python .
-docker run --env-file .env -p 5000:5000 mms-receipt-scanner-expense-tracker-python
-```
-
 ## API Reference
 
 ### `GET /health`

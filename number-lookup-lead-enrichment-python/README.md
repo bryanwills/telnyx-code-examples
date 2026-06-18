@@ -57,13 +57,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t number-lookup-lead-enrichment-python .
-docker run --env-file .env -p 5000:5000 number-lookup-lead-enrichment-python
-```
-
 ## API Reference
 
 ### `POST /enrich`

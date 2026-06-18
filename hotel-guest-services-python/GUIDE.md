@@ -120,7 +120,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/requests/<int:idx>/complete` | Complete Request |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -156,7 +155,6 @@ def ai_categorize(text):
 
 @app.route("/webhooks/sms", methods=["POST"])
 ```
-
 
 ## Step 3: Run It
 

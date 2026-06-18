@@ -115,7 +115,6 @@ cd edge-compute-webhook-proxy-python
 pip install -r requirements.txt
 ```
 
-
 ## Troubleshooting
 
 - **Connection refused on port 5000**: App isn't running. Run `python app.py` and check no other process uses port 5000.

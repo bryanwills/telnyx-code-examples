@@ -76,7 +76,6 @@ Everything lives in `app.py` (83 lines). Here's what each piece does.
 | `GET` | `/status` | Get Status |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -112,7 +111,6 @@ def add_monitored():
 def send_check_ins():
     results = []
 ```
-
 
 ## Step 3: Run It
 

@@ -73,7 +73,6 @@ Everything lives in `app.py` (57 lines). Here's what each piece does.
 | `GET` | `/calls` | List Calls |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -105,7 +104,6 @@ def route_call():
     if is_vip:
         texml = f"""<?xml version="1.0" encoding="UTF-8"?>
 ```
-
 
 ## Step 3: Run It
 

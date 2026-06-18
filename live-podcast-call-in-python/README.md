@@ -88,13 +88,6 @@ ngrok http 5000
 Set webhook URL in [Telnyx Portal](https://portal.telnyx.com):
 - Call Control Application -> `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t live-podcast-call-in-python .
-docker run --env-file .env -p 5000:5000 live-podcast-call-in-python
-```
-
 ## API Reference
 
 ### `POST /shows/start`

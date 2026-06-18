@@ -68,7 +68,6 @@ Everything lives in `app.py` (64 lines). Here's what each piece does.
 | `GET` | `/numbers/inventory` | List Inventory |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -100,7 +99,6 @@ def search_numbers():
         params["filter[phone_number][contains]"] = contains
     try:
 ```
-
 
 ## Step 3: Run It
 

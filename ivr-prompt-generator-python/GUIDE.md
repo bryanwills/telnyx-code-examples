@@ -90,7 +90,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/prompt-types` | Get Prompt Types |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -126,7 +125,6 @@ def generate_prompts():
     hours = data.get("hours", "Monday-Friday 9am-5pm")
     departments = data.get("departments", ["Sales", "Support", "Billing"])
 ```
-
 
 ## Step 3: Run It
 

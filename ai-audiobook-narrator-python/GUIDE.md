@@ -74,7 +74,6 @@ Everything lives in `app.py` (198 lines). Here's what each piece does.
 | `GET` | `/voices` | List Voices |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -106,7 +105,6 @@ def narrate_book():
     title = data.get("title", "Untitled")
     text = data.get("text", "")
 ```
-
 
 ## Step 3: Run It
 

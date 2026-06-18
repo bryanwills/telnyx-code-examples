@@ -84,13 +84,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t shift-fill-engine-python .
-docker run --env-file .env -p 5000:5000 shift-fill-engine-python
-```
-
 ## API Reference
 
 ### `POST /shifts/open`

@@ -92,13 +92,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t ai-tech-support-voice-agent-python .
-docker run --env-file .env -p 5000:5000 ai-tech-support-voice-agent-python
-```
-
 ## API Reference
 
 ### `GET /health`

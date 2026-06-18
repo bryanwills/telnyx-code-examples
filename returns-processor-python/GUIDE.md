@@ -92,7 +92,6 @@ Webhook handlers process events from Telnyx:
 | `POST` | `/returns/<int:idx>/approve` | Manual Approve |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -128,7 +127,6 @@ def ai_evaluate_return(description, order_value):
 
 @app.route("/webhooks/sms", methods=["POST"])
 ```
-
 
 ## Step 3: Run It
 

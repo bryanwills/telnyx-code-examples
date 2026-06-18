@@ -93,13 +93,6 @@ python app.py
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
    - **Messaging Profile** → Inbound Webhook URL → `https://<id>.ngrok.io/webhooks/sms`
 
-### Docker
-
-```bash
-docker build -t ivr-prompt-generator-python .
-docker run --env-file .env -p 5000:5000 ivr-prompt-generator-python
-```
-
 ## API Reference
 
 ### `POST /prompts/generate`

@@ -87,7 +87,6 @@ Everything lives in `app.py` (98 lines). Here's what each piece does.
 | `GET` | `/migration-log` | Get Log |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -119,7 +118,6 @@ def audit_elevenlabs():
         for v in voices:
             telnyx_match = VOICE_MAP.get(v.get("name"), {})
 ```
-
 
 ## Step 3: Run It
 

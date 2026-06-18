@@ -78,7 +78,6 @@ Everything lives in `app.py` (85 lines). Here's what each piece does.
 | `GET` | `/scorecards/summary` | Summary |
 | `GET` | `/health` | Health check |
 
-
 The inference helper sends conversation context to Telnyx AI and returns the response:
 
 ```python
@@ -114,7 +113,6 @@ def score_call():
         scorecard["scored_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
         scorecard["call_id"] = data.get("call_id", f"CALL-{int(time.time())}")
 ```
-
 
 ## Step 3: Run It
 

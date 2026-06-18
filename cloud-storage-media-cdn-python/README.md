@@ -71,14 +71,6 @@ python app.py           # starts on http://localhost:5000
 
 2. Copy the HTTPS URL and configure in [Telnyx Portal](https://portal.telnyx.com):
 
-
-### Docker
-
-```bash
-docker build -t cloud-storage-media-cdn-python .
-docker run --env-file .env -p 5000:5000 cloud-storage-media-cdn-python
-```
-
 ## API Reference
 
 ### `POST /setup`

@@ -57,7 +57,6 @@ Everything lives in `app.py` (110 lines). Here's what each piece does.
 |--------|------|---------|
 | `POST` | `/mms/send` | Send Mms Endpoint |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -89,7 +88,6 @@ def send_mms_endpoint():
     
     to_number = data.get("to")
 ```
-
 
 ## Step 3: Run It
 

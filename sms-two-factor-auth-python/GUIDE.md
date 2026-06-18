@@ -66,7 +66,6 @@ Everything lives in `app.py` (201 lines). Here's what each piece does.
 | `POST` | `/auth/verify-otp` | Verify Otp Endpoint |
 | `GET` | `/auth/otp-status` | Otp Status |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -98,7 +97,6 @@ def request_otp():
     
     phone_number = data.get("phone_number")
 ```
-
 
 ## Step 3: Run It
 

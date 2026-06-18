@@ -74,13 +74,6 @@ pip install -r requirements.txt
 python app.py
 ```
 
-### Docker
-
-```bash
-docker build -t voiceover-audition-generator-python .
-docker run --env-file .env -p 5000:5000 voiceover-audition-generator-python
-```
-
 ## API Reference
 
 ### `POST /auditions/create`
@@ -106,7 +99,6 @@ curl http://localhost:5000/health
 ```json
 {"status": "ok"}
 ```
-
 
 ## Troubleshooting
 

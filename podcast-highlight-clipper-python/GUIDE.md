@@ -85,7 +85,6 @@ Everything lives in `app.py` (209 lines). Here's what each piece does.
 | `GET` | `/jobs` | List Jobs |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -116,12 +115,10 @@ def send_sms(to, text):
     except Exception:
         return False
 
-
 def notify_slack(msg):
     if SLACK_WEBHOOK:
         try:
 ```
-
 
 ## Step 3: Run It
 

@@ -62,7 +62,6 @@ Everything lives in `app.py` (86 lines). Here's what each piece does.
 | `GET` | `/bookings` | List Bookings |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -94,7 +93,6 @@ def chat():
     resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"}, json=payload, timeout=20)
     resp.raise_for_status()
 ```
-
 
 ## Step 3: Run It
 

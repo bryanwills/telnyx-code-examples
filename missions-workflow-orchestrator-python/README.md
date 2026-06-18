@@ -55,13 +55,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t missions-workflow-orchestrator-python .
-docker run --env-file .env -p 5000:5000 missions-workflow-orchestrator-python
-```
-
 ## API Reference
 
 ### `POST /missions`

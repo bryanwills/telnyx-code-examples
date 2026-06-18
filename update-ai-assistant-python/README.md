@@ -58,13 +58,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t update-ai-assistant-python .
-docker run --env-file .env -p 5000:5000 update-ai-assistant-python
-```
-
 ## API Reference
 
 ### Example Request
@@ -103,7 +96,6 @@ curl http://localhost:5000/health
   "status": "ok"
 }
 ```
-
 
 ## Troubleshooting
 

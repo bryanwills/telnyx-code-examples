@@ -87,7 +87,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/api/calls` | Api Calls |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -125,7 +124,6 @@ def analyze_segment(text):
     ]
     try:
 ```
-
 
 ## Step 3: Run It
 

@@ -72,7 +72,6 @@ Everything lives in `app.py` (72 lines). Here's what each piece does.
 | `POST` | `/coaching` | Get Coaching |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -104,7 +103,6 @@ def get_token():
         if resp.ok:
             return jsonify(resp.json().get("data", {})), 200
 ```
-
 
 ## Step 3: Run It
 

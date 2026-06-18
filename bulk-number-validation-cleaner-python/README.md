@@ -53,13 +53,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t bulk-number-validation-cleaner-python .
-docker run --env-file .env -p 5000:5000 bulk-number-validation-cleaner-python
-```
-
 ## API Reference
 
 ### `POST /validate`

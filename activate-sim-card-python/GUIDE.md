@@ -67,7 +67,6 @@ Everything lives in `app.py` (117 lines). Here's what each piece does.
 | `GET` | `/sim-cards/<sim_card_id>` | Get Sim |
 | `POST` | `/sim-cards/<sim_card_id>/activate` | Activate Sim |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -99,7 +98,6 @@ def list_sims():
     except telnyx.RateLimitError:
         return jsonify({"error": "Rate limit exceeded. Please slow down."}), 429
 ```
-
 
 ## Step 3: Run It
 

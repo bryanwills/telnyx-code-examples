@@ -110,7 +110,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/refills/<int:idx>/deny` | Deny Refill |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -146,7 +145,6 @@ def handle_voice():
 
     if event == "call.initiated" and data.get("direction") == "incoming":
 ```
-
 
 ## Step 3: Run It
 

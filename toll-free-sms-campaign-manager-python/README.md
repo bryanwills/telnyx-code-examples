@@ -70,13 +70,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Messaging Profile** → Inbound Webhook URL → `https://<id>.ngrok.io/webhooks/sms`
 
-### Docker
-
-```bash
-docker build -t toll-free-sms-campaign-manager-python .
-docker run --env-file .env -p 5000:5000 toll-free-sms-campaign-manager-python
-```
-
 ## API Reference
 
 ### `POST /campaigns`

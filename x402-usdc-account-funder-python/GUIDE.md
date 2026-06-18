@@ -71,7 +71,6 @@ Everything lives in `app.py` (76 lines). Here's what each piece does.
 | `GET` | `/payments` | List Payments |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -103,7 +102,6 @@ def get_quote():
         result = resp.json()
         result["requested_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
 ```
-
 
 ## Step 3: Run It
 

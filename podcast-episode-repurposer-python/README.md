@@ -82,13 +82,6 @@ ngrok http 5000
 Set webhook URL in [Telnyx Portal](https://portal.telnyx.com):
 - Call Control Application -> `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t podcast-episode-repurposer-python .
-docker run --env-file .env -p 5000:5000 podcast-episode-repurposer-python
-```
-
 ## API Reference
 
 ### `POST /repurpose`
@@ -116,7 +109,6 @@ curl http://localhost:5000/health
 ```json
 {"status": "ok"}
 ```
-
 
 ## Troubleshooting
 

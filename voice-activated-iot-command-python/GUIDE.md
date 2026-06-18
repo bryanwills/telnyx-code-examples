@@ -98,7 +98,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/commands` | List Commands |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -136,7 +135,6 @@ def execute_command(device_name, action):
     command_log.append({"device": device_name, "action": action, "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ")})
     return f"Done: {device_name} set to {action}"
 ```
-
 
 ## Step 3: Run It
 

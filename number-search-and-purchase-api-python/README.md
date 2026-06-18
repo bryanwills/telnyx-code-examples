@@ -54,13 +54,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t number-search-and-purchase-api-python .
-docker run --env-file .env -p 5000:5000 number-search-and-purchase-api-python
-```
-
 ## API Reference
 
 ### `GET /numbers/search`

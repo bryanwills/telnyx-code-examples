@@ -85,7 +85,6 @@ Everything lives in `app.py` (87 lines). Here's what each piece does.
 | `GET` | `/migration-log` | Get Log |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -117,7 +116,6 @@ def audit_vapi():
         for agent in agents:
             audit.append({"id": agent.get("id"), "name": agent.get("name"),
 ```
-
 
 ## Step 3: Run It
 

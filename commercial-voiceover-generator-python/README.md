@@ -69,13 +69,6 @@ pip install -r requirements.txt
 python app.py
 ```
 
-### Docker
-
-```bash
-docker build -t commercial-voiceover-generator-python .
-docker run --env-file .env -p 5000:5000 commercial-voiceover-generator-python
-```
-
 ## API Reference
 
 ### `POST /commercials/generate`
@@ -101,7 +94,6 @@ curl http://localhost:5000/health
 ```json
 {"status": "ok"}
 ```
-
 
 ## Troubleshooting
 

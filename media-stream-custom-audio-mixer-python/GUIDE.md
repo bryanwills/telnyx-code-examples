@@ -85,7 +85,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/stream-log` | Get Log |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -121,7 +120,6 @@ def inject_audio(ccid):
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 ```
-
 
 ## Step 3: Run It
 

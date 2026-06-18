@@ -71,13 +71,6 @@ pip install -r requirements.txt
 python app.py
 ```
 
-### Docker
-
-```bash
-docker build -t elearning-course-narrator-python .
-docker run --env-file .env -p 5000:5000 elearning-course-narrator-python
-```
-
 ## API Reference
 
 ### `POST /courses/create`
@@ -103,7 +96,6 @@ curl http://localhost:5000/health
 ```json
 {"status": "ok"}
 ```
-
 
 ## Troubleshooting
 

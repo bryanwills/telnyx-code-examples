@@ -63,7 +63,6 @@ Edit `.env` with your Telnyx credentials. Each variable links to where you find 
 
 Everything lives in `app.py` (239 lines). Here's what each piece does.
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -82,7 +81,6 @@ The webhook handler is the core state machine. Each Telnyx event triggers the ne
     elif event_type == "call.hangup":
         if call_control_id in active_calls:
 ```
-
 
 ## Step 3: Run It
 

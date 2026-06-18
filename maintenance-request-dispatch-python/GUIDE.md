@@ -89,7 +89,6 @@ Webhook handlers process events from Telnyx:
 | `GET` | `/work-orders` | List Work Orders |
 | `GET` | `/health` | Health check |
 
-
 Helper function that handles the core action:
 
 ```python
@@ -123,7 +122,6 @@ def handle_sms():
     if sender == MANAGER_NUMBER and text.strip().upper().startswith(("APPROVE", "DENY")):
         parts = text.strip().split()
 ```
-
 
 ## Step 3: Run It
 

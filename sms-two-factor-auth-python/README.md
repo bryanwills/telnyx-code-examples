@@ -50,13 +50,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t sms-two-factor-auth-python .
-docker run --env-file .env -p 5000:5000 sms-two-factor-auth-python
-```
-
 ## API Reference
 
 ### `POST /auth/request-otp`

@@ -98,7 +98,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/memos` | List Memos |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -135,7 +134,6 @@ def send_email(to, subject, body):
     except Exception as e:
         app.logger.error("Email send failed (expected - may need Telnyx email setup): %s", e)
 ```
-
 
 ## Step 3: Run It
 

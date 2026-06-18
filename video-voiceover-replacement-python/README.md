@@ -72,13 +72,6 @@ pip install -r requirements.txt
 python app.py
 ```
 
-### Docker
-
-```bash
-docker build -t video-voiceover-replacement-python .
-docker run --env-file .env -p 5000:5000 video-voiceover-replacement-python
-```
-
 ## API Reference
 
 ### `POST /replace`
@@ -106,7 +99,6 @@ curl http://localhost:5000/health
 ```json
 {"status": "ok"}
 ```
-
 
 ## Troubleshooting
 

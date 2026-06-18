@@ -111,7 +111,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/campaign-log` | Get Log |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -147,7 +146,6 @@ def run_campaign():
         entry = {"policy": pol["id"], "name": pol["name"], "days": days_to_expiry,
             "at": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
 ```
-
 
 ## Step 3: Run It
 

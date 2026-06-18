@@ -102,7 +102,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/recordings` | List Recordings |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -140,7 +139,6 @@ def register_agent():
         "queue": data.get("queue", "support"), "status": "available", "calls_handled": 0}
     queue = queues.get(agent["queue"])
 ```
-
 
 ## Step 3: Run It
 

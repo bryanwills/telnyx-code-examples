@@ -57,7 +57,6 @@ Everything lives in `app.py` (74 lines). Here's what each piece does.
 |--------|------|---------|
 | `POST` | `/sms/send` | Send Sms Endpoint |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -93,7 +92,6 @@ def send_sms(to_number: str, message: str) -> dict:
         from_=from_number,
         to=to_number,
 ```
-
 
 ## Step 3: Run It
 

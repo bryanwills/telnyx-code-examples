@@ -65,7 +65,6 @@ Everything lives in `app.py` (73 lines). Here's what each piece does.
 | `GET` | `/jobs` | List Jobs |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -97,7 +96,6 @@ def validate_numbers():
     results = {"valid": [], "invalid": [], "mobile": [], "landline": [], "voip": [], "errors": []}
     for num in numbers[:100]:
 ```
-
 
 ## Step 3: Run It
 

@@ -90,13 +90,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t compliance-call-recorder-ai-auditor-python .
-docker run --env-file .env -p 5000:5000 compliance-call-recorder-ai-auditor-python
-```
-
 ## API Reference
 
 ### `GET /audit/results`

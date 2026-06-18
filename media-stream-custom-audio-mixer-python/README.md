@@ -77,13 +77,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t media-stream-custom-audio-mixer-python .
-docker run --env-file .env -p 5000:5000 media-stream-custom-audio-mixer-python
-```
-
 ## API Reference
 
 ### `POST /streams/<ccid>/inject`

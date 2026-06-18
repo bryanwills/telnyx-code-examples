@@ -73,7 +73,6 @@ Everything lives in `app.py` (202 lines). Here's what each piece does.
 | `GET` | `/devices/<sim_card_id>/location` | Get Location Only |
 | `GET` | `/health` | Health check |
 
-
 The main endpoint processes the request:
 
 ```python
@@ -88,7 +87,6 @@ def list_devices():
     except telnyx.RateLimitError:
         return jsonify({"error": "Rate limit exceeded"}), 429
 ```
-
 
 ## Step 3: Run It
 

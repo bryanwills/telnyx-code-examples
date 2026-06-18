@@ -62,7 +62,6 @@ Everything lives in `app.py` (79 lines). Here's what each piece does.
 |--------|------|---------|
 | `POST` | `/calls/dial` | Dial Call Endpoint |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -94,7 +93,6 @@ def dial_call_endpoint():
     
     to_number = data.get("to")
 ```
-
 
 ## Step 3: Run It
 

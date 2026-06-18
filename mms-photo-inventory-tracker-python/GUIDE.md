@@ -81,7 +81,6 @@ Everything lives in `app.py` (85 lines). Here's what each piece does.
 | `GET` | `/inventory` | List Inventory |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -119,7 +118,6 @@ def handle_mms():
     if data.get("event_type") != "message.received" or data.get("direction") != "inbound":
         return jsonify({"status": "ignored"}), 200
 ```
-
 
 ## Step 3: Run It
 

@@ -112,7 +112,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/triage/<int:idx>/override` | Override Severity |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -147,7 +146,6 @@ def handle_voice():
     ccid = data.get("call_control_id")
     caller = data.get("from", "")
 ```
-
 
 ## Step 3: Run It
 

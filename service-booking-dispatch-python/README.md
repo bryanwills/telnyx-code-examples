@@ -101,13 +101,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t service-booking-dispatch-python .
-docker run --env-file .env -p 5000:5000 service-booking-dispatch-python
-```
-
 ## API Reference
 
 ### `GET /bookings`

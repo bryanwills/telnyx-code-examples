@@ -73,7 +73,6 @@ Everything lives in `app.py` (214 lines). Here's what each piece does.
 | `GET` | `/jobs` | List Jobs |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -105,7 +104,6 @@ def replace_voiceover():
     mode = request.form.get("mode", "professional")
     voice = request.form.get("voice", "nova")
 ```
-
 
 ## Step 3: Run It
 

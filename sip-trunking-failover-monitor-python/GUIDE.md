@@ -71,7 +71,6 @@ Everything lives in `app.py` (61 lines). Here's what each piece does.
 | `GET` | `/status` | Get Status |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -103,7 +102,6 @@ def health_check():
         send_alert(f"SIP FAILOVER: Primary trunk down, switching to backup. Check connection {PRIMARY_SIP}")
         entry["action"] = "failover_to_backup"
 ```
-
 
 ## Step 3: Run It
 

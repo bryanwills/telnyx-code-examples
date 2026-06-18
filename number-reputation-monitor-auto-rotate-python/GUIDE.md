@@ -65,7 +65,6 @@ Everything lives in `app.py` (58 lines). Here's what each piece does.
 | `GET` | `/health-report` | Health check |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -101,7 +100,6 @@ def scan_numbers():
     for num in numbers[:20]:
         phone = num.get("phone_number", "")
 ```
-
 
 ## Step 3: Run It
 

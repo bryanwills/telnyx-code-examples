@@ -71,13 +71,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t cnam-caller-id-lookup-enrichment-python .
-docker run --env-file .env -p 5000:5000 cnam-caller-id-lookup-enrichment-python
-```
-
 ## API Reference
 
 ### `GET /lookup/<number>`

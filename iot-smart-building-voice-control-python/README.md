@@ -88,13 +88,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t iot-smart-building-voice-control-python .
-docker run --env-file .env -p 5000:5000 iot-smart-building-voice-control-python
-```
-
 ## API Reference
 
 ### `GET /building/state`

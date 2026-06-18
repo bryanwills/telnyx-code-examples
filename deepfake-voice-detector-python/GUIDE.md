@@ -105,7 +105,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/calls` | List Calls |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -141,7 +140,6 @@ def analyze_with_inference(features, call_id):
         resp.raise_for_status()
         content = resp.json()["choices"][0]["message"]["content"]
 ```
-
 
 ## Step 3: Run It
 

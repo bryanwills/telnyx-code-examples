@@ -72,7 +72,6 @@ Everything lives in `app.py` (66 lines). Here's what each piece does.
 | `POST` | `/generate` | Generate Phone Tree |
 | `GET` | `/health` | Health check |
 
-
 The inference helper sends conversation context to Telnyx AI and returns the response:
 
 ```python
@@ -108,7 +107,6 @@ def generate_phone_tree():
 1. A Telnyx AI Assistant configuration (JSON) with name, instructions, greeting, voice, and insight_settings
 2. A TeXML document (XML) for fallback IVR routing
 ```
-
 
 ## Step 3: Run It
 

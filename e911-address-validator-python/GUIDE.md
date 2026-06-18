@@ -63,7 +63,6 @@ Everything lives in `app.py` (50 lines). Here's what each piece does.
 | `GET` | `/e911/addresses` | List Addresses |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -95,7 +94,6 @@ def validate_address():
             json={**address, "address_book": True, "business_name": data.get("business_name", "", timeout=10)}, timeout=15)
         if resp.ok:
 ```
-
 
 ## Step 3: Run It
 

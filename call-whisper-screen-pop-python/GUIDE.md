@@ -83,7 +83,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/contacts` | Add Contact |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -119,7 +118,6 @@ def health():
     return jsonify({"status": "ok", "contacts": len(contacts_db), "active": len(active_calls)}), 200
 
 ```
-
 
 ## Step 3: Run It
 

@@ -68,7 +68,6 @@ Everything lives in `app.py` (63 lines). Here's what each piece does.
 | `POST` | `/enrich/bulk` | Enrich Bulk |
 | `GET` | `/health` | Health check |
 
-
 The inference helper sends conversation context to Telnyx AI and returns the response:
 
 ```python
@@ -104,7 +103,6 @@ def enrich_lead():
     enrichment = {"phone": phone, "carrier_name": carrier.get("name"), "carrier_type": carrier.get("type"), "caller_name": cnam.get("caller_name"), "line_type": lookup.get("phone_number", {}).get("type"), "country": lookup.get("country_code")}
     msgs = [{"role": "system", "content": "Score this lead based on phone data. Return JSON: lead_quality (hot/warm/cold), reasoning (string), is_mobile (boolean), is_voip (boolean), recommended_channel (sms/voice/email)."},
 ```
-
 
 ## Step 3: Run It
 

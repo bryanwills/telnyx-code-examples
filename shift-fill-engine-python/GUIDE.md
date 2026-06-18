@@ -94,7 +94,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/shifts` | List Shifts |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -130,7 +129,6 @@ def call_next(shift_id):
         if MANAGER_SLACK:
             try: requests.post(MANAGER_SLACK, json={"text": f"UNFILLED: {shift['role']} shift {shift['date']} {shift['time']} - all candidates exhausted"}, timeout=5)
 ```
-
 
 ## Step 3: Run It
 

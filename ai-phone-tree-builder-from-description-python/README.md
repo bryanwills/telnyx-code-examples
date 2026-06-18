@@ -70,13 +70,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t ai-phone-tree-builder-from-description-python .
-docker run --env-file .env -p 5000:5000 ai-phone-tree-builder-from-description-python
-```
-
 ## API Reference
 
 ### `POST /generate`
@@ -117,7 +110,6 @@ curl http://localhost:5000/health
   "version": "1.0.0"
 }
 ```
-
 
 ## Troubleshooting
 

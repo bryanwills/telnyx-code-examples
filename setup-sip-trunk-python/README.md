@@ -54,13 +54,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t setup-sip-trunk-python .
-docker run --env-file .env -p 5000:5000 setup-sip-trunk-python
-```
-
 ## API Reference
 
 ### `POST /sip/setup`
@@ -87,7 +80,6 @@ curl -X POST http://localhost:5000/sip/setup \
   ]
 }
 ```
-
 
 ## Troubleshooting
 

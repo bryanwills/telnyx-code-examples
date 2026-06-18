@@ -119,7 +119,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/exceptions` | List Exceptions |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -155,7 +154,6 @@ def handle_sms():
     if order:
         msg = f"Order {order['order_number']}: {order['status'].upper()}"
 ```
-
 
 ## Step 3: Run It
 

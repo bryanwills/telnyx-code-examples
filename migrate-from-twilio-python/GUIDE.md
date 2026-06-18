@@ -104,7 +104,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/migration-log` | Get Log |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -136,7 +135,6 @@ def audit_twilio():
             for num in resp.json().get("incoming_phone_numbers", []):
                 audit["numbers"].append({"number": num.get("phone_number"),
 ```
-
 
 ## Step 3: Run It
 

@@ -88,13 +88,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t multi-party-ai-training-call-python .
-docker run --env-file .env -p 5000:5000 multi-party-ai-training-call-python
-```
-
 ## API Reference
 
 ### `POST /training/start`

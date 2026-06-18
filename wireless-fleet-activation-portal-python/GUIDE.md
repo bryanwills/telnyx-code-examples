@@ -67,7 +67,6 @@ Everything lives in `app.py` (61 lines). Here's what each piece does.
 | `GET` | `/activation-log` | Get Log |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -99,7 +98,6 @@ def list_sims():
     return jsonify({"error": "Failed"}), 500
 
 ```
-
 
 ## Step 3: Run It
 

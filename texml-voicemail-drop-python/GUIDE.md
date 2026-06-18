@@ -81,7 +81,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/drops` | List Drops |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -117,7 +116,6 @@ def voicemail_drop():
                     "webhook_url": request.host_url.rstrip("/", timeout=10) + "/webhooks/voice"}, timeout=10)
             ccid = resp.json().get("data", {}).get("call_control_id")
 ```
-
 
 ## Step 3: Run It
 

@@ -78,7 +78,6 @@ Webhook handlers process events from Telnyx:
 | `GET` | `/porting/dashboard` | Dashboard |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -110,7 +109,6 @@ def submit_order():
                 "customer_reference": data.get("reference", "")}, timeout=15)
         result = resp.json()
 ```
-
 
 ## Step 3: Run It
 

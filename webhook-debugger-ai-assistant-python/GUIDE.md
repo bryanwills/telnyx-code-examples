@@ -74,7 +74,6 @@ Webhook handlers process events from Telnyx:
 | `GET` | `/log` | View Log |
 | `GET` | `/health` | Health check |
 
-
 The inference helper sends conversation context to Telnyx AI and returns the response:
 
 ```python
@@ -110,7 +109,6 @@ def catch_webhook(subpath=""):
 def analyze_webhook(index):
     if index >= len(webhook_log):
 ```
-
 
 ## Step 3: Run It
 

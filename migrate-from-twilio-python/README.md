@@ -93,13 +93,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Messaging Profile** → Inbound Webhook URL → `https://<id>.ngrok.io/webhooks/sms`
 
-### Docker
-
-```bash
-docker build -t migrate-from-twilio-python .
-docker run --env-file .env -p 5000:5000 migrate-from-twilio-python
-```
-
 ## API Reference
 
 ### `GET /audit/twilio`

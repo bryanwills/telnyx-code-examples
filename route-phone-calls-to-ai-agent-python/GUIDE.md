@@ -75,7 +75,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 |--------|------|---------|
 | `POST` | `/webhooks/call` | Telnyx webhook handler |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -109,7 +108,6 @@ def handle_call_webhook():
             return jsonify({"error": "No payload received"}), 400
         
 ```
-
 
 ## Step 3: Run It
 

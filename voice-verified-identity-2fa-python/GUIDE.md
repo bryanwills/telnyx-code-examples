@@ -101,7 +101,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/webhooks/voice` | Telnyx webhook handler |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -135,11 +134,9 @@ def call_inference(messages, max_tokens=150):
     resp.raise_for_status()
     return resp.json()["choices"][0]["message"]["content"]
 
-
 @app.route("/webhooks/voice", methods=["POST"])
 def handle_voice():
 ```
-
 
 ## Step 3: Run It
 

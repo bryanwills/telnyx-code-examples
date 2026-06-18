@@ -84,13 +84,6 @@ ngrok http 5000
 Set webhook URL in [Telnyx Portal](https://portal.telnyx.com):
 - Call Control Application -> `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t ai-content-translator-python .
-docker run --env-file .env -p 5000:5000 ai-content-translator-python
-```
-
 ## API Reference
 
 ### `POST /translate`
@@ -119,7 +112,6 @@ curl http://localhost:5000/health
 ```json
 {"status": "ok"}
 ```
-
 
 ## Troubleshooting
 

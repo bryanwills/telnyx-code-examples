@@ -81,7 +81,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/log` | Get Log |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -117,7 +116,6 @@ def set_cloak(ccid):
 
 @app.route("/effects", methods=["GET"])
 ```
-
 
 ## Step 3: Run It
 

@@ -78,7 +78,6 @@ Everything lives in `app.py` (186 lines). Here's what each piece does.
 | `GET` | `/languages` | List Languages |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -114,7 +113,6 @@ def translate_content():
     if target not in LANGUAGES:
         return jsonify({"error": f"Unsupported language: {target}", "supported": list(LANGUAGES.keys())}), 400
 ```
-
 
 ## Step 3: Run It
 

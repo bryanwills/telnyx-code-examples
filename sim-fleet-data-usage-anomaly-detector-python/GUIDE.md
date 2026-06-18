@@ -71,7 +71,6 @@ Everything lives in `app.py` (66 lines). Here's what each piece does.
 | `GET` | `/anomalies` | List Anomalies |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -107,7 +106,6 @@ def send_alert(text):
     except Exception as e:
         app.logger.error("Alert failed: %s", e)
 ```
-
 
 ## Step 3: Run It
 

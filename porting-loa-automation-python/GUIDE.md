@@ -70,7 +70,6 @@ Everything lives in `app.py` (103 lines). Here's what each piece does.
 | `GET` | `/pipeline` | Pipeline Status |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -102,7 +101,6 @@ def generate_loa():
         phone_numbers=", ".join(data.get("phone_numbers", [])),
         billing_number=data.get("billing_number", ""),
 ```
-
 
 ## Step 3: Run It
 

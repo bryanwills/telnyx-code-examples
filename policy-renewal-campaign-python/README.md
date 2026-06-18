@@ -96,13 +96,6 @@ python app.py           # starts on http://localhost:5000
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
    - **Messaging Profile** → Inbound Webhook URL → `https://<id>.ngrok.io/webhooks/sms`
 
-### Docker
-
-```bash
-docker build -t policy-renewal-campaign-python .
-docker run --env-file .env -p 5000:5000 policy-renewal-campaign-python
-```
-
 ## API Reference
 
 ### `POST /campaigns/run`

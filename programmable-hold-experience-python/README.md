@@ -77,13 +77,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t programmable-hold-experience-python .
-docker run --env-file .env -p 5000:5000 programmable-hold-experience-python
-```
-
 ## API Reference
 
 ### `GET /health`

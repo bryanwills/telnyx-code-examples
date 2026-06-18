@@ -90,13 +90,6 @@ ngrok http 5000
 Set webhook URL in [Telnyx Portal](https://portal.telnyx.com):
 - Call Control Application -> `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t podcast-highlight-clipper-python .
-docker run --env-file .env -p 5000:5000 podcast-highlight-clipper-python
-```
-
 ## API Reference
 
 ### `POST /clip`

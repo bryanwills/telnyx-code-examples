@@ -73,7 +73,6 @@ Everything lives in `app.py` (73 lines). Here's what each piece does.
 | `GET` | `/log` | Get Log |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -105,7 +104,6 @@ def health_check():
             result = sock.connect_ex((ep["host"], ep["port"]))
             sock.close()
 ```
-
 
 ## Step 3: Run It
 

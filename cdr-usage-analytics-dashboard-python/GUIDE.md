@@ -68,7 +68,6 @@ Everything lives in `app.py` (113 lines). Here's what each piece does.
 | `GET` | `/analytics/daily` | Daily Breakdown |
 | `GET` | `/health` | Health check |
 
-
 The main endpoint processes the request:
 
 ```python
@@ -83,7 +82,6 @@ def usage_summary():
     end = request.args.get("end_date", time.strftime("%Y-%m-%d"))
     cdrs = fetch_cdrs(start, end)
 ```
-
 
 ## Step 3: Run It
 

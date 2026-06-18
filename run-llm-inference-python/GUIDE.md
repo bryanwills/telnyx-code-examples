@@ -61,7 +61,6 @@ Everything lives in `app.py` (115 lines). Here's what each piece does.
 | `POST` | `/inference/ask` | Ask Endpoint |
 | `GET` | `/health` | Health check |
 
-
 The inference helper sends conversation context to Telnyx AI and returns the response:
 
 ```python
@@ -97,7 +96,6 @@ def chat_endpoint():
             max_tokens=data.get("max_tokens", 500),
             temperature=data.get("temperature", 0.7),
 ```
-
 
 ## Step 3: Run It
 

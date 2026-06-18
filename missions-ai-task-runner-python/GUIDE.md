@@ -75,7 +75,6 @@ Everything lives in `app.py` (76 lines). Here's what each piece does.
 | `GET` | `/actions` | List Actions |
 | `GET` | `/health` | Health check |
 
-
 The inference helper sends conversation context to Telnyx AI and returns the response:
 
 ```python
@@ -111,7 +110,6 @@ def run_ai_task():
     for i in range(max_steps):
         try:
 ```
-
 
 ## Step 3: Run It
 

@@ -80,7 +80,6 @@ Everything lives in `app.py` (85 lines). Here's what each piece does.
 | `POST` | `/webhooks/messaging` | Telnyx webhook handler |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -118,7 +117,6 @@ def send_rcs_message(to, text, suggestions=None):
     except requests.RequestException as e:
         app.logger.error("RCS send failed: %s", e)
 ```
-
 
 ## Step 3: Run It
 

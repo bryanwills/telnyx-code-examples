@@ -77,7 +77,6 @@ Everything lives in `app.py` (105 lines). Here's what each piece does.
 | `GET` | `/screening-log` | Get Log |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -113,7 +112,6 @@ def list_blocklist():
     return jsonify({"blocked": list(blocked_numbers)}), 200
 
 ```
-
 
 ## Step 3: Run It
 

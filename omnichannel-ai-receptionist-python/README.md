@@ -91,13 +91,6 @@ python app.py           # starts on http://localhost:5000
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
    - **Messaging Profile** → Inbound Webhook URL → `https://<id>.ngrok.io/webhooks/sms`
 
-### Docker
-
-```bash
-docker build -t omnichannel-ai-receptionist-python .
-docker run --env-file .env -p 5000:5000 omnichannel-ai-receptionist-python
-```
-
 ## API Reference
 
 ### `GET /customers`

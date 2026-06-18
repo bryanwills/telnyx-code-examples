@@ -59,13 +59,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t clone-ai-assistant-python .
-docker run --env-file .env -p 5000:5000 clone-ai-assistant-python
-```
-
 ## API Reference
 
 ### `GET /assistants/<assistant_id>`
@@ -109,7 +102,6 @@ curl -X POST http://localhost:5000/assistants/example-id/clone \
   "created_at": "2026-07-15T14:30:00Z"
 }
 ```
-
 
 ## Troubleshooting
 

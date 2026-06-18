@@ -60,13 +60,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t sip-trunking-failover-monitor-python .
-docker run --env-file .env -p 5000:5000 sip-trunking-failover-monitor-python
-```
-
 ## API Reference
 
 ### `POST /check`

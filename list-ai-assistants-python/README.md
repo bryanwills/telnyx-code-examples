@@ -58,13 +58,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t list-ai-assistants-python .
-docker run --env-file .env -p 5000:5000 list-ai-assistants-python
-```
-
 ## API Reference
 
 ### `GET /assistants`
@@ -88,7 +81,6 @@ curl http://localhost:5000/assistants
   ]
 }
 ```
-
 
 ## Troubleshooting
 

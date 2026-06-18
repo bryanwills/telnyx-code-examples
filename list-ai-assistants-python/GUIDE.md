@@ -61,7 +61,6 @@ Everything lives in `app.py` (53 lines). Here's what each piece does.
 |--------|------|---------|
 | `GET` | `/assistants` | List Assistants |
 
-
 The main endpoint processes the request:
 
 ```python
@@ -76,7 +75,6 @@ def list_assistants():
     except telnyx.RateLimitError:
         return jsonify({"error": "Rate limit exceeded. Please slow down."}), 429
 ```
-
 
 ## Step 3: Run It
 

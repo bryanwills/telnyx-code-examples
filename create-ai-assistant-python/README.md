@@ -58,13 +58,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t create-ai-assistant-python .
-docker run --env-file .env -p 5000:5000 create-ai-assistant-python
-```
-
 ## API Reference
 
 ### `POST /ai/assistants`
@@ -86,7 +79,6 @@ curl -X POST http://localhost:5000/ai/assistants \
   "created_at": "2026-07-15T14:30:00Z"
 }
 ```
-
 
 ## Troubleshooting
 

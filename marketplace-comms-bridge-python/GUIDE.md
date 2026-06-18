@@ -89,7 +89,6 @@ Webhook handlers process events from Telnyx:
 | `GET` | `/flagged` | List Flagged |
 | `GET` | `/health` | Health check |
 
-
 Helper function that handles the core action:
 
 ```python
@@ -123,7 +122,6 @@ def handle_sms():
     # Check for listing inquiry
     if text.upper().startswith("LISTING ") or text.upper().startswith("L0"):
 ```
-
 
 ## Step 3: Run It
 

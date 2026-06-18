@@ -17,7 +17,6 @@ Programmatically place an outbound phone call using Telnyx Call Control and hand
 - **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` -- [API reference](https://developers.telnyx.com/api/call-control/speak)
 - **Call Control: Hangup**: `POST /v2/calls/{id}/actions/hangup` -- [API reference](https://developers.telnyx.com/api/call-control/hangup)
 
-
 ## Architecture
 
 ```
@@ -70,13 +69,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t make-outbound-phone-call-python .
-docker run --env-file .env -p 5000:5000 make-outbound-phone-call-python
-```
-
 ## API Reference
 
 ### `POST /calls/dial`
@@ -101,7 +93,6 @@ curl -X POST http://localhost:5000/calls/dial \
   "to": "+12125559876"
 }
 ```
-
 
 ## Troubleshooting
 

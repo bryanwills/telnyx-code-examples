@@ -74,7 +74,6 @@ Everything lives in `app.py` (52 lines). Here's what each piece does.
 | `GET` | `/insights` | Get Insights |
 | `GET` | `/health` | Health check |
 
-
 The inference helper sends conversation context to Telnyx AI and returns the response:
 
 ```python
@@ -110,7 +109,6 @@ def analyze_call():
     analysis = call_inference(msgs)
     try:
 ```
-
 
 ## Step 3: Run It
 

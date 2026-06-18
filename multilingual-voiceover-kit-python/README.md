@@ -70,13 +70,6 @@ pip install -r requirements.txt
 python app.py
 ```
 
-### Docker
-
-```bash
-docker build -t multilingual-voiceover-kit-python .
-docker run --env-file .env -p 5000:5000 multilingual-voiceover-kit-python
-```
-
 ## API Reference
 
 ### `POST /kits/create`
@@ -102,7 +95,6 @@ curl http://localhost:5000/health
 ```json
 {"status": "ok"}
 ```
-
 
 ## Troubleshooting
 

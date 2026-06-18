@@ -51,13 +51,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t inbound-sip-routing-python .
-docker run --env-file .env -p 5000:5000 inbound-sip-routing-python
-```
-
 ## API Reference
 
 ### `GET /sip/connections`

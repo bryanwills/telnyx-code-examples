@@ -63,7 +63,6 @@ Everything lives in `app.py` (90 lines). Here's what each piece does.
 | `GET` | `/tool-calls` | List Tool Calls |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -95,7 +94,6 @@ def chat():
     try:
         resp = requests.post(INFERENCE_URL, headers=headers,
 ```
-
 
 ## Step 3: Run It
 

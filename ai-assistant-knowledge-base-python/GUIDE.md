@@ -62,7 +62,6 @@ Everything lives in `app.py` (92 lines). Here's what each piece does.
 | `POST` | `/documents` | List Documents |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -94,7 +93,6 @@ def add_document():
     doc = {"id": len(documents), "title": title, "length": len(content),
         "chunks": 0, "added_at": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
 ```
-
 
 ## Step 3: Run It
 

@@ -90,7 +90,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/collections/log` | Get Log |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -126,7 +125,6 @@ def make_call(to, message):
 @app.route("/collections/run", methods=["POST"])
 def run_cycle():
 ```
-
 
 ## Step 3: Run It
 

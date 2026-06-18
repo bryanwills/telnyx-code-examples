@@ -80,7 +80,6 @@ Webhook handlers process events from Telnyx:
 | `GET` | `/analytics` | Analytics |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -116,7 +115,6 @@ def add_keyword():
 def analytics():
     total = sum(v["count"] for v in keywords.values())
 ```
-
 
 ## Step 3: Run It
 

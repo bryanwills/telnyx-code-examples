@@ -81,7 +81,6 @@ Everything lives in `app.py` (102 lines). Here's what each piece does.
 | `POST` | `/webhooks/messaging` | Telnyx webhook handler |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -119,7 +118,6 @@ def send_sms(to, text):
 
 @app.route("/webhooks/messaging", methods=["POST"])
 ```
-
 
 ## Step 3: Run It
 

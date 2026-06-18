@@ -76,7 +76,6 @@ Everything lives in `app.py` (70 lines). Here's what each piece does.
 | `GET` | `/extracted` | List Extracted |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -114,7 +113,6 @@ def receive_fax():
     event_type = data.get("event_type", "")
     if event_type == "fax.received":
 ```
-
 
 ## Step 3: Run It
 

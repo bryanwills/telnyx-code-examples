@@ -68,7 +68,6 @@ Everything lives in `app.py` (93 lines). Here's what each piece does.
 | `GET` | `/regions` | Regions |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -100,7 +99,6 @@ def list_endpoints():
                     "region": ep.get("region"), "status": "healthy", "checks": 0, "failures": 0}
         return jsonify({"endpoints": list(endpoints.values())}), 200
 ```
-
 
 ## Step 3: Run It
 

@@ -61,7 +61,6 @@ Everything lives in `app.py` (177 lines). Here's what each piece does.
 | `POST` | `/sms/bulk/send` | Send Bulk Sms Endpoint |
 | `GET` | `/sms/bulk/status` | Bulk Sms Status |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -93,7 +92,6 @@ def send_bulk_sms_endpoint():
     
     recipients = data.get("recipients", [])
 ```
-
 
 ## Step 3: Run It
 

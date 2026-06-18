@@ -63,7 +63,6 @@ Everything lives in `app.py` (86 lines). Here's what each piece does.
 |--------|------|---------|
 | `POST` | `/chat` | Chat Endpoint |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -95,7 +94,6 @@ def chat_endpoint():
     
     user_message = data.get("message")
 ```
-
 
 ## Step 3: Run It
 

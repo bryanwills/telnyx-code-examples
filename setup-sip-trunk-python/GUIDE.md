@@ -57,7 +57,6 @@ Everything lives in `app.py` (70 lines). Here's what each piece does.
 |--------|------|---------|
 | `POST` | `/sip/setup` | Setup Sip Endpoint |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -93,7 +92,6 @@ def create_sip_connection(name: str, username: str, password: str) -> dict:
     
     # Extract serializable data — SDK objects are NOT JSON-serializable
 ```
-
 
 ## Step 3: Run It
 

@@ -73,7 +73,6 @@ Everything lives in `app.py` (79 lines). Here's what each piece does.
 | `GET` | `/alerts` | List Alerts |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -105,7 +104,6 @@ def set_baselines():
 def get_baselines():
     return jsonify({"baselines": baselines}), 200
 ```
-
 
 ## Step 3: Run It
 

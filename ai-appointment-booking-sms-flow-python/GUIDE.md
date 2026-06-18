@@ -83,7 +83,6 @@ Webhook handlers process events from Telnyx:
 | `GET` | `/bookings` | List Bookings |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -121,7 +120,6 @@ def handle_sms():
     data = payload.get("data", {})
     if data.get("event_type") != "message.received" or data.get("direction") != "inbound":
 ```
-
 
 ## Step 3: Run It
 

@@ -52,13 +52,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t send-mms-picture-message-python .
-docker run --env-file .env -p 5000:5000 send-mms-picture-message-python
-```
-
 ## API Reference
 
 ### `POST /mms/send`
@@ -84,7 +77,6 @@ curl -X POST http://localhost:5000/mms/send \
   "segments": 1
 }
 ```
-
 
 ## Troubleshooting
 

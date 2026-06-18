@@ -86,13 +86,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Messaging Profile** → Inbound Webhook URL → `https://<id>.ngrok.io/webhooks/sms`
 
-### Docker
-
-```bash
-docker build -t maintenance-request-dispatch-python .
-docker run --env-file .env -p 5000:5000 maintenance-request-dispatch-python
-```
-
 ## API Reference
 
 ### `GET /work-orders`

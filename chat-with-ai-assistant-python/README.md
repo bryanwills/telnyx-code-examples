@@ -61,13 +61,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t chat-with-ai-assistant-python .
-docker run --env-file .env -p 5000:5000 chat-with-ai-assistant-python
-```
-
 ## API Reference
 
 ### `POST /chat`
@@ -103,7 +96,6 @@ curl -X POST http://localhost:5000/chat \
 ```json
 {"response": "I can help you with...", "status": "ok"}
 ```
-
 
 ## Troubleshooting
 

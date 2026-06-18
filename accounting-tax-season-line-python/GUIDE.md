@@ -122,7 +122,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/readiness` | Readiness Dashboard |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -158,7 +157,6 @@ def send_reminders():
         missing_str = ", ".join(missing)
         send_sms(client["phone"], f"Hi {client['name']}, your tax appointment is {client['appointment']}. We still need: {missing_str}. Please send or upload ASAP. Reply HELP for our secure upload link.")
 ```
-
 
 ## Step 3: Run It
 

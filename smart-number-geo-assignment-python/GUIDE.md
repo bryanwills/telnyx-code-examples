@@ -68,7 +68,6 @@ Everything lives in `app.py` (78 lines). Here's what each piece does.
 | `GET` | `/assignments` | List Assignments |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -100,7 +99,6 @@ def assign_number():
     number = search_local_number(target_area_code)
     if not number:
 ```
-
 
 ## Step 3: Run It
 

@@ -91,7 +91,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/recordings` | List Recordings |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -129,7 +128,6 @@ def handle_voice():
     data = payload.get("data", {})
     if event_type == "call.recording.saved":
 ```
-
 
 ## Step 3: Run It
 

@@ -79,13 +79,6 @@ ngrok http 5000
 Set webhook URL in [Telnyx Portal](https://portal.telnyx.com):
 - Call Control Application -> `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t ai-video-dubbing-pipeline-python .
-docker run --env-file .env -p 5000:5000 ai-video-dubbing-pipeline-python
-```
-
 ## API Reference
 
 ### `POST /dub`
@@ -114,7 +107,6 @@ curl http://localhost:5000/health
 ```json
 {"status": "ok"}
 ```
-
 
 ## Troubleshooting
 

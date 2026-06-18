@@ -103,7 +103,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/customers` | List Customers |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -137,11 +136,9 @@ def call_inference(messages, max_tokens=200):
     resp.raise_for_status()
     return resp.json()["choices"][0]["message"]["content"]
 
-
 def send_message(to, text, media_url=None):
     """Send SMS or MMS via Telnyx."""
 ```
-
 
 ## Step 3: Run It
 

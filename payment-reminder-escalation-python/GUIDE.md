@@ -90,7 +90,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `POST` | `/invoices/<int:idx>/paid` | Mark Paid |
 | `GET` | `/health` | Health check |
 
-
 The trigger endpoint kicks off the workflow:
 
 ```python
@@ -125,7 +124,6 @@ def add_invoice():
     invoices.append(inv)
     return jsonify({"invoice": inv}), 200
 ```
-
 
 ## Step 3: Run It
 

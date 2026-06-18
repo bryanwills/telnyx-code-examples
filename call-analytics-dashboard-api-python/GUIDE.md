@@ -70,7 +70,6 @@ Everything lives in `app.py` (66 lines). Here's what each piece does.
 | `GET` | `/analytics/messaging` | Messaging Analytics |
 | `GET` | `/health` | Health check |
 
-
 The main endpoint processes the request:
 
 ```python
@@ -85,7 +84,6 @@ def call_analytics():
             total = len(data)
             inbound = sum(1 for d in data if d.get("direction") == "inbound")
 ```
-
 
 ## Step 3: Run It
 

@@ -73,13 +73,6 @@ python app.py           # starts on http://localhost:5000
 
    - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
 
-### Docker
-
-```bash
-docker build -t media-stream-voice-cloak-python .
-docker run --env-file .env -p 5000:5000 media-stream-voice-cloak-python
-```
-
 ## API Reference
 
 ### `POST /cloak/<ccid>`

@@ -64,13 +64,6 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
-### Docker
-
-```bash
-docker build -t click-to-call-webrtc-with-ai-assist-python .
-docker run --env-file .env -p 5000:5000 click-to-call-webrtc-with-ai-assist-python
-```
-
 ## API Reference
 
 ### `POST /webrtc/token`

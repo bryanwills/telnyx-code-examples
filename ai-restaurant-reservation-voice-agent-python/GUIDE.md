@@ -95,7 +95,6 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 | `GET` | `/reservations` | List Reservations |
 | `GET` | `/health` | Health check |
 
-
 The webhook handler is the core state machine. Each Telnyx event triggers the next action:
 
 ```python
@@ -133,7 +132,6 @@ def send_sms(to, text):
 
 @app.route("/webhooks/voice", methods=["POST"])
 ```
-
 
 ## Step 3: Run It
 
