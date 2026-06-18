@@ -1,82 +1,92 @@
 #!/usr/bin/env python3
-"""Edge Compute Webhook Proxy — deploy a webhook handler to Telnyx edge for low-latency event processing and routing."""
-import os, json, time, requests, subprocess
+"""Edge Compute Webhook Proxy - local dev server for testing webhook routing logic before deploying to Telnyx Edge. Includes the Edge function source and deployment instructions."""
+import os, json, time, requests
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 load_dotenv()
 app = Flask(__name__)
 TELNYX_API_KEY = os.getenv("TELNYX_API_KEY")
-EDGE_API = "https://api.telnyx.com/v2"
-headers = {"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"}
-deployed_functions = []
+VOICE_HANDLER_URL = os.getenv("VOICE_HANDLER_URL", "")
+MESSAGE_HANDLER_URL = os.getenv("MESSAGE_HANDLER_URL", "")
+DEFAULT_HANDLER_URL = os.getenv("DEFAULT_HANDLER_URL", "")
 event_log = []
+route_stats = {}
 
-WEBHOOK_HANDLER_CODE = """
+# The actual Edge function you deploy with telnyx-edge ship
+EDGE_FUNCTION_JS = """
+// Deploy: telnyx-edge new-func --name webhook-proxy && telnyx-edge ship
 export default {
   async fetch(request, env) {
     const payload = await request.json();
-    const eventType = payload?.data?.event_type || 'unknown';
-    const timestamp = new Date().toISOString();
-
-    // Route events to downstream services
+    const eventType = payload?.data?.event_type || "unknown";
     const routes = {
-      'call.initiated': env.VOICE_HANDLER_URL,
-      'call.answered': env.VOICE_HANDLER_URL,
-      'call.hangup': env.VOICE_HANDLER_URL,
-      'message.received': env.MESSAGE_HANDLER_URL,
-      'message.sent': env.MESSAGE_HANDLER_URL,
+      "call.initiated": env.VOICE_HANDLER_URL,
+      "call.answered": env.VOICE_HANDLER_URL,
+      "call.hangup": env.VOICE_HANDLER_URL,
+      "message.received": env.MESSAGE_HANDLER_URL,
+      "message.sent": env.MESSAGE_HANDLER_URL,
     };
-
-    const targetUrl = routes[eventType] || env.DEFAULT_HANDLER_URL;
-    if (targetUrl) {
-      await fetch(targetUrl, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({...payload, _edge_processed: true, _edge_timestamp: timestamp})
-      });
+    const target = routes[eventType] || env.DEFAULT_HANDLER_URL;
+    if (target) {
+      await fetch(target, { method: "POST",
+        headers: { "Content-Type": "application/json", "X-Edge-Processed": "true" },
+        body: JSON.stringify(payload) });
     }
-
-    return new Response(JSON.stringify({status: 'processed', event: eventType, timestamp}),
-      {headers: {'Content-Type': 'application/json'}});
+    return new Response(JSON.stringify({ status: "routed", event: eventType }));
   }
 };
 """
 
-@app.route("/deploy", methods=["POST"])
-def deploy_function():
-    data = request.get_json()
-    func = {"name": data.get("name", f"webhook-proxy-{int(time.time())}"),
-        "code": WEBHOOK_HANDLER_CODE,
-        "secrets": {"VOICE_HANDLER_URL": data.get("voice_url", ""),
-            "MESSAGE_HANDLER_URL": data.get("message_url", ""),
-            "DEFAULT_HANDLER_URL": data.get("default_url", "")},
-        "status": "deployed", "deployed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
-    deployed_functions.append(func)
-    return jsonify({"status": "deployed", "function": func["name"],
-        "note": "In production, use `telnyx-edge ship` CLI to deploy to edge infrastructure"}), 200
+ROUTES = {"call.initiated": "voice", "call.answered": "voice", "call.hangup": "voice",
+    "call.speak.ended": "voice", "call.gather.ended": "voice",
+    "message.received": "message", "message.sent": "message", "message.finalized": "message"}
+
+def forward(url, payload):
+    if not url:
+        return {"forwarded": False, "reason": "no_target_url"}
+    try:
+        resp = requests.post(url, json=payload,
+            headers={"Content-Type": "application/json", "X-Edge-Processed": "true"}, timeout=10)
+        return {"forwarded": True, "status_code": resp.status_code}
+    except Exception as e:
+        return {"forwarded": False, "error": str(e)}
 
 @app.route("/webhook", methods=["POST"])
-def handle_webhook():
+def handle():
     payload = request.get_json()
     event_type = payload.get("data", {}).get("event_type", "unknown")
-    entry = {"event_type": event_type,
-        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "payload_size": len(json.dumps(payload)),
-        "processed": True}
-    event_log.append(entry)
-    return jsonify({"status": "processed", "event": event_type}), 200
+    cat = ROUTES.get(event_type, "default")
+    targets = {"voice": VOICE_HANDLER_URL, "message": MESSAGE_HANDLER_URL, "default": DEFAULT_HANDLER_URL}
+    result = forward(targets.get(cat, DEFAULT_HANDLER_URL), payload)
+    event_log.append({"event": event_type, "route": cat, "forwarded": result.get("forwarded"),
+        "at": time.strftime("%Y-%m-%dT%H:%M:%SZ")})
+    route_stats[cat] = route_stats.get(cat, 0) + 1
+    return jsonify({"event": event_type, "route": cat, "forward": result}), 200
 
-@app.route("/functions", methods=["GET"])
-def list_functions():
-    return jsonify({"functions": deployed_functions}), 200
+@app.route("/edge-source", methods=["GET"])
+def edge_source():
+    return jsonify({"source": EDGE_FUNCTION_JS,
+        "deploy": ["npm install -g @telnyx/telnyx-edge",
+            "telnyx-edge auth api-key set $TELNYX_API_KEY",
+            "telnyx-edge new-func --name webhook-proxy",
+            "# paste source into index.js",
+            "telnyx-edge secrets add VOICE_HANDLER_URL <url>",
+            "telnyx-edge ship"],
+        "note": "This Flask server simulates the same routing logic locally for testing."}), 200
 
-@app.route("/events", methods=["GET"])
-def list_events():
-    return jsonify({"events": event_log[-100:]}), 200
+@app.route("/routes", methods=["GET"])
+def list_routes():
+    return jsonify({"routes": ROUTES, "targets": {"voice": VOICE_HANDLER_URL or "(not set)",
+        "message": MESSAGE_HANDLER_URL or "(not set)", "default": DEFAULT_HANDLER_URL or "(not set)"}}), 200
+
+@app.route("/stats", methods=["GET"])
+def stats():
+    return jsonify({"stats": route_stats, "total": len(event_log), "recent": event_log[-20:]}), 200
 
 @app.route("/health", methods=["GET"])
 def health():
-    return jsonify({"status": "ok", "functions": len(deployed_functions), "events_processed": len(event_log)}), 200
+    return jsonify({"status": "ok", "events": len(event_log),
+        "note": "Local dev server. Deploy Edge function for production latency."}), 200
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
