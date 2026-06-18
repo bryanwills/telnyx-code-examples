@@ -1,0 +1,214 @@
+#!/usr/bin/env python3
+"""Video Voice-Over Replacement — extract audio from existing content via STT,
+AI rewrites/improves the script with professional voice direction,
+TTS generates new voice-over track. Replace amateur VO with studio quality."""
+
+import os, json, uuid, requests
+from datetime import datetime
+from dotenv import load_dotenv
+from flask import Flask, request, jsonify
+
+load_dotenv()
+app = Flask(__name__)
+
+TELNYX_API_KEY = os.getenv("TELNYX_API_KEY")
+AI_MODEL = os.getenv("AI_MODEL", "moonshotai/Kimi-K2.6")
+TTS_MODEL = os.getenv("TTS_MODEL", "telnyx/tts")
+STT_MODEL = os.getenv("STT_MODEL", "telnyx/asr")
+BUCKET_NAME = os.getenv("BUCKET_NAME", "voiceovers")
+API = "https://api.telnyx.com/v2"
+HEADERS = {"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"}
+
+REWRITE_MODES = {
+    "polish": "Clean up grammar and pacing, keep meaning identical",
+    "professional": "Rewrite for professional broadcast quality",
+    "simplify": "Make simpler and more accessible, lower reading level",
+    "energize": "Make more dynamic and engaging, add energy",
+    "shorten": "Cut to half length while keeping all key points",
+}
+
+jobs = {}
+
+
+def inference(messages, max_tokens=4000):
+    resp = requests.post(f"{API}/ai/chat/completions", headers=HEADERS, json={
+        "model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.4
+    }, timeout=60)
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+
+def transcribe(audio_bytes, language="en"):
+    resp = requests.post(f"{API}/ai/transcribe", headers={
+        "Authorization": f"Bearer {TELNYX_API_KEY}"
+    }, files={"file": ("audio.mp3", audio_bytes, "audio/mpeg")},
+    data={"model": STT_MODEL, "language": language, "timestamps": True},
+    timeout=120)
+    resp.raise_for_status()
+    return resp.json()
+
+
+def tts_generate(text, voice="nova"):
+    resp = requests.post(f"{API}/ai/generate", headers=HEADERS, json={
+        "model": TTS_MODEL, "voice": voice, "text": text, "output_format": "mp3"
+    }, timeout=60)
+    resp.raise_for_status()
+    return resp.content
+
+
+def upload_to_storage(key, data):
+    resp = requests.put(
+        f"https://storage.telnyx.com/{BUCKET_NAME}/{key}",
+        headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "audio/mpeg"},
+        data=data, timeout=60
+    )
+    resp.raise_for_status()
+    return f"https://storage.telnyx.com/{BUCKET_NAME}/{key}"
+
+
+@app.route("/replace", methods=["POST"])
+def replace_voiceover():
+    """Upload audio with existing voice-over, get back improved version.
+
+    Pipeline: STT extract → AI rewrite/improve → TTS re-record.
+    """
+    if "audio" not in request.files:
+        return jsonify({"error": "Upload audio file as 'audio'"}), 400
+
+    mode = request.form.get("mode", "professional")
+    voice = request.form.get("voice", "nova")
+    language = request.form.get("language", "en")
+    title = request.form.get("title", "VO Replacement")
+    custom_notes = request.form.get("notes", "")
+
+    if mode not in REWRITE_MODES:
+        return jsonify({"error": f"Invalid mode. Options: {list(REWRITE_MODES.keys())}"}), 400
+
+    audio_bytes = request.files["audio"].read()
+    job_id = f"rep-{uuid.uuid4().hex[:8]}"
+
+    jobs[job_id] = {
+        "id": job_id, "title": title, "status": "transcribing",
+        "mode": mode, "voice": voice,
+        "created_at": datetime.utcnow().isoformat()
+    }
+
+    # Step 1: STT transcribe original
+    try:
+        result = transcribe(audio_bytes, language)
+        original_text = result.get("text", "")
+        jobs[job_id]["original_script"] = original_text
+        jobs[job_id]["original_word_count"] = len(original_text.split())
+    except Exception as e:
+        jobs[job_id]["status"] = "failed"
+        jobs[job_id]["error"] = f"Transcription failed: {str(e)}"
+        return jsonify(jobs[job_id]), 500
+
+    if not original_text.strip():
+        jobs[job_id]["status"] = "failed"
+        jobs[job_id]["error"] = "No speech detected"
+        return jsonify(jobs[job_id]), 400
+
+    # Step 2: AI rewrite
+    jobs[job_id]["status"] = "rewriting"
+    try:
+        direction = REWRITE_MODES[mode]
+        extra = f"\n\nAdditional notes from the client: {custom_notes}" if custom_notes else ""
+        rewritten = inference([
+            {"role": "system", "content": f"""You are a professional voice-over script editor. Rewrite this script.
+
+Mode: {mode} — {direction}{extra}
+
+Rules:
+- This will be read aloud by TTS — make it sound natural when spoken
+- Match the approximate timing of the original (similar word count for 'polish' and 'professional')
+- Add natural breathing points
+- Remove filler words, false starts, verbal tics
+- Improve flow and clarity
+- Return ONLY the new script"""},
+            {"role": "user", "content": original_text}
+        ])
+        jobs[job_id]["improved_script"] = rewritten.strip()
+        jobs[job_id]["improved_word_count"] = len(rewritten.split())
+    except Exception as e:
+        jobs[job_id]["status"] = "failed"
+        jobs[job_id]["error"] = f"Rewrite failed: {str(e)}"
+        return jsonify(jobs[job_id]), 500
+
+    # Step 3: TTS render
+    jobs[job_id]["status"] = "rendering"
+    try:
+        new_audio = tts_generate(jobs[job_id]["improved_script"], voice=voice)
+        jobs[job_id]["audio_bytes"] = len(new_audio)
+
+        try:
+            url = upload_to_storage(f"{job_id}/improved.mp3", new_audio)
+            jobs[job_id]["storage_url"] = url
+        except Exception as e:
+            jobs[job_id]["storage_error"] = str(e)
+    except Exception as e:
+        jobs[job_id]["status"] = "failed"
+        jobs[job_id]["error"] = f"TTS failed: {str(e)}"
+        return jsonify(jobs[job_id]), 500
+
+    jobs[job_id]["status"] = "complete"
+    jobs[job_id]["completed_at"] = datetime.utcnow().isoformat()
+
+    return jsonify({
+        "job_id": job_id,
+        "status": "complete",
+        "mode": mode,
+        "voice": voice,
+        "original_word_count": jobs[job_id]["original_word_count"],
+        "improved_word_count": jobs[job_id]["improved_word_count"],
+        "change_pct": round((jobs[job_id]["improved_word_count"] - jobs[job_id]["original_word_count"]) / max(jobs[job_id]["original_word_count"], 1) * 100, 1),
+        "improved_script": jobs[job_id]["improved_script"][:500],
+        "storage_url": jobs[job_id].get("storage_url")
+    }), 201
+
+
+@app.route("/replace/<job_id>", methods=["GET"])
+def get_job(job_id):
+    job = jobs.get(job_id)
+    if not job:
+        return jsonify({"error": "Job not found"}), 404
+    return jsonify(job)
+
+
+@app.route("/replace/<job_id>/compare", methods=["GET"])
+def compare_scripts(job_id):
+    """Side-by-side comparison of original and improved scripts."""
+    job = jobs.get(job_id)
+    if not job:
+        return jsonify({"error": "Job not found"}), 404
+    return jsonify({
+        "job_id": job_id,
+        "mode": job["mode"],
+        "original": job.get("original_script", ""),
+        "improved": job.get("improved_script", ""),
+        "original_words": job.get("original_word_count", 0),
+        "improved_words": job.get("improved_word_count", 0)
+    })
+
+
+@app.route("/modes", methods=["GET"])
+def list_modes():
+    return jsonify({"modes": REWRITE_MODES})
+
+
+@app.route("/jobs", methods=["GET"])
+def list_jobs():
+    return jsonify({"jobs": [{
+        "id": j["id"], "title": j["title"], "status": j["status"],
+        "mode": j["mode"], "voice": j["voice"],
+        "created_at": j["created_at"]
+    } for j in jobs.values()]})
+
+
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status": "ok", "total_jobs": len(jobs), "version": "1.0.0"})
+
+
+if __name__ == "__main__":
+    app.run(debug=False, host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
