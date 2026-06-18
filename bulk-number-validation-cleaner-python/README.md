@@ -11,6 +11,11 @@ telnyx_products: [Number Lookup]
 
 Bulk Number Validation & Cleaner — validate and clean phone number lists via Telnyx Number Lookup API.
 
+## Telnyx API Endpoints Used
+
+- **Number Lookup**: `GET /v2/number_lookup/{phone_number}` — [API reference](https://developers.telnyx.com/api/number-lookup/lookup-number)
+- **List Numbers**: `GET /v2/phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-phone-numbers)
+
 ## Architecture
 
 ```text

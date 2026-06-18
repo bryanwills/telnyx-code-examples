@@ -11,6 +11,11 @@ telnyx_products: [CDR, Migration, Number Porting, SMS/MMS]
 
 Billing Anomaly Detector — monitor usage and billing for anomalies, alert on cost spikes and unusual patterns.
 
+## Telnyx API Endpoints Used
+
+- **List CDRs**: `GET /v2/reports/cdrs` — [API reference](https://developers.telnyx.com/api/call-detail-records/list-cdrs)
+- **List MDRs**: `GET /v2/reports/mdrs` — [API reference](https://developers.telnyx.com/api/messaging-detail-records/get-messaging-detail-records)
+
 ## Architecture
 
 ```text

@@ -11,6 +11,11 @@ telnyx_products: [Migration, Number Porting]
 
 X402 USDC Account Funder — fund your Telnyx account with USDC cryptocurrency on the Base blockchain.
 
+## Telnyx API Endpoints Used
+
+- **Get Balance**: `GET /v2/balance` — [API reference](https://developers.telnyx.com/api/account/get-balance)
+- **x402 Payment**: `POST /v2/x402/payments` — [x402 docs](https://developers.telnyx.com/docs/x402)
+
 ## Architecture
 
 ```text

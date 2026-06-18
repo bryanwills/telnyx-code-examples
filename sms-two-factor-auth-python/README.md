@@ -11,6 +11,10 @@ telnyx_products: [Cloud Storage, Migration, Number Porting, SMS/MMS, Verify]
 
 SMS application. Built with Telnyx Cloud Storage, Migration, Number Porting, SMS/MMS.
 
+## Telnyx API Endpoints Used
+
+- **Send Message (OTP)**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+
 ## Architecture
 
 ```text

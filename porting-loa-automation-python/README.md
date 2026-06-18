@@ -11,6 +11,12 @@ telnyx_products: [Migration, Missions, Number Porting]
 
 Porting LOA Automation — automate Letter of Authorization generation and porting order submission.
 
+## Telnyx API Endpoints Used
+
+- **Create Porting Order**: `POST /v2/porting_orders` — [API reference](https://developers.telnyx.com/api/porting/create-porting-order)
+- **List Porting Orders**: `GET /v2/porting_orders` — [API reference](https://developers.telnyx.com/api/porting/list-porting-orders)
+- **Upload LOA**: `POST /v2/porting_orders/{id}/loa` — [API reference](https://developers.telnyx.com/api/porting/upload-loa)
+
 ## Architecture
 
 ```text

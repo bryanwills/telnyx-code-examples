@@ -11,6 +11,12 @@ telnyx_products: [Migration, Networking, Number Porting]
 
 Global IP Failover Monitor — monitor Global IP endpoints across regions, auto-failover between healthy endpoints.
 
+## Telnyx API Endpoints Used
+
+- **List Global IPs**: `GET /v2/global_ips` — [API reference](https://developers.telnyx.com/api/global-ips/list-global-ips)
+- **Get IP Health**: `GET /v2/global_ips/{id}` — [API reference](https://developers.telnyx.com/api/global-ips/get-global-ip)
+- **Send Alert SMS**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+
 ## Architecture
 
 ```text

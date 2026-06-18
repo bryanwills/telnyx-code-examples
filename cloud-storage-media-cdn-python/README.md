@@ -11,6 +11,12 @@ telnyx_products: [Cloud Storage, Migration, Number Porting, Voice]
 
 Cloud Storage Media CDN — use Telnyx Cloud Storage as a CDN for IVR prompts, hold music, and voice assets.
 
+## Telnyx API Endpoints Used
+
+- **Upload Object**: `PUT https://storage.telnyx.com/{bucket}/{key}` — [Cloud Storage docs](https://developers.telnyx.com/docs/cloud-storage)
+- **Download Object**: `GET https://storage.telnyx.com/{bucket}/{key}` — [Cloud Storage docs](https://developers.telnyx.com/docs/cloud-storage)
+- **List Objects**: `GET /v2/storage/buckets/{bucket}/objects` — [API reference](https://developers.telnyx.com/api/cloud-storage/list-objects)
+
 ## Architecture
 
 ```text

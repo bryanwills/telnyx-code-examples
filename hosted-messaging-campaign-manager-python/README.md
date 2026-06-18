@@ -19,6 +19,11 @@ This app handles these webhook events ([Messaging docs](https://developers.telny
 - `message.finalized` — Final delivery status for outbound message
 - `message.received` — Inbound SMS/MMS received
 
+## Telnyx API Endpoints Used
+
+- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **List Messaging Profiles**: `GET /v2/messaging_profiles` — [API reference](https://developers.telnyx.com/api/messaging-profiles/list-messaging-profiles)
+
 ## Architecture
 
 ```text

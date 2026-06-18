@@ -71,13 +71,23 @@ edge-mcp-server-deploy-python/
 
 | Variable | Type | Required | Description | How to set |
 |----------|------|----------|-------------|------------|
-| `TELNYX_API_KEY` | `string` | **yes** | Telnyx API v2 key | `telnyx-edge secrets add` |
+| `TELNYX_API_KEY` | `string` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 
 ## API Reference
 
 ### `GET /mcp/tools/list` — list tools
 ### `POST /mcp/tools/call` — execute a tool
 ### `GET /health` — health check
+
+## Testing
+
+```bash
+curl http://localhost:8080/health
+```
+
+```json
+{"status": "ok", "tools": ["search_numbers", "send_sms", "create_call"]}
+```
 
 ## Resources
 

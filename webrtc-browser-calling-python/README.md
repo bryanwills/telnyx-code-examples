@@ -75,6 +75,26 @@ docker build -t webrtc-browser-calling-python .
 docker run --env-file .env -p 5000:5000 webrtc-browser-calling-python
 ```
 
+## Testing
+
+**Get WebRTC credentials:**
+
+```bash
+curl http://localhost:5000/api/credentials
+```
+
+**Response:**
+
+```json
+{"sip_username": "user@sip.telnyx.com", "credential_id": "...", "status": "ok"}
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
 ## Resources
 
 - [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)

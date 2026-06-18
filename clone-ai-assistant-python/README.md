@@ -11,6 +11,11 @@ telnyx_products: [AI Assistants, Migration, Number Porting]
 
 Application. Built with Telnyx AI Assistants, Migration, Number Porting.
 
+## Telnyx API Endpoints Used
+
+- **Retrieve AI Assistant**: `GET /v2/ai/assistants/{id}` — [API reference](https://developers.telnyx.com/api/ai-assistants/get-assistant)
+- **Create AI Assistant**: `POST /v2/ai/assistants` — [API reference](https://developers.telnyx.com/api/ai-assistants/create-assistant)
+
 ## Architecture
 
 ```text

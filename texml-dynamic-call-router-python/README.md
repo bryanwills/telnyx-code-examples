@@ -11,6 +11,13 @@ telnyx_products: [Migration, Number Porting, Voice]
 
 TeXML Dynamic Call Router — time-of-day and caller-based routing with TeXML responses.
 
+## Telnyx API Endpoints Used
+
+- **TeXML Webhooks**: Telnyx sends HTTP requests to your TeXML endpoints — [TeXML docs](https://developers.telnyx.com/docs/voice/texml)
+- **TeXML Dial**: Route calls to SIP, PSTN, or conference — [reference](https://developers.telnyx.com/docs/voice/texml/verbs/dial)
+- **TeXML Gather**: Collect DTMF or speech input — [reference](https://developers.telnyx.com/docs/voice/texml/verbs/gather)
+- **TeXML Say**: Text-to-speech — [reference](https://developers.telnyx.com/docs/voice/texml/verbs/say)
+
 ## Architecture
 
 ```text

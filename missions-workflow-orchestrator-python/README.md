@@ -11,6 +11,13 @@ telnyx_products: [Migration, Missions, Number Porting, SMS/MMS, Verify, Voice]
 
 Missions Workflow Orchestrator — create and manage multi-step mission workflows using the Telnyx Missions API.
 
+## Telnyx API Endpoints Used
+
+- **Create Number Order**: `POST /v2/number_orders` — [API reference](https://developers.telnyx.com/api/numbers/create-number-order)
+- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **Create Call**: `POST /v2/calls` — [API reference](https://developers.telnyx.com/api/call-control/create-call)
+- **Create Porting Order**: `POST /v2/porting_orders` — [API reference](https://developers.telnyx.com/api/porting/create-porting-order)
+
 ## Architecture
 
 ```text

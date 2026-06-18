@@ -11,6 +11,11 @@ telnyx_products: [Migration, Number Porting]
 
 Porting Order Tracker Dashboard â submit, track, and manage porting orders with SLA monitoring, timeline visualization, and bulk operations.
 
+## Telnyx API Endpoints Used
+
+- **List Porting Orders**: `GET /v2/porting_orders` — [API reference](https://developers.telnyx.com/api/porting/list-porting-orders)
+- **Retrieve Porting Order**: `GET /v2/porting_orders/{id}` — [API reference](https://developers.telnyx.com/api/porting/get-porting-order)
+
 ## Architecture
 
 ```text

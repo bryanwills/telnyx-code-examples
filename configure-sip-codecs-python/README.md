@@ -11,6 +11,12 @@ telnyx_products: [Migration, Number Porting, SIP Trunking]
 
 Voice application. Built with Telnyx Migration, Number Porting, SIP Trunking.
 
+## Telnyx API Endpoints Used
+
+- **Create SIP Connection**: `POST /v2/sip_connections` — [API reference](https://developers.telnyx.com/api/sip-connections/create-sip-connection)
+- **Retrieve SIP Connection**: `GET /v2/sip_connections/{id}` — [API reference](https://developers.telnyx.com/api/sip-connections/get-sip-connection)
+- **List SIP Connections**: `GET /v2/sip_connections` — [API reference](https://developers.telnyx.com/api/sip-connections/list-sip-connections)
+
 ## Architecture
 
 ```text

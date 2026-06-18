@@ -11,6 +11,12 @@ telnyx_products: [Branded Calling, CNAM Lookup, Migration, Number Porting, Verif
 
 Branded Caller ID Manager — register, manage, and verify branded calling profiles with STIR/SHAKEN attestation for higher answer rates.
 
+## Telnyx API Endpoints Used
+
+- **Update Number**: `PATCH /v2/phone_numbers/{id}` — [API reference](https://developers.telnyx.com/api/numbers/update-phone-number)
+- **CNAM Listing**: `POST /v2/cnam_requests` — [API reference](https://developers.telnyx.com/api/cnam/create-cnam-request)
+- **Number Lookup**: `GET /v2/number_lookup/{phone_number}` — [API reference](https://developers.telnyx.com/api/number-lookup/lookup-number)
+
 ## Architecture
 
 ```text

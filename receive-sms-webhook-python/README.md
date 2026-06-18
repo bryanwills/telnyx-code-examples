@@ -18,6 +18,10 @@ This app handles these webhook events ([Messaging docs](https://developers.telny
 
 - `message.received` — Inbound SMS/MMS received
 
+## Telnyx API Endpoints Used
+
+- **Send Message (reply)**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+
 ## Architecture
 
 ```text
@@ -98,6 +102,20 @@ Receives [Telnyx Messaging](https://developers.telnyx.com/docs/messaging) webhoo
     "record_type": "event"
   }
 }
+```
+
+## Testing
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+**Response:**
+
+```json
+{"status": "ok"}
 ```
 
 ## Resources

@@ -11,6 +11,12 @@ telnyx_products: [IoT/SIM, Migration, Number Porting]
 
 Application. Built with Telnyx IoT/SIM, Migration, Number Porting.
 
+## Telnyx API Endpoints Used
+
+- **List SIM Cards**: `GET /v2/sim_cards` — [API reference](https://developers.telnyx.com/api/sim-cards/list-sim-cards)
+- **Retrieve SIM Card**: `GET /v2/sim_cards/{id}` — [API reference](https://developers.telnyx.com/api/sim-cards/get-sim-card)
+- **Activate SIM Card**: `PATCH /v2/sim_cards/{id}` — [API reference](https://developers.telnyx.com/api/sim-cards/update-sim-card)
+
 ## Architecture
 
 ```text

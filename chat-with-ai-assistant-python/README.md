@@ -77,6 +77,18 @@ curl -X POST http://localhost:5000/chat \
 }
 ```
 
+## Testing
+
+```bash
+curl -X POST http://localhost:5000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "What can you help me with?"}'''''' 
+```
+
+```json
+{"response": "I can help you with...", "status": "ok"}
+```
+
 ## Resources
 
 - [AI Assistants Guide](https://developers.telnyx.com/docs/ai/assistants)

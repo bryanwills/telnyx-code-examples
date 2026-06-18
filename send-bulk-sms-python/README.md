@@ -12,6 +12,10 @@ channel: [sms]
 
 SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS.
 
+## Telnyx API Endpoints Used
+
+- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+
 ## Architecture
 
 ```text

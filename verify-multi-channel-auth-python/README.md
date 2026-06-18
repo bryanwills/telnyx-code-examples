@@ -11,6 +11,11 @@ telnyx_products: [Migration, Number Porting, Verify, WhatsApp]
 
 Verify Multi-Channel Auth — multi-channel verification: SMS first, fallback to voice call, then WhatsApp. Cascading 2FA.
 
+## Telnyx API Endpoints Used
+
+- **Create Verification**: `POST /v2/verifications` — [API reference](https://developers.telnyx.com/api/verify/create-verification)
+- **Submit Verification Code**: `POST /v2/verifications/{id}/actions/verify` — [API reference](https://developers.telnyx.com/api/verify/verify-code)
+
 ## Architecture
 
 ```text

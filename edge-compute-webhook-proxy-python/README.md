@@ -74,6 +74,20 @@ edge-compute-webhook-proxy-python/
 | `POST` | `/webhooks/messaging` | Messaging events |
 | `GET` | `/health` | Health check with stats |
 
+## Testing
+
+**Test locally before deploying:**
+
+```bash
+curl -X POST http://localhost:8080 \
+  -H "Content-Type: application/json" \
+  -d '{"data": {"event_type": "call.initiated"}}'''''' 
+```
+
+```json
+{"status": "processed", "event_type": "call.initiated"}
+```
+
 ## Resources
 
 - [Edge Compute Docs](https://developers.telnyx.com/docs/edge-compute)

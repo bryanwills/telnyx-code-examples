@@ -11,6 +11,11 @@ telnyx_products: [Migration, Number Porting]
 
 SIP Load Balancer Health Check — monitor SIP trunk health across multiple endpoints, auto-failover to healthy trunks, track uptime metrics.
 
+## Telnyx API Endpoints Used
+
+- **List SIP Connections**: `GET /v2/sip_connections` — [API reference](https://developers.telnyx.com/api/sip-connections/list-sip-connections)
+- **Send Alert SMS**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+
 ## Architecture
 
 ```text

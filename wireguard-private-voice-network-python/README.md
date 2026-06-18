@@ -11,6 +11,12 @@ telnyx_products: [Migration, Networking, Number Porting]
 
 WireGuard Private Voice Network — create WireGuard mesh network for private SIP trunking with encrypted voice traffic.
 
+## Telnyx API Endpoints Used
+
+- **Create WireGuard Interface**: `POST /v2/wireguard_interfaces` — [API reference](https://developers.telnyx.com/api/networking/create-wireguard-interface)
+- **List WireGuard Interfaces**: `GET /v2/wireguard_interfaces` — [API reference](https://developers.telnyx.com/api/networking/list-wireguard-interfaces)
+- **Create Call**: `POST /v2/calls` — [API reference](https://developers.telnyx.com/api/call-control/create-call)
+
 ## Architecture
 
 ```text

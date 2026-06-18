@@ -110,6 +110,20 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 }
 ```
 
+## Testing
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+**Response:**
+
+```json
+{"status": "ok"}
+```
+
 ## Resources
 
 - [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)

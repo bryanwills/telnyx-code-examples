@@ -145,6 +145,22 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 }
 ```
 
+## Testing
+
+```bash
+curl http://localhost:5000/health
+
+```json
+{"status": "ok"}
+```
+```
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice \
+  -H "Content-Type: application/json" \
+  -d '{"data": {"event_type": "call.initiated", "payload": {"call_control_id": "test"}}}''''''''' 
+```
+
 ## Resources
 
 - [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
