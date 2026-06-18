@@ -69,6 +69,15 @@ edge-compute-webhook-proxy-python/
 └── README.md
 ```
 
+## How It Works
+
+1. Receives incoming message via Telnyx Messaging webhook
+
+## Why Telnyx
+
+- **Single-vendor voice stack** — call control, STT, TTS, and recording from one API. No multi-vendor coordination.
+- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
+
 ## Environment Variables
 
 | Variable | Type | Required | Description | How to set |
@@ -105,6 +114,20 @@ curl -X POST http://localhost:8080 \
 cd edge-compute-webhook-proxy-python
 pip install -r requirements.txt
 ```
+
+
+## Troubleshooting
+
+- **Connection refused on port 5000**: App isn't running. Run `python app.py` and check no other process uses port 5000.
+- **401 Unauthorized**: Your `TELNYX_API_KEY` is invalid. Generate a new one at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys).
+- **Webhooks not arriving**: Ensure ngrok URL is set in your [Call Control Application](https://portal.telnyx.com/call-control/applications) with the correct path.
+- **SMS not sending**: Check number has messaging enabled and a [Messaging Profile](https://portal.telnyx.com/messaging/profiles) assigned.
+
+## Related Examples
+
+- [build-voice-ai-agent-python](../build-voice-ai-agent-python/) - Full voice AI agent
+- [record-phone-calls-python](../record-phone-calls-python/) - Call recording
+- [send-sms-python](../send-sms-python/) - Basic SMS
 
 ## Resources
 

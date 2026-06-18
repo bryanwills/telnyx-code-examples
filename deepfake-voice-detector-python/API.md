@@ -1,19 +1,3 @@
-# API Reference — Deepfake Voice Detector
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `POST` | `/webhooks/media` | Receives Telnyx webhook events. |
-| `POST` | `/calls/<call_id>/analyze` | Force analyze. |
-| `GET` | `/calls` | List calls. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
@@ -30,11 +14,23 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `POST /webhooks/media`
 
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/media
+```
 
 ## `POST /calls/<call_id>/analyze`
 
@@ -46,6 +42,14 @@ Force analyze.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/calls/example-id/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -64,6 +68,12 @@ List all calls.
     }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/calls
+```
+
 ---
 
 ## `GET /health`
@@ -76,6 +86,12 @@ Health check and service status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

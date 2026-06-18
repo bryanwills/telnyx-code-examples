@@ -46,6 +46,17 @@ Upload audio, STT + AI Inference identifies viral moments with virality scoring,
            └──► Download / stream
 ```
 
+## How It Works
+
+1. Receives incoming message via Telnyx Messaging webhook
+2. Sends conversation to Telnyx AI Inference for processing
+3. Converts response to speech via Telnyx TTS
+4. Posts notification to Slack
+
+## Why Telnyx
+
+- **Co-located inference** — LLM runs on the same network as voice traffic. Sub-200ms round trips.
+
 ## Environment Variables
 
 Copy `.env.example` to `.env` and fill in:

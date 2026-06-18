@@ -1,23 +1,14 @@
-# API Reference — Media Stream Live Transcription
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/transcripts/<ccid>` | Get transcript. |
-| `GET` | `/transcripts` | List transcripts. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /transcripts/<ccid>`
 
@@ -29,6 +20,12 @@ Get a specific transcript by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/transcripts/example-id
 ```
 
 ---
@@ -45,6 +42,12 @@ List all transcripts.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/transcripts
+```
+
 ---
 
 ## `GET /health`
@@ -59,6 +62,12 @@ Health check and service status.
   "active": "<string>",
   "transcripts": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

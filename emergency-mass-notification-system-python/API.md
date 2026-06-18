@@ -1,18 +1,3 @@
-# API Reference — Emergency Mass Notification System
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/notify` | Send notification. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/notifications` | List notifications. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /notify`
 
 Send notification.
@@ -41,6 +26,14 @@ Send notification.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/notify \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello from the API", "contacts": [], "severity": "severity-value"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -48,6 +41,12 @@ Send notification.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /notifications`
 
@@ -57,6 +56,12 @@ List all notifications.
 
 ```json
 { "status": "ok" }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/notifications
 ```
 
 ---
@@ -72,6 +77,12 @@ Health check and service status.
   "status": "ok",
   "notifications": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

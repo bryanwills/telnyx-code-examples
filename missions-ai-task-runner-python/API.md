@@ -1,18 +1,3 @@
-# API Reference — Missions AI Task Runner
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/run` | Run ai task. |
-| `GET` | `/runs` | List runs. |
-| `GET` | `/actions` | List actions. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /run`
 
 Run ai task.
@@ -39,6 +24,14 @@ Run ai task.
 { "status": "ok" }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/run \
+  -H "Content-Type: application/json" \
+  -d '{"objective": "objective-value", "context": {}, "max_steps": "max-steps-value"}'
+```
+
 ---
 
 ## `GET /runs`
@@ -51,6 +44,12 @@ List all runs.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/runs
 ```
 
 ---
@@ -67,6 +66,12 @@ List all actions.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/actions
+```
+
 ---
 
 ## `GET /health`
@@ -80,6 +85,12 @@ Health check and service status.
   "status": "ok",
   "runs": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

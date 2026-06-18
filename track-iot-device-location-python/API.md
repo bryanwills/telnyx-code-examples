@@ -1,18 +1,3 @@
-# API Reference — Production-ready Flask application for device location
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/devices` | List devices. |
-| `GET` | `/devices/<sim_card_id>` | Get device location. |
-| `GET` | `/devices/<sim_card_id>/location` | Get location only. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `GET /devices`
 
 List all devices.
@@ -21,6 +6,12 @@ List all devices.
 
 ```json
 {"devices": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/devices
 ```
 
 ---
@@ -37,6 +28,12 @@ Get device location.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/devices/example-id
+```
+
 ---
 
 ## `GET /devices/<sim_card_id>/location`
@@ -51,6 +48,12 @@ Get location only.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/devices/example-id/location
+```
+
 ---
 
 ## `GET /health`
@@ -63,6 +66,12 @@ Health check and service status.
 {
   "status": "healthy"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,17 +1,3 @@
-# API Reference — Production-ready Flask application for SIM card activation via Telnyx.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/sim-cards` | List sims. |
-| `GET` | `/sim-cards/<sim_card_id>` | Get sim. |
-| `POST` | `/sim-cards/<sim_card_id>/activate` | Activate sim. |
-
----
-
 ## `GET /sim-cards`
 
 List all sims.
@@ -20,6 +6,12 @@ List all sims.
 
 ```json
 {"data": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/sim-cards
 ```
 
 ---
@@ -36,6 +28,12 @@ Get a specific sim by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/sim-cards/example-id
+```
+
 ---
 
 ## `POST /sim-cards/<sim_card_id>/activate`
@@ -46,6 +44,14 @@ Activate sim.
 
 ```json
 {"message": "SIM card activated successfully", "data": null}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/sim-cards/example-id/activate \
+  -H "Content-Type: application/json" \
+  -d '{"message": "SIM card activated successfully", "data": null}'
 ```
 
 ---

@@ -1,16 +1,3 @@
-# API Reference — Production-ready Flask application for cloning AI Assistants via Telnyx.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/assistants/<assistant_id>` | Get assistant. |
-| `POST` | `/assistants/<assistant_id>/clone` | Clone assistant endpoint. |
-
----
-
 ## `GET /assistants/<assistant_id>`
 
 Get a specific assistant by ID.
@@ -21,6 +8,12 @@ Get a specific assistant by ID.
 {
   "error": "assistant_id is required"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/assistants/example-id
 ```
 
 ---
@@ -49,6 +42,14 @@ Clone assistant endpoint.
 {
   "error": "assistant_id is required"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/assistants/example-id/clone \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith", "instructions": "instructions-value"}'
 ```
 
 ---

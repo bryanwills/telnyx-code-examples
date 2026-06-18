@@ -1,20 +1,3 @@
-# API Reference — AI Video Dubbing Pipeline
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/dub` | Start dubbing. |
-| `GET` | `/dub/<job_id>` | Get job. |
-| `GET` | `/dub/<job_id>/transcript` | Get transcript. |
-| `GET` | `/languages` | List languages. |
-| `GET` | `/jobs` | List jobs. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /dub`
 
 Start dubbing.
@@ -23,6 +6,14 @@ Start dubbing.
 
 ```json
 {"error": "Upload an audio file as "audio""}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/dub \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Upload an audio file as "audio""}'
 ```
 
 ---
@@ -39,6 +30,12 @@ Get a specific job by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/dub/example-id
+```
+
 ---
 
 ## `GET /dub/<job_id>/transcript`
@@ -51,6 +48,12 @@ Get a specific transcript by ID.
 {
   "error": "Job not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/dub/example-id/transcript
 ```
 
 ---
@@ -67,6 +70,12 @@ List all languages.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/languages
+```
+
 ---
 
 ## `GET /jobs`
@@ -79,6 +88,12 @@ List all jobs.
 {
   "languages": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/jobs
 ```
 
 ---
@@ -97,6 +112,12 @@ Health check and service status.
   "supported_languages": "example-value",
   "version": "1.0.0"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

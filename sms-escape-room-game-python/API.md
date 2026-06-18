@@ -1,22 +1,14 @@
-# API Reference — SMS Escape Room Game
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/messaging` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/leaderboard` | Leaderboard. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/messaging`
 
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/messaging
+```
 
 ## `GET /leaderboard`
 
@@ -26,6 +18,12 @@ Leaderboard.
 
 ```json
 {"leaderboard": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/leaderboard
 ```
 
 ---
@@ -40,6 +38,12 @@ Health check and service status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,22 +1,3 @@
-# API Reference — Webhook Debugger AI Assistant
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/catch/<path:subpath>` | Catch webhook. |
-| `POST` | `/catch/<path:subpath>` | Catch webhook. |
-| `PUT` | `/catch/<path:subpath>` | Catch webhook. |
-| `DELETE` | `/catch/<path:subpath>` | Catch webhook. |
-| `GET` | `/analyze/<int:index>` | Analyze webhook. |
-| `GET` | `/analyze/recent` | Analyze recent. |
-| `GET` | `/log` | View log. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `GET /catch/<path:subpath>`
 
 Catch webhook.
@@ -25,6 +6,12 @@ Catch webhook.
 
 ```json
 {"status": "caught", "id": "<string>" - 1}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/catch/<path:subpath>
 ```
 
 ---
@@ -42,6 +29,12 @@ Analyze webhook.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/analyze/<int:index>
+```
+
 ---
 
 ## `GET /analyze/recent`
@@ -54,6 +47,12 @@ Analyze recent.
 {
   "error": "Not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/analyze/recent
 ```
 
 ---
@@ -70,6 +69,12 @@ View log.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/log
+```
+
 ---
 
 ## `GET /health`
@@ -83,6 +88,12 @@ Health check and service status.
   "webhooks": "example-value",
   "total": 3
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -120,6 +120,12 @@ curl http://localhost:5000/sms/bulk/status
 }
 ```
 
+
+## Troubleshooting
+
+- **Connection refused on port 5000**: App isn't running. Run `python app.py` and check no other process uses port 5000.
+- **401 Unauthorized**: Your `TELNYX_API_KEY` is invalid. Generate a new one at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys).
+
 ## Resources
 
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)

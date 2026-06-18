@@ -1,19 +1,3 @@
-# API Reference — Number Porting Status Tracker
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/ports/list` | List ports. |
-| `POST` | `/ports/create` | Create a new port. |
-| `POST` | `/webhooks/porting` | Receives Telnyx porting status webhook events. |
-| `GET` | `/ports/<order_id>` | Get port. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `GET /ports/list`
 
 List all ports.
@@ -24,6 +8,12 @@ List all ports.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/ports/list
 ```
 
 ---
@@ -50,6 +40,14 @@ Create a new port.
 {"error": resp.text}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/ports/create \
+  -H "Content-Type: application/json" \
+  -d '{"error": "example-value"}'
+```
+
 ---
 
 ## `POST /webhooks/porting`
@@ -57,6 +55,12 @@ Create a new port.
 Receives Telnyx porting status webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/porting
+```
 
 ## `GET /ports/<order_id>`
 
@@ -68,6 +72,12 @@ Get a specific port by ID.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/ports/example-id
 ```
 
 ---
@@ -82,6 +92,12 @@ Health check and service status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

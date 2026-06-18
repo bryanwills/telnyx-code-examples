@@ -1,24 +1,14 @@
-# API Reference — Hotel Guest Services Line
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/sms` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/requests` | List requests. |
-| `POST` | `/requests/<int:idx>/complete` | Complete request. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/sms`
 
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/sms
+```
 
 ## `POST /webhooks/voice`
 
@@ -36,6 +26,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /requests`
 
 List all requests.
@@ -44,6 +40,12 @@ List all requests.
 
 ```json
 {"requests": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/requests
 ```
 
 ---
@@ -60,6 +62,14 @@ Complete request.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/requests/<int:idx>/complete \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /health`
@@ -73,6 +83,12 @@ Health check and service status.
   "status": "ok",
   "open": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

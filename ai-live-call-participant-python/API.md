@@ -1,21 +1,3 @@
-# API Reference — AI Live Call Participant
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/conferences/create` | Create a new conference. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `POST` | `/webhooks/media` | Receives Telnyx webhook events. |
-| `GET` | `/conferences` | List conferences. |
-| `GET` | `/conferences/<name>/transcript` | Get transcript. |
-| `POST` | `/conferences/<name>/ask` | Ask ai. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /conferences/create`
 
 Create a new conference.
@@ -44,6 +26,14 @@ Create a new conference.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/conferences/create \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith", "participants": ["+12125559999"]}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -62,11 +52,23 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `POST /webhooks/media`
 
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/media
+```
 
 ## `GET /conferences`
 
@@ -78,6 +80,12 @@ List all conferences.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/conferences
 ```
 
 ---
@@ -92,6 +100,12 @@ Get a specific transcript by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/conferences/example-id/transcript
 ```
 
 ---
@@ -120,6 +134,14 @@ Ask ai.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/conferences/example-id/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question": "question-value"}'
+```
+
 ---
 
 ## `GET /health`
@@ -132,6 +154,12 @@ Health check and service status.
 {
   "error": "not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

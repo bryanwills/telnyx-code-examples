@@ -1,20 +1,3 @@
-# API Reference — Production-ready Flask application for eSIM provisioning via Telnyx.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/esim/profiles` | Provision esim. |
-| `POST` | `/esim/profiles/<sim_card_id>/activate` | Activate esim. |
-| `GET` | `/esim/profiles/<sim_card_id>` | Get esim. |
-| `GET` | `/esim/profiles` | List esims. |
-| `POST` | `/esim/webhooks/sim-status` | Receives Telnyx webhook events. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /esim/profiles`
 
 Provision esim.
@@ -40,6 +23,14 @@ Provision esim.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/esim/profiles \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /esim/profiles/<sim_card_id>/activate`
@@ -52,6 +43,14 @@ Activate esim.
 {
   "error": "sim_card_id is required"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/esim/profiles/example-id/activate \
+  -H "Content-Type: application/json" \
+  -d '{"error": "sim_card_id is required"}'
 ```
 
 ---
@@ -68,6 +67,12 @@ Get a specific esim by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/esim/profiles/example-id
+```
+
 ---
 
 ## `GET /esim/profiles`
@@ -82,6 +87,12 @@ List all esims.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/esim/profiles
+```
+
 ---
 
 ## `POST /esim/webhooks/sim-status`
@@ -89,6 +100,12 @@ List all esims.
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/esim/webhooks/sim-status
+```
 
 ## `GET /health`
 
@@ -100,6 +117,12 @@ Health check and service status.
 {
   "status": "healthy"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

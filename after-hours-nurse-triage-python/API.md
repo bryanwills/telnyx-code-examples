@@ -1,18 +1,3 @@
-# API Reference — After-Hours Nurse Triage
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/triage/queue` | Get queue. |
-| `POST` | `/triage/<int:idx>/override` | Override severity. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
@@ -29,6 +14,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /triage/queue`
 
 Get a specific queue by ID.
@@ -40,6 +31,12 @@ Get a specific queue by ID.
         "emergency": "<string>",
         "urgent": "<string>",
         "routine": "<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/triage/queue
 ```
 
 ---
@@ -70,6 +67,14 @@ Override severity.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/triage/<int:idx>/override \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /health`
@@ -83,6 +88,12 @@ Health check and service status.
   "status": "ok",
   "queue_size": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

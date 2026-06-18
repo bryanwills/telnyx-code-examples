@@ -1,21 +1,3 @@
-# API Reference — Migrate from ElevenLabs
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/audit/elevenlabs` | Audit elevenlabs. |
-| `POST` | `/migrate/voice-config` | Migrate voice. |
-| `GET` | `/mapping/voices` | Voice mapping. |
-| `GET` | `/cost-comparison` | Cost comparison. |
-| `POST` | `/test-tts` | Test tts. |
-| `GET` | `/migration-log` | Get log. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `GET /audit/elevenlabs`
 
 Audit elevenlabs.
@@ -26,6 +8,12 @@ Audit elevenlabs.
 {
   "error": "ELEVENLABS_API_KEY not configured"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/audit/elevenlabs
 ```
 
 ---
@@ -55,6 +43,14 @@ Migrate voice.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/migrate/voice-config \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /mapping/voices`
@@ -68,6 +64,12 @@ Voice mapping.
   "mappings": "example-value",
   "custom_note": "For cloned/custom ElevenLabs voices"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/mapping/voices
 ```
 
 ---
@@ -84,6 +86,12 @@ Cost comparison.
   "status": "active",
   "created_at": "2026-06-18T21:00:00Z"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/cost-comparison
 ```
 
 ---
@@ -111,6 +119,14 @@ Test tts.
 {"status": "generated", "voice": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/test-tts \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /migration-log`
@@ -123,6 +139,12 @@ Get a specific log by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/migration-log
 ```
 
 ---
@@ -138,6 +160,12 @@ Health check and service status.
   "status": "ok",
   "migrations": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

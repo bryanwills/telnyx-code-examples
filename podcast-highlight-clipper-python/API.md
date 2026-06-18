@@ -1,19 +1,3 @@
-# API Reference — Podcast Highlight Clipper
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/clip` | Clip highlights. |
-| `GET` | `/clip/<job_id>` | Get job. |
-| `POST` | `/distribution` | Add to distribution. |
-| `GET` | `/jobs` | List jobs. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /clip`
 
 Clip highlights.
@@ -22,6 +6,14 @@ Clip highlights.
 
 ```json
 {"error": "Upload audio as "audio""}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/clip \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Upload audio as "audio""}'
 ```
 
 ---
@@ -36,6 +28,12 @@ Get a specific job by ID.
 {
   "error": "Upload audio as 'audio"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/clip/example-id
 ```
 
 ---
@@ -64,6 +62,14 @@ Add to distribution.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/distribution \
+  -H "Content-Type: application/json" \
+  -d '{"phone": "+12125559999"}'
+```
+
 ---
 
 ## `GET /jobs`
@@ -78,6 +84,12 @@ List all jobs.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/jobs
+```
+
 ---
 
 ## `GET /health`
@@ -90,6 +102,12 @@ Health check and service status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

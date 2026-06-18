@@ -1,19 +1,3 @@
-# API Reference — Prescription Refill Line
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/refills` | List refills. |
-| `POST` | `/refills/<int:idx>/approve` | Approve refill. |
-| `POST` | `/refills/<int:idx>/deny` | Deny refill. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
@@ -30,6 +14,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /refills`
 
 List all refills.
@@ -40,6 +30,12 @@ List all refills.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/refills
 ```
 
 ---
@@ -68,6 +64,14 @@ Approve refill.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/refills/<int:idx>/approve \
+  -H "Content-Type: application/json" \
+  -d '{"refills": []}'
+```
+
 ---
 
 ## `POST /refills/<int:idx>/deny`
@@ -94,6 +98,14 @@ Deny refill.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/refills/<int:idx>/deny \
+  -H "Content-Type: application/json" \
+  -d '{"reason": "reason-value"}'
+```
+
 ---
 
 ## `GET /health`
@@ -107,6 +119,12 @@ Health check and service status.
   "status": "ok",
   "pending": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

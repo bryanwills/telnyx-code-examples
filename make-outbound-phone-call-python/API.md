@@ -1,15 +1,3 @@
-# API Reference — Make Outbound Phone Call
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/calls/dial` | Dial call endpoint. |
-
----
-
 ## `POST /calls/dial`
 
 Dial call endpoint.
@@ -32,6 +20,14 @@ Dial call endpoint.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/calls/dial \
+  -H "Content-Type: application/json" \
+  -d '{"to": "+12125559999"}'
 ```
 
 ---

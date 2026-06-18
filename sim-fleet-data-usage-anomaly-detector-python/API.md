@@ -1,17 +1,3 @@
-# API Reference — SIM Fleet Data Usage Anomaly Detector
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/scan` | Scan fleet. |
-| `GET` | `/anomalies` | List anomalies. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /scan`
 
 Scan fleet.
@@ -22,6 +8,14 @@ Scan fleet.
 {
   "error": "No SIM data available"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/scan \
+  -H "Content-Type: application/json" \
+  -d '{"error": "No SIM data available"}'
 ```
 
 ---
@@ -36,6 +30,12 @@ List all anomalies.
 {"anomalies": anomalies[-100:]}
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/anomalies
+```
+
 ---
 
 ## `GET /health`
@@ -48,6 +48,12 @@ Health check and service status.
 {
   "anomalies": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

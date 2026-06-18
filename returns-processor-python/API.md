@@ -1,23 +1,14 @@
-# API Reference — Returns Processor
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/sms` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/returns` | List returns. |
-| `POST` | `/returns/<int:idx>/approve` | Manual approve. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/sms`
 
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/sms
+```
 
 ## `GET /returns`
 
@@ -29,6 +20,12 @@ List all returns.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/returns
 ```
 
 ---
@@ -61,6 +58,14 @@ Manual approve.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/returns/<int:idx>/approve \
+  -H "Content-Type: application/json" \
+  -d '{"id": "abc-123", "status": "active", "created_at": "2026-06-18T21:00:00Z"}'
+```
+
 ---
 
 ## `GET /health`
@@ -74,6 +79,12 @@ Health check and service status.
   "status": "ok",
   "returns": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

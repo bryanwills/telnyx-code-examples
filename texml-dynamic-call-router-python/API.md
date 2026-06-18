@@ -1,19 +1,3 @@
-# API Reference — TeXML Dynamic Call Router
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/texml/route` | Route call. |
-| `POST` | `/texml/recording` | Handle recording. |
-| `POST` | `/vip` | Add vip. |
-| `GET` | `/calls` | List calls. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /texml/route`
 
 Route call.
@@ -22,6 +6,14 @@ Route call.
 
 ```json
 { "status": "ok" }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/texml/route \
+  -H "Content-Type: application/json" \
+  -d '{"status": "ok"}'
 ```
 
 ---
@@ -34,6 +26,14 @@ Handle recording.
 
 ```json
 { "status": "ok" }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/texml/recording \
+  -H "Content-Type: application/json" \
+  -d '{"status": "ok"}'
 ```
 
 ---
@@ -61,6 +61,14 @@ Add vip.
 {"status": "added", "phone": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/vip \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /calls`
@@ -73,6 +81,12 @@ List all calls.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/calls
 ```
 
 ---
@@ -89,6 +103,12 @@ Health check and service status.
   "calls": "<string>",
   "vips": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

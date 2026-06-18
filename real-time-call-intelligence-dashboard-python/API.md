@@ -1,23 +1,14 @@
-# API Reference — Real-Time Call Intelligence Dashboard
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/dashboard` | Dashboard. |
-| `GET` | `/api/calls` | Api calls. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /dashboard`
 
@@ -27,6 +18,12 @@ Dashboard.
 
 ```json
 { "status": "ok" }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/dashboard
 ```
 
 ---
@@ -41,6 +38,12 @@ Api calls.
 { "status": "ok" }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/api/calls
+```
+
 ---
 
 ## `GET /health`
@@ -53,6 +56,12 @@ Health check and service status.
 {
   "error": "No payload"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

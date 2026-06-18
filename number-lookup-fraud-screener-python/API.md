@@ -1,20 +1,3 @@
-# API Reference — Number Lookup Fraud Screener
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/screen/<number>` | Screen number. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `POST` | `/blocklist` | Add to blocklist. |
-| `GET` | `/blocklist` | List blocklist. |
-| `GET` | `/screening-log` | Get log. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `GET /screen/<number>`
 
 Screen number.
@@ -25,6 +8,12 @@ Screen number.
 {"number": null, "action": "block", "reason": "blocklisted"}
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/screen/example-id
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -32,6 +21,12 @@ Screen number.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `POST /blocklist`
 
@@ -55,6 +50,14 @@ Add to blocklist.
 {"status": "blocked", "number": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/blocklist \
+  -H "Content-Type: application/json" \
+  -d '{"number": "number-value"}'
+```
+
 ---
 
 ## `GET /blocklist`
@@ -69,6 +72,12 @@ List all blocklist.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/blocklist
+```
+
 ---
 
 ## `GET /screening-log`
@@ -79,6 +88,12 @@ Get a specific log by ID.
 
 ```json
 {"log": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/screening-log
 ```
 
 ---
@@ -95,6 +110,12 @@ Health check and service status.
   "screened": "<string>",
   "blocked": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

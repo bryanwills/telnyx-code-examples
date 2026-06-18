@@ -1,20 +1,3 @@
-# API Reference — Restaurant Reservation & Waitlist
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `POST` | `/waitlist/add` | Add to waitlist. |
-| `POST` | `/waitlist/<int:idx>/ready` | Table ready. |
-| `GET` | `/reservations` | List reservations. |
-| `GET` | `/waitlist` | List waitlist. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
@@ -30,6 +13,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 | `call.hangup` | Call ended — cleans up session state |
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `POST /waitlist/add`
 
@@ -56,6 +45,14 @@ Add to waitlist.
 {"position": "<string>", "entry": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/waitlist/add \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /waitlist/<int:idx>/ready`
@@ -70,6 +67,14 @@ Table ready.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/waitlist/<int:idx>/ready \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /reservations`
@@ -82,6 +87,12 @@ List all reservations.
 {"reservations": null}
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/reservations
+```
+
 ---
 
 ## `GET /waitlist`
@@ -92,6 +103,12 @@ List all waitlist.
 
 ```json
 {"waitlist": [w for w in waitlist if w["status"] == "waiting"]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/waitlist
 ```
 
 ---
@@ -108,6 +125,12 @@ Health check and service status.
   "reservations": "<string>",
   "waitlist": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

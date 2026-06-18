@@ -38,6 +38,15 @@ Provide product name, target audience, and tone. AI writes 3 script variations w
 - **TTS Generate**: `POST /v2/ai/generate` -- [ref](https://developers.telnyx.com/api/inference/generate)
 - **Send SMS**: `POST /v2/messages` -- [ref](https://developers.telnyx.com/api/messaging/send-message)
 
+## How It Works
+
+1. Sends conversation to Telnyx AI Inference for processing
+2. Converts response to speech via Telnyx TTS
+
+## Why Telnyx
+
+- **Co-located inference** — LLM runs on the same network as voice traffic. Sub-200ms round trips.
+
 ## Environment Variables
 
 Copy `.env.example` to `.env` and fill in:
@@ -92,6 +101,18 @@ curl http://localhost:5000/health
 ```json
 {"status": "ok"}
 ```
+
+
+## Troubleshooting
+
+- **Connection refused on port 5000**: App isn't running. Run `python app.py` and check no other process uses port 5000.
+- **401 Unauthorized**: Your `TELNYX_API_KEY` is invalid. Generate a new one at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys).
+- **AI response slow/empty**: Verify model name. See available models at [developers.telnyx.com](https://developers.telnyx.com/docs/inference/list-models).
+
+## Related Examples
+
+- [run-llm-inference-python](../run-llm-inference-python/) - Standalone inference
+- [build-voice-ai-agent-python](../build-voice-ai-agent-python/) - Voice AI agent
 
 ## Resources
 

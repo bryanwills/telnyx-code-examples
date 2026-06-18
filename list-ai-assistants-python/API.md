@@ -1,15 +1,3 @@
-# API Reference — List AI Assistants
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/assistants` | List assistants. |
-
----
-
 ## `GET /assistants`
 
 List all assistants.
@@ -18,8 +6,21 @@ List all assistants.
 
 ```json
 {
-  "error": "Invalid API key"
+  "assistants": [
+    {
+      "id": "asst_abc123",
+      "name": "Sales Agent",
+      "model": "moonshotai/Kimi-K2.6",
+      "created_at": "2026-06-18T21:00:00Z"
+    }
+  ]
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/assistants
 ```
 
 ---

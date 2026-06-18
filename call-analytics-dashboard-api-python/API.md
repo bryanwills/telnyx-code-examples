@@ -1,18 +1,3 @@
-# API Reference — Call Analytics Dashboard API — pull CDRs and build usage analytics.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/analytics/calls` | Call analytics. |
-| `GET` | `/analytics/numbers` | Number analytics. |
-| `GET` | `/analytics/messaging` | Messaging analytics. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `GET /analytics/calls`
 
 Call analytics.
@@ -30,6 +15,12 @@ Call analytics.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/analytics/calls
+```
+
 ---
 
 ## `GET /analytics/numbers`
@@ -43,6 +34,12 @@ Number analytics.
   "total_numbers": "example-value",
   "by_status": []
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/analytics/numbers
 ```
 
 ---
@@ -61,6 +58,12 @@ Messaging analytics.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/analytics/messaging
+```
+
 ---
 
 ## `GET /health`
@@ -73,6 +76,12 @@ Health check and service status.
 {
   "status": "ok"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

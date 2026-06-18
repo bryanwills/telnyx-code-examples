@@ -1,15 +1,3 @@
-# API Reference — Setup SIP Trunk
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/sip/setup` | Setup sip endpoint. |
-
----
-
 ## `POST /sip/setup`
 
 Setup sip endpoint.
@@ -36,6 +24,14 @@ Setup sip endpoint.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/sip/setup \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith", "username": "username-value", "password": "password-value"}'
 ```
 
 ---

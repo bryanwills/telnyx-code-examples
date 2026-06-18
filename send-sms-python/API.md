@@ -1,15 +1,3 @@
-# API Reference — Send SMS
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/sms/send` | Send sms endpoint. |
-
----
-
 ## `POST /sms/send`
 
 Send sms.
@@ -34,6 +22,14 @@ Send sms.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/sms/send \
+  -H "Content-Type: application/json" \
+  -d '{"to": "+12125559999", "message": "Hello from the API"}'
 ```
 
 ---

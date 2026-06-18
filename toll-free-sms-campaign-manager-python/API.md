@@ -1,19 +1,3 @@
-# API Reference — Toll-Free SMS Campaign Manager
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/campaigns` | Create a new campaign. |
-| `POST` | `/campaigns/<cid>/send` | Send campaign. |
-| `POST` | `/webhooks/messaging` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/verification/status` | Verification status. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /campaigns`
 
 Create a new campaign.
@@ -42,6 +26,14 @@ Create a new campaign.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/campaigns \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith", "message": "Hello from the API", "contacts": []}'
+```
+
 ---
 
 ## `POST /campaigns/<cid>/send`
@@ -54,6 +46,14 @@ Send campaign.
 {
   "error": "Not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/campaigns/example-id/send \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Not found"}'
 ```
 
 ---
@@ -71,6 +71,12 @@ Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inb
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/messaging
+```
+
 ## `GET /verification/status`
 
 Verification status.
@@ -81,6 +87,12 @@ Verification status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/verification/status
 ```
 
 ---
@@ -95,6 +107,12 @@ Health check and service status.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

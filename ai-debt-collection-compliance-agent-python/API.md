@@ -1,18 +1,3 @@
-# API Reference — AI Debt Collection Compliance Agent
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/collect` | Start collection. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/logs` | Get logs. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /collect`
 
 Start collection.
@@ -37,6 +22,14 @@ Start collection.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/collect \
+  -H "Content-Type: application/json" \
+  -d '{"number": "number-value"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -44,6 +37,12 @@ Start collection.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /logs`
 
@@ -55,6 +54,12 @@ Get a specific logs by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/logs
 ```
 
 ---
@@ -71,6 +76,12 @@ Health check and service status.
   "active": "<string>",
   "completed": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

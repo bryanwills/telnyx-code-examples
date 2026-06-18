@@ -1,27 +1,39 @@
-# API Reference — Production-ready IVR system using Telnyx Voice API and Flask.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/call` | Receives Telnyx webhook events. |
-| `GET` | `/webhooks/call/status` | Receives Telnyx webhook events. |
-
----
-
 ## `POST /webhooks/call`
 
-Receives Telnyx webhook events.
+Receives Telnyx Call Control webhook events for IVR menu navigation.
+
+### Events Handled
+
+| Event | Action |
+|-------|--------|
+| `call.initiated` | Answer the incoming call |
+| `call.answered` | Play welcome greeting via TTS |
+| `call.speak.ended` | Start gathering DTMF input |
+| `call.gather.ended` | Route based on key pressed |
+| `call.hangup` | Clean up session |
+
+### DTMF Menu Options
+
+| Key | Route |
+|-----|-------|
+| `1` | Sales department |
+| `2` | Support department |
+| `3` | Billing department |
+| `0` | Repeat menu |
 
 ---
 
 ## `GET /webhooks/call/status`
 
-Receives Telnyx webhook events.
+Returns current IVR session status and active call count.
 
 ---
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/webhooks/call/status
+```
 
 ## Error Handling
 

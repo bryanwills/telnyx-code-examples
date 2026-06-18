@@ -1,16 +1,3 @@
-# API Reference — Production-ready Flask application for sending bulk SMS via Telnyx.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/sms/bulk/send` | Send bulk sms endpoint. |
-| `GET` | `/sms/bulk/status` | Bulk sms status. |
-
----
-
 ## `POST /sms/bulk/send`
 
 Send bulk sms endpoint.
@@ -39,6 +26,14 @@ Send bulk sms endpoint.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/sms/bulk/send \
+  -H "Content-Type: application/json" \
+  -d '{"recipients": ["+12125559999"], "message": "Hello from the API"}'
+```
+
 ---
 
 ## `GET /sms/bulk/status`
@@ -54,6 +49,12 @@ Bulk sms status.
   "rate_limit": "example-value",
   "delay_between_messages": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/sms/bulk/status
 ```
 
 ---

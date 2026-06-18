@@ -1,20 +1,3 @@
-# API Reference — Podcast Episode Repurposer
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/repurpose` | Repurpose episode. |
-| `GET` | `/repurpose/<job_id>` | Get job. |
-| `POST` | `/subscribers` | Add subscriber. |
-| `GET` | `/subscribers` | List subscribers. |
-| `GET` | `/jobs` | List jobs. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /repurpose`
 
 Repurpose episode.
@@ -23,6 +6,14 @@ Repurpose episode.
 
 ```json
 {"error": "Upload episode audio as "audio""}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/repurpose \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Upload episode audio as "audio""}'
 ```
 
 ---
@@ -37,6 +28,12 @@ Get a specific job by ID.
 {
   "error": "Upload episode audio as 'audio"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/repurpose/example-id
 ```
 
 ---
@@ -63,6 +60,14 @@ Add subscriber.
 {"error": "Provide "phone" in E.164 format"}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/subscribers \
+  -H "Content-Type: application/json" \
+  -d '{"phone": "+12125559999"}'
+```
+
 ---
 
 ## `GET /subscribers`
@@ -73,6 +78,12 @@ List all subscribers.
 
 ```json
 {"subscribers": [s[-4:] for s in subscribers], "total": "<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/subscribers
 ```
 
 ---
@@ -89,6 +100,12 @@ List all jobs.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/jobs
+```
+
 ---
 
 ## `GET /health`
@@ -101,6 +118,12 @@ Health check and service status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

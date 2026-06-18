@@ -1,23 +1,14 @@
-# API Reference — Call Recording AI Summarizer
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `POST` | `/summarize` | Summarize recording. |
-| `GET` | `/recordings` | List recordings. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `POST /summarize`
 
@@ -43,6 +34,14 @@ Summarize recording.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/summarize \
+  -H "Content-Type: application/json" \
+  -d '{"transcript": "transcript-value"}'
+```
+
 ---
 
 ## `GET /recordings`
@@ -53,6 +52,12 @@ List all recordings.
 
 ```json
 {"recordings": recordings[-50:]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/recordings
 ```
 
 ---
@@ -68,6 +73,12 @@ Health check and service status.
   "status": "ok",
   "recordings": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

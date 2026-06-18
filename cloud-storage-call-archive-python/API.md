@@ -1,21 +1,3 @@
-# API Reference — Cloud Storage Call Archive
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/buckets` | Create a new bucket. |
-| `GET` | `/buckets` | List buckets. |
-| `POST` | `/archive` | Archive recording. |
-| `POST` | `/webhooks/recording` | Receives Telnyx webhook events. |
-| `GET` | `/archive` | List archive. |
-| `GET` | `/archive/search` | Search archive. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /buckets`
 
 Create a new bucket.
@@ -26,6 +8,14 @@ Create a new bucket.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/buckets \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Error description"}'
 ```
 
 ---
@@ -40,6 +30,12 @@ List all buckets.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/buckets
 ```
 
 ---
@@ -72,6 +68,14 @@ Archive recording.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/archive \
+  -H "Content-Type: application/json" \
+  -d '{"recording_url": "recording-url-value", "call_id": "call-id-value", "metadata": {}}'
+```
+
 ---
 
 ## `POST /webhooks/recording`
@@ -79,6 +83,12 @@ Archive recording.
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/recording
+```
 
 ## `GET /archive`
 
@@ -88,6 +98,12 @@ List all archive.
 
 ```json
 {"recordings": results[-50:], "total": "<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/archive
 ```
 
 ---
@@ -102,6 +118,12 @@ Search archive.
 {"results": results[:20], "query": null}
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/archive/search
+```
+
 ---
 
 ## `GET /health`
@@ -114,6 +136,12 @@ Health check and service status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

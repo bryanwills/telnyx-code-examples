@@ -1,21 +1,3 @@
-# API Reference — WireGuard Private Voice Network
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/networks` | Create a new network. |
-| `GET` | `/networks` | List networks. |
-| `POST` | `/interfaces` | Create a new interface. |
-| `POST` | `/peers` | Create a new peer. |
-| `GET` | `/interfaces/<iface_id>/config` | Get config. |
-| `GET` | `/topology` | Topology. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /networks`
 
 Create a new network.
@@ -40,6 +22,14 @@ Create a new network.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/networks \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith"}'
+```
+
 ---
 
 ## `GET /networks`
@@ -52,6 +42,12 @@ List all networks.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/networks
 ```
 
 ---
@@ -79,6 +75,14 @@ Create a new interface.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/interfaces \
+  -H "Content-Type: application/json" \
+  -d '{"error": "example-value"}'
 ```
 
 ---
@@ -109,6 +113,14 @@ Create a new peer.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/peers \
+  -H "Content-Type: application/json" \
+  -d '{"error": "example-value"}'
+```
+
 ---
 
 ## `GET /interfaces/<iface_id>/config`
@@ -123,6 +135,12 @@ Get a specific config by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/interfaces/example-id/config
+```
+
 ---
 
 ## `GET /topology`
@@ -134,6 +152,12 @@ Topology.
 ```json
 {"networks": "<string>", "interfaces": "<string>",
         "details": {"networks": "<string>"), "interfaces": "<string>")}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/topology
 ```
 
 ---
@@ -150,6 +174,12 @@ Health check and service status.
   "networks": "<string>",
   "interfaces": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

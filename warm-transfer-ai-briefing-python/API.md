@@ -1,19 +1,3 @@
-# API Reference — Warm Transfer with AI Briefing
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `POST` | `/transfers/initiate` | Initiate transfer. |
-| `GET` | `/transfers` | List transfers. |
-| `GET` | `/calls` | List calls. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
@@ -35,6 +19,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 | `2` | Transfer declined. The caller will be returned to the queue. |
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `POST /transfers/initiate`
 
@@ -62,6 +52,14 @@ Initiate transfer.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/transfers/initiate \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /transfers`
@@ -74,6 +72,12 @@ List all transfers.
 {"transfers": [{
         "id": null, "status": t["status"], "briefing": t["briefing"],
     }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/transfers
 ```
 
 ---
@@ -90,6 +94,12 @@ List all calls.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/calls
+```
+
 ---
 
 ## `GET /health`
@@ -104,6 +114,12 @@ Health check and service status.
   "active_calls": "example-value",
   "pending_transfers": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

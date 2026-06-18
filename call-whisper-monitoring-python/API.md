@@ -1,17 +1,3 @@
-# API Reference — Production-ready Flask application for Whisper-based call prompts via Telnyx.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/calls/initiate` | Initiate call endpoint. |
-| `POST` | `/webhooks/call` | Receives Telnyx webhook events. |
-| `GET` | `/calls/<call_control_id>/status` | Get call status. |
-
----
-
 ## `POST /calls/initiate`
 
 Initiate call endpoint.
@@ -36,6 +22,14 @@ Initiate call endpoint.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/calls/initiate \
+  -H "Content-Type: application/json" \
+  -d '{"to": "+12125559999"}'
+```
+
 ---
 
 ## `POST /webhooks/call`
@@ -43,6 +37,12 @@ Initiate call endpoint.
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/call
+```
 
 ## `GET /calls/<call_control_id>/status`
 
@@ -54,6 +54,12 @@ Get call status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/calls/example-id/status
 ```
 
 ---

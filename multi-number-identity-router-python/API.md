@@ -1,19 +1,3 @@
-# API Reference — Multi-Number Identity Router
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/identities` | Add identity. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/identities` | List identities. |
-| `GET` | `/calls` | List calls. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /identities`
 
 Add identity.
@@ -40,6 +24,14 @@ Add identity.
 {"status": "added", "number": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/identities \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -47,6 +39,12 @@ Add identity.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /identities`
 
@@ -56,6 +54,12 @@ List all identities.
 
 ```json
 {"identities": {k: {"name": v["name"], "hours": v["hours"]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/identities
 ```
 
 ---
@@ -72,6 +76,12 @@ List all calls.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/calls
+```
+
 ---
 
 ## `GET /health`
@@ -85,6 +95,12 @@ Health check and service status.
   "status": "ok",
   "identities": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

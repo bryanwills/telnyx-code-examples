@@ -1,15 +1,3 @@
-# API Reference — Send MMS Picture Message
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/mms/send` | Send mms endpoint. |
-
----
-
 ## `POST /mms/send`
 
 Send mms.
@@ -34,6 +22,14 @@ Send mms.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/mms/send \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---

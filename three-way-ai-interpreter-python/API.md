@@ -1,19 +1,3 @@
-# API Reference — Three-Way Call with AI Interpreter
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/interpret/start` | Start session. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/sessions` | List sessions. |
-| `GET` | `/sessions/<sid>/transcript` | Get transcript. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /interpret/start`
 
 Start session.
@@ -41,6 +25,14 @@ Start session.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/interpret/start \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -58,6 +50,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /sessions`
 
 List all sessions.
@@ -68,6 +66,12 @@ List all sessions.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/sessions
 ```
 
 ---
@@ -84,6 +88,12 @@ Get a specific transcript by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/sessions/example-id/transcript
+```
+
 ---
 
 ## `GET /health`
@@ -98,6 +108,12 @@ Health check and service status.
   "active_sessions": "example-value",
   "total": 3
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

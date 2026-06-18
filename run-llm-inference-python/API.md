@@ -1,17 +1,3 @@
-# API Reference — Run LLM inference on Telnyx — OpenAI-compatible chat completions API.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/inference/chat` | Chat endpoint. |
-| `POST` | `/inference/ask` | Ask endpoint. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /inference/chat`
 
 Chat endpoint.
@@ -34,6 +20,14 @@ Chat endpoint.
 
 ```json
 {"error": "Request body must include "messages" array"}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/inference/chat \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Request body must include 'messages' array"}'
 ```
 
 ---
@@ -60,6 +54,14 @@ Ask endpoint.
 {"error": "Request body must include "question""}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/inference/ask \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Request body must include 'messages' array"}'
+```
+
 ---
 
 ## `GET /health`
@@ -72,6 +74,12 @@ Health check and service status.
 {
   "error": "Request body must include 'question"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

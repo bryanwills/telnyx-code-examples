@@ -1,19 +1,3 @@
-# API Reference — Conference Call with AI Summary
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/conference/create` | Create a new conference. |
-| `POST` | `/conference/<conf_id>/invite` | Invite participant. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/conference/<conf_id>/summary` | Get summary. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /conference/create`
 
 Create a new conference.
@@ -36,6 +20,14 @@ Create a new conference.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/conference/create \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith"}'
 ```
 
 ---
@@ -64,6 +56,14 @@ Invite participant.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/conference/example-id/invite \
+  -H "Content-Type: application/json" \
+  -d '{"number": "number-value"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -71,6 +71,12 @@ Invite participant.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /conference/<conf_id>/summary`
 
@@ -82,6 +88,12 @@ Get a specific summary by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/conference/example-id/summary
 ```
 
 ---
@@ -97,6 +109,12 @@ Health check and service status.
   "status": "ok",
   "conferences": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

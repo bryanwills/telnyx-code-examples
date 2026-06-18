@@ -1,22 +1,14 @@
-# API Reference — AI Billing Dispute Resolution Agent
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/disputes` | List disputes. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /disputes`
 
@@ -26,6 +18,12 @@ List all disputes.
 
 ```json
 {"disputes": disputes[-50:]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/disputes
 ```
 
 ---
@@ -42,6 +40,12 @@ Health check and service status.
   "active": "<string>",
   "disputes": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

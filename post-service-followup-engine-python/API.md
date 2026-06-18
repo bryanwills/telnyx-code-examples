@@ -1,19 +1,3 @@
-# API Reference — Post-Service Follow-Up Engine
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/follow-up/send` | Send followup. |
-| `POST` | `/webhooks/sms` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/follow-ups` | List followups. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /follow-up/send`
 
 Send followup.
@@ -42,6 +26,14 @@ Send followup.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/follow-up/send \
+  -H "Content-Type: application/json" \
+  -d '{"phone": "+12125559999", "service": "service-value", "tech": "tech-value"}'
+```
+
 ---
 
 ## `POST /webhooks/sms`
@@ -49,6 +41,12 @@ Send followup.
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/sms
+```
 
 ## `POST /webhooks/voice`
 
@@ -65,6 +63,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /follow-ups`
 
 List all followups.
@@ -75,6 +79,12 @@ List all followups.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/follow-ups
 ```
 
 ---
@@ -89,6 +99,12 @@ Health check and service status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

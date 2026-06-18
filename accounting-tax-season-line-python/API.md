@@ -1,21 +1,3 @@
-# API Reference — Accounting Firm Tax Season Line
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/reminders/send` | Send reminders. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `POST` | `/webhooks/sms` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/clients` | List clients. |
-| `POST` | `/clients/<int:idx>/doc-received` | Doc received. |
-| `GET` | `/readiness` | Readiness dashboard. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /reminders/send`
 
 Send reminders.
@@ -27,6 +9,14 @@ Send reminders.
   "reminders_sent": "example-value",
   "results": []
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/reminders/send \
+  -H "Content-Type: application/json" \
+  -d '{"reminders_sent": "example-value", "results": []}'
 ```
 
 ---
@@ -47,11 +37,23 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `POST /webhooks/sms`
 
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/sms
+```
 
 ## `GET /clients`
 
@@ -61,6 +63,12 @@ List all clients.
 
 ```json
 {"clients": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/clients
 ```
 
 ---
@@ -89,6 +97,14 @@ Doc received.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/clients/<int:idx>/doc-received \
+  -H "Content-Type: application/json" \
+  -d '{"document": "document-value"}'
+```
+
 ---
 
 ## `GET /readiness`
@@ -101,6 +117,12 @@ Readiness dashboard.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/readiness
 ```
 
 ---
@@ -116,6 +138,12 @@ Health check and service status.
   "status": "ok",
   "clients": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

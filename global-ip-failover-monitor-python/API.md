@@ -1,20 +1,3 @@
-# API Reference — Global IP Failover Monitor
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/endpoints` | List endpoints. |
-| `POST` | `/endpoints` | Add endpoint. |
-| `POST` | `/check` | Run health check. |
-| `GET` | `/failover-log` | Get failover log. |
-| `GET` | `/regions` | Regions. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `GET /endpoints`
 
 List all endpoints.
@@ -23,6 +6,12 @@ List all endpoints.
 
 ```json
 {"endpoints": "<string>")}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/endpoints
 ```
 
 ---
@@ -53,6 +42,14 @@ Add endpoint.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/endpoints \
+  -H "Content-Type: application/json" \
+  -d '{"endpoints": "example-value"}'
+```
+
 ---
 
 ## `POST /check`
@@ -63,6 +60,14 @@ Run health check.
 
 ```json
 {"results": null}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/check \
+  -H "Content-Type: application/json" \
+  -d '{"results": null}'
 ```
 
 ---
@@ -79,6 +84,12 @@ Get failover log.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/failover-log
+```
+
 ---
 
 ## `GET /regions`
@@ -93,6 +104,12 @@ Regions.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/regions
+```
+
 ---
 
 ## `GET /health`
@@ -105,6 +122,12 @@ Health check and service status.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

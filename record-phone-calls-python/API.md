@@ -1,20 +1,3 @@
-# API Reference — Production-ready Flask application for call recording via Telnyx Voice API.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/calls/initiate` | Initiate call endpoint. |
-| `POST` | `/calls/<call_control_id>/recording/start` | Start recording endpoint. |
-| `POST` | `/calls/<call_control_id>/recording/stop` | Stop recording endpoint. |
-| `POST` | `/calls/<call_control_id>/hangup` | Hangup endpoint. |
-| `POST` | `/webhooks/call-events` | Receives Telnyx webhook events. |
-| `GET` | `/calls/<call_control_id>/status` | Get call status. |
-
----
-
 ## `POST /calls/initiate`
 
 Initiate call endpoint.
@@ -39,6 +22,14 @@ Initiate call endpoint.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/calls/initiate \
+  -H "Content-Type: application/json" \
+  -d '{"to": "+12125559999"}'
+```
+
 ---
 
 ## `POST /calls/<call_control_id>/recording/start`
@@ -51,6 +42,14 @@ Start recording endpoint.
 {
   "error": "Invalid API key"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/calls/example-id/recording/start \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Invalid API key"}'
 ```
 
 ---
@@ -67,6 +66,14 @@ Stop recording endpoint.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/calls/example-id/recording/stop \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Invalid API key"}'
+```
+
 ---
 
 ## `POST /calls/<call_control_id>/hangup`
@@ -81,6 +88,14 @@ Hangup endpoint.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/calls/example-id/hangup \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Invalid API key"}'
+```
+
 ---
 
 ## `POST /webhooks/call-events`
@@ -88,6 +103,12 @@ Hangup endpoint.
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/call-events
+```
 
 ## `GET /calls/<call_control_id>/status`
 
@@ -99,6 +120,12 @@ Get call status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/calls/example-id/status
 ```
 
 ---

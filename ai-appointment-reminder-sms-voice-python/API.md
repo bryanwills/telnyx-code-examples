@@ -1,19 +1,3 @@
-# API Reference — AI Appointment Reminder
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/appointments` | Add appointment. |
-| `POST` | `/remind` | Trigger a new reminders. |
-| `POST` | `/webhooks/messaging` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /appointments`
 
 Add appointment.
@@ -25,6 +9,14 @@ Add appointment.
   "status": "added",
   "total": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/appointments \
+  -H "Content-Type: application/json" \
+  -d '{"status": "added", "total": "<string>"}'
 ```
 
 ---
@@ -41,6 +33,14 @@ Trigger a new reminders.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/remind \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/messaging`
@@ -49,11 +49,23 @@ Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inb
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/messaging
+```
+
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /health`
 
@@ -65,6 +77,12 @@ Health check and service status.
 {
   "reminders_sent": []
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

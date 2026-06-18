@@ -1,20 +1,3 @@
-# API Reference — White-Label Appointment Platform
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/tenants` | Create a new tenant. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/tenants` | List tenants. |
-| `GET` | `/tenants/<tid>/appointments` | Tenant appointments. |
-| `GET` | `/tenants/<tid>/stats` | Tenant stats. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /tenants`
 
 Create a new tenant.
@@ -44,6 +27,14 @@ Create a new tenant.
 {"tenant": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/tenants \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -62,6 +53,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /tenants`
 
 List all tenants.
@@ -70,6 +67,12 @@ List all tenants.
 
 ```json
 {"tenants": "<string>")}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/tenants
 ```
 
 ---
@@ -82,6 +85,12 @@ Tenant appointments.
 
 ```json
 {"appointments": appointments."<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/tenants/example-id/appointments
 ```
 
 ---
@@ -99,6 +108,12 @@ Tenant stats.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/tenants/example-id/stats
+```
+
 ---
 
 ## `GET /health`
@@ -111,6 +126,12 @@ Health check and service status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

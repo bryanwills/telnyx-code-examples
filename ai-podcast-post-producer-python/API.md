@@ -1,23 +1,14 @@
-# API Reference — AI Podcast Post-Producer
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `POST` | `/produce` | Produce episode. |
-| `GET` | `/episodes` | List episodes. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `POST /produce`
 
@@ -45,6 +36,14 @@ Produce episode.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/produce \
+  -H "Content-Type: application/json" \
+  -d '{"transcript": "transcript-value", "title": "title-value"}'
+```
+
 ---
 
 ## `GET /episodes`
@@ -55,6 +54,12 @@ List all episodes.
 
 ```json
 {"episodes": episodes[-20:]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/episodes
 ```
 
 ---
@@ -70,6 +75,12 @@ Health check and service status.
   "status": "ok",
   "episodes": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

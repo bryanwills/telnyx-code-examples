@@ -1,24 +1,14 @@
-# API Reference — Media Stream Custom Audio Mixer
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `POST` | `/streams/<ccid>/inject` | Inject audio. |
-| `GET` | `/streams` | List streams. |
-| `GET` | `/stream-log` | Get log. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `POST /streams/<ccid>/inject`
 
@@ -47,6 +37,14 @@ Inject audio.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/streams/example-id/inject \
+  -H "Content-Type: application/json" \
+  -d '{"id": "abc-123", "status": "active", "created_at": "2026-06-18T21:00:00Z"}'
+```
+
 ---
 
 ## `GET /streams`
@@ -59,6 +57,12 @@ List all streams.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/streams
 ```
 
 ---
@@ -76,6 +80,12 @@ Get a specific log by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/stream-log
+```
+
 ---
 
 ## `GET /health`
@@ -88,6 +98,12 @@ Health check and service status.
 {
   "log": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,18 +1,3 @@
-# API Reference — Smart IVR A/B Tester
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/experiments` | Create a new experiment. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/experiments/<eid>/results` | Get results. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /experiments`
 
 Create a new experiment.
@@ -41,6 +26,14 @@ Create a new experiment.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/experiments \
+  -H "Content-Type: application/json" \
+  -d '{"variant_a": {}, "variant_b": {}, "split": "split-value"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -48,6 +41,12 @@ Create a new experiment.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /experiments/<eid>/results`
 
@@ -59,6 +58,12 @@ Get a specific results by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/experiments/example-id/results
 ```
 
 ---
@@ -74,6 +79,12 @@ Health check and service status.
   "status": "ok",
   "experiments": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

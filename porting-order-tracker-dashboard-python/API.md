@@ -1,21 +1,3 @@
-# API Reference — Porting Order Tracker Dashboard
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/porting/orders` | Submit order. |
-| `POST` | `/porting/bulk` | Bulk submit. |
-| `GET` | `/porting/orders` | List orders. |
-| `POST` | `/webhooks/porting` | Receives Telnyx porting status webhook events. |
-| `GET` | `/porting/sla-check` | Sla check. |
-| `GET` | `/porting/dashboard` | Dashboard. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /porting/orders`
 
 Submit order.
@@ -46,6 +28,14 @@ Submit order.
 {"order": null, "api": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/porting/orders \
+  -H "Content-Type: application/json" \
+  -d '{"order": "example-value", "api": "example-value"}'
+```
+
 ---
 
 ## `POST /porting/bulk`
@@ -70,6 +60,14 @@ Bulk submit.
 {"submitted": "<string>", "results": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/porting/bulk \
+  -H "Content-Type: application/json" \
+  -d '{"batches": []}'
+```
+
 ---
 
 ## `GET /porting/orders`
@@ -87,6 +85,12 @@ List all orders.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/porting/orders
+```
+
 ---
 
 ## `POST /webhooks/porting`
@@ -94,6 +98,12 @@ List all orders.
 Receives Telnyx porting status webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/porting
+```
 
 ## `GET /porting/sla-check`
 
@@ -105,6 +115,12 @@ Sla check.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/porting/sla-check
 ```
 
 ---
@@ -122,6 +138,12 @@ Dashboard.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/porting/dashboard
+```
+
 ---
 
 ## `GET /health`
@@ -135,6 +157,12 @@ Health check and service status.
   "status": "ok",
   "orders": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

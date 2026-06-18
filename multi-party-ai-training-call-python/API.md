@@ -1,20 +1,3 @@
-# API Reference — Multi-Party AI Training Call
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/training/start` | Start training. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/training/<sid>` | Get session detail. |
-| `GET` | `/training` | List sessions view. |
-| `GET` | `/scenarios` | List scenarios. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /training/start`
 
 Start training.
@@ -41,6 +24,14 @@ Start training.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/training/start \
+  -H "Content-Type: application/json" \
+  -d '{"scenario": "scenario-value", "trainees": []}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -58,6 +49,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /training/<sid>`
 
 Get session detail.
@@ -68,6 +65,12 @@ Get session detail.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/training/example-id
 ```
 
 ---
@@ -86,6 +89,12 @@ List sessions view.
     }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/training
+```
+
 ---
 
 ## `GET /scenarios`
@@ -98,6 +107,12 @@ List all scenarios.
 {
   "error": "not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/scenarios
 ```
 
 ---
@@ -115,6 +130,12 @@ Health check and service status.
   "total": 3,
   "scenarios": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

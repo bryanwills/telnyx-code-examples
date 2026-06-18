@@ -1,18 +1,3 @@
-# API Reference — AI Medical Appointment Prep Caller
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/prep-call` | Start prep call. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/intakes` | List intakes. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /prep-call`
 
 Start prep call.
@@ -38,6 +23,14 @@ Start prep call.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/prep-call \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -45,6 +38,12 @@ Start prep call.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /intakes`
 
@@ -56,6 +55,12 @@ List all intakes.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/intakes
 ```
 
 ---
@@ -72,6 +77,12 @@ Health check and service status.
   "intakes": "<string>",
   "active": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

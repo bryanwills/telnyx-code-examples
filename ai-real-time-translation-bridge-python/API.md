@@ -1,18 +1,3 @@
-# API Reference — Ai Real Time Translation Bridge
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/bridge` | Create a new bridge. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/bridges` | List bridges. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /bridge`
 
 Create a new bridge.
@@ -40,6 +25,14 @@ Create a new bridge.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/bridge \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -47,6 +40,12 @@ Create a new bridge.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /bridges`
 
@@ -58,6 +57,12 @@ List all bridges.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/bridges
 ```
 
 ---
@@ -73,6 +78,12 @@ Health check and service status.
   "status": "ok",
   "active_bridges": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

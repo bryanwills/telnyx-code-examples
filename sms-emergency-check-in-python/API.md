@@ -1,20 +1,3 @@
-# API Reference — SMS Emergency Check-In
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/monitor` | Add monitored. |
-| `POST` | `/check-in/send` | Send check ins. |
-| `POST` | `/webhooks/messaging` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `POST` | `/check-in/escalate` | Escalate missed. |
-| `GET` | `/status` | Get status. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /monitor`
 
 Add monitored.
@@ -39,6 +22,14 @@ Add monitored.
 {"status": "monitoring", "phone": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/monitor \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /check-in/send`
@@ -51,6 +42,14 @@ Send check ins.
 {"sent": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/check-in/send \
+  -H "Content-Type: application/json" \
+  -d '{"sent": null}'
+```
+
 ---
 
 ## `POST /webhooks/messaging`
@@ -58,6 +57,12 @@ Send check ins.
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/messaging
+```
 
 ## `POST /check-in/escalate`
 
@@ -67,6 +72,14 @@ Escalate missed.
 
 ```json
 {"escalated": null}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/check-in/escalate \
+  -H "Content-Type: application/json" \
+  -d '{"escalated": null}'
 ```
 
 ---
@@ -83,6 +96,12 @@ Get a specific status by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/status
+```
+
 ---
 
 ## `GET /health`
@@ -96,6 +115,12 @@ Health check and service status.
   "status": "ok",
   "monitored": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

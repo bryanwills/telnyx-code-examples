@@ -1,18 +1,3 @@
-# API Reference — Click-to-Call WebRTC with AI Assist
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/` | Index. |
-| `POST` | `/webrtc/token` | Get token. |
-| `POST` | `/coaching` | Get coaching. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `GET /`
 
 Index.
@@ -21,6 +6,12 @@ Index.
 
 ```json
 { "status": "ok" }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/
 ```
 
 ---
@@ -35,6 +26,14 @@ Get a specific token by ID.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webrtc/token \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Error description"}'
 ```
 
 ---
@@ -63,6 +62,14 @@ Get a specific coaching by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/coaching \
+  -H "Content-Type: application/json" \
+  -d '{"transcript": "transcript-value"}'
+```
+
 ---
 
 ## `GET /health`
@@ -75,6 +82,12 @@ Health check and service status.
 {
   "status": "ok"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,20 +1,3 @@
-# API Reference — Full-Stack AI Contact Center
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/agents` | Register agent. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/dashboard` | Dashboard. |
-| `GET` | `/queues` | List queues. |
-| `GET` | `/recordings` | List recordings. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /agents`
 
 Register agent.
@@ -41,6 +24,14 @@ Register agent.
 {"agent": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/agents \
+  -H "Content-Type: application/json" \
+  -d '{"id": "id-value", "name": "Jane Smith", "queue": "queue-value"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -48,6 +39,12 @@ Register agent.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /dashboard`
 
@@ -59,6 +56,12 @@ Dashboard.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/dashboard
 ```
 
 ---
@@ -73,6 +76,12 @@ List all queues.
 {"queues": {k: {"name": v["name"], "agents": "<string>", "waiting": "<string>"}
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/queues
+```
+
 ---
 
 ## `GET /recordings`
@@ -83,6 +92,12 @@ List all recordings.
 
 ```json
 {"recordings": recordings[-20:]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/recordings
 ```
 
 ---
@@ -97,6 +112,12 @@ Health check and service status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

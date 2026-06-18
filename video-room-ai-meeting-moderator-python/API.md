@@ -1,19 +1,3 @@
-# API Reference — Video Room AI Meeting Moderator
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/rooms` | Create a new room. |
-| `POST` | `/rooms/<room_id>/start` | Start meeting. |
-| `GET` | `/rooms/<room_id>/status` | Meeting status. |
-| `POST` | `/rooms/<room_id>/next` | Next topic. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /rooms`
 
 Create a new room.
@@ -42,6 +26,14 @@ Create a new room.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/rooms \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /rooms/<room_id>/start`
@@ -54,6 +46,14 @@ Start meeting.
 {
   "error": "Room not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/rooms/example-id/start \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Room not found"}'
 ```
 
 ---
@@ -70,6 +70,12 @@ Meeting status.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/rooms/example-id/status
+```
+
 ---
 
 ## `POST /rooms/<room_id>/next`
@@ -82,6 +88,14 @@ Next topic.
 {
   "error": "Room not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/rooms/example-id/next \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Room not found"}'
 ```
 
 ---
@@ -97,6 +111,12 @@ Health check and service status.
   "status": "ok",
   "rooms": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

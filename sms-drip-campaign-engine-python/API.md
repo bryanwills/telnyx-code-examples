@@ -1,19 +1,3 @@
-# API Reference — SMS Drip Campaign Engine
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/drip/create` | Create a new drip. |
-| `POST` | `/drip/<did>/subscribe` | Subscribe. |
-| `POST` | `/drip/advance` | Advance all. |
-| `POST` | `/webhooks/messaging` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /drip/create`
 
 Create a new drip.
@@ -38,6 +22,14 @@ Create a new drip.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/drip/create \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith", "steps": []}'
 ```
 
 ---
@@ -66,6 +58,14 @@ Subscribe.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/drip/example-id/subscribe \
+  -H "Content-Type: application/json" \
+  -d '{"phone": "+12125559999"}'
+```
+
 ---
 
 ## `POST /drip/advance`
@@ -76,6 +76,14 @@ Advance all.
 
 ```json
 {"advanced": null}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/drip/advance \
+  -H "Content-Type: application/json" \
+  -d '{"advanced": null}'
 ```
 
 ---
@@ -92,6 +100,12 @@ Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inb
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/messaging
+```
+
 ## `GET /health`
 
 Health check and service status.
@@ -104,6 +118,12 @@ Health check and service status.
   "campaigns": "<string>",
   "subscribers": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

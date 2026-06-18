@@ -1,19 +1,3 @@
-# API Reference — AI Cold Caller Objection Trainer
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/train` | Start training. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/results` | Get results. |
-| `GET` | `/personas` | List personas. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /train`
 
 Start training.
@@ -37,6 +21,14 @@ Start training.
 {"status": "calling", "persona": persona["name"]}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/train \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -44,6 +36,12 @@ Start training.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /results`
 
@@ -57,6 +55,12 @@ Get a specific results by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/results
+```
+
 ---
 
 ## `GET /personas`
@@ -67,6 +71,12 @@ List all personas.
 
 ```json
 {"personas": [{"index": null, "name": p["name"], "style": p["style"]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/personas
 ```
 
 ---
@@ -83,6 +93,12 @@ Health check and service status.
   "active": "<string>",
   "completed": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,19 +1,3 @@
-# API Reference — Number Warmup & Reputation Builder
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/warmup/start` | Start warmup. |
-| `POST` | `/warmup/send` | Send warmup. |
-| `GET` | `/warmup/status` | Warmup status. |
-| `POST` | `/warmup/reset-daily` | Reset daily. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /warmup/start`
 
 Start warmup.
@@ -36,6 +20,14 @@ Start warmup.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/warmup/start \
+  -H "Content-Type: application/json" \
+  -d '{"number": "number-value"}'
 ```
 
 ---
@@ -66,6 +58,14 @@ Send warmup.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/warmup/send \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /warmup/status`
@@ -76,6 +76,12 @@ Warmup status.
 
 ```json
 {"numbers": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/warmup/status
 ```
 
 ---
@@ -91,6 +97,14 @@ Reset daily.
   "status": "reset",
   "numbers": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/warmup/reset-daily \
+  -H "Content-Type: application/json" \
+  -d '{"status": "reset", "numbers": "<string>"}'
 ```
 
 ---
@@ -110,6 +124,12 @@ Health check and service status.
     }
   ]
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

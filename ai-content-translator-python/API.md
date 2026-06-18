@@ -1,18 +1,3 @@
-# API Reference — AI Content Translator
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/translate` | Translate content. |
-| `GET` | `/translate/<job_id>` | Get translation. |
-| `GET` | `/languages` | List languages. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /translate`
 
 Translate content.
@@ -21,6 +6,14 @@ Translate content.
 
 ```json
 {"error": "Upload audio file as "audio""}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/translate \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Upload audio file as "audio""}'
 ```
 
 ---
@@ -37,6 +30,12 @@ Get a specific translation by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/translate/example-id
+```
+
 ---
 
 ## `GET /languages`
@@ -47,6 +46,12 @@ List all languages.
 
 ```json
 {"languages": {k: v["name"] for k, v in LANGUAGES."<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/languages
 ```
 
 ---
@@ -61,6 +66,12 @@ Health check and service status.
 {
   "error": "Job not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

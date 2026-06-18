@@ -1,21 +1,3 @@
-# API Reference — Live Podcast Call-In Show
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/shows/start` | Start show. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `POST` | `/shows/<show_id>/next-caller` | Admit next caller. |
-| `POST` | `/shows/<show_id>/fact-check` | Fact check. |
-| `GET` | `/shows/<show_id>/queue` | View queue. |
-| `GET` | `/shows` | List shows. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /shows/start`
 
 Start show.
@@ -42,6 +24,14 @@ Start show.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/shows/start \
+  -H "Content-Type: application/json" \
+  -d '{"hosts": [], "topic": "topic-value"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -49,6 +39,12 @@ Start show.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `POST /shows/<show_id>/next-caller`
 
@@ -60,6 +56,14 @@ Admit next caller.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/shows/example-id/next-caller \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -88,6 +92,14 @@ Fact check.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/shows/example-id/fact-check \
+  -H "Content-Type: application/json" \
+  -d '{"claim": "claim-value"}'
+```
+
 ---
 
 ## `GET /shows/<show_id>/queue`
@@ -102,6 +114,12 @@ View queue.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/shows/example-id/queue
+```
+
 ---
 
 ## `GET /shows`
@@ -114,6 +132,12 @@ List all shows.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/shows
 ```
 
 ---
@@ -131,6 +155,12 @@ Health check and service status.
   "callers_in_queue": "example-value",
   "version": "1.0.0"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

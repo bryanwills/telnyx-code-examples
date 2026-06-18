@@ -1,24 +1,14 @@
-# API Reference — Marketplace Comms Bridge
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/sms` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/listings` | List listings. |
-| `GET` | `/conversations` | List conversations. |
-| `GET` | `/flagged` | List flagged. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/sms`
 
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/sms
+```
 
 ## `GET /listings`
 
@@ -28,6 +18,12 @@ List all listings.
 
 ```json
 {"listings": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/listings
 ```
 
 ---
@@ -42,6 +38,12 @@ List all conversations.
 {"conversations": conversations[-50:]}
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/conversations
+```
+
 ---
 
 ## `GET /flagged`
@@ -52,6 +54,12 @@ List all flagged.
 
 ```json
 {"flagged": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/flagged
 ```
 
 ---
@@ -68,6 +76,12 @@ Health check and service status.
   "conversations": "<string>",
   "flagged": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

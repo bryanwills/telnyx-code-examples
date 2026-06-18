@@ -1,20 +1,3 @@
-# API Reference — Porting LOA Automation
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/loa/generate` | Generate loa. |
-| `POST` | `/loa/submit-and-port` | Submit and port. |
-| `POST` | `/loa/check-portability` | Check portability. |
-| `GET` | `/loa` | List loas. |
-| `GET` | `/pipeline` | Pipeline status. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /loa/generate`
 
 Generate loa.
@@ -49,6 +32,14 @@ Generate loa.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/loa/generate \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /loa/submit-and-port`
@@ -79,6 +70,14 @@ Submit and port.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/loa/submit-and-port \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /loa/check-portability`
@@ -103,6 +102,14 @@ Check portability.
 {"results": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/loa/check-portability \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /loa`
@@ -115,6 +122,12 @@ List all loas.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/loa
 ```
 
 ---
@@ -131,6 +144,12 @@ Pipeline status.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/pipeline
+```
+
 ---
 
 ## `GET /health`
@@ -145,6 +164,12 @@ Health check and service status.
   "loas": "<string>",
   "porting": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

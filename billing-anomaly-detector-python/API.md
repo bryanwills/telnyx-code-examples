@@ -1,20 +1,3 @@
-# API Reference — Billing Anomaly Detector
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/config` | Set baselines. |
-| `GET` | `/config` | Get baselines. |
-| `POST` | `/check` | Run anomaly check. |
-| `GET` | `/balance` | Check balance. |
-| `GET` | `/alerts` | List alerts. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /config`
 
 Set baselines.
@@ -23,6 +6,14 @@ Set baselines.
 
 ```json
 {"baselines": null}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/config \
+  -H "Content-Type: application/json" \
+  -d '{"baselines": null}'
 ```
 
 ---
@@ -35,6 +26,12 @@ Get a specific baselines by ID.
 
 ```json
 {"baselines": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/config
 ```
 
 ---
@@ -51,6 +48,14 @@ Run anomaly check.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/check \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /balance`
@@ -65,6 +70,12 @@ Check balance.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/balance
+```
+
 ---
 
 ## `GET /alerts`
@@ -77,6 +88,12 @@ List all alerts.
 {"alerts": alerts[-50:]}
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/alerts
+```
+
 ---
 
 ## `GET /health`
@@ -87,6 +104,12 @@ Health check and service status.
 
 ```json
 {"status": "ok", "alerts": "<string>", "baselines": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

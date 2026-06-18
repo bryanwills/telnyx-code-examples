@@ -1,18 +1,3 @@
-# API Reference — WhatsApp Order Tracking Notifications
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/orders` | Create a new order. |
-| `PUT` | `/orders/<order_id>/status` | Update status. |
-| `POST` | `/webhooks/messaging` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /orders`
 
 Create a new order.
@@ -36,6 +21,14 @@ Create a new order.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/orders \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -72,6 +65,14 @@ Update status.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X PUT http://localhost:5000/orders/example-id/status \
+  -H "Content-Type: application/json" \
+  -d '{"statuss": [{"id": "abc-123", "status": "active", "created_at": "2026-06-18T21:00:00Z"}], "total": 1}'
+```
+
 ---
 
 ## `POST /webhooks/messaging`
@@ -79,6 +80,12 @@ Update status.
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/messaging
+```
 
 ## `GET /health`
 
@@ -91,6 +98,12 @@ Health check and service status.
   "status": "ok",
   "orders": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

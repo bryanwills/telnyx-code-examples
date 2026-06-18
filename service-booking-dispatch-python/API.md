@@ -1,19 +1,3 @@
-# API Reference — Service Booking & Dispatch
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/bookings` | List bookings. |
-| `POST` | `/bookings/<int:idx>/assign` | Assign tech. |
-| `GET` | `/techs` | List techs. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
@@ -30,6 +14,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /bookings`
 
 List all bookings.
@@ -38,6 +28,12 @@ List all bookings.
 
 ```json
 {"bookings": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/bookings
 ```
 
 ---
@@ -66,6 +62,14 @@ Assign tech.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/bookings/<int:idx>/assign \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /techs`
@@ -78,6 +82,12 @@ List all techs.
 {
   "error": "Not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/techs
 ```
 
 ---
@@ -93,6 +103,12 @@ Health check and service status.
   "status": "ok",
   "bookings": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

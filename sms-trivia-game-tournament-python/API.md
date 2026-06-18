@@ -1,19 +1,3 @@
-# API Reference — SMS Trivia Game Tournament
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/tournament/create` | Create a new tournament. |
-| `POST` | `/webhooks/messaging` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `POST` | `/tournament/<tid>/next` | Next round. |
-| `GET` | `/tournament/<tid>/leaderboard` | Leaderboard. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /tournament/create`
 
 Create a new tournament.
@@ -42,6 +26,14 @@ Create a new tournament.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/tournament/create \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith", "category": "category-value", "rounds": "rounds-value"}'
+```
+
 ---
 
 ## `POST /webhooks/messaging`
@@ -49,6 +41,12 @@ Create a new tournament.
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/messaging
+```
 
 ## `POST /tournament/<tid>/next`
 
@@ -60,6 +58,14 @@ Next round.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/tournament/example-id/next \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -76,6 +82,12 @@ Leaderboard.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/tournament/example-id/leaderboard
+```
+
 ---
 
 ## `GET /health`
@@ -89,6 +101,12 @@ Health check and service status.
   "status": "ok",
   "tournaments": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

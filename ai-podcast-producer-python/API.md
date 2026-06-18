@@ -1,20 +1,3 @@
-# API Reference — AI Podcast Producer
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/episodes/start` | Start episode. |
-| `POST` | `/episodes/<episode_id>/stop` | Stop episode. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/episodes` | List episodes. |
-| `GET` | `/episodes/<episode_id>` | Get episode. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /episodes/start`
 
 Start episode.
@@ -41,6 +24,14 @@ Start episode.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/episodes/start \
+  -H "Content-Type: application/json" \
+  -d '{"title": "title-value", "hosts": []}'
+```
+
 ---
 
 ## `POST /episodes/<episode_id>/stop`
@@ -55,6 +46,14 @@ Stop episode.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/episodes/example-id/stop \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Episode not found"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -62,6 +61,12 @@ Stop episode.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /episodes`
 
@@ -73,6 +78,12 @@ List all episodes.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/episodes
 ```
 
 ---
@@ -87,6 +98,12 @@ Get a specific episode by ID.
 {
   "error": "Episode not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/episodes/example-id
 ```
 
 ---
@@ -104,6 +121,12 @@ Health check and service status.
   "recording": "example-value",
   "version": "1.0.0"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

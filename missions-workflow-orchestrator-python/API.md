@@ -1,22 +1,3 @@
-# API Reference — Missions Workflow Orchestrator
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/missions` | Create a new mission. |
-| `GET` | `/missions` | List missions. |
-| `GET` | `/missions/<mission_id>` | Get mission. |
-| `POST` | `/missions/<mission_id>/tasks` | Add task. |
-| `POST` | `/missions/<mission_id>/run` | Run mission. |
-| `GET` | `/missions/<mission_id>/runs` | List runs. |
-| `GET` | `/templates` | Mission templates. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /missions`
 
 Create a new mission.
@@ -47,6 +28,14 @@ Create a new mission.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/missions \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith", "description": "description-value", "status": "status-value", "tasks": []}'
+```
+
 ---
 
 ## `GET /missions`
@@ -62,6 +51,12 @@ List all missions.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/missions
+```
+
 ---
 
 ## `GET /missions/<mission_id>`
@@ -74,6 +69,12 @@ Get a specific mission by ID.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/missions/example-id
 ```
 
 ---
@@ -108,6 +109,14 @@ Add task.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/missions/example-id/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith", "type": "type-value", "config": {}, "depends_on": []}'
+```
+
 ---
 
 ## `POST /missions/<mission_id>/run`
@@ -122,6 +131,14 @@ Run mission.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/missions/example-id/run \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Error description"}'
+```
+
 ---
 
 ## `GET /missions/<mission_id>/runs`
@@ -134,6 +151,12 @@ List all runs.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/missions/example-id/runs
 ```
 
 ---
@@ -157,6 +180,12 @@ Mission templates.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/templates
+```
+
 ---
 
 ## `GET /health`
@@ -170,6 +199,12 @@ Health check and service status.
   "status": "ok",
   "missions": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

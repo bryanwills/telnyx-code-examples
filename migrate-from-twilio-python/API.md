@@ -1,21 +1,3 @@
-# API Reference — Migrate from Twilio
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/audit/twilio` | Audit twilio. |
-| `POST` | `/migrate/messaging-profile` | Migrate messaging. |
-| `POST` | `/migrate/numbers` | Migrate numbers. |
-| `POST` | `/migrate/webhook-map` | Receives Telnyx webhook events. |
-| `GET` | `/migrate/code-changes` | Code changes guide. |
-| `GET` | `/migration-log` | Get log. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `GET /audit/twilio`
 
 Audit twilio.
@@ -26,6 +8,12 @@ Audit twilio.
 {
   "error": "TWILIO_ACCOUNT_SID not configured"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/audit/twilio
 ```
 
 ---
@@ -55,6 +43,14 @@ Migrate messaging.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/migrate/messaging-profile \
+  -H "Content-Type: application/json" \
+  -d '{"error": "example-value"}'
+```
+
 ---
 
 ## `POST /migrate/numbers`
@@ -80,6 +76,14 @@ Migrate numbers.
 {"results": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/migrate/numbers \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /migrate/webhook-map`
@@ -87,6 +91,12 @@ Migrate numbers.
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/migrate/webhook-map
+```
 
 ## `GET /migrate/code-changes`
 
@@ -99,6 +109,12 @@ Code changes guide.
         "sdk": "pip install telnyx (replaces twilio package)",
         "auth": "Bearer token header (replaces Account SID + Auth Token basic auth)",
         "voice": {"twilio": ""<string>"."<string>"", "telnyx": "call.actions."<string>""}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/migrate/code-changes
 ```
 
 ---
@@ -115,6 +131,12 @@ Get a specific log by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/migration-log
+```
+
 ---
 
 ## `GET /health`
@@ -128,6 +150,12 @@ Health check and service status.
   "status": "ok",
   "migrations": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

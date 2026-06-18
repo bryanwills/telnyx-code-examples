@@ -1,21 +1,3 @@
-# API Reference — x402 USDC Account Funder
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/quote` | Get quote. |
-| `POST` | `/pay` | Submit payment. |
-| `GET` | `/balance` | Get balance. |
-| `GET` | `/info` | Payment info. |
-| `GET` | `/quotes` | List quotes. |
-| `GET` | `/payments` | List payments. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /quote`
 
 Get a specific quote by ID.
@@ -38,6 +20,14 @@ Get a specific quote by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/quote \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -67,6 +57,14 @@ Submit payment.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/pay \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /balance`
@@ -79,6 +77,12 @@ Get a specific balance by ID.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/balance
 ```
 
 ---
@@ -101,6 +105,12 @@ Payment info.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/info
+```
+
 ---
 
 ## `GET /quotes`
@@ -113,6 +123,12 @@ List all quotes.
 {"quotes": quotes[-20:]}
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/quotes
+```
+
 ---
 
 ## `GET /payments`
@@ -123,6 +139,12 @@ List all payments.
 
 ```json
 {"payments": payments[-20:]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/payments
 ```
 
 ---
@@ -139,6 +161,12 @@ Health check and service status.
   "quotes": "<string>",
   "payments": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

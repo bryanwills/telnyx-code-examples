@@ -1,19 +1,3 @@
-# API Reference — Smart Number Geo-Assignment
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/assign` | Assign number. |
-| `POST` | `/lookup-and-assign` | Lookup and assign. |
-| `GET` | `/inventory` | Inventory. |
-| `GET` | `/assignments` | List assignments. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /assign`
 
 Assign number.
@@ -37,6 +21,14 @@ Assign number.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/assign \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -65,6 +57,14 @@ Lookup and assign.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/lookup-and-assign \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /inventory`
@@ -80,6 +80,12 @@ Inventory.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/inventory
+```
+
 ---
 
 ## `GET /assignments`
@@ -90,6 +96,12 @@ List all assignments.
 
 ```json
 {"assignments": assignments[-50:]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/assignments
 ```
 
 ---
@@ -104,6 +116,12 @@ Health check and service status.
 {
   "assignments": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,17 +1,3 @@
-# API Reference — AI Receptionist with Booking Tools
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/chat` | Chat. |
-| `GET` | `/bookings` | List bookings. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /chat`
 
 Chat.
@@ -34,6 +20,14 @@ Chat.
 {"response": msg["content"], "bookings": "<string>"}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"messages": []}'
+```
+
 ---
 
 ## `GET /bookings`
@@ -44,6 +38,12 @@ List all bookings.
 
 ```json
 {"bookings": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/bookings
 ```
 
 ---
@@ -58,6 +58,12 @@ Health check and service status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

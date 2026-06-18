@@ -1,20 +1,3 @@
-# API Reference — Rent Collection Escalation
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/collections/run` | Run cycle. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/tenants` | List tenants. |
-| `PUT` | `/tenants/<int:idx>/status` | Update status. |
-| `GET` | `/collections/log` | Get log. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /collections/run`
 
 Run cycle.
@@ -37,6 +20,14 @@ Run cycle.
 {"results": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/collections/run \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -51,6 +42,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /tenants`
 
 List all tenants.
@@ -59,6 +56,12 @@ List all tenants.
 
 ```json
 {"tenants": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/tenants
 ```
 
 ---
@@ -75,6 +78,14 @@ Update status.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X PUT http://localhost:5000/tenants/<int:idx>/status \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /collections/log`
@@ -87,6 +98,12 @@ Get a specific log by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/collections/log
 ```
 
 ---
@@ -102,6 +119,12 @@ Health check and service status.
   "status": "ok",
   "overdue": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

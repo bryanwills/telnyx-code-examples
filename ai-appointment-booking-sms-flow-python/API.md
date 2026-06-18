@@ -1,22 +1,14 @@
-# API Reference — AI Appointment Booking SMS Flow
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/messaging` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/bookings` | List bookings. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/messaging`
 
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/messaging
+```
 
 ## `GET /bookings`
 
@@ -26,6 +18,12 @@ List all bookings.
 
 ```json
 {"bookings": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/bookings
 ```
 
 ---
@@ -42,6 +40,12 @@ Health check and service status.
   "bookings": "<string>",
   "available": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

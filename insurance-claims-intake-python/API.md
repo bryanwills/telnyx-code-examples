@@ -1,19 +1,3 @@
-# API Reference — Insurance Claims Intake
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `POST` | `/webhooks/sms` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/claims` | List claims. |
-| `POST` | `/claims/<claim_id>/assign` | Assign adjuster. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
@@ -30,11 +14,23 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `POST /webhooks/sms`
 
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/sms
+```
 
 ## `GET /claims`
 
@@ -44,6 +40,12 @@ List all claims.
 
 ```json
 {"claims": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/claims
 ```
 
 ---
@@ -72,6 +74,14 @@ Assign adjuster.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/claims/example-id/assign \
+  -H "Content-Type: application/json" \
+  -d '{"adjuster": "adjuster-value"}'
+```
+
 ---
 
 ## `GET /health`
@@ -86,6 +96,12 @@ Health check and service status.
   "claims": "<string>",
   "pending": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

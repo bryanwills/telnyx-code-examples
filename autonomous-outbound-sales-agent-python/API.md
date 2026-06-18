@@ -1,19 +1,3 @@
-# API Reference — Autonomous Outbound Sales Agent
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/leads` | Add leads. |
-| `POST` | `/campaign/start` | Start campaign. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/results` | Get results. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /leads`
 
 Add leads.
@@ -36,6 +20,14 @@ Add leads.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/leads \
+  -H "Content-Type: application/json" \
+  -d '{"leads": []}'
 ```
 
 ---
@@ -64,6 +56,14 @@ Start campaign.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/campaign/start \
+  -H "Content-Type: application/json" \
+  -d '{"error": "No leads in queue"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -71,6 +71,12 @@ Start campaign.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /results`
 
@@ -82,6 +88,12 @@ Get a specific results by ID.
 {
   "error": "No payload"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/results
 ```
 
 ---
@@ -97,6 +109,12 @@ Health check and service status.
   "results": [],
   "remaining_leads": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,17 +1,3 @@
-# API Reference — Production-ready Flask application for SIP codec configuration via Telnyx.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/sip/connections` | List connections. |
-| `POST` | `/sip/connections` | Create a new connection. |
-| `GET` | `/sip/connections/<connection_id>` | Get connection. |
-
----
-
 ## `GET /sip/connections`
 
 List all connections.
@@ -22,6 +8,12 @@ List all connections.
 {
   "error": "Invalid API key"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/sip/connections
 ```
 
 ---
@@ -54,6 +46,14 @@ Create a new connection.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/sip/connections \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /sip/connections/<connection_id>`
@@ -66,6 +66,12 @@ Get a specific connection by ID.
 {
   "error": "Invalid API key"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/sip/connections/example-id
 ```
 
 ---

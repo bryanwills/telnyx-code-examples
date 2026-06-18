@@ -1,20 +1,3 @@
-# API Reference — Video Webinar Recording Manager
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webinars` | Create a new webinar. |
-| `GET` | `/webinars/<room_id>/recordings` | Get recordings. |
-| `POST` | `/recordings/<recording_id>/transcribe` | Transcribe recording. |
-| `GET` | `/webinars` | List webinars. |
-| `GET` | `/recordings` | List processed. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webinars`
 
 Create a new webinar.
@@ -43,6 +26,14 @@ Create a new webinar.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webinars \
+  -H "Content-Type: application/json" \
+  -d '{"error": "example-value"}'
+```
+
 ---
 
 ## `GET /webinars/<room_id>/recordings`
@@ -55,6 +46,12 @@ Get a specific recordings by ID.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/webinars/example-id/recordings
 ```
 
 ---
@@ -83,6 +80,14 @@ Transcribe recording.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/recordings/example-id/transcribe \
+  -H "Content-Type: application/json" \
+  -d '{"transcript": "transcript-value"}'
+```
+
 ---
 
 ## `GET /webinars`
@@ -95,6 +100,12 @@ List all webinars.
 {"webinars": "<string>")}
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/webinars
+```
+
 ---
 
 ## `GET /recordings`
@@ -105,6 +116,12 @@ List all processed.
 
 ```json
 {"recordings": recordings[-20:]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/recordings
 ```
 
 ---
@@ -121,6 +138,12 @@ Health check and service status.
   "webinars": "<string>",
   "recordings": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

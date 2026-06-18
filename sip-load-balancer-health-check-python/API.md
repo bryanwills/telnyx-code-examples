@@ -1,20 +1,3 @@
-# API Reference — SIP Load Balancer Health Check
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/check` | Health check. |
-| `GET` | `/route` | Get route. |
-| `GET` | `/endpoints` | List endpoints. |
-| `POST` | `/endpoints` | Add endpoint. |
-| `GET` | `/log` | Get log. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /check`
 
 Health check.
@@ -23,6 +6,14 @@ Health check.
 
 ```json
 {"results": null}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/check \
+  -H "Content-Type: application/json" \
+  -d '{"results": null}'
 ```
 
 ---
@@ -40,6 +31,12 @@ Get a specific route by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/route
+```
+
 ---
 
 ## `GET /endpoints`
@@ -51,6 +48,12 @@ List all endpoints.
 ```json
 {"endpoints": {n: {"host": e["host"], "status": e["status"],
         "uptime": "<string>" * 100, 1)}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/endpoints
 ```
 
 ---
@@ -85,6 +88,14 @@ Add endpoint.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/endpoints \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith", "host": "host-value", "port": "port-value", "weight": "weight-value"}'
+```
+
 ---
 
 ## `GET /log`
@@ -99,6 +110,12 @@ Get a specific log by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/log
+```
+
 ---
 
 ## `GET /health`
@@ -109,6 +126,12 @@ Health check and service status.
 
 ```json
 {"status": "ok", "healthy": null, "total": "<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

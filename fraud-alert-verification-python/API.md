@@ -1,19 +1,3 @@
-# API Reference — Fraud Alert & Verification
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/alerts/trigger` | Trigger a fraud verification call |
-| `GET` | `/alerts` | List all alerts with stats |
-| `POST` | `/webhooks/voice` | Voice event webhook handler |
-| `POST` | `/webhooks/sms` | SMS event webhook handler |
-| `GET` | `/health` | Health check |
-
----
-
 ## `POST /alerts/trigger`
 
 Initiates a fraud verification call to the customer. If the call fails, automatically falls back to SMS.
@@ -70,6 +54,14 @@ calling ──► verified_legitimate    (customer pressed 1 or replied YES)
         ──► call_failed            (call couldn't connect → SMS fallback sent)
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/alerts/trigger \
+  -H "Content-Type: application/json" \
+  -d '{"phone": "+12125559999", "transaction": "TXN-98234", "amount": 847.5, "merchant": "Electronics Store", "risk_score": 92}'
+```
+
 ---
 
 ## `GET /alerts`
@@ -101,6 +93,12 @@ Returns all alerts with aggregate statistics.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/alerts
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -126,6 +124,12 @@ Receives Telnyx Call Control webhook events. Do not call directly.
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `POST /webhooks/sms`
 
 Receives inbound SMS replies. Do not call directly.
@@ -139,6 +143,12 @@ Receives inbound SMS replies. Do not call directly.
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/sms
+```
+
 ## `GET /health`
 
 ### Response `200`
@@ -148,6 +158,12 @@ Receives inbound SMS replies. Do not call directly.
   "status": "ok",
   "active": 2
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 | Field | Type | Description |

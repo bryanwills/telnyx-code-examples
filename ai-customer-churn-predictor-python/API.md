@@ -1,18 +1,3 @@
-# API Reference — AI Customer Churn Predictor
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/predict` | Predict churn. |
-| `POST` | `/predict/batch` | Batch predict. |
-| `GET` | `/predictions` | List predictions. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /predict`
 
 Predict churn.
@@ -21,6 +6,14 @@ Predict churn.
 
 ```json
 { "status": "ok" }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"status": "ok"}'
 ```
 
 ---
@@ -49,6 +42,14 @@ Batch predict.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/predict/batch \
+  -H "Content-Type: application/json" \
+  -d '{"customers": []}'
+```
+
 ---
 
 ## `GET /predictions`
@@ -59,6 +60,12 @@ List all predictions.
 
 ```json
 {"predictions": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/predictions
 ```
 
 ---
@@ -74,6 +81,12 @@ Health check and service status.
   "status": "ok",
   "predictions": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

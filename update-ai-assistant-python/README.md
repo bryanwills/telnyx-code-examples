@@ -36,6 +36,10 @@ Update an existing Telnyx AI Assistant's configuration, model, system prompt, an
      JSON response
 ```
 
+## Why Telnyx
+
+- **Managed AI agents** — Telnyx handles conversation state, tool calling, and telephony integration.
+
 ## Environment Variables
 
 Copy `.env.example` to `.env` and fill in:
@@ -99,6 +103,18 @@ curl http://localhost:5000/health
   "status": "ok"
 }
 ```
+
+
+## Troubleshooting
+
+- **Connection refused on port 5000**: App isn't running. Run `python app.py` and check no other process uses port 5000.
+- **401 Unauthorized**: Your `TELNYX_API_KEY` is invalid. Generate a new one at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys).
+- **Assistant not found**: Verify `ASSISTANT_ID` at [portal.telnyx.com/ai/assistants](https://portal.telnyx.com/ai/assistants).
+
+## Related Examples
+
+- [create-ai-assistant-python](../create-ai-assistant-python/) - Create assistant
+- [ai-assistant-phone-setup-python](../ai-assistant-phone-setup-python/) - Phone setup
 
 ## Resources
 

@@ -9,6 +9,20 @@ This is a Model Context Protocol (MCP) server deployed to Telnyx Edge. It expose
 | `tools/list` | Returns available tools |
 | `tools/call` | Executes a tool with arguments |
 
+**Deploy:**
+
+```bash
+telnyx-edge deploy --name my-mcp-server
+```
+
+**Test locally:**
+
+```bash
+curl http://localhost:8080/tools \
+  -H "Content-Type: application/json"
+```
+
+
 ---
 
 ## `tools/list`

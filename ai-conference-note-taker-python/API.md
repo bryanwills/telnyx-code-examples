@@ -1,18 +1,3 @@
-# API Reference — AI Conference Note-Taker
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/join` | Join meeting. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/meetings` | List meetings. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /join`
 
 Join meeting.
@@ -39,6 +24,14 @@ Join meeting.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/join \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -46,6 +39,12 @@ Join meeting.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /meetings`
 
@@ -57,6 +56,12 @@ List all meetings.
 {
   "error": "No payload"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/meetings
 ```
 
 ---
@@ -73,6 +78,12 @@ Health check and service status.
   "active_meetings": "example-value",
   "completed": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

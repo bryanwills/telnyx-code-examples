@@ -1,18 +1,3 @@
-# API Reference — SMS Appointment No-Show Predictor
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/appointments` | Add appointment. |
-| `POST` | `/predict` | Run predictions. |
-| `POST` | `/webhooks/messaging` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /appointments`
 
 Add appointment.
@@ -39,6 +24,14 @@ Add appointment.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/appointments \
+  -H "Content-Type: application/json" \
+  -d '{"phone": "+12125559999", "datetime": "datetime-value"}'
+```
+
 ---
 
 ## `POST /predict`
@@ -51,6 +44,14 @@ Run predictions.
 {"predictions": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"predictions": null}'
+```
+
 ---
 
 ## `POST /webhooks/messaging`
@@ -58,6 +59,12 @@ Run predictions.
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/messaging
+```
 
 ## `GET /health`
 
@@ -70,6 +77,12 @@ Health check and service status.
   "status": "ok",
   "patients": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

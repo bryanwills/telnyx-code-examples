@@ -1,19 +1,3 @@
-# API Reference — Law Firm Client Intake
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/intakes` | List intakes. |
-| `POST` | `/intakes/<int:idx>/accept` | Accept intake. |
-| `POST` | `/intakes/<int:idx>/decline` | Decline intake. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
@@ -30,6 +14,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /intakes`
 
 List all intakes.
@@ -38,6 +28,12 @@ List all intakes.
 
 ```json
 {"intakes": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/intakes
 ```
 
 ---
@@ -68,6 +64,14 @@ Accept intake.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/intakes/<int:idx>/accept \
+  -H "Content-Type: application/json" \
+  -d '{"attorney": "attorney-value", "time": "14:00"}'
+```
+
 ---
 
 ## `POST /intakes/<int:idx>/decline`
@@ -94,6 +98,14 @@ Decline intake.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/intakes/<int:idx>/decline \
+  -H "Content-Type: application/json" \
+  -d '{"reason": "reason-value"}'
+```
+
 ---
 
 ## `GET /health`
@@ -108,6 +120,12 @@ Health check and service status.
   "intakes": "<string>",
   "pending": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

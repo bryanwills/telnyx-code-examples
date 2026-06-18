@@ -1,18 +1,3 @@
-# API Reference — Verify Phone Number OTP Flow
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/verify/start` | Start verification. |
-| `POST` | `/verify/voice-fallback` | Voice fallback. |
-| `POST` | `/verify/check` | Check verification. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /verify/start`
 
 Start verification.
@@ -35,6 +20,14 @@ Start verification.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/verify/start \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -61,6 +54,14 @@ Voice fallback.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/verify/voice-fallback \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -90,6 +91,14 @@ Check verification.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/verify/check \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /health`
@@ -103,6 +112,12 @@ Health check and service status.
   "status": "ok",
   "verifications": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

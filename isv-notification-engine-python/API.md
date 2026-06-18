@@ -1,21 +1,3 @@
-# API Reference — ISV Notification Engine
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/notify` | Notify. |
-| `POST` | `/notify/bulk` | Bulk notify. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/customers` | List customers. |
-| `PUT` | `/customers/<cid>/preference` | Update preference. |
-| `GET` | `/notifications` | List notifications. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /notify`
 
 Notify.
@@ -38,6 +20,14 @@ Notify.
 
 ```json
 {"notification": null}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/notify \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -66,6 +56,14 @@ Bulk notify.
 {"results": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/notify/bulk \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -80,6 +78,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /customers`
 
 List all customers.
@@ -88,6 +92,12 @@ List all customers.
 
 ```json
 {"customers": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/customers
 ```
 
 ---
@@ -118,6 +128,14 @@ Update preference.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X PUT http://localhost:5000/customers/example-id/preference \
+  -H "Content-Type: application/json" \
+  -d '{"preference": "preference-value", "fallback": "fallback-value"}'
+```
+
 ---
 
 ## `GET /notifications`
@@ -130,6 +148,12 @@ List all notifications.
 {"notifications": notifications[-100:], "stats": {
         "total": "<string>", "delivered": "<string>",
         "failed": "<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/notifications
 ```
 
 ---
@@ -145,6 +169,12 @@ Health check and service status.
   "status": "ok",
   "notifications": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

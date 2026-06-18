@@ -40,6 +40,15 @@ This app handles these webhook events ([Call Control docs](https://developers.te
      Call completed
 ```
 
+## How It Works
+
+1. Receives incoming call via Telnyx Call Control webhook
+2. Transfers call to human agent when needed
+
+## Why Telnyx
+
+- **Single-vendor voice stack** — call control, STT, TTS, and recording from one API. No multi-vendor coordination.
+
 ## Environment Variables
 
 Copy `.env.example` to `.env` and fill in:

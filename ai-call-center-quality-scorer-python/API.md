@@ -1,19 +1,3 @@
-# API Reference — AI Call Center Quality Scorer
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/score` | Score call. |
-| `POST` | `/score/batch` | Batch score. |
-| `GET` | `/scorecards` | List scorecards. |
-| `GET` | `/scorecards/summary` | Summary. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /score`
 
 Score call.
@@ -37,6 +21,14 @@ Score call.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/score \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -63,6 +55,14 @@ Batch score.
 {"results": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/score/batch \
+  -H "Content-Type: application/json" \
+  -d '{"transcripts": []}'
+```
+
 ---
 
 ## `GET /scorecards`
@@ -73,6 +73,12 @@ List all scorecards.
 
 ```json
 {"scorecards": scorecards[-50:]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/scorecards
 ```
 
 ---
@@ -89,6 +95,12 @@ Summary.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/scorecards/summary
+```
+
 ---
 
 ## `GET /health`
@@ -102,6 +114,12 @@ Health check and service status.
   "status": "ok",
   "scorecards": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,18 +1,3 @@
-# API Reference — Number Search and Purchase API
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/numbers/search` | Search numbers. |
-| `POST` | `/numbers/purchase` | Purchase number. |
-| `GET` | `/numbers/inventory` | List inventory. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `GET /numbers/search`
 
 Search numbers.
@@ -25,6 +10,12 @@ Search numbers.
   "features": "example-value",
   "cost": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/numbers/search
 ```
 
 ---
@@ -51,6 +42,14 @@ Purchase number.
 {"results": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/numbers/purchase \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /numbers/inventory`
@@ -63,6 +62,12 @@ List all inventory.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/numbers/inventory
 ```
 
 ---
@@ -78,6 +83,12 @@ Health check and service status.
   "status": "ok",
   "purchases": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

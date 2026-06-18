@@ -1,17 +1,3 @@
-# API Reference — AI Competitive Win/Loss Call Analyzer
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/analyze` | Analyze call. |
-| `GET` | `/insights` | Get insights. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /analyze`
 
 Analyze call.
@@ -38,6 +24,14 @@ Analyze call.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"transcript": "transcript-value", "outcome": "outcome-value"}'
+```
+
 ---
 
 ## `GET /insights`
@@ -50,6 +44,12 @@ Get a specific insights by ID.
 {
   "error": "No analyses yet"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/insights
 ```
 
 ---
@@ -65,6 +65,12 @@ Health check and service status.
   "status": "ok",
   "analyses": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

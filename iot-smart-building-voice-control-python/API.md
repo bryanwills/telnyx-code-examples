@@ -1,23 +1,14 @@
-# API Reference — IoT Smart Building Voice Control
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/building/state` | Get state. |
-| `GET` | `/commands` | Get commands. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /building/state`
 
@@ -27,6 +18,12 @@ Get a specific state by ID.
 
 ```json
 { "status": "ok" }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/building/state
 ```
 
 ---
@@ -43,6 +40,12 @@ Get a specific commands by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/commands
+```
+
 ---
 
 ## `GET /health`
@@ -55,6 +58,12 @@ Health check and service status.
 {
   "commands": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

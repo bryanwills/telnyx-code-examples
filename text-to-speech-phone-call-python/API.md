@@ -1,19 +1,3 @@
-# API Reference — Production-ready Flask application for text-to-speech calls via Telnyx.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/calls/initiate` | Initiate call endpoint. |
-| `POST` | `/calls/<call_control_id>/speak` | Speak endpoint. |
-| `POST` | `/calls/<call_control_id>/hangup` | Hangup endpoint. |
-| `POST` | `/webhooks/call` | Receives Telnyx webhook events. |
-| `GET` | `/calls/status` | Get calls status. |
-
----
-
 ## `POST /calls/initiate`
 
 Initiate call endpoint.
@@ -36,6 +20,14 @@ Initiate call endpoint.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/calls/initiate \
+  -H "Content-Type: application/json" \
+  -d '{"to": "+12125559999"}'
 ```
 
 ---
@@ -66,6 +58,14 @@ Speak endpoint.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/calls/example-id/speak \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Hello from the API", "language": "language-value"}'
+```
+
 ---
 
 ## `POST /calls/<call_control_id>/hangup`
@@ -80,6 +80,14 @@ Hangup endpoint.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/calls/example-id/hangup \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Invalid API key"}'
+```
+
 ---
 
 ## `POST /webhooks/call`
@@ -87,6 +95,12 @@ Hangup endpoint.
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/call
+```
 
 ## `GET /calls/status`
 
@@ -98,6 +112,12 @@ Get calls status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/calls/status
 ```
 
 ---

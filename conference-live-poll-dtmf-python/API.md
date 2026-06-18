@@ -1,20 +1,3 @@
-# API Reference — Conference Live Poll via DTMF
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/conference/create` | Create a new conference. |
-| `POST` | `/conference/<cid>/invite` | Invite. |
-| `POST` | `/conference/<cid>/poll` | Start poll. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/conference/<cid>/results` | Poll results. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /conference/create`
 
 Create a new conference.
@@ -37,6 +20,14 @@ Create a new conference.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/conference/create \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith"}'
 ```
 
 ---
@@ -67,6 +58,14 @@ Invite.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/conference/example-id/invite \
+  -H "Content-Type: application/json" \
+  -d '{"numbers": ["+12125559999"]}'
+```
+
 ---
 
 ## `POST /conference/<cid>/poll`
@@ -95,6 +94,14 @@ Start poll.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/conference/example-id/poll \
+  -H "Content-Type: application/json" \
+  -d '{"question": "question-value", "options": []}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -102,6 +109,12 @@ Start poll.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /conference/<cid>/results`
 
@@ -113,6 +126,12 @@ Poll results.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/conference/example-id/results
 ```
 
 ---
@@ -128,6 +147,12 @@ Health check and service status.
   "status": "ok",
   "conferences": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

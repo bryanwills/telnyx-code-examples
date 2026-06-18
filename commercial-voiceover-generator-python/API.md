@@ -1,19 +1,3 @@
-# API Reference — Commercial Voice-Over Generator
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/commercials/generate` | Generate commercial. |
-| `GET` | `/commercials/<campaign_id>` | Get campaign. |
-| `GET` | `/commercials` | List campaigns. |
-| `GET` | `/options` | List options. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /commercials/generate`
 
 Generate commercial.
@@ -41,6 +25,14 @@ Generate commercial.
 {"error": "Provide "product" name/description"}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/commercials/generate \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /commercials/<campaign_id>`
@@ -55,6 +47,12 @@ Get a specific campaign by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/commercials/example-id
+```
+
 ---
 
 ## `GET /commercials`
@@ -67,6 +65,12 @@ List all campaigns.
 {
   "error": "Campaign not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/commercials
 ```
 
 ---
@@ -84,6 +88,12 @@ List all options.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/options
+```
+
 ---
 
 ## `GET /health`
@@ -98,6 +108,12 @@ Health check and service status.
   "total_campaigns": "example-value",
   "version": "1.0.0"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

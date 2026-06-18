@@ -1,23 +1,14 @@
-# API Reference — AI-Powered IVR Replacement
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/assistant` | Receives Telnyx webhook events. |
-| `POST` | `/setup` | Setup assistant. |
-| `GET` | `/analytics` | Get analytics. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/assistant`
 
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/assistant
+```
 
 ## `POST /setup`
 
@@ -29,6 +20,14 @@ Setup assistant.
 {
   "error": "No payload"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/setup \
+  -H "Content-Type: application/json" \
+  -d '{"error": "No payload"}'
 ```
 
 ---
@@ -44,6 +43,12 @@ Get a specific analytics by ID.
   "status": "created",
   "assistant_id": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/analytics
 ```
 
 ---
@@ -63,6 +68,12 @@ Health check and service status.
   "ab_test_results": "example-value",
   "recent_calls": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

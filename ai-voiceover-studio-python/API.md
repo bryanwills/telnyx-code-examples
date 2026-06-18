@@ -1,21 +1,3 @@
-# API Reference — AI Voice-Over Studio
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/projects/create` | Create a new project. |
-| `POST` | `/projects/<project_id>/retake` | Retake. |
-| `GET` | `/projects/<project_id>` | Get project. |
-| `GET` | `/projects` | List projects. |
-| `GET` | `/voices` | List voices. |
-| `GET` | `/styles` | List styles. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /projects/create`
 
 Create a new project.
@@ -46,6 +28,14 @@ Create a new project.
 {"error": "Provide "script" text"}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/projects/create \
+  -H "Content-Type: application/json" \
+  -d '{"script": "script-value", "title": "title-value", "voice": "voice-value", "style": "style-value", "takes": "takes-value"}'
+```
+
 ---
 
 ## `POST /projects/<project_id>/retake`
@@ -72,6 +62,14 @@ Retake.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/projects/example-id/retake \
+  -H "Content-Type: application/json" \
+  -d '{"voice": "voice-value"}'
+```
+
 ---
 
 ## `GET /projects/<project_id>`
@@ -84,6 +82,12 @@ Get a specific project by ID.
 {
   "error": "Project not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/projects/example-id
 ```
 
 ---
@@ -100,6 +104,12 @@ List all projects.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/projects
+```
+
 ---
 
 ## `GET /voices`
@@ -110,6 +120,12 @@ List all voices.
 
 ```json
 {"voices": {k: v["desc"] for k, v in VOICES."<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/voices
 ```
 
 ---
@@ -124,6 +140,12 @@ List all styles.
 {"styles": STYLES}
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/styles
+```
+
 ---
 
 ## `GET /health`
@@ -136,6 +158,12 @@ Health check and service status.
 {
   "styles": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

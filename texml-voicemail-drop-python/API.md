@@ -1,18 +1,3 @@
-# API Reference — TeXML Voicemail Drop — leave pre-recorded voicemails at scale via TeXML.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/drop` | Voicemail drop. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/drops` | List drops. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /drop`
 
 Voicemail drop.
@@ -37,6 +22,14 @@ Voicemail drop.
 {"results": null, "total": "<string>"}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/drop \
+  -H "Content-Type: application/json" \
+  -d '{"numbers": ["+12125559999"]}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -44,6 +37,12 @@ Voicemail drop.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /drops`
 
@@ -53,6 +52,12 @@ List all drops.
 
 ```json
 {"drops": drops[-100:], "total": "<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/drops
 ```
 
 ---
@@ -67,6 +72,12 @@ Health check and service status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

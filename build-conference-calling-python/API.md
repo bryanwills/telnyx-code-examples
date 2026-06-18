@@ -1,20 +1,3 @@
-# API Reference — Production-ready Flask application for managing conference calls via Telnyx.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/conference/create` | Create conference endpoint. |
-| `POST` | `/conference/<conference_name>/add-participant` | Add participant endpoint. |
-| `POST` | `/conference/<conference_name>/end` | End conference endpoint. |
-| `GET` | `/conference/<conference_name>/status` | Get conference status endpoint. |
-| `POST` | `/webhooks/call-events` | Receives Telnyx webhook events. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /conference/create`
 
 Create conference endpoint.
@@ -38,6 +21,14 @@ Create conference endpoint.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/conference/create \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -68,6 +59,14 @@ Add participant endpoint.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/conference/example-id/add-participant \
+  -H "Content-Type: application/json" \
+  -d '{"id": "abc-123", "status": "active", "created_at": "2026-06-18T21:00:00Z"}'
+```
+
 ---
 
 ## `POST /conference/<conference_name>/end`
@@ -80,6 +79,14 @@ End conference endpoint.
 {
   "error": "Invalid API key"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/conference/example-id/end \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Invalid API key"}'
 ```
 
 ---
@@ -96,6 +103,12 @@ Get conference status endpoint.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/conference/example-id/status
+```
+
 ---
 
 ## `POST /webhooks/call-events`
@@ -103,6 +116,12 @@ Get conference status endpoint.
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/call-events
+```
 
 ## `GET /health`
 
@@ -114,6 +133,12 @@ Health check and service status.
 {
   "status": "healthy"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

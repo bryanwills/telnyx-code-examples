@@ -1,20 +1,3 @@
-# API Reference — Verify Multi-Channel Auth
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/verify/start` | Start verification. |
-| `POST` | `/verify/check` | Check verification. |
-| `POST` | `/verify/escalate/<vid>` | Escalate channel. |
-| `POST` | `/verify/cascade` | Cascade verify. |
-| `GET` | `/verifications` | List verifications. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /verify/start`
 
 Start verification.
@@ -39,6 +22,14 @@ Start verification.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/verify/start \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -68,6 +59,14 @@ Check verification.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/verify/check \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /verify/escalate/<vid>`
@@ -80,6 +79,14 @@ Escalate channel.
 {
   "error": "Verification not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/verify/escalate/example-id \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Verification not found"}'
 ```
 
 ---
@@ -108,6 +115,14 @@ Cascade verify.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/verify/cascade \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /verifications`
@@ -118,6 +133,12 @@ List all verifications.
 
 ```json
 {"verifications": "<string>")[-20:]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/verifications
 ```
 
 ---
@@ -133,6 +154,12 @@ Health check and service status.
   "status": "ok",
   "verifications": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

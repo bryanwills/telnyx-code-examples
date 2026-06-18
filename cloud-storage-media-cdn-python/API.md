@@ -1,20 +1,3 @@
-# API Reference — Cloud Storage Media CDN
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/setup` | Setup bucket. |
-| `POST` | `/upload` | Upload media. |
-| `GET` | `/media` | List media. |
-| `GET` | `/media/<category>/<name>` | Get media url. |
-| `GET` | `/ivr-config` | Ivr config. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /setup`
 
 Setup bucket.
@@ -27,6 +10,14 @@ Setup bucket.
   "bucket": "example-value",
   "categories": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/setup \
+  -H "Content-Type: application/json" \
+  -d '{"status": "bucket_created", "bucket": "example-value", "categories": "example-value"}'
 ```
 
 ---
@@ -59,6 +50,14 @@ Upload media.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/upload \
+  -H "Content-Type: application/json" \
+  -d '{"category": "category-value", "name": "Jane Smith", "url": "url-value"}'
+```
+
 ---
 
 ## `GET /media`
@@ -74,6 +73,12 @@ List all media.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/media
+```
+
 ---
 
 ## `GET /media/<category>/<name>`
@@ -87,6 +92,12 @@ Get media url.
   "url": "https://api.telnyx.com/v2/...",
   "item": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/media/example-id/example-id
 ```
 
 ---
@@ -105,6 +116,12 @@ Ivr config.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/ivr-config
+```
+
 ---
 
 ## `GET /health`
@@ -119,6 +136,12 @@ Health check and service status.
   "total_media": 3,
   "bucket": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

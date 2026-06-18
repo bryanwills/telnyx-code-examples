@@ -1,22 +1,14 @@
-# API Reference — Call Whisper & Screen Pop
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `POST` | `/contacts` | Add contact. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `POST /contacts`
 
@@ -42,6 +34,14 @@ Add contact.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/contacts \
+  -H "Content-Type: application/json" \
+  -d '{"phone": "+12125559999"}'
+```
+
 ---
 
 ## `GET /health`
@@ -56,6 +56,12 @@ Health check and service status.
   "contacts": "<string>",
   "active": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

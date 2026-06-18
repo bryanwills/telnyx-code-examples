@@ -1,20 +1,3 @@
-# API Reference — Payment Reminder Escalation
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/invoices` | Add invoice. |
-| `POST` | `/reminders/run` | Run reminders. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/invoices` | List invoices. |
-| `POST` | `/invoices/<int:idx>/paid` | Mark paid. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /invoices`
 
 Add invoice.
@@ -41,6 +24,14 @@ Add invoice.
 {"invoice": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/invoices \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /reminders/run`
@@ -65,6 +56,14 @@ Run reminders.
 {"results": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/reminders/run \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -79,6 +78,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /invoices`
 
 List all invoices.
@@ -87,6 +92,12 @@ List all invoices.
 
 ```json
 {"invoices": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/invoices
 ```
 
 ---
@@ -103,6 +114,14 @@ Mark paid.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/invoices/<int:idx>/paid \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /health`
@@ -116,6 +135,12 @@ Health check and service status.
   "status": "ok",
   "unpaid": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

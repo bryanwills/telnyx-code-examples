@@ -1,16 +1,3 @@
-# API Reference — AI Phone Tree Builder
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/generate` | Generate phone tree. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /generate`
 
 Generate phone tree.
@@ -35,6 +22,14 @@ Generate phone tree.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/generate \
+  -H "Content-Type: application/json" \
+  -d '{"description": "description-value"}'
+```
+
 ---
 
 ## `GET /health`
@@ -48,6 +43,12 @@ Health check and service status.
   "status": "ok",
   "trees_generated": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,23 +1,14 @@
-# API Reference — Voice-Activated IoT Command
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/devices` | List devices. |
-| `GET` | `/commands` | List commands. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /devices`
 
@@ -27,6 +18,12 @@ List all devices.
 
 ```json
 {"devices": DEVICES}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/devices
 ```
 
 ---
@@ -43,6 +40,12 @@ List all commands.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/commands
+```
+
 ---
 
 ## `GET /health`
@@ -57,6 +60,12 @@ Health check and service status.
   "devices": "<string>",
   "commands": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,15 +1,3 @@
-# API Reference — Chat with AI Assistant
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/chat` | Chat endpoint. |
-
----
-
 ## `POST /chat`
 
 Chat endpoint.
@@ -33,6 +21,14 @@ Chat endpoint.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---

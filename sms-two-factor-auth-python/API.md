@@ -1,17 +1,3 @@
-# API Reference — Production-ready OTP 2FA system with Flask and Telnyx SMS.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/auth/request-otp` | Request otp. |
-| `POST` | `/auth/verify-otp` | Verify otp endpoint. |
-| `GET` | `/auth/otp-status` | Otp status. |
-
----
-
 ## `POST /auth/request-otp`
 
 Request otp.
@@ -34,6 +20,14 @@ Request otp.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/auth/request-otp \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -63,6 +57,14 @@ Verify otp endpoint.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/auth/verify-otp \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /auth/otp-status`
@@ -75,6 +77,12 @@ Otp status.
 {
   "error": "Missing required query parameter: 'phone_number"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/auth/otp-status
 ```
 
 ---

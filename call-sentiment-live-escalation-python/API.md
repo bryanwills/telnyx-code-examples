@@ -1,19 +1,3 @@
-# API Reference — Call Sentiment Live Escalation
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/monitor` | Start monitoring. |
-| `POST` | `/transcript` | Receive transcript. |
-| `GET` | `/calls/<call_id>/sentiment` | Call sentiment. |
-| `GET` | `/escalations` | List escalations. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /monitor`
 
 Start monitoring.
@@ -38,6 +22,14 @@ Start monitoring.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/monitor \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -68,6 +60,14 @@ Receive transcript.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/transcript \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /calls/<call_id>/sentiment`
@@ -82,6 +82,12 @@ Call sentiment.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/calls/example-id/sentiment
+```
+
 ---
 
 ## `GET /escalations`
@@ -92,6 +98,12 @@ List all escalations.
 
 ```json
 {"escalations": escalations[-50:]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/escalations
 ```
 
 ---
@@ -108,6 +120,12 @@ Health check and service status.
   "monitoring": "<string>",
   "escalations": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,19 +1,3 @@
-# API Reference — AI Meeting Action Tracker
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/meetings/create` | Create a new meeting. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/meetings/<mid>` | Get meeting. |
-| `GET` | `/meetings` | List meetings. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /meetings/create`
 
 Create a new meeting.
@@ -42,6 +26,14 @@ Create a new meeting.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/meetings/create \
+  -H "Content-Type: application/json" \
+  -d '{"title": "title-value", "participants": ["+12125559999"]}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -59,6 +51,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /meetings/<mid>`
 
 Get a specific meeting by ID.
@@ -69,6 +67,12 @@ Get a specific meeting by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/meetings/example-id
 ```
 
 ---
@@ -85,6 +89,12 @@ List all meetings.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/meetings
+```
+
 ---
 
 ## `GET /health`
@@ -95,6 +105,12 @@ Health check and service status.
 
 ```json
 {"status": "ok", "active": null, "total": "<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

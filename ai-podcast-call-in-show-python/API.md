@@ -1,22 +1,14 @@
-# API Reference — AI Podcast Call-In Show
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/queue` | Get queue. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /queue`
 
@@ -26,6 +18,12 @@ Get a specific queue by ID.
 
 ```json
 {"queue": [{"name": c["name"], "topic": c["topic"], "position": i+1}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/queue
 ```
 
 ---
@@ -42,6 +40,12 @@ Health check and service status.
   "queue": "<string>",
   "active": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

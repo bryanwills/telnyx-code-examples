@@ -1,22 +1,3 @@
-# API Reference — AI Assistant Phone Setup
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/assistants` | Create a new assistant. |
-| `GET` | `/assistants` | List assistants. |
-| `GET` | `/assistants/<assistant_id>` | Get assistant. |
-| `PATCH` | `/assistants/<assistant_id>` | Update assistant. |
-| `POST` | `/assistants/<assistant_id>/wire` | Wire to number. |
-| `POST` | `/assistants/<assistant_id>/test` | Test assistant. |
-| `GET` | `/models` | List models. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /assistants`
 
 Create a new assistant.
@@ -48,6 +29,14 @@ Create a new assistant.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/assistants \
+  -H "Content-Type: application/json" \
+  -d '{"error": "example-value"}'
+```
+
 ---
 
 ## `GET /assistants`
@@ -60,6 +49,12 @@ List all assistants.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/assistants
 ```
 
 ---
@@ -76,6 +71,12 @@ Get a specific assistant by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/assistants/example-id
+```
+
 ---
 
 ## `PATCH /assistants/<assistant_id>`
@@ -88,6 +89,14 @@ Update assistant.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X PATCH http://localhost:5000/assistants/example-id \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Error description"}'
 ```
 
 ---
@@ -118,6 +127,14 @@ Wire to number.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/assistants/example-id/wire \
+  -H "Content-Type: application/json" \
+  -d '{"id": "abc-123", "status": "active", "created_at": "2026-06-18T21:00:00Z"}'
+```
+
 ---
 
 ## `POST /assistants/<assistant_id>/test`
@@ -142,6 +159,14 @@ Test assistant.
 {"response": resp."<string>".get("choices", [{}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/assistants/example-id/test \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello from the API"}'
+```
+
 ---
 
 ## `GET /models`
@@ -154,6 +179,12 @@ List all models.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/models
 ```
 
 ---
@@ -169,6 +200,12 @@ Health check and service status.
   "status": "ok",
   "assistants": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

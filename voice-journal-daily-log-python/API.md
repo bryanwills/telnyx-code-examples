@@ -1,23 +1,14 @@
-# API Reference — Voice Journal Daily Log
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/journal` | List entries. |
-| `GET` | `/journal/insights` | Insights. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /journal`
 
@@ -29,6 +20,12 @@ List all entries.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/journal
 ```
 
 ---
@@ -45,6 +42,12 @@ Insights.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/journal/insights
+```
+
 ---
 
 ## `GET /health`
@@ -58,6 +61,12 @@ Health check and service status.
   "status": "ok",
   "entries": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

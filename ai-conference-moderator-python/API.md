@@ -1,21 +1,3 @@
-# API Reference — AI Conference Moderator
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/meetings/create` | Create a new meeting. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `POST` | `/meetings/<mid>/advance` | Advance agenda. |
-| `POST` | `/meetings/<mid>/mute/<call_id>` | Mute participant. |
-| `GET` | `/meetings` | List meetings. |
-| `GET` | `/meetings/<mid>` | Get meeting. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /meetings/create`
 
 Create a new meeting.
@@ -45,6 +27,14 @@ Create a new meeting.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/meetings/create \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -62,6 +52,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `POST /meetings/<mid>/advance`
 
 Advance agenda.
@@ -72,6 +68,14 @@ Advance agenda.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/meetings/example-id/advance \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -88,6 +92,14 @@ Mute participant.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/meetings/example-id/mute/example-id \
+  -H "Content-Type: application/json" \
+  -d '{"error": "not found"}'
+```
+
 ---
 
 ## `GET /meetings`
@@ -100,6 +112,12 @@ List all meetings.
 {
   "error": "not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/meetings
 ```
 
 ---
@@ -116,6 +134,12 @@ Get a specific meeting by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/meetings/example-id
+```
+
 ---
 
 ## `GET /health`
@@ -130,6 +154,12 @@ Health check and service status.
   "active_meetings": "example-value",
   "total": 3
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

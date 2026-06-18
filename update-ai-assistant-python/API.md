@@ -24,3 +24,11 @@ python app.py
 | `instructions` | `string` | System prompt |
 | `voice` | `string` | TTS voice for phone calls |
 | `tools` | `array` | Function calling tools |
+
+**Try it:**
+
+```bash
+curl -X PUT http://localhost:5000/ai/assistants \
+  -H "Content-Type: application/json" \
+  -d '{"assistant_id": "asst_abc123", "name": "Updated Assistant", "instructions": "You are a helpful agent."}'
+```

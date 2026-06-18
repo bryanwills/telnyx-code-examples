@@ -1,19 +1,3 @@
-# API Reference — Wireless Fleet Activation Portal — bulk activate SIMs with status tracking.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/sims` | List sims. |
-| `POST` | `/sims/activate` | Activate sims. |
-| `POST` | `/sims/deactivate` | Deactivate sims. |
-| `GET` | `/activation-log` | Get log. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `GET /sims`
 
 List all sims.
@@ -24,6 +8,12 @@ List all sims.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/sims
 ```
 
 ---
@@ -50,6 +40,14 @@ Activate sims.
 {"results": null, "activated": "<string>"}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/sims/activate \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /sims/deactivate`
@@ -74,6 +72,14 @@ Deactivate sims.
 {"results": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/sims/deactivate \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /activation-log`
@@ -86,6 +92,12 @@ Get a specific log by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/activation-log
 ```
 
 ---
@@ -101,6 +113,12 @@ Health check and service status.
   "status": "ok",
   "activations": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

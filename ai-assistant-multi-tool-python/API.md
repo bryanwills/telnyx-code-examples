@@ -1,18 +1,3 @@
-# API Reference — AI Assistant Multi-Tool
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/chat` | Chat. |
-| `GET` | `/tools` | List tools. |
-| `GET` | `/tool-calls` | List tool calls. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /chat`
 
 Chat.
@@ -37,6 +22,14 @@ Chat.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"messages": []}'
+```
+
 ---
 
 ## `GET /tools`
@@ -47,6 +40,12 @@ List all tools.
 
 ```json
 {"tools": TOOLS}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/tools
 ```
 
 ---
@@ -63,6 +62,12 @@ List tool calls.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/tool-calls
+```
+
 ---
 
 ## `GET /health`
@@ -77,6 +82,12 @@ Health check and service status.
   "tools": "<string>",
   "calls": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,18 +1,3 @@
-# API Reference — Multi-Language Customer Survey
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/survey/start` | Start survey. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/survey/results` | Get results. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /survey/start`
 
 Start survey.
@@ -37,6 +22,14 @@ Start survey.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/survey/start \
+  -H "Content-Type: application/json" \
+  -d '{"contacts": []}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -44,6 +37,12 @@ Start survey.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /survey/results`
 
@@ -53,6 +52,12 @@ Get a specific results by ID.
 
 ```json
 {"results": null, "total": "<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/survey/results
 ```
 
 ---
@@ -69,6 +74,12 @@ Health check and service status.
   "completed": "<string>",
   "queued": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

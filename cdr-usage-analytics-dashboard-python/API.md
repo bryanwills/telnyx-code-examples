@@ -1,21 +1,3 @@
-# API Reference — CDR Usage Analytics Dashboard
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/cdrs` | Get cdrs. |
-| `GET` | `/analytics/summary` | Usage summary. |
-| `GET` | `/analytics/peak-hours` | Peak hours. |
-| `GET` | `/analytics/top-routes` | Top routes. |
-| `GET` | `/analytics/ai-insights` | Ai insights. |
-| `GET` | `/analytics/daily` | Daily breakdown. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `GET /cdrs`
 
 Get a specific cdrs by ID.
@@ -24,6 +6,12 @@ Get a specific cdrs by ID.
 
 ```json
 {"data": "<string>", "period": {"start": null, "end": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/cdrs
 ```
 
 ---
@@ -36,6 +24,12 @@ Usage summary.
 
 ```json
 {"period": {"start": null, "end": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/analytics/summary
 ```
 
 ---
@@ -54,6 +48,12 @@ Peak hours.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/analytics/peak-hours
+```
+
 ---
 
 ## `GET /analytics/top-routes`
@@ -70,6 +70,12 @@ Top routes.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/analytics/top-routes
+```
+
 ---
 
 ## `GET /analytics/ai-insights`
@@ -84,6 +90,12 @@ Ai insights.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/analytics/ai-insights
+```
+
 ---
 
 ## `GET /analytics/daily`
@@ -94,6 +106,12 @@ Daily breakdown.
 
 ```json
 {"daily": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/analytics/daily
 ```
 
 ---
@@ -108,6 +126,12 @@ Health check and service status.
 {
   "status": "ok"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

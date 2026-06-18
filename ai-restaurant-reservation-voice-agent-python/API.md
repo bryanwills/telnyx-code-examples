@@ -1,22 +1,14 @@
-# API Reference — AI Restaurant Reservation Voice Agent
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/reservations` | List reservations. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /reservations`
 
@@ -26,6 +18,12 @@ List all reservations.
 
 ```json
 {"reservations": reservations[-50:]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/reservations
 ```
 
 ---
@@ -40,6 +38,12 @@ Health check and service status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

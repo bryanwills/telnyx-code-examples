@@ -1,18 +1,3 @@
-# API Reference — AI Hiring Phone Screen
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/screen` | Start screen. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/results` | Get results. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /screen`
 
 Start screen.
@@ -37,6 +22,14 @@ Start screen.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/screen \
+  -H "Content-Type: application/json" \
+  -d '{"phone": "+12125559999"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -44,6 +37,12 @@ Start screen.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /results`
 
@@ -55,6 +54,12 @@ Get a specific results by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/results
 ```
 
 ---
@@ -71,6 +76,12 @@ Health check and service status.
   "active": "<string>",
   "completed": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

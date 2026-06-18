@@ -1,19 +1,3 @@
-# API Reference — IoT Panic Button Voice Alert
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/alert` | Trigger a new alert. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `POST` | `/devices` | Register device. |
-| `GET` | `/alerts` | List alerts. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /alert`
 
 Trigger a new alert.
@@ -38,6 +22,14 @@ Trigger a new alert.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/alert \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -52,6 +44,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 | `2` | Escalating to emergency services. Please stay on the line. |
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `POST /devices`
 
@@ -80,6 +78,14 @@ Register device.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/devices \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /alerts`
@@ -90,6 +96,12 @@ List all alerts.
 
 ```json
 {"alerts": alerts[-50:]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/alerts
 ```
 
 ---
@@ -104,6 +116,12 @@ Health check and service status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

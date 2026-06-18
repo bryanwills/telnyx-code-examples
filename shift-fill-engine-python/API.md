@@ -1,18 +1,3 @@
-# API Reference — Shift Fill Engine
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/shifts/open` | Open shift. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/shifts` | List shifts. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /shifts/open`
 
 Open shift.
@@ -41,6 +26,14 @@ Open shift.
 {"shift": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/shifts/open \
+  -H "Content-Type: application/json" \
+  -d '{"role": "role-value", "date": "2026-07-15", "time": "14:00", "department": "department-value"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -65,6 +58,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /shifts`
 
 List all shifts.
@@ -75,6 +74,12 @@ List all shifts.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/shifts
 ```
 
 ---
@@ -91,6 +96,12 @@ Health check and service status.
   "open": "<string>",
   "filled": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,21 +1,3 @@
-# API Reference — Multi-Channel Appointment Confirmation
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/appointments` | Create a new appointment. |
-| `POST` | `/confirm/<aid>` | Send confirmation. |
-| `POST` | `/escalate/<aid>` | Escalate to voice. |
-| `POST` | `/webhooks/messaging` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/appointments/status` | Appointment status. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /appointments`
 
 Create a new appointment.
@@ -48,6 +30,14 @@ Create a new appointment.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/appointments \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith", "phone": "+12125559999", "date": "2026-07-15", "time": "14:00", "provider": "provider-value"}'
+```
+
 ---
 
 ## `POST /confirm/<aid>`
@@ -60,6 +50,14 @@ Send confirmation.
 {
   "error": "Not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/confirm/example-id \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Not found"}'
 ```
 
 ---
@@ -76,6 +74,14 @@ Escalate to voice.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/escalate/example-id \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Not found"}'
+```
+
 ---
 
 ## `POST /webhooks/messaging`
@@ -83,6 +89,12 @@ Escalate to voice.
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/messaging
+```
 
 ## `POST /webhooks/voice`
 
@@ -97,6 +109,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /appointments/status`
 
 Appointment status.
@@ -105,6 +123,12 @@ Appointment status.
 
 ```json
 {"appointments": "<string>", "summary": null, "confirmations": "<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/appointments/status
 ```
 
 ---
@@ -120,6 +144,12 @@ Health check and service status.
   "status": "ok",
   "appointments": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

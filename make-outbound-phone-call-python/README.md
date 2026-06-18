@@ -33,6 +33,10 @@ Programmatically place an outbound phone call using Telnyx Call Control and hand
      JSON response
 ```
 
+## Why Telnyx
+
+- **Single-vendor voice stack** — call control, STT, TTS, and recording from one API. No multi-vendor coordination.
+
 ## Environment Variables
 
 Copy `.env.example` to `.env` and fill in:
@@ -97,6 +101,18 @@ curl -X POST http://localhost:5000/calls/dial \
   "to": "+12125559876"
 }
 ```
+
+
+## Troubleshooting
+
+- **Connection refused on port 5000**: App isn't running. Run `python app.py` and check no other process uses port 5000.
+- **401 Unauthorized**: Your `TELNYX_API_KEY` is invalid. Generate a new one at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys).
+- **Webhooks not arriving**: Ensure ngrok URL is set in your [Call Control Application](https://portal.telnyx.com/call-control/applications) with the correct path.
+
+## Related Examples
+
+- [build-voice-ai-agent-python](../build-voice-ai-agent-python/) - Full voice AI agent
+- [record-phone-calls-python](../record-phone-calls-python/) - Call recording
 
 ## Resources
 

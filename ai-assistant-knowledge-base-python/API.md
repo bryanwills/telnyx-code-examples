@@ -1,18 +1,3 @@
-# API Reference — AI Assistant Knowledge Base
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/documents` | Add document. |
-| `POST` | `/ask` | Ask question. |
-| `GET` | `/documents` | List documents. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /documents`
 
 Add document.
@@ -37,6 +22,14 @@ Add document.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/documents \
+  -H "Content-Type: application/json" \
+  -d '{"title": "title-value", "content": "content-value"}'
 ```
 
 ---
@@ -67,6 +60,14 @@ Ask question.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/ask \
+  -H "Content-Type: application/json" \
+  -d '{"documents": [], "total_chunks": "example-value"}'
+```
+
 ---
 
 ## `GET /documents`
@@ -79,6 +80,12 @@ List all documents.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/documents
 ```
 
 ---
@@ -95,6 +102,12 @@ Health check and service status.
   "documents": "<string>",
   "chunks": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

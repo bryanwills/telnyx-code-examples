@@ -1,19 +1,3 @@
-# API Reference — SMS Poll Voting System — text-to-vote polling with real-time results.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/polls` | Create a new poll. |
-| `POST` | `/polls/<pid>/broadcast` | Broadcast poll. |
-| `POST` | `/webhooks/messaging` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/polls/<pid>/results` | Results. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /polls`
 
 Create a new poll.
@@ -38,6 +22,14 @@ Create a new poll.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/polls \
+  -H "Content-Type: application/json" \
+  -d '{"options": [], "question": "question-value"}'
 ```
 
 ---
@@ -68,6 +60,14 @@ Broadcast poll.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/polls/example-id/broadcast \
+  -H "Content-Type: application/json" \
+  -d '{"numbers": ["+12125559999"]}'
+```
+
 ---
 
 ## `POST /webhooks/messaging`
@@ -75,6 +75,12 @@ Broadcast poll.
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/messaging
+```
 
 ## `GET /polls/<pid>/results`
 
@@ -86,6 +92,12 @@ Results.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/polls/example-id/results
 ```
 
 ---
@@ -101,6 +113,12 @@ Health check and service status.
   "status": "ok",
   "polls": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

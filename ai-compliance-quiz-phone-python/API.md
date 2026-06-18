@@ -1,22 +1,14 @@
-# API Reference — AI Compliance Quiz Phone
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/completions` | List completions. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /completions`
 
@@ -26,6 +18,12 @@ List all completions.
 
 ```json
 {"completions": completions[-50:]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/completions
 ```
 
 ---
@@ -38,6 +36,12 @@ Health check and service status.
 
 ```json
 {"status": "ok", "total": "<string>", "passed": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

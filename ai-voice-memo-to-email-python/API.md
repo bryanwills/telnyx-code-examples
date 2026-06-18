@@ -1,22 +1,14 @@
-# API Reference — AI Voice Memo to Email
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/memos` | List memos. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /memos`
 
@@ -26,6 +18,12 @@ List all memos.
 
 ```json
 {"memos": memos[-20:]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/memos
 ```
 
 ---
@@ -41,6 +39,12 @@ Health check and service status.
   "status": "ok",
   "memos": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

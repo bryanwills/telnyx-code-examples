@@ -1,17 +1,3 @@
-# API Reference — WebRTC Browser Calling
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/` | Serves the browser calling UI |
-| `POST` | `/token` | Generate a WebRTC credential token |
-| `GET` | `/health` | Health check |
-
----
-
 ## `POST /token`
 
 Generates a short-lived WebRTC credential token for browser-based calling.
@@ -37,6 +23,14 @@ Generates a short-lived WebRTC credential token for browser-based calling.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/token \
+  -H "Content-Type: application/json" \
+  -d '{"connection_id": "your-sip-connection-id"}'
+```
+
 ---
 
 ## `GET /health`
@@ -45,4 +39,10 @@ Generates a short-lived WebRTC credential token for browser-based calling.
 
 ```json
 { "status": "ok" }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```

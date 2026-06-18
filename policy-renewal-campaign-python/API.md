@@ -1,20 +1,3 @@
-# API Reference — Policy Renewal Campaign
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/campaigns/run` | Run campaign. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `POST` | `/webhooks/sms` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/policies` | List policies. |
-| `GET` | `/campaign-log` | Get log. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /campaigns/run`
 
 Run campaign.
@@ -35,6 +18,14 @@ Run campaign.
 
 ```json
 {"results": null}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/campaigns/run \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---
@@ -60,6 +51,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `POST /webhooks/sms`
 
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
@@ -72,6 +69,12 @@ Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inb
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/sms
+```
+
 ## `GET /policies`
 
 List all policies.
@@ -80,6 +83,12 @@ List all policies.
 
 ```json
 {"policies": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/policies
 ```
 
 ---
@@ -96,6 +105,12 @@ Get a specific log by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/campaign-log
+```
+
 ---
 
 ## `GET /health`
@@ -109,6 +124,12 @@ Health check and service status.
   "status": "ok",
   "active": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

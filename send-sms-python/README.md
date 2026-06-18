@@ -29,6 +29,10 @@ Send an SMS message using the Telnyx Messaging API. Supports delivery status web
            └──► SMS notification
 ```
 
+## Why Telnyx
+
+- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
+
 ## Environment Variables
 
 Copy `.env.example` to `.env` and fill in:
@@ -93,6 +97,17 @@ curl -X POST http://localhost:5000/sms/send \
   "segments": 1
 }
 ```
+
+
+## Troubleshooting
+
+- **Connection refused on port 5000**: App isn't running. Run `python app.py` and check no other process uses port 5000.
+- **401 Unauthorized**: Your `TELNYX_API_KEY` is invalid. Generate a new one at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys).
+- **SMS not sending**: Check number has messaging enabled and a [Messaging Profile](https://portal.telnyx.com/messaging/profiles) assigned.
+
+## Related Examples
+
+- [sms-chatbot-with-conversation-memory-python](../sms-chatbot-with-conversation-memory-python/) - AI SMS chatbot
 
 ## Resources
 

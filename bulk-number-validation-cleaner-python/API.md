@@ -1,18 +1,3 @@
-# API Reference — Bulk Number Validation & Cleaner
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/validate` | Validate numbers. |
-| `GET` | `/validate/single/<number>` | Validate single. |
-| `GET` | `/jobs` | List jobs. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /validate`
 
 Validate numbers.
@@ -39,6 +24,14 @@ Validate numbers.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/validate \
+  -H "Content-Type: application/json" \
+  -d '{"numbers": ["+12125559999"]}'
+```
+
 ---
 
 ## `GET /validate/single/<number>`
@@ -53,6 +46,12 @@ Validate single.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/validate/single/example-id
+```
+
 ---
 
 ## `GET /jobs`
@@ -63,6 +62,12 @@ List all jobs.
 
 ```json
 {"jobs": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/jobs
 ```
 
 ---
@@ -78,6 +83,12 @@ Health check and service status.
   "status": "ok",
   "jobs": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,22 +1,14 @@
-# API Reference — Fax to AI Document Processor
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/fax` | Receives Telnyx webhook events. |
-| `GET` | `/faxes` | List faxes. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/fax`
 
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/fax
+```
 
 ## `GET /faxes`
 
@@ -28,6 +20,12 @@ List all faxes.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/faxes
 ```
 
 ---
@@ -43,6 +41,12 @@ Health check and service status.
   "status": "ok",
   "processed": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

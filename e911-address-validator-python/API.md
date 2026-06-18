@@ -1,18 +1,3 @@
-# API Reference — E911 Address Validator — validate and provision E911 addresses via API.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/e911/validate` | Validate address. |
-| `POST` | `/e911/assign` | Assign e911. |
-| `GET` | `/e911/addresses` | List addresses. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /e911/validate`
 
 Validate address.
@@ -43,6 +28,14 @@ Validate address.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/e911/validate \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /e911/assign`
@@ -70,6 +63,14 @@ Assign e911.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/e911/assign \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /e911/addresses`
@@ -82,6 +83,12 @@ List all addresses.
 {
   "addresses": []
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/e911/addresses
 ```
 
 ---
@@ -97,6 +104,12 @@ Health check and service status.
   "status": "ok",
   "addresses": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

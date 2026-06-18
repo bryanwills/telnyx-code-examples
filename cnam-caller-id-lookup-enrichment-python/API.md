@@ -1,19 +1,3 @@
-# API Reference — CNAM Caller ID Lookup Enrichment
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/lookup/<number>` | Lookup number. |
-| `POST` | `/lookup/batch` | Batch lookup. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/enrichments` | List enrichments. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `GET /lookup/<number>`
 
 Lookup number.
@@ -25,6 +9,12 @@ Lookup number.
   "result": "example-value",
   "source": "cache"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/lookup/example-id
 ```
 
 ---
@@ -53,6 +43,14 @@ Batch lookup.
 {"results": null, "total": "<string>"}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/lookup/batch \
+  -H "Content-Type: application/json" \
+  -d '{"numbers": ["+12125559999"]}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -60,6 +58,12 @@ Batch lookup.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /enrichments`
 
@@ -71,6 +75,12 @@ List all enrichments.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/enrichments
 ```
 
 ---
@@ -87,6 +97,12 @@ Health check and service status.
   "cached": "<string>",
   "enrichments": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

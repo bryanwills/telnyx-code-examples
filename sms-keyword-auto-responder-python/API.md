@@ -1,24 +1,14 @@
-# API Reference — SMS Keyword Auto-Responder — keyword-triggered responses with match analytics.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/messaging` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/keywords` | List keywords. |
-| `POST` | `/keywords` | Add keyword. |
-| `GET` | `/analytics` | Analytics. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/messaging`
 
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/messaging
+```
 
 ## `GET /keywords`
 
@@ -28,6 +18,12 @@ List all keywords.
 
 ```json
 {"keywords": {k: {"response": v["response"], "hits": v["count"]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/keywords
 ```
 
 ---
@@ -56,6 +52,14 @@ Add keyword.
 {"status": "added", "keyword": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/keywords \
+  -H "Content-Type: application/json" \
+  -d '{"keyword": "keyword-value", "response": "response-value"}'
+```
+
 ---
 
 ## `GET /analytics`
@@ -68,6 +72,12 @@ Analytics.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/analytics
 ```
 
 ---
@@ -84,6 +94,12 @@ Health check and service status.
   "keywords": "<string>",
   "messages": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

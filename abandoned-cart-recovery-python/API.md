@@ -1,26 +1,14 @@
-# API Reference — Abandoned Cart Recovery
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/shopify/cart-abandoned` | Receives Telnyx webhook events. |
-| `POST` | `/recovery/run-sms` | Run sms recovery. |
-| `POST` | `/recovery/run-calls` | Run call recovery. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/carts` | List carts. |
-| `POST` | `/webhooks/shopify/order-created` | Receives Telnyx webhook events. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/shopify/cart-abandoned`
 
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/shopify/cart-abandoned
+```
 
 ## `POST /recovery/run-sms`
 
@@ -30,6 +18,14 @@ Run sms recovery.
 
 ```json
 {"results": null}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/recovery/run-sms \
+  -H "Content-Type: application/json" \
+  -d '{"results": null}'
 ```
 
 ---
@@ -42,6 +38,14 @@ Run call recovery.
 
 ```json
 {"results": null}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/recovery/run-calls \
+  -H "Content-Type: application/json" \
+  -d '{"results": null}'
 ```
 
 ---
@@ -60,6 +64,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /carts`
 
 List all carts.
@@ -72,6 +82,12 @@ List all carts.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/carts
+```
+
 ---
 
 ## `POST /webhooks/shopify/order-created`
@@ -79,6 +95,12 @@ List all carts.
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/shopify/order-created
+```
 
 ## `GET /health`
 
@@ -90,6 +112,12 @@ Health check and service status.
 {
   "results": []
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

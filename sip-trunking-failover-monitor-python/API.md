@@ -1,17 +1,3 @@
-# API Reference — SIP Trunking Failover Monitor
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/check` | Health check. |
-| `GET` | `/status` | Get status. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /check`
 
 Health check.
@@ -20,6 +6,14 @@ Health check.
 
 ```json
 { "status": "ok" }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/check \
+  -H "Content-Type: application/json" \
+  -d '{"status": "ok"}'
 ```
 
 ---
@@ -39,6 +33,12 @@ Get a specific status by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/status
+```
+
 ---
 
 ## `GET /health`
@@ -53,6 +53,12 @@ Health check and service status.
   "active_trunk": "example-value",
   "checks": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,18 +1,3 @@
-# API Reference — AI Customer Winback Caller
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/winback` | Start winback. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/results` | Get results. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /winback`
 
 Start winback.
@@ -25,6 +10,14 @@ Start winback.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/winback \
+  -H "Content-Type: application/json" \
+  -d '{"status": "calling"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -32,6 +25,12 @@ Start winback.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /results`
 
@@ -43,6 +42,12 @@ Get a specific results by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/results
 ```
 
 ---
@@ -59,6 +64,12 @@ Health check and service status.
   "active": "<string>",
   "completed": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

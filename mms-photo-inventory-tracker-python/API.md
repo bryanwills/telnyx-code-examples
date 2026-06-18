@@ -1,22 +1,14 @@
-# API Reference — MMS Photo Inventory Tracker
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/messaging` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/inventory` | List inventory. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/messaging`
 
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/messaging
+```
 
 ## `GET /inventory`
 
@@ -26,6 +18,12 @@ List all inventory.
 
 ```json
 {"items": items[-50:], "total": "<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/inventory
 ```
 
 ---
@@ -41,6 +39,12 @@ Health check and service status.
   "status": "ok",
   "items": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

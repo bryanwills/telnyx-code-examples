@@ -1,20 +1,3 @@
-# API Reference — Migrate from Vapi
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/audit/vapi` | Audit vapi. |
-| `POST` | `/migrate/agent` | Migrate agent. |
-| `GET` | `/mapping/voices` | Voice mapping. |
-| `GET` | `/mapping/models` | Model mapping. |
-| `GET` | `/migration-log` | Get log. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `GET /audit/vapi`
 
 Audit vapi.
@@ -25,6 +8,12 @@ Audit vapi.
 {
   "error": "VAPI_API_KEY not configured. Set it to audit your Vapi agents."
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/audit/vapi
 ```
 
 ---
@@ -53,6 +42,14 @@ Migrate agent.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/migrate/agent \
+  -H "Content-Type: application/json" \
+  -d '{"vapi_agent": {}}'
+```
+
 ---
 
 ## `GET /mapping/voices`
@@ -66,6 +63,12 @@ Voice mapping.
   "vapi_to_telnyx": "example-value",
   "note": "Telnyx also supports ElevenLabs voices via voice.provider='elevenlabs"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/mapping/voices
 ```
 
 ---
@@ -83,6 +86,12 @@ Model mapping.
         "claude-3": "anthropic/claude-sonnet-4-20250514"}
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/mapping/models
+```
+
 ---
 
 ## `GET /migration-log`
@@ -95,6 +104,12 @@ Get a specific log by ID.
 {
   "log": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/migration-log
 ```
 
 ---
@@ -110,6 +125,12 @@ Health check and service status.
   "status": "ok",
   "migrations": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

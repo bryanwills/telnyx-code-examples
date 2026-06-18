@@ -1,21 +1,3 @@
-# API Reference — Production-ready Flask application for monitoring SIM card
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/health` | Health check and service status. |
-| `GET` | `/sim-cards` | List sims. |
-| `GET` | `/sim-cards/<sim_card_id>` | Get sim. |
-| `GET` | `/sim-cards/<sim_card_id>/usage` | Get usage. |
-| `GET` | `/sim-cards/<sim_card_id>/health` | Health check and service status. |
-| `POST` | `/sim-cards/<sim_card_id>/activate` | Activate sim. |
-| `POST` | `/webhooks/sim-events` | Receives Telnyx webhook events. |
-
----
-
 ## `GET /health`
 
 Health check and service status.
@@ -29,6 +11,12 @@ Health check and service status.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
+```
+
 ---
 
 ## `GET /sim-cards`
@@ -39,6 +27,12 @@ List all sims.
 
 ```json
 {"data": null, "count": "<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/sim-cards
 ```
 
 ---
@@ -56,6 +50,12 @@ Get a specific sim by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/sim-cards/example-id
+```
+
 ---
 
 ## `GET /sim-cards/<sim_card_id>/usage`
@@ -71,6 +71,12 @@ Get a specific usage by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/sim-cards/example-id/usage
+```
+
 ---
 
 ## `GET /sim-cards/<sim_card_id>/health`
@@ -83,6 +89,12 @@ Health check and service status.
 {
   "error": "Invalid API key"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/sim-cards/example-id/health
 ```
 
 ---
@@ -101,6 +113,18 @@ Activate sim.
         }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/sim-cards/example-id/activate \
+  -H "Content-Type: application/json" \
+  -d '{
+            "id": response.data.id,
+            "status": response.data.status,
+            "message": "SIM card activated successfully",
+        }'
+```
+
 ---
 
 ## `POST /webhooks/sim-events`
@@ -108,6 +132,12 @@ Activate sim.
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/sim-events
+```
 
 ## Status Values
 

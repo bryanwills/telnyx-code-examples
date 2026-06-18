@@ -1,18 +1,3 @@
-# API Reference — IoT Fleet Alert Escalation
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/alert` | Receive alert. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/alerts` | List alerts. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /alert`
 
 Receive alert.
@@ -25,6 +10,14 @@ Receive alert.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/alert \
+  -H "Content-Type: application/json" \
+  -d '{"error": "No sensor data"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -32,6 +25,12 @@ Receive alert.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /alerts`
 
@@ -41,6 +40,12 @@ List all alerts.
 
 ```json
 {"alerts": alerts[-50:], "total": "<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/alerts
 ```
 
 ---
@@ -55,6 +60,12 @@ Health check and service status.
 {
   "error": "No payload"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,20 +1,3 @@
-# API Reference — Video Voice-Over Replacement
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/replace` | Replace voiceover. |
-| `GET` | `/replace/<job_id>` | Get job. |
-| `GET` | `/replace/<job_id>/compare` | Compare scripts. |
-| `GET` | `/modes` | List modes. |
-| `GET` | `/jobs` | List jobs. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /replace`
 
 Replace voiceover.
@@ -23,6 +6,14 @@ Replace voiceover.
 
 ```json
 {"error": "Upload audio file as "audio""}
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/replace \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Upload audio file as "audio""}'
 ```
 
 ---
@@ -39,6 +30,12 @@ Get a specific job by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/replace/example-id
+```
+
 ---
 
 ## `GET /replace/<job_id>/compare`
@@ -51,6 +48,12 @@ Compare scripts.
 {
   "error": "Job not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/replace/example-id/compare
 ```
 
 ---
@@ -67,6 +70,12 @@ List all modes.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/modes
+```
+
 ---
 
 ## `GET /jobs`
@@ -79,6 +88,12 @@ List all jobs.
 {
   "modes": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/jobs
 ```
 
 ---
@@ -95,6 +110,12 @@ Health check and service status.
   "total_jobs": "example-value",
   "version": "1.0.0"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

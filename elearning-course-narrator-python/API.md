@@ -1,18 +1,3 @@
-# API Reference — E-Learning Course Narrator
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/courses/create` | Create a new course. |
-| `GET` | `/courses/<course_id>` | Get course. |
-| `GET` | `/courses` | List courses. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /courses/create`
 
 Create a new course.
@@ -38,6 +23,14 @@ Create a new course.
 {"error": "Provide "content" text"}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/courses/create \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /courses/<course_id>`
@@ -50,6 +43,12 @@ Get a specific course by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/courses/example-id
 ```
 
 ---
@@ -66,6 +65,12 @@ List all courses.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/courses
+```
+
 ---
 
 ## `GET /health`
@@ -80,6 +85,12 @@ Health check and service status.
   "total_courses": "example-value",
   "version": "1.0.0"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

@@ -1,19 +1,3 @@
-# API Reference — Interview Screen & Scheduler
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/candidates/screen` | Initiate screen. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/candidates` | List candidates. |
-| `POST` | `/candidates/<int:idx>/advance` | Advance candidate. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /candidates/screen`
 
 Initiate screen.
@@ -44,6 +28,14 @@ Initiate screen.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/candidates/screen \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith", "phone": "+12125559999", "position": "position-value", "source": "source-value"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -61,6 +53,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /candidates`
 
 List all candidates.
@@ -69,6 +67,12 @@ List all candidates.
 
 ```json
 {"candidates": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/candidates
 ```
 
 ---
@@ -97,6 +101,14 @@ Advance candidate.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/candidates/<int:idx>/advance \
+  -H "Content-Type: application/json" \
+  -d '{"time": "14:00"}'
+```
+
 ---
 
 ## `GET /health`
@@ -111,6 +123,12 @@ Health check and service status.
   "candidates": "<string>",
   "passed": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

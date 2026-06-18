@@ -1,23 +1,14 @@
-# API Reference — Storage Voicemail Archive
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/voicemails` | List voicemails. |
-| `GET` | `/voicemails/search` | Search voicemails. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/voice`
 
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /voicemails`
 
@@ -27,6 +18,12 @@ List all voicemails.
 
 ```json
 {"voicemails": voicemails[-50:]}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/voicemails
 ```
 
 ---
@@ -39,6 +36,12 @@ Search voicemails.
 
 ```json
 {"results": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/voicemails/search
 ```
 
 ---
@@ -54,6 +57,12 @@ Health check and service status.
   "status": "ok",
   "voicemails": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

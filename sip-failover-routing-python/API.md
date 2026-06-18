@@ -1,21 +1,3 @@
-# API Reference — Production-ready SIP failover routing system with Flask and Telnyx.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/sip/connections` | List connections. |
-| `POST` | `/sip/connections` | Create a new connection. |
-| `GET` | `/sip/connections/<connection_id>` | Get connection. |
-| `GET` | `/sip/health` | Health check and service status. |
-| `GET` | `/sip/failover-status` | Failover status. |
-| `POST` | `/webhooks/call` | Receives Telnyx webhook events. |
-| `POST` | `/sip/assign-number` | Assign number. |
-
----
-
 ## `GET /sip/connections`
 
 List all connections.
@@ -24,6 +6,12 @@ List all connections.
 
 ```json
 {"connections": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/sip/connections
 ```
 
 ---
@@ -52,6 +40,14 @@ Create a new connection.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/sip/connections \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith"}'
+```
+
 ---
 
 ## `GET /sip/connections/<connection_id>`
@@ -66,6 +62,12 @@ Get a specific connection by ID.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/sip/connections/example-id
+```
+
 ---
 
 ## `GET /sip/health`
@@ -78,6 +80,12 @@ Health check and service status.
 {
   "error": "Invalid API key"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/sip/health
 ```
 
 ---
@@ -96,6 +104,12 @@ Failover status.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/sip/failover-status
+```
+
 ---
 
 ## `POST /webhooks/call`
@@ -103,6 +117,12 @@ Failover status.
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/call
+```
 
 ## `POST /sip/assign-number`
 
@@ -127,6 +147,14 @@ Assign number.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/sip/assign-number \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---

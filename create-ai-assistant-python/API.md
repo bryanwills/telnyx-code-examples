@@ -1,15 +1,3 @@
-# API Reference — Create AI Assistant
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/ai/assistants` | Create assistant endpoint. |
-
----
-
 ## `POST /ai/assistants`
 
 Create assistant endpoint.
@@ -35,6 +23,14 @@ Create assistant endpoint.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/ai/assistants \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
 ```
 
 ---

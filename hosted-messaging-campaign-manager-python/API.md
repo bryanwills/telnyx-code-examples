@@ -1,22 +1,3 @@
-# API Reference — Hosted Messaging Campaign Manager
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/campaigns` | Create a new campaign. |
-| `POST` | `/subscribers` | Add subscribers. |
-| `POST` | `/campaigns/<cid>/send` | Send campaign. |
-| `POST` | `/webhooks/messaging` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/subscribers` | List subscribers. |
-| `GET` | `/campaigns` | List campaigns. |
-| `GET` | `/analytics` | Analytics. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /campaigns`
 
 Create a new campaign.
@@ -41,6 +22,14 @@ Create a new campaign.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/campaigns \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Smith", "message": "Hello from the API"}'
 ```
 
 ---
@@ -69,6 +58,14 @@ Add subscribers.
 {"added": null, "total": "<string>"}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/subscribers \
+  -H "Content-Type: application/json" \
+  -d '{"numbers": ["+12125559999"]}'
+```
+
 ---
 
 ## `POST /campaigns/<cid>/send`
@@ -83,6 +80,14 @@ Send campaign.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/campaigns/example-id/send \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/messaging`
@@ -90,6 +95,12 @@ Send campaign.
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/messaging
+```
 
 ## `GET /subscribers`
 
@@ -103,6 +114,12 @@ List all subscribers.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/subscribers
+```
+
 ---
 
 ## `GET /campaigns`
@@ -113,6 +130,12 @@ List all campaigns.
 
 ```json
 {"campaigns": "<string>")}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/campaigns
 ```
 
 ---
@@ -129,6 +152,12 @@ Analytics.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/analytics
+```
+
 ---
 
 ## `GET /health`
@@ -143,6 +172,12 @@ Health check and service status.
   "campaigns": "<string>",
   "subscribers": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

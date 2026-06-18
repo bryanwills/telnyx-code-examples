@@ -1,23 +1,14 @@
-# API Reference — Production-ready Flask application for call forwarding via Telnyx Voice API.
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/call` | Receives Telnyx webhook events. |
-| `GET` | `/calls/status/<call_control_id>` | Get call status. |
-| `POST` | `/calls/hangup/<call_control_id>` | Hangup call endpoint. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/call`
 
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/call
+```
 
 ## `GET /calls/status/<call_control_id>`
 
@@ -29,6 +20,12 @@ Get call status.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/calls/status/example-id
 ```
 
 ---
@@ -48,6 +45,14 @@ Hangup call endpoint.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/calls/hangup/example-id \
+  -H "Content-Type: application/json" \
+  -d '{"call_control_id": "example-value", "is_alive": "example-value", "state": "example-value", "metadata": "example-value"}'
+```
+
 ---
 
 ## `GET /health`
@@ -60,6 +65,12 @@ Health check and service status.
 {
   "status": "healthy"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

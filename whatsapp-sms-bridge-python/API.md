@@ -1,19 +1,3 @@
-# API Reference — WhatsApp-SMS Bridge
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/bridge` | Create a new bridge. |
-| `POST` | `/webhooks/messaging` | Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly. |
-| `GET` | `/bridges` | List bridges. |
-| `GET` | `/messages` | List messages. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /bridge`
 
 Create a new bridge.
@@ -39,6 +23,14 @@ Create a new bridge.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/bridge \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/messaging`
@@ -46,6 +38,12 @@ Create a new bridge.
 Receives Telnyx Messaging webhook events. Called automatically by Telnyx for inbound messages — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/messaging
+```
 
 ## `GET /bridges`
 
@@ -55,6 +53,12 @@ List all bridges.
 
 ```json
 {"bridges": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/bridges
 ```
 
 ---
@@ -71,6 +75,12 @@ List all messages.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/messages
+```
+
 ---
 
 ## `GET /health`
@@ -81,6 +91,12 @@ Health check and service status.
 
 ```json
 {"status": "ok", "bridges": "<string>" // 2, "messages": "<string>"}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

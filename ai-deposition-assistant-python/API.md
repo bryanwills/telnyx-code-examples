@@ -1,20 +1,3 @@
-# API Reference — AI Deposition Assistant
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/depositions/start` | Start deposition. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/depositions/<did>` | Get deposition. |
-| `GET` | `/depositions/<did>/transcript` | Get dep transcript. |
-| `GET` | `/depositions` | List depositions. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /depositions/start`
 
 Start deposition.
@@ -41,6 +24,14 @@ Start deposition.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/depositions/start \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -58,6 +49,12 @@ Receives Telnyx Call Control webhook events. Called automatically by Telnyx duri
 
 ---
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
+
 ## `GET /depositions/<did>`
 
 Get a specific deposition by ID.
@@ -68,6 +65,12 @@ Get a specific deposition by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/depositions/example-id
 ```
 
 ---
@@ -82,6 +85,12 @@ Get dep transcript.
 {
   "error": "not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/depositions/example-id/transcript
 ```
 
 ---
@@ -99,6 +108,12 @@ List all depositions.
     }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/depositions
+```
+
 ---
 
 ## `GET /health`
@@ -111,6 +126,12 @@ Health check and service status.
 {
   "error": "not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

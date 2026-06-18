@@ -1,21 +1,3 @@
-# API Reference — Video Room AI Moderator
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/rooms` | Create a new room. |
-| `GET` | `/rooms` | List rooms. |
-| `POST` | `/rooms/<room_id>/tokens` | Create a new token. |
-| `POST` | `/moderate` | Moderate message. |
-| `GET` | `/moderation-log` | Get log. |
-| `DELETE` | `/rooms/<room_id>` | Delete room. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /rooms`
 
 Create a new room.
@@ -44,6 +26,14 @@ Create a new room.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/rooms \
+  -H "Content-Type: application/json" \
+  -d '{"error": "example-value"}'
+```
+
 ---
 
 ## `GET /rooms`
@@ -58,6 +48,12 @@ List all rooms.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/rooms
+```
+
 ---
 
 ## `POST /rooms/<room_id>/tokens`
@@ -70,6 +66,14 @@ Create a new token.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/rooms/example-id/tokens \
+  -H "Content-Type: application/json" \
+  -d '{"error": "Error description"}'
 ```
 
 ---
@@ -98,6 +102,14 @@ Moderate message.
 {"moderation": null}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/moderate \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /moderation-log`
@@ -110,6 +122,12 @@ Get a specific log by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/moderation-log
 ```
 
 ---
@@ -126,6 +144,12 @@ Delete room.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X DELETE http://localhost:5000/rooms/example-id
+```
+
 ---
 
 ## `GET /health`
@@ -138,6 +162,12 @@ Health check and service status.
 {
   "log": "example-value"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

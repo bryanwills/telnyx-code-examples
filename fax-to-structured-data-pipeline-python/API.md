@@ -1,24 +1,14 @@
-# API Reference — Fax-to-Structured-Data Pipeline
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/fax` | Receives Telnyx webhook events. |
-| `POST` | `/extract` | Extract data. |
-| `GET` | `/faxes` | List faxes. |
-| `GET` | `/extracted` | List extracted. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /webhooks/fax`
 
 Receives Telnyx webhook events.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/fax
+```
 
 ## `POST /extract`
 
@@ -46,6 +36,14 @@ Extract data.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/extract \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Hello from the API", "type": "type-value"}'
+```
+
 ---
 
 ## `GET /faxes`
@@ -58,6 +56,12 @@ List all faxes.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/faxes
 ```
 
 ---
@@ -74,6 +78,12 @@ List all extracted.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/extracted
+```
+
 ---
 
 ## `GET /health`
@@ -88,6 +98,12 @@ Health check and service status.
   "faxes": "<string>",
   "extracted": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

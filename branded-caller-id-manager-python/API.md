@@ -1,21 +1,3 @@
-# API Reference — Branded Caller ID Manager
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/brands` | Create a new brand. |
-| `GET` | `/brands` | List brands. |
-| `POST` | `/campaigns` | Create a new campaign. |
-| `PUT` | `/numbers/<number>/caller-id` | Update caller id. |
-| `GET` | `/stir-shaken/status` | Stir shaken status. |
-| `GET` | `/campaigns` | List campaigns. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /brands`
 
 Create a new brand.
@@ -51,6 +33,14 @@ Create a new brand.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/brands \
+  -H "Content-Type: application/json" \
+  -d '{"error": "example-value"}'
+```
+
 ---
 
 ## `GET /brands`
@@ -63,6 +53,12 @@ List all brands.
 {
   "error": "Error description"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/brands
 ```
 
 ---
@@ -95,6 +91,14 @@ Create a new campaign.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/campaigns \
+  -H "Content-Type: application/json" \
+  -d '{"error": "example-value"}'
+```
+
 ---
 
 ## `PUT /numbers/<number>/caller-id`
@@ -121,6 +125,14 @@ Update caller id.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X PUT http://localhost:5000/numbers/example-id/caller-id \
+  -H "Content-Type: application/json" \
+  -d '{"campaigns": []}'
+```
+
 ---
 
 ## `GET /stir-shaken/status`
@@ -138,6 +150,12 @@ Stir shaken status.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/stir-shaken/status
+```
+
 ---
 
 ## `GET /campaigns`
@@ -148,6 +166,12 @@ List all campaigns.
 
 ```json
 {"campaigns": null}
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/campaigns
 ```
 
 ---
@@ -163,6 +187,12 @@ Health check and service status.
   "status": "ok",
   "campaigns": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

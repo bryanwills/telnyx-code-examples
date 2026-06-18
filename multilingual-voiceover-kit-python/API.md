@@ -1,20 +1,3 @@
-# API Reference — Multilingual Voice-Over Kit
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/kits/create` | Create a new kit. |
-| `GET` | `/kits/<kit_id>` | Get kit. |
-| `POST` | `/kits/<kit_id>/add-language` | Add language. |
-| `GET` | `/kits` | List kits. |
-| `GET` | `/languages` | List languages. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /kits/create`
 
 Create a new kit.
@@ -41,6 +24,14 @@ Create a new kit.
 {"error": "Provide "script" text"}
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/kits/create \
+  -H "Content-Type: application/json" \
+  -d '{"error": "invalid request body"}'
+```
+
 ---
 
 ## `GET /kits/<kit_id>`
@@ -53,6 +44,12 @@ Get a specific kit by ID.
 {
   "error": "invalid request body"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/kits/example-id
 ```
 
 ---
@@ -81,6 +78,14 @@ Add language.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/kits/example-id/add-language \
+  -H "Content-Type: application/json" \
+  -d '{"language": "language-value"}'
+```
+
 ---
 
 ## `GET /kits`
@@ -93,6 +98,12 @@ List all kits.
 {
   "error": "Kit not found"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/kits
 ```
 
 ---
@@ -116,6 +127,12 @@ List all languages.
 }
 ```
 
+**Try it:**
+
+```bash
+curl http://localhost:5000/languages
+```
+
 ---
 
 ## `GET /health`
@@ -131,6 +148,12 @@ Health check and service status.
   "supported_languages": "example-value",
   "version": "1.0.0"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---

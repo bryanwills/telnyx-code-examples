@@ -1,17 +1,3 @@
-# API Reference — WebRTC AI Interpreter for Live Calls
-
-Base URL: `http://localhost:5000`
-
-## Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/interpret` | Start interpreted call. |
-| `POST` | `/webhooks/voice` | Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly. |
-| `GET` | `/health` | Health check and service status. |
-
----
-
 ## `POST /interpret`
 
 Start interpreted call.
@@ -39,6 +25,14 @@ Start interpreted call.
 }
 ```
 
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/interpret \
+  -H "Content-Type: application/json" \
+  -d '{"caller_a": {}, "caller_b": {}}'
+```
+
 ---
 
 ## `POST /webhooks/voice`
@@ -46,6 +40,12 @@ Start interpreted call.
 Receives Telnyx Call Control webhook events. Called automatically by Telnyx during calls — do not call directly.
 
 ---
+
+**Try it:**
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice
+```
 
 ## `GET /health`
 
@@ -58,6 +58,12 @@ Health check and service status.
   "status": "ok",
   "active": "<string>"
 }
+```
+
+**Try it:**
+
+```bash
+curl http://localhost:5000/health
 ```
 
 ---
