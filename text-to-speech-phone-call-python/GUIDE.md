@@ -1,6 +1,6 @@
 # Build a Production-ready Flask application for text-to-speech calls via Telnyx
 
-Voice application. Built with Telnyx Migration, Number Porting, Voice.
+Production-ready Flask application for text-to-speech calls via Telnyx.
 
 ## How It Works
 

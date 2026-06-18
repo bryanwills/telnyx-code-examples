@@ -1,6 +1,6 @@
 # Build a TeXML Voicemail Drop — leave pre-recorded voicemails at scale via TeXML
 
-Voice application. Built with Telnyx Migration, Number Porting, Voice.
+TeXML Voicemail Drop — leave pre-recorded voicemails at scale via TeXML.
 
 ## How It Works
 

@@ -1,7 +1,7 @@
 ---
 name: text-to-speech-phone-call
 title: "Production-ready Flask application for text-to-speech calls via Telnyx."
-description: "Voice application. Built with Telnyx Migration, Number Porting, Voice."
+description: "Production-ready Flask application for text-to-speech calls via Telnyx."
 language: python
 framework: flask
 telnyx_products: [Voice]
@@ -9,7 +9,7 @@ telnyx_products: [Voice]
 
 # Production-ready Flask application for text-to-speech calls via Telnyx.
 
-Voice application. Built with Telnyx Migration, Number Porting, Voice.
+Production-ready Flask application for text-to-speech calls via Telnyx.
 
 ## Telnyx API Endpoints Used
 

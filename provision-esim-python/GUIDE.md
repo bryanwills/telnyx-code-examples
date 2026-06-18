@@ -1,6 +1,6 @@
 # Build a Production-ready Flask application for eSIM provisioning via Telnyx
 
-Application. Built with Telnyx IoT/SIM, Migration, Number Porting.
+Production-ready Flask application for eSIM provisioning via Telnyx.
 
 ## How It Works
 

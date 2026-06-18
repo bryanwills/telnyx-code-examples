@@ -1,6 +1,6 @@
 # Build a SMS Poll Voting System — text-to-vote polling with real-time results
 
-SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS.
+SMS Poll Voting System — text-to-vote polling with real-time results.
 
 ## How It Works
 

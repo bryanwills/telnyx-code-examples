@@ -1,6 +1,6 @@
 # Build a Production-ready Flask application for sending bulk SMS via Telnyx
 
-SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS.
+Production-ready Flask application for sending bulk SMS via Telnyx.
 
 ## How It Works
 

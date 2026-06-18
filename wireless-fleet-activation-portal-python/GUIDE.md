@@ -1,6 +1,6 @@
 # Build a Wireless Fleet Activation Portal — bulk activate SIMs with status tracking
 
-Application. Built with Telnyx IoT/SIM, Migration, Number Porting.
+Wireless Fleet Activation Portal — bulk activate SIMs with status tracking.
 
 ## How It Works
 

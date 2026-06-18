@@ -1,7 +1,7 @@
 ---
 name: sms-keyword-auto-responder
 title: "SMS Keyword Auto-Responder — keyword-triggered responses with match analytics."
-description: "SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS."
+description: "SMS Keyword Auto-Responder — keyword-triggered responses with match analytics."
 language: python
 framework: flask
 telnyx_products: [SMS/MMS]
@@ -10,7 +10,7 @@ channel: [sms]
 
 # SMS Keyword Auto-Responder — keyword-triggered responses with match analytics.
 
-SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS.
+SMS Keyword Auto-Responder — keyword-triggered responses with match analytics.
 
 ## Telnyx API Endpoints Used
 

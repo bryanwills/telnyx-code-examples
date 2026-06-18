@@ -1,7 +1,7 @@
 ---
 name: build-ivr-phone-menu
 title: "Production-ready IVR system using Telnyx Voice API and Flask."
-description: "Voice application. Built with Telnyx Migration, Number Porting, Voice."
+description: "Production-ready IVR system using Telnyx Voice API and Flask."
 language: python
 framework: flask
 telnyx_products: [Voice]
@@ -9,7 +9,7 @@ telnyx_products: [Voice]
 
 # Production-ready IVR system using Telnyx Voice API and Flask.
 
-Voice application. Built with Telnyx Migration, Number Porting, Voice.
+Production-ready IVR system using Telnyx Voice API and Flask.
 
 ## Telnyx API Endpoints Used
 

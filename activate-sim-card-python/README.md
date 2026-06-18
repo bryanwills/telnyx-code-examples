@@ -1,7 +1,7 @@
 ---
 name: activate-sim-card
 title: "Production-ready Flask application for SIM card activation via Telnyx."
-description: "Application. Built with Telnyx IoT/SIM, Migration, Number Porting."
+description: "Production-ready Flask application for SIM card activation via Telnyx."
 language: python
 framework: flask
 telnyx_products: [IoT/SIM]
@@ -9,7 +9,7 @@ telnyx_products: [IoT/SIM]
 
 # Production-ready Flask application for SIM card activation via Telnyx.
 
-Application. Built with Telnyx IoT/SIM, Migration, Number Porting.
+Production-ready Flask application for SIM card activation via Telnyx.
 
 ## Telnyx API Endpoints Used
 

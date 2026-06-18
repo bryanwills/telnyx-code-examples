@@ -1,6 +1,6 @@
 # Build a Porting Order Tracker Dashboard
 
-
+Track number porting requests in real time. Your app receives Telnyx porting webhooks, stores order status, and exposes a dashboard API showing which numbers have ported, which are pending, and which failed.
 
 ## How It Works
 

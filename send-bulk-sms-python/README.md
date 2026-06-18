@@ -1,7 +1,7 @@
 ---
 name: send-bulk-sms
 title: "Production-ready Flask application for sending bulk SMS via Telnyx."
-description: "SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS."
+description: "Production-ready Flask application for sending bulk SMS via Telnyx."
 language: python
 framework: flask
 telnyx_products: [SMS/MMS]
@@ -10,7 +10,7 @@ channel: [sms]
 
 # Production-ready Flask application for sending bulk SMS via Telnyx.
 
-SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS.
+Production-ready Flask application for sending bulk SMS via Telnyx.
 
 ## Telnyx API Endpoints Used
 

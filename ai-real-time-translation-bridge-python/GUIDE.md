@@ -1,6 +1,6 @@
-# Build an Ai Real Time Translation Bridge
+# Build an AI Real-Time Translation Bridge
 
-
+Connect two callers who speak different languages on the same phone call. Your app bridges the conversation in real time — each caller speaks in their language, and the other hears a translated version via TTS.
 
 ## How It Works
 

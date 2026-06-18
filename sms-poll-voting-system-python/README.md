@@ -1,7 +1,7 @@
 ---
 name: sms-poll-voting-system
 title: "SMS Poll Voting System — text-to-vote polling with real-time results."
-description: "SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS."
+description: "SMS Poll Voting System — text-to-vote polling with real-time results."
 language: python
 framework: flask
 telnyx_products: [SMS/MMS]
@@ -10,7 +10,7 @@ channel: [sms]
 
 # SMS Poll Voting System — text-to-vote polling with real-time results.
 
-SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS.
+SMS Poll Voting System — text-to-vote polling with real-time results.
 
 ## Telnyx API Endpoints Used
 

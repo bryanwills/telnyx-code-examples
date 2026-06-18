@@ -1,6 +1,6 @@
 # Build a Production-ready Flask application for call transfer via Telnyx Voice API
 
-Voice application. Built with Telnyx Migration, Number Porting, Voice.
+Production-ready Flask application for call transfer via Telnyx Voice API.
 
 ## How It Works
 

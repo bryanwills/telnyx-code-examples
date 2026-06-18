@@ -1,6 +1,6 @@
 # Build a Production-ready IVR system using Telnyx Voice API and Flask
 
-Voice application. Built with Telnyx Migration, Number Porting, Voice.
+Production-ready IVR system using Telnyx Voice API and Flask.
 
 ## How It Works
 

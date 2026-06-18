@@ -1,6 +1,6 @@
 # Build a SMS Keyword Auto-Responder — keyword-triggered responses with match analytics
 
-SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS.
+SMS Keyword Auto-Responder — keyword-triggered responses with match analytics.
 
 ## How It Works
 
