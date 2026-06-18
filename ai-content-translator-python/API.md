@@ -44,7 +44,7 @@ List all languages.
 ### Response `200`
 
 ```json
-{"languages": {k: v["name"] for k, v in LANGUAGES."..."}
+{"languages": {k: v["name"] for k, v in LANGUAGES."<string>"}
 ```
 
 ---

@@ -32,7 +32,7 @@ List all showings.
 ### Response `200`
 
 ```json
-{"showings": showings}
+{"showings": null}
 ```
 
 ---
@@ -46,8 +46,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "showings": "...",
-  "listings": "..."
+  "showings": "<string>",
+  "listings": "<string>"
 }
 ```
 

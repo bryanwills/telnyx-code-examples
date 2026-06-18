@@ -40,7 +40,7 @@ Submit order.
 ### Response `200`
 
 ```json
-{"order": order, "api": result}
+{"order": null, "api": null}
 ```
 
 ---
@@ -64,7 +64,7 @@ Bulk submit.
 ### Response `200`
 
 ```json
-{"submitted": "...", "results": results}
+{"submitted": "<string>", "results": null}
 ```
 
 ---
@@ -120,7 +120,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "orders": "..."
+  "orders": "<string>"
 }
 ```
 

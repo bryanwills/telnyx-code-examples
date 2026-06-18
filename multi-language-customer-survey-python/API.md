@@ -33,7 +33,7 @@ Start survey.
 
 ```json
 {
-  "queued": "..."
+  "queued": "<string>"
 }
 ```
 
@@ -52,7 +52,7 @@ Get a specific results by ID.
 ### Response `200`
 
 ```json
-{"results": results, "total": "..."}
+{"results": null, "total": "<string>"}
 ```
 
 ---
@@ -66,8 +66,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "completed": "...",
-  "queued": "..."
+  "completed": "<string>",
+  "queued": "<string>"
 }
 ```
 

@@ -50,7 +50,7 @@ List all bridges.
 ### Response `200`
 
 ```json
-{"bridges": bridges}
+{"bridges": null}
 ```
 
 ---
@@ -74,7 +74,7 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{"status": "ok", "bridges": "..." // 2, "messages": "..."}
+{"status": "ok", "bridges": "<string>" // 2, "messages": "<string>"}
 ```
 
 ---

@@ -39,7 +39,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "memos": "..."
+  "memos": "<string>"
 }
 ```
 

@@ -25,7 +25,7 @@ List all bookings.
 ### Response `200`
 
 ```json
-{"bookings": bookings}
+{"bookings": null}
 ```
 
 ---
@@ -39,8 +39,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "bookings": "...",
-  "available": "..."
+  "bookings": "<string>",
+  "available": "<string>"
 }
 ```
 

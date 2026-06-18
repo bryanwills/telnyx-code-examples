@@ -53,7 +53,7 @@ Add keyword.
 ### Response `200`
 
 ```json
-{"status": "added", "keyword": keyword}
+{"status": "added", "keyword": null}
 ```
 
 ---
@@ -79,8 +79,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "keywords": "...",
-  "messages": "..."
+  "keywords": "<string>",
+  "messages": "<string>"
 }
 ```
 

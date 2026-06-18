@@ -36,10 +36,10 @@ Get a specific queue by ID.
 ### Response `200`
 
 ```json
-{"queue": filtered, "counts": {
-        "emergency": "...",
-        "urgent": "...",
-        "routine": "..."}
+{"queue": null, "counts": {
+        "emergency": "<string>",
+        "urgent": "<string>",
+        "routine": "<string>"}
 ```
 
 ---

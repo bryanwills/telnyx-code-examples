@@ -24,7 +24,7 @@ Catch webhook.
 ### Response `200`
 
 ```json
-{"status": "caught", "id": "..." - 1}
+{"status": "caught", "id": "<string>" - 1}
 ```
 
 ---

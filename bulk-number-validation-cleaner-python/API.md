@@ -58,7 +58,7 @@ List all jobs.
 ### Response `200`
 
 ```json
-{"jobs": summaries}
+{"jobs": null}
 ```
 
 ---
@@ -72,7 +72,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "jobs": "..."
+  "jobs": "<string>"
 }
 ```
 

@@ -95,8 +95,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "monitoring": "...",
-  "escalations": "..."
+  "monitoring": "<string>",
+  "escalations": "<string>"
 }
 ```
 

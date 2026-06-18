@@ -31,7 +31,7 @@ Chat.
 ### Response `200`
 
 ```json
-{"response": msg["content"], "bookings": "..."}
+{"response": msg["content"], "bookings": "<string>"}
 ```
 
 ---
@@ -43,7 +43,7 @@ List all bookings.
 ### Response `200`
 
 ```json
-{"bookings": bookings}
+{"bookings": null}
 ```
 
 ---

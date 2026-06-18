@@ -35,7 +35,7 @@ Add identity.
 ### Response `200`
 
 ```json
-{"status": "added", "number": number}
+{"status": "added", "number": null}
 ```
 
 ---
@@ -79,7 +79,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "identities": "..."
+  "identities": "<string>"
 }
 ```
 

@@ -43,7 +43,7 @@ List all requests.
 ### Response `200`
 
 ```json
-{"requests": filtered}
+{"requests": null}
 ```
 
 ---
@@ -69,7 +69,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "open": "..."
+  "open": "<string>"
 }
 ```
 

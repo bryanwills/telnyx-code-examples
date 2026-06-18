@@ -68,7 +68,7 @@ List all transfers.
 
 ```json
 {"transfers": [{
-        "id": tid, "status": t["status"], "briefing": t["briefing"],
+        "id": null, "status": t["status"], "briefing": t["briefing"],
     }
 ```
 

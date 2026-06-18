@@ -51,7 +51,7 @@ Add to waitlist.
 ### Response `200`
 
 ```json
-{"position": "...", "entry": entry}
+{"position": "<string>", "entry": null}
 ```
 
 ---
@@ -75,7 +75,7 @@ List all reservations.
 ### Response `200`
 
 ```json
-{"reservations": reservations}
+{"reservations": null}
 ```
 
 ---
@@ -101,8 +101,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "reservations": "...",
-  "waitlist": "..."
+  "reservations": "<string>",
+  "waitlist": "<string>"
 }
 ```
 

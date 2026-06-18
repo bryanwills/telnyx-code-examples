@@ -56,7 +56,7 @@ Batch score.
 ### Response `200`
 
 ```json
-{"results": results}
+{"results": null}
 ```
 
 ---
@@ -96,7 +96,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "scorecards": "..."
+  "scorecards": "<string>"
 }
 ```
 

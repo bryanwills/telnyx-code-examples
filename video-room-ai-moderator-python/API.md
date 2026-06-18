@@ -85,7 +85,7 @@ Moderate message.
 ### Response `200`
 
 ```json
-{"moderation": analysis}
+{"moderation": null}
 ```
 
 ---

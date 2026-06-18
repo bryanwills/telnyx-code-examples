@@ -87,7 +87,7 @@ List all depositions.
 ```json
 {"depositions": [{
         "id": d["id"], "case": d["case"], "status": d["status"],
-        "lines": "...",
+        "lines": "<string>",
     }
 ```
 

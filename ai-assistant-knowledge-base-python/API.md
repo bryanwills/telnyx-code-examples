@@ -83,8 +83,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "documents": "...",
-  "chunks": "..."
+  "documents": "<string>",
+  "chunks": "<string>"
 }
 ```
 

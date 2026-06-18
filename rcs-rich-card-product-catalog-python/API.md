@@ -26,7 +26,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "products": "..."
+  "products": "<string>"
 }
 ```
 

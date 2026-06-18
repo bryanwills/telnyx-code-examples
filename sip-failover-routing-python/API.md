@@ -23,7 +23,7 @@ List all connections.
 ### Response `200`
 
 ```json
-{"connections": connections}
+{"connections": null}
 ```
 
 ---

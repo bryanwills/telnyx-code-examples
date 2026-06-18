@@ -84,7 +84,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "exceptions": "..."
+  "exceptions": "<string>"
 }
 ```
 

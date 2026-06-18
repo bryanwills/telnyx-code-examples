@@ -70,8 +70,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "tools": "...",
-  "calls": "..."
+  "tools": "<string>",
+  "calls": "<string>"
 }
 ```
 

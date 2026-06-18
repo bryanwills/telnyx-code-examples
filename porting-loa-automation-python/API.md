@@ -90,7 +90,7 @@ Check portability.
 ### Response `200`
 
 ```json
-{"results": results}
+{"results": null}
 ```
 
 ---
@@ -128,8 +128,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "loas": "...",
-  "porting": "..."
+  "loas": "<string>",
+  "porting": "<string>"
 }
 ```
 

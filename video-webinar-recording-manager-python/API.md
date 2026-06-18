@@ -84,7 +84,7 @@ List all webinars.
 ### Response `200`
 
 ```json
-{"webinars": "...")}
+{"webinars": "<string>")}
 ```
 
 ---
@@ -110,8 +110,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "webinars": "...",
-  "recordings": "..."
+  "webinars": "<string>",
+  "recordings": "<string>"
 }
 ```
 

@@ -20,7 +20,7 @@ List all devices.
 ### Response `200`
 
 ```json
-{"devices": devices}
+{"devices": null}
 ```
 
 ---

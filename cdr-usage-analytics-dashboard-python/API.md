@@ -23,7 +23,7 @@ Get a specific cdrs by ID.
 ### Response `200`
 
 ```json
-{"data": "...", "period": {"start": start, "end": end}
+{"data": "<string>", "period": {"start": null, "end": null}
 ```
 
 ---
@@ -35,7 +35,7 @@ Usage summary.
 ### Response `200`
 
 ```json
-{"period": {"start": start, "end": end}
+{"period": {"start": null, "end": null}
 ```
 
 ---
@@ -85,7 +85,7 @@ Daily breakdown.
 ### Response `200`
 
 ```json
-{"daily": daily}
+{"daily": null}
 ```
 
 ---

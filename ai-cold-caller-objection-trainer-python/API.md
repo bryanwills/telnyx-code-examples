@@ -62,7 +62,7 @@ List all personas.
 ### Response `200`
 
 ```json
-{"personas": [{"index": i, "name": p["name"], "style": p["style"]}
+{"personas": [{"index": null, "name": p["name"], "style": p["style"]}
 ```
 
 ---
@@ -76,8 +76,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "active": "...",
-  "completed": "..."
+  "active": "<string>",
+  "completed": "<string>"
 }
 ```
 

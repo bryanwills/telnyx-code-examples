@@ -25,7 +25,7 @@ List all voicemails.
 ### Response `200`
 
 ```json
-{"voicemails": voicemails[-50:], "total": "..."}
+{"voicemails": voicemails[-50:], "total": "<string>"}
 ```
 
 ---
@@ -39,7 +39,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "voicemails": "..."
+  "voicemails": "<string>"
 }
 ```
 

@@ -34,7 +34,7 @@ Add monitored.
 ### Response `200`
 
 ```json
-{"status": "monitoring", "phone": phone}
+{"status": "monitoring", "phone": null}
 ```
 
 ---
@@ -46,7 +46,7 @@ Send check ins.
 ### Response `200`
 
 ```json
-{"sent": results}
+{"sent": null}
 ```
 
 ---
@@ -64,7 +64,7 @@ Escalate missed.
 ### Response `200`
 
 ```json
-{"escalated": escalated}
+{"escalated": null}
 ```
 
 ---
@@ -90,7 +90,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "monitored": "..."
+  "monitored": "<string>"
 }
 ```
 

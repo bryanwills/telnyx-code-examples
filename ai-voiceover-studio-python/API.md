@@ -103,7 +103,7 @@ List all voices.
 ### Response `200`
 
 ```json
-{"voices": {k: v["desc"] for k, v in VOICES."..."}
+{"voices": {k: v["desc"] for k, v in VOICES."<string>"}
 ```
 
 ---

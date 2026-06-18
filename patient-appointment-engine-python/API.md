@@ -125,8 +125,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "appointments": "...",
-  "pending": "..."
+  "appointments": "<string>",
+  "pending": "<string>"
 }
 ```
 

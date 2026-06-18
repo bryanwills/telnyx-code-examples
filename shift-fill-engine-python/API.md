@@ -38,7 +38,7 @@ Open shift.
 ### Response `200`
 
 ```json
-{"shift": shift}
+{"shift": null}
 ```
 
 ---
@@ -86,8 +86,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "open": "...",
-  "filled": "..."
+  "open": "<string>",
+  "filled": "<string>"
 }
 ```
 

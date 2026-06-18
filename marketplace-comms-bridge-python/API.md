@@ -27,7 +27,7 @@ List all listings.
 ### Response `200`
 
 ```json
-{"listings": listings}
+{"listings": null}
 ```
 
 ---
@@ -51,7 +51,7 @@ List all flagged.
 ### Response `200`
 
 ```json
-{"flagged": flagged}
+{"flagged": null}
 ```
 
 ---
@@ -65,8 +65,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "conversations": "...",
-  "flagged": "..."
+  "conversations": "<string>",
+  "flagged": "<string>"
 }
 ```
 

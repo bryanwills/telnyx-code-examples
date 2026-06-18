@@ -70,7 +70,7 @@ List all subscribers.
 ### Response `200`
 
 ```json
-{"subscribers": [s[-4:] for s in subscribers], "total": "..."}
+{"subscribers": [s[-4:] for s in subscribers], "total": "<string>"}
 ```
 
 ---

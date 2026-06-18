@@ -29,7 +29,7 @@ Run sms recovery.
 ### Response `200`
 
 ```json
-{"results": results}
+{"results": null}
 ```
 
 ---
@@ -41,7 +41,7 @@ Run call recovery.
 ### Response `200`
 
 ```json
-{"results": results}
+{"results": null}
 ```
 
 ---

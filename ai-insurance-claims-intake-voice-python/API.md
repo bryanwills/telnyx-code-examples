@@ -25,7 +25,7 @@ List all claims.
 ### Response `200`
 
 ```json
-{"claims": claims[-50:], "total": "..."}
+{"claims": claims[-50:], "total": "<string>"}
 ```
 
 ---
@@ -39,8 +39,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "claims": "...",
-  "active": "..."
+  "claims": "<string>",
+  "active": "<string>"
 }
 ```
 

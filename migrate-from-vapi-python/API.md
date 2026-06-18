@@ -99,7 +99,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "migrations": "..."
+  "migrations": "<string>"
 }
 ```
 

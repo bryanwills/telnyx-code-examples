@@ -38,7 +38,7 @@ Register agent.
 ### Response `200`
 
 ```json
-{"agent": agent}
+{"agent": null}
 ```
 
 ---
@@ -68,7 +68,7 @@ List all queues.
 ### Response `200`
 
 ```json
-{"queues": {k: {"name": v["name"], "agents": "...", "waiting": "..."}
+{"queues": {k: {"name": v["name"], "agents": "<string>", "waiting": "<string>"}
 ```
 
 ---

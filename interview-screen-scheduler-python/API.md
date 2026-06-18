@@ -66,7 +66,7 @@ List all candidates.
 ### Response `200`
 
 ```json
-{"candidates": candidates}
+{"candidates": null}
 ```
 
 ---
@@ -104,8 +104,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "candidates": "...",
-  "passed": "..."
+  "candidates": "<string>",
+  "passed": "<string>"
 }
 ```
 

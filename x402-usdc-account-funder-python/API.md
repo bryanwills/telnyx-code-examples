@@ -118,8 +118,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "quotes": "...",
-  "payments": "..."
+  "quotes": "<string>",
+  "payments": "<string>"
 }
 ```
 

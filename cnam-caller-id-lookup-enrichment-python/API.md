@@ -47,7 +47,7 @@ Batch lookup.
 ### Response `200`
 
 ```json
-{"results": results, "total": "..."}
+{"results": null, "total": "<string>"}
 ```
 
 ---
@@ -79,8 +79,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "cached": "...",
-  "enrichments": "..."
+  "cached": "<string>",
+  "enrichments": "<string>"
 }
 ```
 

@@ -93,7 +93,7 @@ Test tts.
 ### Response `200`
 
 ```json
-{"status": "generated", "voice": voice}
+{"status": "generated", "voice": null}
 ```
 
 ---
@@ -119,7 +119,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "migrations": "..."
+  "migrations": "<string>"
 }
 ```
 

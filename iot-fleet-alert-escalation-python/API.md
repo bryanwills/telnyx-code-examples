@@ -38,7 +38,7 @@ List all alerts.
 ### Response `200`
 
 ```json
-{"alerts": alerts[-50:], "total": "..."}
+{"alerts": alerts[-50:], "total": "<string>"}
 ```
 
 ---

@@ -69,7 +69,7 @@ Warmup status.
 ### Response `200`
 
 ```json
-{"numbers": status}
+{"numbers": null}
 ```
 
 ---
@@ -83,7 +83,7 @@ Reset daily.
 ```json
 {
   "status": "reset",
-  "numbers": "..."
+  "numbers": "<string>"
 }
 ```
 

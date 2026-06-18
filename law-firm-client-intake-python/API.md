@@ -37,7 +37,7 @@ List all intakes.
 ### Response `200`
 
 ```json
-{"intakes": intakes}
+{"intakes": null}
 ```
 
 ---
@@ -101,8 +101,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "intakes": "...",
-  "pending": "..."
+  "intakes": "<string>",
+  "pending": "<string>"
 }
 ```
 

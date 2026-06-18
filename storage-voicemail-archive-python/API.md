@@ -38,7 +38,7 @@ Search voicemails.
 ### Response `200`
 
 ```json
-{"results": results}
+{"results": null}
 ```
 
 ---
@@ -52,7 +52,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "voicemails": "..."
+  "voicemails": "<string>"
 }
 ```
 

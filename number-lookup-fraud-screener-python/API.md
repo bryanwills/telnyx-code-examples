@@ -22,7 +22,7 @@ Screen number.
 ### Response `200`
 
 ```json
-{"number": number, "action": "block", "reason": "blocklisted"}
+{"number": null, "action": "block", "reason": "blocklisted"}
 ```
 
 ---
@@ -52,7 +52,7 @@ Add to blocklist.
 ### Response `200`
 
 ```json
-{"status": "blocked", "number": number}
+{"status": "blocked", "number": null}
 ```
 
 ---
@@ -65,7 +65,7 @@ List all blocklist.
 
 ```json
 {
-  "blocked": "..."
+  "blocked": "<string>"
 }
 ```
 
@@ -78,7 +78,7 @@ Get a specific log by ID.
 ### Response `200`
 
 ```json
-{"log": results}
+{"log": null}
 ```
 
 ---
@@ -92,8 +92,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "screened": "...",
-  "blocked": "..."
+  "screened": "<string>",
+  "blocked": "<string>"
 }
 ```
 

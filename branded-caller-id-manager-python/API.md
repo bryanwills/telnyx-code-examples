@@ -128,7 +128,7 @@ List all campaigns.
 ### Response `200`
 
 ```json
-{"campaigns": campaigns}
+{"campaigns": null}
 ```
 
 ---
@@ -142,7 +142,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "campaigns": "..."
+  "campaigns": "<string>"
 }
 ```
 

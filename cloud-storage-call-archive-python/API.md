@@ -81,7 +81,7 @@ List all archive.
 ### Response `200`
 
 ```json
-{"recordings": results[-50:], "total": "..."}
+{"recordings": results[-50:], "total": "<string>"}
 ```
 
 ---
@@ -93,7 +93,7 @@ Search archive.
 ### Response `200`
 
 ```json
-{"results": results[:20], "query": q}
+{"results": results[:20], "query": null}
 ```
 
 ---

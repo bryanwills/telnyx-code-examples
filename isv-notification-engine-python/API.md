@@ -35,7 +35,7 @@ Notify.
 ### Response `200`
 
 ```json
-{"notification": result}
+{"notification": null}
 ```
 
 ---
@@ -59,7 +59,7 @@ Bulk notify.
 ### Response `200`
 
 ```json
-{"results": results}
+{"results": null}
 ```
 
 ---
@@ -83,7 +83,7 @@ List all customers.
 ### Response `200`
 
 ```json
-{"customers": customers}
+{"customers": null}
 ```
 
 ---
@@ -122,8 +122,8 @@ List all notifications.
 
 ```json
 {"notifications": notifications[-100:], "stats": {
-        "total": "...", "delivered": "...",
-        "failed": "..."}
+        "total": "<string>", "delivered": "<string>",
+        "failed": "<string>"}
 ```
 
 ---
@@ -137,7 +137,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "notifications": "..."
+  "notifications": "<string>"
 }
 ```
 

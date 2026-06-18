@@ -93,7 +93,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "polls": "..."
+  "polls": "<string>"
 }
 ```
 

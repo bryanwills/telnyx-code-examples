@@ -118,8 +118,8 @@ Topology.
 ### Response `200`
 
 ```json
-{"networks": "...", "interfaces": "...",
-        "details": {"networks": "..."), "interfaces": "...")}
+{"networks": "<string>", "interfaces": "<string>",
+        "details": {"networks": "<string>"), "interfaces": "<string>")}
 ```
 
 ---
@@ -133,8 +133,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "networks": "...",
-  "interfaces": "..."
+  "networks": "<string>",
+  "interfaces": "<string>"
 }
 ```
 

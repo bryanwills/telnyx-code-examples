@@ -48,7 +48,7 @@ Run predictions.
 ### Response `200`
 
 ```json
-{"predictions": predictions}
+{"predictions": null}
 ```
 
 ---
@@ -68,7 +68,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "patients": "..."
+  "patients": "<string>"
 }
 ```
 

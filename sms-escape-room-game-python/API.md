@@ -25,7 +25,7 @@ Leaderboard.
 ### Response `200`
 
 ```json
-{"leaderboard": board}
+{"leaderboard": null}
 ```
 
 ---

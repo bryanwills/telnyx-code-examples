@@ -43,7 +43,7 @@ Activate sims.
 ### Response `200`
 
 ```json
-{"results": results, "activated": "..."}
+{"results": null, "activated": "<string>"}
 ```
 
 ---
@@ -65,7 +65,7 @@ Deactivate sims.
 ### Response `200`
 
 ```json
-{"results": results}
+{"results": null}
 ```
 
 ---
@@ -91,7 +91,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "activations": "..."
+  "activations": "<string>"
 }
 ```
 

@@ -56,7 +56,7 @@ Add vip.
 ### Response `200`
 
 ```json
-{"status": "added", "phone": phone}
+{"status": "added", "phone": null}
 ```
 
 ---
@@ -82,8 +82,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "calls": "...",
-  "vips": "..."
+  "calls": "<string>",
+  "vips": "<string>"
 }
 ```
 

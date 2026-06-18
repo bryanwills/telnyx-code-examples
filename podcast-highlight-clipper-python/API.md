@@ -58,7 +58,7 @@ Add to distribution.
 
 ```json
 {
-  "total": "..."
+  "total": "<string>"
 }
 ```
 

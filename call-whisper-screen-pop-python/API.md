@@ -53,8 +53,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "contacts": "...",
-  "active": "..."
+  "contacts": "<string>",
+  "active": "<string>"
 }
 ```
 

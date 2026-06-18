@@ -69,7 +69,7 @@ Migrate numbers.
 ### Response `200`
 
 ```json
-{"results": results}
+{"results": null}
 ```
 
 ---
@@ -90,7 +90,7 @@ Code changes guide.
 {"guide": {
         "sdk": "pip install telnyx (replaces twilio package)",
         "auth": "Bearer token header (replaces Account SID + Auth Token basic auth)",
-        "voice": {"twilio": ""..."."..."", "telnyx": "call.actions."...""}
+        "voice": {"twilio": ""<string>"."<string>"", "telnyx": "call.actions."<string>""}
 ```
 
 ---
@@ -116,7 +116,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "migrations": "..."
+  "migrations": "<string>"
 }
 ```
 

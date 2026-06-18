@@ -51,7 +51,7 @@ Enrich bulk.
 ### Response `200`
 
 ```json
-{"results": results, "total": "..."}
+{"results": null, "total": "<string>"}
 ```
 
 ---
@@ -65,7 +65,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "enriched": "..."
+  "enriched": "<string>"
 }
 ```
 

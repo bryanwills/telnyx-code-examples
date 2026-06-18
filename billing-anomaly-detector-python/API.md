@@ -22,7 +22,7 @@ Set baselines.
 ### Response `200`
 
 ```json
-{"baselines": baselines}
+{"baselines": null}
 ```
 
 ---
@@ -34,7 +34,7 @@ Get a specific baselines by ID.
 ### Response `200`
 
 ```json
-{"baselines": baselines}
+{"baselines": null}
 ```
 
 ---
@@ -82,7 +82,7 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{"status": "ok", "alerts": "...", "baselines": baselines}
+{"status": "ok", "alerts": "<string>", "baselines": null}
 ```
 
 ---

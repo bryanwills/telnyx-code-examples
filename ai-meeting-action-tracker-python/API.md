@@ -88,7 +88,7 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{"status": "ok", "active": active, "total": "..."}
+{"status": "ok", "active": null, "total": "<string>"}
 ```
 
 ---

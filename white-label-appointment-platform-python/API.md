@@ -39,7 +39,7 @@ Create a new tenant.
 ### Response `200`
 
 ```json
-{"tenant": tenant}
+{"tenant": null}
 ```
 
 ---
@@ -67,7 +67,7 @@ List all tenants.
 ### Response `200`
 
 ```json
-{"tenants": "...")}
+{"tenants": "<string>")}
 ```
 
 ---
@@ -79,7 +79,7 @@ Tenant appointments.
 ### Response `200`
 
 ```json
-{"appointments": appointments."..."}
+{"appointments": appointments."<string>"}
 ```
 
 ---
@@ -92,8 +92,8 @@ Tenant stats.
 
 ```json
 {
-  "total": "...",
-  "confirmed": "..."
+  "total": "<string>",
+  "confirmed": "<string>"
 }
 ```
 

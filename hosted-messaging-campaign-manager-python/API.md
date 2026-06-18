@@ -64,7 +64,7 @@ Add subscribers.
 ### Response `200`
 
 ```json
-{"added": added, "total": "..."}
+{"added": null, "total": "<string>"}
 ```
 
 ---
@@ -106,7 +106,7 @@ List all campaigns.
 ### Response `200`
 
 ```json
-{"campaigns": "...")}
+{"campaigns": "<string>")}
 ```
 
 ---
@@ -132,8 +132,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "campaigns": "...",
-  "subscribers": "..."
+  "campaigns": "<string>",
+  "subscribers": "<string>"
 }
 ```
 

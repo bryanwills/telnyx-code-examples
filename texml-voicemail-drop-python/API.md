@@ -34,7 +34,7 @@ Voicemail drop.
 ### Response `200`
 
 ```json
-{"results": results, "total": "..."}
+{"results": null, "total": "<string>"}
 ```
 
 ---
@@ -52,7 +52,7 @@ List all drops.
 ### Response `200`
 
 ```json
-{"drops": drops[-100:], "total": "..."}
+{"drops": drops[-100:], "total": "<string>"}
 ```
 
 ---

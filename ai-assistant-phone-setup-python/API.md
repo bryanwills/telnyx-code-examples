@@ -123,7 +123,7 @@ Test assistant.
 ### Response `200`
 
 ```json
-{"response": resp."...".get("choices", [{}
+{"response": resp."<string>".get("choices", [{}
 ```
 
 ---
@@ -149,7 +149,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "assistants": "..."
+  "assistants": "<string>"
 }
 ```
 

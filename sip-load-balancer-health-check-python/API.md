@@ -22,7 +22,7 @@ Health check.
 ### Response `200`
 
 ```json
-{"results": results}
+{"results": null}
 ```
 
 ---
@@ -50,7 +50,7 @@ List all endpoints.
 
 ```json
 {"endpoints": {n: {"host": e["host"], "status": e["status"],
-        "uptime": "..." * 100, 1)}
+        "uptime": "<string>" * 100, 1)}
 ```
 
 ---
@@ -106,7 +106,7 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{"status": "ok", "healthy": healthy, "total": "..."}
+{"status": "ok", "healthy": null, "total": "<string>"}
 ```
 
 ---

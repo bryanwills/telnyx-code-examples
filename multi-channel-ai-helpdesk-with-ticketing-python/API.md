@@ -32,7 +32,7 @@ List all tickets.
 ### Response `200`
 
 ```json
-{"tickets": tickets[-50:], "total": "..."}
+{"tickets": tickets[-50:], "total": "<string>"}
 ```
 
 ---

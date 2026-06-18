@@ -103,7 +103,7 @@ List all verifications.
 ### Response `200`
 
 ```json
-{"verifications": "...")[-20:]}
+{"verifications": "<string>")[-20:]}
 ```
 
 ---
@@ -117,7 +117,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "verifications": "..."
+  "verifications": "<string>"
 }
 ```
 

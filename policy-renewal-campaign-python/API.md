@@ -32,7 +32,7 @@ Run campaign.
 ### Response `200`
 
 ```json
-{"results": results}
+{"results": null}
 ```
 
 ---
@@ -77,7 +77,7 @@ List all policies.
 ### Response `200`
 
 ```json
-{"policies": policies}
+{"policies": null}
 ```
 
 ---
@@ -103,7 +103,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "active": "..."
+  "active": "<string>"
 }
 ```
 

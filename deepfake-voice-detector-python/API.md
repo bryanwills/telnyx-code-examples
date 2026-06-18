@@ -56,9 +56,9 @@ List all calls.
 
 ```json
 {
-        "total": "...",
-        "flagged": "...",
-        "calls": "..." or 0, reverse=true)
+        "total": "<string>",
+        "flagged": "<string>",
+        "calls": "<string>" or 0, reverse=true)
     }
 ```
 

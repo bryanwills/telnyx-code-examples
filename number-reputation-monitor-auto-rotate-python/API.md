@@ -19,7 +19,7 @@ Scan numbers.
 ### Response `200`
 
 ```json
-{"scanned": "...", "results": results}
+{"scanned": "<string>", "results": null}
 ```
 
 ---

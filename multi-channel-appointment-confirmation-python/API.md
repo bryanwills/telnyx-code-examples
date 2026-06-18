@@ -98,7 +98,7 @@ Appointment status.
 ### Response `200`
 
 ```json
-{"appointments": "...", "summary": summary, "confirmations": "..."}
+{"appointments": "<string>", "summary": null, "confirmations": "<string>"}
 ```
 
 ---
@@ -112,7 +112,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "appointments": "..."
+  "appointments": "<string>"
 }
 ```
 

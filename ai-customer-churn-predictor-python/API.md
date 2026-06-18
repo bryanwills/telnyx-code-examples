@@ -56,7 +56,7 @@ List all predictions.
 ### Response `200`
 
 ```json
-{"predictions": results}
+{"predictions": null}
 ```
 
 ---
@@ -70,7 +70,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "predictions": "..."
+  "predictions": "<string>"
 }
 ```
 

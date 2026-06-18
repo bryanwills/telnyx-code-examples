@@ -19,7 +19,7 @@ List all sims.
 ### Response `200`
 
 ```json
-{"data": sims}
+{"data": null}
 ```
 
 ---
@@ -43,7 +43,7 @@ Activate sim.
 ### Response `200`
 
 ```json
-{"message": "SIM card activated successfully", "data": result}
+{"message": "SIM card activated successfully", "data": null}
 ```
 
 ---

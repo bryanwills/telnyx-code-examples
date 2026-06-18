@@ -37,7 +37,7 @@ Health check and service status.
 ### Response `200`
 
 ```json
-{"status": "ok", "total": "...", "passed": passed}
+{"status": "ok", "total": "<string>", "passed": null}
 ```
 
 ---

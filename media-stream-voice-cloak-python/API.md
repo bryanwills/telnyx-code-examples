@@ -40,7 +40,7 @@ Set cloak.
 ### Response `200`
 
 ```json
-{"error": f"Unknown effect. Available: {"...")}
+{"error": f"Unknown effect. Available: {"<string>")}
 ```
 
 ---
@@ -90,7 +90,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "active": "..."
+  "active": "<string>"
 }
 ```
 

@@ -22,7 +22,7 @@ List all endpoints.
 ### Response `200`
 
 ```json
-{"endpoints": "...")}
+{"endpoints": "<string>")}
 ```
 
 ---
@@ -58,7 +58,7 @@ Run health check.
 ### Response `200`
 
 ```json
-{"results": results}
+{"results": null}
 ```
 
 ---

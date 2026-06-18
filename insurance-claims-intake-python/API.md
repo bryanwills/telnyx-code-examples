@@ -43,7 +43,7 @@ List all claims.
 ### Response `200`
 
 ```json
-{"claims": claims}
+{"claims": null}
 ```
 
 ---
@@ -81,8 +81,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "claims": "...",
-  "pending": "..."
+  "claims": "<string>",
+  "pending": "<string>"
 }
 ```
 

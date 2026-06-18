@@ -25,7 +25,7 @@ List all inventory.
 ### Response `200`
 
 ```json
-{"items": items[-50:], "total": "..."}
+{"items": items[-50:], "total": "<string>"}
 ```
 
 ---
@@ -39,7 +39,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "items": "..."
+  "items": "<string>"
 }
 ```
 

@@ -79,8 +79,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "faxes": "...",
-  "extracted": "..."
+  "faxes": "<string>",
+  "extracted": "<string>"
 }
 ```
 

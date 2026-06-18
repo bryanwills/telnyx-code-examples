@@ -32,7 +32,7 @@ Run cycle.
 ### Response `200`
 
 ```json
-{"results": results}
+{"results": null}
 ```
 
 ---
@@ -56,7 +56,7 @@ List all tenants.
 ### Response `200`
 
 ```json
-{"tenants": tenants}
+{"tenants": null}
 ```
 
 ---
@@ -94,7 +94,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "overdue": "..."
+  "overdue": "<string>"
 }
 ```
 

@@ -71,7 +71,7 @@ Advance all.
 ### Response `200`
 
 ```json
-{"advanced": advanced}
+{"advanced": null}
 ```
 
 ---
@@ -97,8 +97,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "campaigns": "...",
-  "subscribers": "..."
+  "campaigns": "<string>",
+  "subscribers": "<string>"
 }
 ```
 

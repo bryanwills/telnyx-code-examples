@@ -39,8 +39,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "total": "...",
-  "pending": "..."
+  "total": "<string>",
+  "pending": "<string>"
 }
 ```
 

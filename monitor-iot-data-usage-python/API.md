@@ -38,7 +38,7 @@ List all sims.
 ### Response `200`
 
 ```json
-{"data": sims, "count": "..."}
+{"data": null, "count": "<string>"}
 ```
 
 ---

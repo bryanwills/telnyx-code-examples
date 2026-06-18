@@ -57,7 +57,7 @@ List all clients.
 ### Response `200`
 
 ```json
-{"clients": clients}
+{"clients": null}
 ```
 
 ---
@@ -107,7 +107,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "clients": "..."
+  "clients": "<string>"
 }
 ```
 

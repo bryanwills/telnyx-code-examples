@@ -77,8 +77,8 @@ List sessions view.
 ```json
 {"sessions": [{
         "id": s["id"], "scenario": s["scenario"]["name"],
-        "status": s["status"], "trainees": "...",
-        "scored": "...",
+        "status": s["status"], "trainees": "<string>",
+        "scored": "<string>",
     }
 ```
 

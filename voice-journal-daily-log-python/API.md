@@ -54,7 +54,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "entries": "..."
+  "entries": "<string>"
 }
 ```
 

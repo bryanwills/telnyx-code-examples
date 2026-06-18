@@ -23,7 +23,7 @@ Add appointment.
 ```json
 {
   "status": "added",
-  "total": "..."
+  "total": "<string>"
 }
 ```
 

@@ -65,8 +65,8 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "intakes": "...",
-  "active": "..."
+  "intakes": "<string>",
+  "active": "<string>"
 }
 ```
 

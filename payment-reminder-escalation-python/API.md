@@ -36,7 +36,7 @@ Add invoice.
 ### Response `200`
 
 ```json
-{"invoice": inv}
+{"invoice": null}
 ```
 
 ---
@@ -58,7 +58,7 @@ Run reminders.
 ### Response `200`
 
 ```json
-{"results": results}
+{"results": null}
 ```
 
 ---
@@ -82,7 +82,7 @@ List all invoices.
 ### Response `200`
 
 ```json
-{"invoices": invoices}
+{"invoices": null}
 ```
 
 ---
@@ -108,7 +108,7 @@ Health check and service status.
 ```json
 {
   "status": "ok",
-  "unpaid": "..."
+  "unpaid": "<string>"
 }
 ```
 
