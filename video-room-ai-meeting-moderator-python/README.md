@@ -1,59 +1,98 @@
-# Video Room AI Meeting Moderator
+# Video Room Ai Meeting Moderator
 
-## What Does This Example Do?
+Video Room AI Meeting Moderator — create video rooms with AI-powered agenda tracking and time management.
 
-Create Telnyx Video rooms with AI-powered agenda tracking. Set an agenda with time allocations, and the AI moderator tracks progress, warns when topics run over, and provides status updates on demand.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
 
-- Teams that want structured, time-boxed meetings.
-- Facilitators running workshops or standups.
-- Developers building video conferencing features.
+## How It Works
 
-## Why Telnyx?
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. Video rooms + AI moderation on one platform. No Zoom + separate meeting management tool.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/video-room-ai-meeting-moderator-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t video-room-ai-meeting-moderator .
+docker run --env-file .env -p 5000:5000 video-room-ai-meeting-moderator
+```
 
-| Product | Role |
-|---------|------|
-| Video API | Video room creation and management |
-| Inference | Agenda tracking and time management |
-| SMS | Post-meeting action item delivery |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
 
-See [app.py](./app.py) for the full implementation.
+## API Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/rooms` | Create new record |
+| `POST` | `/rooms/<room_id>/start` | `POST` /rooms/<room_id>/start |
+| `GET` | `/rooms/<room_id>/status` | Update status |
+| `POST` | `/rooms/<room_id>/next` | `POST` /rooms/<room_id>/next |
+| `GET` | `/health` | Health check and service status |
 
-**Q: Does the AI speak in the video room?**
-In this version, the AI provides text-based status via API. Add TTS for spoken moderator announcements.
+## Testing
 
-**Q: Can it record the meeting?**
-Yes. Enable recording in the room creation call.
+**List records:**
 
+```bash
+curl http://localhost:5000/rooms/<room_id>/status
+```
 
-## Related Examples
+**Trigger action:**
 
-- [AI Conference Note Taker](../ai-conference-note-taker-python/)
-- [AI Podcast Call In Show](../ai-podcast-call-in-show-python/)
+```bash
+curl -X POST http://localhost:5000/rooms \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

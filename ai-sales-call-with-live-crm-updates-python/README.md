@@ -1,105 +1,107 @@
-# AI Sales Call with Live CRM Updates
+# Ai Sales Call With Live Crm Updates
 
-## What Does This Example Do?
+AI Sales Call with Live CRM Updates — multi-participant call with real-time deal intelligence.
 
-An AI agent joins multi-participant sales calls, listens to the conversation in real time, extracts deal signals (budget, timeline, competitors mentioned, pain points) using Telnyx Inference, pushes structured data to your CRM, and sends an SMS follow-up to the prospect after the call ends. Five Telnyx products working together in a single workflow.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- SMS/MMS Messaging
 
-- Sales teams that want AI-assisted deal intelligence without switching tools.
-- Revenue operations engineers building automated post-call workflows.
-- CRM administrators who want real-time call data without manual entry.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. Voice, inference, messaging, and telephony run on the same private network.
-
-- **Single platform** — Call control, transcription, LLM inference, and SMS in one API. No stitching together Twilio + OpenAI + Deepgram + Salesforce middleware.
-- **Real-time transcription + inference** — Transcription feeds directly to inference on the same network. No extra hops.
-- **Built-in integrations** — AI Assistants connect natively to Salesforce, HubSpot, Jira, and more.
-- **One bill** — When it breaks at 2 AM, one vendor owns the fix.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- Telnyx phone number with voice enabled
-- Call Control Application with webhook URL configured
-- CRM webhook endpoint (Salesforce, HubSpot, or custom)
-- [ngrok](https://ngrok.com) for local development
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/ai-sales-call-with-live-crm-updates-python
+# Configure
 cp .env.example .env
-# Edit .env with your API key and CRM webhook
-make setup
-make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Architecture
-
-```
-AE + Prospect on call
-        |
-  Telnyx Call Control (webhook)
-        |
-  Real-time Transcription
-        |
-  Telnyx Inference (deal signal extraction)
-        |
-   +----+----+
-   |         |
-CRM Update  SMS Follow-up
-(webhook)   (Telnyx Messaging)
+```bash
+docker build -t ai-sales-call-with-live-crm-updates .
+docker run --env-file .env -p 5000:5000 ai-sales-call-with-live-crm-updates
 ```
 
-### Products used
+### Expose Your Webhook
 
-| Product | Role |
-|---------|------|
-| Voice API | Call control, answer, transcription |
-| Inference | Deal signal extraction via LLM |
-| SMS | Post-call follow-up to prospect |
-| Structured Insights | Extracted deal data schema |
-| Number Lookup | Caller identification |
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-## Complete Code
+```bash
+ngrok http 5000
+```
 
-See [app.py](./app.py) for the full implementation.
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-## Troubleshooting
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-| Issue | Solution |
-|-------|----------|
-| No transcription data | Verify transcription_start is called after call.answered |
-| CRM webhook not receiving | Check CRM_WEBHOOK_URL is accessible and returns 200 |
-| SMS not sending | Verify FOLLOW_UP_NUMBER is a valid Telnyx number with messaging enabled |
+## Environment Variables
 
-## FAQ
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `ASSISTANT_ID` | Assistant Id | Yes |
+| `CRM_WEBHOOK_URL` | Webhook URL for external notifications | Yes |
+| `FOLLOW_UP_NUMBER` | Phone number in E.164 format | Yes |
+| `MESSAGING_PROFILE_ID` | Messaging Profile Id | Yes |
+| `FLASK_DEBUG` | Flask Debug | No |
 
-**Q: Can the AI coach the rep during the call?**
-Yes. Add a WebRTC whisper channel so inference results are spoken only to the AE, not the prospect.
+## Webhook Endpoints
 
-**Q: Which CRMs are supported?**
-Any CRM with a webhook or API. The example uses a generic webhook. Telnyx AI Assistants have built-in Salesforce and HubSpot integrations.
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
 
-**Q: How is this different from Gong or Chorus?**
-Gong records and analyzes after the call. This runs inference in real-time during the call and pushes to CRM before the rep opens their laptop.
+## API Endpoints
 
-## Resources
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/health` | Health check and service status |
 
-- [Voice API](https://developers.telnyx.com/docs/voice)
-- [Inference API](https://developers.telnyx.com/docs/inference)
-- [Messaging API](https://developers.telnyx.com/docs/messaging)
-- [AI Assistants](https://developers.telnyx.com/docs/ai/assistants)
+## Testing
 
-## Related Examples
+**Health check:**
 
-- [Build a Voice AI Agent](../build-voice-ai-agent-python/)
-- [Real-Time Call Intelligence Dashboard](../real-time-call-intelligence-dashboard-python/)
-- [AI Conference Note-Taker](../ai-conference-note-taker-python/)
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

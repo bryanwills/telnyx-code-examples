@@ -1,59 +1,101 @@
-# SIP Trunking Failover Monitor
+# Sip Trunking Failover Monitor
 
-## What Does This Example Do?
+SIP Trunking Failover Monitor — health-check SIP connections, auto-failover, SMS alerts.
 
-Health-check primary and backup SIP trunk connections. If the primary goes down, automatically failover to backup and send an SMS alert. When primary recovers, failback and notify.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- SMS/MMS Messaging
 
-- Telecom teams managing SIP infrastructure.
-- IT teams ensuring voice continuity.
-- Enterprises with high-availability voice requirements.
+## How It Works
 
-## Why Telnyx?
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. SIP health monitoring + auto-failover + SMS alerting on the same platform that provides the trunks. No separate monitoring tool for your voice infrastructure.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/sip-trunking-failover-monitor-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t sip-trunking-failover-monitor .
+docker run --env-file .env -p 5000:5000 sip-trunking-failover-monitor
+```
 
-| Product | Role |
-|---------|------|
-| SIP Trunking | Primary and backup voice connections |
-| SMS | Failover/recovery alerts |
-| API | Connection health checking |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `ALERT_NUMBER` | Phone number in E.164 format | Yes |
+| `PRIMARY_SIP_CONNECTION_ID` | Primary Sip Connection Id | Yes |
+| `BACKUP_SIP_CONNECTION_ID` | Backup Sip Connection Id | Yes |
 
-See [app.py](./app.py) for the full implementation.
+## API Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/check` | `POST` /check |
+| `GET` | `/status` | List all status |
+| `GET` | `/health` | Health check and service status |
 
-**Q: How fast is the failover?**
-Detection runs on your configured schedule (e.g., every 30 seconds). Failover is the time between detection and alert.
+## Testing
 
-**Q: Can I add more than 2 trunks?**
-Yes. Add additional connection IDs for multi-tier failover.
+**List records:**
 
+```bash
+curl http://localhost:5000/status
+```
 
-## Related Examples
+**Trigger action:**
 
-- [Emergency Mass Notification System](../emergency-mass-notification-system-python/)
-- [Number Reputation Monitor Auto Rotate](../number-reputation-monitor-auto-rotate-python/)
+```bash
+curl -X POST http://localhost:5000/check \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

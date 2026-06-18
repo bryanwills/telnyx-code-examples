@@ -1,109 +1,126 @@
 # Autonomous Outbound Sales Agent
 
-## What Does This Example Do?
+Autonomous Outbound Sales Agent — AI-driven lead qualification, objection handling, and meeting booking.
 
-A fully autonomous AI sales agent that calls leads from a queue, qualifies them through natural conversation, handles objections, books meetings, sends SMS confirmations, and logs dispositions. Feed it a list of leads, hit start, and it works through the queue independently.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- SMS/MMS Messaging
+- Speech Recognition / DTMF
+- Verify API
+- Voice Call Control
 
-- Sales teams that need to scale outbound without hiring more BDRs.
-- Growth engineers building AI-powered lead qualification pipelines.
-- RevOps teams automating top-of-funnel.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform where voice, inference, and messaging run on the same network.
-
-- **Autonomous loop** — Outbound call + AI conversation + SMS confirmation + CRM logging in a single platform. No orchestration middleware.
-- **Number Lookup** — Verify numbers before calling. Skip landlines, flag invalid numbers.
-- **Sub-200ms inference** — AI responses fast enough for natural phone conversation because inference runs where the call terminates.
-- **One API key** — Voice, AI, and SMS with a single credential.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key
-- Telnyx phone number enabled for outbound voice + SMS
-- Connection ID for outbound calling
-- [ngrok](https://ngrok.com) for webhooks
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/autonomous-outbound-sales-agent-python
+# Configure
 cp .env.example .env
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-Load leads and start:
+### Docker
 
 ```bash
-curl -X POST http://localhost:5000/leads -H "Content-Type: application/json" \
-  -d '{"leads": [{"number": "+14155551234", "name": "Jane", "company": "Acme"}]}'
-
-curl -X POST http://localhost:5000/campaign/start
+docker build -t autonomous-outbound-sales-agent .
+docker run --env-file .env -p 5000:5000 autonomous-outbound-sales-agent
 ```
 
-## Implementation Details
+### Expose Your Webhook
 
-### The autonomous loop
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-```
-Lead Queue → Number Lookup → Outbound Call → AI Conversation
-                                                    |
-                                            Qualification via Inference
-                                                    |
-                                         +----------+----------+
-                                         |          |          |
-                                     Hot Lead   Warm Lead   Cold Lead
-                                         |          |          |
-                                   Live Transfer  SMS Follow-up  Log & Next
-                                         |
-                                   SMS Confirmation
+```bash
+ngrok http 5000
 ```
 
-### Products used
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-| Product | Role |
-|---------|------|
-| Voice API | Outbound calls, speech gather, TTS |
-| Inference | Conversation + lead qualification |
-| Number Lookup | Pre-call validation |
-| SMS | Meeting confirmations, follow-ups |
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-## Complete Code
+## Environment Variables
 
-See [app.py](./app.py) for the full implementation.
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `FROM_NUMBER` | Phone number in E.164 format | Yes |
+| `CONNECTION_ID` | Telnyx Call Control connection ID | Yes |
+| `FLASK_DEBUG` | Flask Debug | No |
 
-## Troubleshooting
+## Webhook Endpoints
 
-| Issue | Solution |
-|-------|----------|
-| Calls not connecting | Verify CONNECTION_ID and FROM_NUMBER in .env |
-| No speech detected | Increase end_silence_timeout_secs to 3 |
-| Rate limiting | Add delay between calls in campaign loop |
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
 
-## FAQ
+## API Endpoints
 
-**Q: Can this handle thousands of leads?**
-Yes. Add a delay between calls and the agent works through the queue sequentially. For parallel calling, run multiple instances.
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/leads` | Create new record |
+| `POST` | `/campaign/start` | `POST` /campaign/start |
+| `GET` | `/results` | List all results |
+| `GET` | `/health` | Health check and service status |
 
-**Q: Is this compliant with TCPA?**
-This example is for demonstration. Production use requires proper consent management, do-not-call list checking, and calling hour restrictions.
+## Testing
 
-**Q: How does it compare to Orum or Nooks?**
-Those are parallel dialers with human reps. This is a fully autonomous AI agent — no human on the line unless the lead qualifies for transfer.
+**List records:**
 
-## Resources
+```bash
+curl http://localhost:5000/results
+```
 
-- [Voice API](https://developers.telnyx.com/docs/voice)
-- [Number Lookup](https://developers.telnyx.com/docs/numbers/number-lookup)
-- [Inference](https://developers.telnyx.com/docs/inference)
-- [Messaging](https://developers.telnyx.com/docs/messaging)
+**Trigger action:**
 
-## Related Examples
+```bash
+curl -X POST http://localhost:5000/leads \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
 
-- [AI Sales Call with Live CRM Updates](../ai-sales-call-with-live-crm-updates-python/)
-- [Global Lead Response Engine](../global-lead-response-engine-python/)
-- [Build a Voice AI Agent](../build-voice-ai-agent-python/)
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

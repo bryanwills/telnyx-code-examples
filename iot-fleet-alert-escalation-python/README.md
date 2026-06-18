@@ -1,93 +1,136 @@
-# IoT Fleet Alert Escalation
+# Iot Fleet Alert Escalation
 
-## What Does This Example Do?
+IoT Fleet Alert Escalation — severity-based routing from IoT sensors to SMS, calls, and multi-party conferences.
 
-IoT sensors detect anomalies and send alerts via webhook. AI classifies severity using Telnyx Inference. Low severity: SMS to the on-call engineer. Medium: SMS plus an auto-call with AI briefing. Critical: SMS to everyone plus a multi-party conference bridging the on-call engineer, dispatcher, and an AI providing real-time diagnostics.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- SMS/MMS Messaging
+- Speech Recognition / DTMF
+- Voice Call Control
 
-- Fleet management teams with connected vehicles and IoT sensors.
-- Industrial operations teams monitoring equipment via telemetry.
-- DevOps/SRE teams building intelligent alert escalation.
+## Human-in-the-Loop
 
-## Why Telnyx?
+This example includes human oversight at key decision points:
 
-Telnyx is an **AI Communications Infrastructure** platform. IoT SIMs, voice, SMS, and inference on one network.
+- **Escalation to human agents**
 
-- **IoT to voice in one platform** — SIM connectivity, alert processing, SMS, and multi-party calls without stitching together PagerDuty + Twilio + OpenAI.
-- **AI-classified routing** — Inference decides severity. No static alert rules that miss edge cases.
-- **Multi-party conferencing** — Critical alerts automatically bridge the right people with AI context.
+## How It Works
 
-## Prerequisites
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Human reviews** via dashboard, Slack, or SMS reply
+6. **Customer notified** of outcome via SMS
 
-- Python 3.8+
-- Telnyx account with API key
-- Telnyx phone numbers for alerts and on-call
-- Connection ID for outbound calling
-- IoT sensors configured to POST alert data
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                     Human Review
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/iot-fleet-alert-escalation-python
+# Configure
 cp .env.example .env
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-Simulate an alert:
+### Docker
 
 ```bash
-curl -X POST http://localhost:5000/alert -H "Content-Type: application/json" \
-  -d '{"sensor_id": "truck-42", "type": "engine_temp", "value": 280, "unit": "F", "threshold": 230}'
+docker build -t iot-fleet-alert-escalation .
+docker run --env-file .env -p 5000:5000 iot-fleet-alert-escalation
 ```
 
-## Implementation Details
+### Expose Your Webhook
 
-### Escalation routing
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-```
-IoT Sensor Alert (webhook)
-        |
-  AI Severity Classification (Telnyx Inference)
-        |
-   +----+----+----+
-   |         |         |
-  LOW     MEDIUM    CRITICAL
-   |         |         |
-  SMS     SMS+Call   SMS+SMS+Conference
-  (on-call) (on-call)  (on-call+dispatcher+AI)
+```bash
+ngrok http 5000
 ```
 
-### Products used
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-| Product | Role |
-|---------|------|
-| IoT SIM | Sensor connectivity |
-| Inference | Severity classification |
-| SMS | Alert notifications |
-| Voice API | Auto-calls, multi-party conference |
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-## Complete Code
+## Environment Variables
 
-See [app.py](./app.py) for the full implementation.
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `ALERT_NUMBER` | Phone number in E.164 format | Yes |
+| `ONCALL_NUMBER` | Phone number in E.164 format | Yes |
+| `DISPATCHER_NUMBER` | Phone number in E.164 format | Yes |
+| `CONNECTION_ID` | Telnyx Call Control connection ID | Yes |
+| `FLASK_DEBUG` | Flask Debug | No |
 
-## FAQ
+## Webhook Endpoints
 
-**Q: Can I integrate with PagerDuty?**
-Yes. Replace the multi-party conference with a PagerDuty API call, or use both — PagerDuty for tracking, Telnyx for the actual communication.
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
 
-**Q: How fast is the classification?**
-Inference typically responds in under 1 second. Total alert-to-notification time is under 5 seconds for SMS, under 15 seconds for voice.
+## API Endpoints
 
-## Resources
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/alert` | `POST` /alert |
+| `GET` | `/alerts` | List all alerts |
+| `GET` | `/health` | Health check and service status |
 
-- [IoT / Wireless](https://developers.telnyx.com/docs/wireless)
-- [Voice API](https://developers.telnyx.com/docs/voice)
-- [Messaging](https://developers.telnyx.com/docs/messaging)
-- [Inference](https://developers.telnyx.com/docs/inference)
+## Testing
 
-## Related Examples
+**List records:**
 
-- [Build a Voice AI Agent](../build-voice-ai-agent-python/)
-- [Real-Time Call Intelligence Dashboard](../real-time-call-intelligence-dashboard-python/)
+```bash
+curl http://localhost:5000/alerts
+```
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/alert \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

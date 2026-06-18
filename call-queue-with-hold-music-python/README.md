@@ -1,58 +1,102 @@
-# Call Queue with Hold Music
+# Call Queue With Hold Music
 
-## What Does This Example Do?
+Call Queue with Hold Music — queue callers with position announcements and hold music, route to agents.
 
-Proper call queue with position announcements, hold music, and agent availability routing. Callers hold until an agent is free.
+## How It Works
 
-## Who Is This For?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. App **takes action** (creates record, dispatches, notifies)
+4. **Customer notified** of outcome via SMS
 
-- Developers building with Telnyx APIs.
-- Teams looking for production-ready starting points.
-- Anyone exploring what's possible with communications infrastructure + AI.
-
-## Why Telnyx?
-
-Telnyx is an **AI Communications Infrastructure** platform. This example runs entirely on Telnyx -- no third-party APIs, no middleware, no glue code between vendors.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/call-queue-with-hold-music-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t call-queue-with-hold-music .
+docker run --env-file .env -p 5000:5000 call-queue-with-hold-music
+```
 
-| Product | Role |
-|---------|------|
-| Voice API | Call queuing and routing |
-| Playback | Hold music |
-| Call Control | Agent bridging |
+### Expose Your Webhook
 
-## Complete Code
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-See [app.py](./app.py) for the full implementation.
+```bash
+ngrok http 5000
+```
 
-## FAQ
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-**Q: Can I use this in production?**
-This is a working starting point. Add error handling, persistent storage, and authentication for production use.
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: What model should I use?**
-Default is Kimi K2.6 via Telnyx Inference. Any model on Telnyx works -- swap the AI_MODEL env var.
+## Environment Variables
 
-## Related Examples
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `QUEUE_NUMBER` | Phone number in E.164 format | Yes |
+| `AGENT_NUMBERS` | Phone number in E.164 format | Yes |
+| `CONNECTION_ID` | Telnyx Call Control connection ID | Yes |
 
-- [Texml Dynamic Call Router](../texml-dynamic-call-router-python/)
-- [Call Whisper Screen Pop](../call-whisper-screen-pop-python/)
+## Webhook Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/queue` | Update status |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/queue
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

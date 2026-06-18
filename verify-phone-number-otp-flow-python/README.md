@@ -1,58 +1,102 @@
-# Verify Phone Number OTP Flow
+# Verify Phone Number Otp Flow
 
-## What Does This Example Do?
+Verify Phone Number OTP Flow — Telnyx Verify API with SMS primary and voice call fallback.
 
-Complete phone verification using Telnyx Verify API. SMS-first one-time-password delivery with automatic voice call fallback for users who don't receive SMS.
+## Telnyx Products Used
 
-## Who Is This For?
+- Verify API
 
-- Developers building with Telnyx APIs.
-- Teams looking for production-ready starting points.
-- Anyone exploring what's possible with communications infrastructure + AI.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. App **takes action** (creates record, dispatches, notifies)
+4. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. This example runs entirely on Telnyx -- no third-party APIs, no middleware, no glue code between vendors.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/verify-phone-number-otp-flow-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t verify-phone-number-otp-flow .
+docker run --env-file .env -p 5000:5000 verify-phone-number-otp-flow
+```
 
-| Product | Role |
-|---------|------|
-| Verify API | OTP generation and validation |
-| SMS | Primary code delivery |
-| Voice | Fallback code delivery |
+### Expose Your Webhook
 
-## Complete Code
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-See [app.py](./app.py) for the full implementation.
+```bash
+ngrok http 5000
+```
 
-## FAQ
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-**Q: Can I use this in production?**
-This is a working starting point. Add error handling, persistent storage, and authentication for production use.
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: What model should I use?**
-Default is Kimi K2.6 via Telnyx Inference. Any model on Telnyx works -- swap the AI_MODEL env var.
+## Environment Variables
 
-## Related Examples
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `VERIFY_PROFILE_ID` | Verify Profile Id | Yes |
 
-- [Voice Verified Identity 2Fa](../voice-verified-identity-2fa-python/)
-- [Number Lookup Lead Enrichment](../number-lookup-lead-enrichment-python/)
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/verify/start` | `POST` /verify/start |
+| `POST` | `/verify/voice-fallback` | `POST` /verify/voice-fallback |
+| `POST` | `/verify/check` | `POST` /verify/check |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/verify/start \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

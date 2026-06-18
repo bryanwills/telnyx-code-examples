@@ -1,57 +1,108 @@
-# AI Call Center Quality Scorer
+# Ai Call Center Quality Scorer
 
-## What Does This Example Do?
+AI Call Center Quality Scorer — automatically score agent performance from call recordings on compliance, empathy, resolution, and talk-to-listen ratio.
 
-Feed call transcripts to AI for automatic agent scoring across 5 dimensions: greeting, compliance, empathy, resolution, and talk ratio. Generates coaching notes.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
 
-- Developers building with Telnyx APIs.
-- Teams looking for production-ready starting points.
-- Anyone exploring what's possible with communications infrastructure + AI.
+## Human-in-the-Loop
 
-## Why Telnyx?
+This example includes human oversight at key decision points:
 
-Telnyx is an **AI Communications Infrastructure** platform. This example runs entirely on Telnyx -- no third-party APIs, no middleware, no glue code between vendors.
+- **Escalation to human agents**
 
-## Prerequisites
+## How It Works
 
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Human reviews** via dashboard, Slack, or SMS reply
+6. **Customer notified** of outcome via SMS
+
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                     Human Review
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/ai-call-center-quality-scorer-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t ai-call-center-quality-scorer .
+docker run --env-file .env -p 5000:5000 ai-call-center-quality-scorer
+```
 
-| Product | Role |
-|---------|------|
-| Inference | Multi-dimensional scoring |
-| Reporting | Aggregate quality metrics |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
 
-See [app.py](./app.py) for the full implementation.
+## API Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/score` | `POST` /score |
+| `POST` | `/score/batch` | `POST` /score/batch |
+| `GET` | `/scorecards` | List all scorecards |
+| `GET` | `/scorecards/summary` | `GET` /scorecards/summary |
+| `GET` | `/health` | Health check and service status |
 
-**Q: Can I use this in production?**
-This is a working starting point. Add error handling, persistent storage, and authentication for production use.
+## Testing
 
-**Q: What model should I use?**
-Default is Kimi K2.6 via Telnyx Inference. Any model on Telnyx works -- swap the AI_MODEL env var.
+**List records:**
 
-## Related Examples
+```bash
+curl http://localhost:5000/scorecards
+```
 
-- [Call Recording Ai Summarizer](../call-recording-ai-summarizer-python/)
-- [Compliance Call Recorder Ai Auditor](../compliance-call-recorder-ai-auditor-python/)
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/score \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

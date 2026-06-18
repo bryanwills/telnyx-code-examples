@@ -1,32 +1,98 @@
 # Cloud Storage Call Archive
 
-## What Does This Example Do?
+Cloud Storage Call Archive — archive call recordings to Telnyx Cloud Storage with searchable metadata.
 
-Archive call recordings to Telnyx Cloud Storage with searchable metadata. Auto-archive via recording webhooks with date-based organization.
+## How It Works
 
-## Prerequisites
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. App **takes action** (creates record, dispatches, notifies)
+4. **Customer notified** of outcome via SMS
 
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/cloud-storage-call-archive-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Products Used
+### Docker
 
-| Product | Role |
-|---------|------|
-| Cloud Storage | Recording archival |
-| Webhooks | Auto-archive triggers |
-| Voice API | Recording capture |
+```bash
+docker build -t cloud-storage-call-archive .
+docker run --env-file .env -p 5000:5000 cloud-storage-call-archive
+```
 
-## Complete Code
+## Environment Variables
 
-See [app.py](./app.py) for the full implementation.
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `BUCKET_NAME` | Bucket Name | No |
+
+## Webhook Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/recording` | External webhook handler |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/buckets` | Create new record |
+| `GET` | `/buckets` | List all buckets |
+| `POST` | `/archive` | `POST` /archive |
+| `GET` | `/archive` | List all archive |
+| `GET` | `/archive/search` | `GET` /archive/search |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/buckets
+```
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/buckets \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

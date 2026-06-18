@@ -1,60 +1,99 @@
-# SIM Fleet Data Usage Anomaly Detector
+# Sim Fleet Data Usage Anomaly Detector
 
-## What Does This Example Do?
+SIM Fleet Data Usage Anomaly Detector — monitor IoT SIM usage, AI detects anomalies, SMS alerts.
 
-Monitor your IoT SIM fleet for data usage anomalies. AI analyzes usage patterns across all SIMs, detects spikes, offline devices, and unusual behavior, then sends SMS alerts for medium/high severity issues.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- SMS/MMS Messaging
 
-- IoT fleet managers monitoring connected devices.
-- Telecom teams managing SIM deployments.
-- DevOps teams monitoring cellular-connected infrastructure.
+## How It Works
 
-## Why Telnyx?
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. SIM management + AI anomaly detection + SMS alerting on one platform. Your IoT connectivity and intelligence layer from a single provider.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/sim-fleet-data-usage-anomaly-detector-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t sim-fleet-data-usage-anomaly-detector .
+docker run --env-file .env -p 5000:5000 sim-fleet-data-usage-anomaly-detector
+```
 
-| Product | Role |
-|---------|------|
-| IoT SIM | Fleet connectivity and usage data |
-| Inference | Anomaly detection and classification |
-| SMS | Alert notifications |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `ALERT_NUMBER` | Phone number in E.164 format | Yes |
 
-See [app.py](./app.py) for the full implementation.
+## API Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/scan` | `POST` /scan |
+| `GET` | `/anomalies` | List all anomalies |
+| `GET` | `/health` | Health check and service status |
 
-**Q: How often should I scan?**
-Run /scan on a schedule (hourly or daily) via cron. The AI compares current usage against historical patterns.
+## Testing
 
-**Q: Can it auto-suspend rogue SIMs?**
-Add a SIM suspend API call when severity is 'high' for automated response.
+**List records:**
 
+```bash
+curl http://localhost:5000/anomalies
+```
 
-## Related Examples
+**Trigger action:**
 
-- [IoT Fleet Alert Escalation](../iot-fleet-alert-escalation-python/)
-- [IoT Smart Building Voice Control](../iot-smart-building-voice-control-python/)
-- [Number Reputation Monitor Auto Rotate](../number-reputation-monitor-auto-rotate-python/)
+```bash
+curl -X POST http://localhost:5000/scan \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

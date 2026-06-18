@@ -1,89 +1,123 @@
-# AI Conference Note-Taker
+# Ai Conference Note Taker
 
-## What Does This Example Do?
+AI Conference Note-Taker — joins calls, transcribes, extracts action items, sends SMS summaries.
 
-Dial a conference bridge number and the AI joins as a participant. It transcribes the entire meeting in real time, identifies key decisions and action items using Telnyx Inference, and sends SMS summaries to all participants when the call ends. "Add this number to your next meeting and it handles the rest."
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- SMS/MMS Messaging
+- Voice Call Control
 
-- Teams that want automatic meeting notes without a separate tool.
-- Developers building AI meeting assistants.
-- Anyone tired of manually writing action items after every call.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. The note-taker joins via real telephony, not a browser bot.
-
-- **Real phone participant** — Joins any conference bridge via PSTN. Works with Zoom dial-in, Teams dial-in, any bridge.
-- **On-network processing** — Transcription and inference run on Telnyx infrastructure. Meeting audio stays on-network.
-- **SMS delivery** — Summaries sent via Telnyx Messaging to all participants immediately after the call.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key
-- Telnyx phone number for the note-taker identity
-- Connection ID for outbound calling
-- [ngrok](https://ngrok.com) for webhooks
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/ai-conference-note-taker-python
+# Configure
 cp .env.example .env
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-Join a meeting:
+### Docker
 
 ```bash
-curl -X POST http://localhost:5000/join -H "Content-Type: application/json" \
-  -d '{"dial_number": "+18005551234", "participants": [{"name": "Alice", "number": "+14155551234"}]}'
+docker build -t ai-conference-note-taker .
+docker run --env-file .env -p 5000:5000 ai-conference-note-taker
 ```
 
-## Implementation Details
+### Expose Your Webhook
 
-### Products used
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-| Product | Role |
-|---------|------|
-| Voice API | Join conference as participant, transcription |
-| Inference | Action item extraction, meeting summarization |
-| SMS | Post-meeting summary delivery |
-| Cloud Storage | Recording archival |
+```bash
+ngrok http 5000
+```
 
-## Complete Code
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-See [app.py](./app.py) for the full implementation.
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-## Troubleshooting
+## Environment Variables
 
-| Issue | Solution |
-|-------|----------|
-| Cannot join conference | Check CONNECTION_ID and ensure the bridge number accepts PSTN dial-in |
-| No transcript | Verify transcription_start is called after call.answered |
-| SMS not received | Ensure participant numbers are in E.164 format |
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `NOTETAKER_NUMBER` | Phone number in E.164 format | Yes |
+| `CONNECTION_ID` | Telnyx Call Control connection ID | Yes |
+| `FLASK_DEBUG` | Flask Debug | No |
 
-## FAQ
+## Webhook Endpoints
 
-**Q: Can it identify who said what?**
-Speaker diarization is based on channel separation. For multi-party calls, timestamps help attribute statements.
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
 
-**Q: Does it work with Zoom/Teams/Google Meet?**
-Yes. Any service that provides a dial-in phone number works. The AI joins as a regular phone participant.
+## API Endpoints
 
-**Q: What about recording consent?**
-The AI announces itself when it joins. You should verify compliance with your local recording consent laws.
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/join` | `POST` /join |
+| `GET` | `/meetings` | List all meetings |
+| `GET` | `/health` | Health check and service status |
 
-## Resources
+## Testing
 
-- [Voice API](https://developers.telnyx.com/docs/voice)
-- [Inference](https://developers.telnyx.com/docs/inference)
-- [Messaging](https://developers.telnyx.com/docs/messaging)
+**List records:**
 
-## Related Examples
+```bash
+curl http://localhost:5000/meetings
+```
 
-- [AI Sales Call with Live CRM Updates](../ai-sales-call-with-live-crm-updates-python/)
-- [Real-Time Call Intelligence Dashboard](../real-time-call-intelligence-dashboard-python/)
-- [Build a Voice AI Agent](../build-voice-ai-agent-python/)
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/join \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

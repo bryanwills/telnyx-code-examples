@@ -1,58 +1,116 @@
-# TeXML Voicemail Drop
+# Texml Voicemail Drop
 
-## What Does This Example Do?
+TeXML Voicemail Drop — leave pre-recorded voicemails at scale via TeXML.
 
-Leave pre-recorded voicemails at scale. Answering machine detection waits for the beep, plays your message, and hangs up. Humans get skipped.
+## Telnyx Products Used
 
-## Who Is This For?
+- Voice Call Control
 
-- Developers building with Telnyx APIs.
-- Teams looking for production-ready starting points.
-- Anyone exploring what's possible with communications infrastructure + AI.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. App **takes action** (creates record, dispatches, notifies)
+4. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. This example runs entirely on Telnyx -- no third-party APIs, no middleware, no glue code between vendors.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/texml-voicemail-drop-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t texml-voicemail-drop .
+docker run --env-file .env -p 5000:5000 texml-voicemail-drop
+```
 
-| Product | Role |
-|---------|------|
-| Voice API | Outbound calling |
-| AMD | Answering machine detection |
-| Playback | Pre-recorded message delivery |
+### Expose Your Webhook
 
-## Complete Code
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-See [app.py](./app.py) for the full implementation.
+```bash
+ngrok http 5000
+```
 
-## FAQ
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-**Q: Can I use this in production?**
-This is a working starting point. Add error handling, persistent storage, and authentication for production use.
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: What model should I use?**
-Default is Kimi K2.6 via Telnyx Inference. Any model on Telnyx works -- swap the AI_MODEL env var.
+## Environment Variables
 
-## Related Examples
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `FROM_NUMBER` | Phone number in E.164 format | Yes |
+| `CONNECTION_ID` | Telnyx Call Control connection ID | Yes |
+| `VOICEMAIL_AUDIO_URL` | Service URL | No |
 
-- [Autonomous Outbound Sales Agent](../autonomous-outbound-sales-agent-python/)
-- [Ai Customer Winback Caller](../ai-customer-winback-caller-python/)
+## Webhook Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/drop` | `POST` /drop |
+| `GET` | `/drops` | List all drops |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/drops
+```
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/drop \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [Telnyx Portal](https://portal.telnyx.com)

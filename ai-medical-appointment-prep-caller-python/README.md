@@ -1,60 +1,121 @@
-# AI Medical Appointment Prep Caller
+# Ai Medical Appointment Prep Caller
 
-## What Does This Example Do?
+AI Medical Appointment Prep Caller — calls patients before appointments to collect intake info.
 
-AI calls patients before appointments to collect pre-visit intake: verify identity, medication changes, current symptoms, allergies, and insurance updates. Extracts structured data for the provider's chart prep.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- Speech Recognition / DTMF
+- Voice Call Control
 
-- Medical practices reducing check-in time.
-- Urgent care clinics collecting info before arrival.
-- Telehealth providers gathering intake data remotely.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. Outbound calling + AI intake collection + structured data extraction on one platform. Patients answer a phone call instead of filling out a clipboard form.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/ai-medical-appointment-prep-caller-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t ai-medical-appointment-prep-caller .
+docker run --env-file .env -p 5000:5000 ai-medical-appointment-prep-caller
+```
 
-| Product | Role |
-|---------|------|
-| Voice API | Outbound prep calls |
-| Inference | Conversational intake + data extraction |
-| SMS | Appointment confirmations |
+### Expose Your Webhook
 
-## Complete Code
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-See [app.py](./app.py) for the full implementation.
+```bash
+ngrok http 5000
+```
 
-## FAQ
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-**Q: Is this HIPAA compliant?**
-This is a demo. Production use requires BAA, encryption, and PHI handling review.
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: Can it handle non-English patients?**
-Yes. Add language detection and multilingual prompts using Telnyx's 20+ supported languages.
+## Environment Variables
 
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `CLINIC_NUMBER` | Phone number in E.164 format | Yes |
+| `CONNECTION_ID` | Telnyx Call Control connection ID | Yes |
 
-## Related Examples
+## Webhook Endpoints
 
-- [AI Appointment Reminder SMS Voice](../ai-appointment-reminder-sms-voice-python/)
-- [SMS Appointment No Show Predictor](../sms-appointment-no-show-predictor-python/)
-- [AI Insurance Claims Intake Voice](../ai-insurance-claims-intake-voice-python/)
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/prep-call` | `POST` /prep-call |
+| `GET` | `/intakes` | List all intakes |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/intakes
+```
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/prep-call \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

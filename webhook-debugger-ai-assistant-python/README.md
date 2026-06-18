@@ -1,58 +1,101 @@
-# Webhook Debugger AI Assistant
+# Webhook Debugger Ai Assistant
 
-## What Does This Example Do?
+Webhook Debugger AI Assistant — catch, inspect, and debug Telnyx webhooks with AI explanations.
 
-A universal webhook catcher that logs every incoming webhook, then uses AI to explain what the event means, what you should do in response, and common mistakes. Point any Telnyx webhook URL here during development.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
 
-- Developers integrating Telnyx APIs for the first time.
-- Teams debugging webhook delivery issues.
-- Anyone who wants a smarter RequestBin with AI explanations.
+## How It Works
 
-## Why Telnyx?
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. Webhook inspection + AI-powered documentation on one endpoint. Faster debugging than reading docs — the AI explains each event in context.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/webhook-debugger-ai-assistant-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t webhook-debugger-ai-assistant .
+docker run --env-file .env -p 5000:5000 webhook-debugger-ai-assistant
+```
 
-| Product | Role |
-|---------|------|
-| All APIs | Webhook event capture |
-| Inference | Event analysis and explanation |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
 
-See [app.py](./app.py) for the full implementation.
+## API Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/catch/<path:subpath>` | `GET POST PUT DELETE` /catch/<path:subpath> |
+| `POST` | `/catch/<path:subpath>` | `GET POST PUT DELETE` /catch/<path:subpath> |
+| `PUT` | `/catch/<path:subpath>` | `GET POST PUT DELETE` /catch/<path:subpath> |
+| `DELETE` | `/catch/<path:subpath>` | `GET POST PUT DELETE` /catch/<path:subpath> |
+| `GET` | `/analyze/<int:index>` | `GET` /analyze/<int:index> |
+| `GET` | `/analyze/recent` | `GET` /analyze/recent |
+| `GET` | `/log` | `GET` /log |
+| `GET` | `/health` | Health check and service status |
 
-**Q: Can I use this in production?**
-It's designed for development. For production, build proper webhook handlers.
+## Testing
 
-**Q: Does it validate webhook signatures?**
-This demo captures all payloads. Add signature verification for security.
+**List records:**
 
+```bash
+curl http://localhost:5000/catch/<path:subpath>
+```
 
-## Related Examples
+**Trigger action:**
 
-- [Click To Call WebRTC With AI Assist](../click-to-call-webrtc-with-ai-assist-python/)
-- [SIP Trunking Failover Monitor](../sip-trunking-failover-monitor-python/)
+```bash
+curl -X POST http://localhost:5000/catch/<path:subpath> \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

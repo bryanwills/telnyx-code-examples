@@ -1,58 +1,103 @@
-# AI Voice Agent with Function Calling
+# Ai Voice Agent With Function Calling
 
-## What Does This Example Do?
+AI Voice Agent with Function Calling — voice agent that calls external APIs mid-conversation.
 
-A voice agent that calls external APIs mid-conversation. Ask about weather, order status, or account balance and the AI executes real function calls to get live data.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- Speech Recognition / DTMF
 
-- Developers building with Telnyx APIs.
-- Teams looking for production-ready starting points.
-- Anyone exploring what's possible with communications infrastructure + AI.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. This example runs entirely on Telnyx -- no third-party APIs, no middleware, no glue code between vendors.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/ai-voice-agent-with-function-calling-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t ai-voice-agent-with-function-calling .
+docker run --env-file .env -p 5000:5000 ai-voice-agent-with-function-calling
+```
 
-| Product | Role |
-|---------|------|
-| Voice API | Call handling |
-| Inference | Function calling / tool_use |
-| Call Control | Speech and gather |
+### Expose Your Webhook
 
-## Complete Code
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-See [app.py](./app.py) for the full implementation.
+```bash
+ngrok http 5000
+```
 
-## FAQ
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-**Q: Can I use this in production?**
-This is a working starting point. Add error handling, persistent storage, and authentication for production use.
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: What model should I use?**
-Default is Kimi K2.6 via Telnyx Inference. Any model on Telnyx works -- swap the AI_MODEL env var.
+## Environment Variables
 
-## Related Examples
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `AGENT_NUMBER` | Phone number in E.164 format | Yes |
+| `CONNECTION_ID` | Telnyx Call Control connection ID | Yes |
 
-- [Ai Receptionist With Booking Tools](../ai-receptionist-with-booking-tools-python/)
-- [Ai Tech Support Voice Agent](../ai-tech-support-voice-agent-python/)
+## Webhook Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

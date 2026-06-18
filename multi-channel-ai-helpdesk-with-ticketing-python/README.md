@@ -1,62 +1,126 @@
-# Multi-Channel AI Helpdesk with Ticketing
+# Multi Channel Ai Helpdesk With Ticketing
 
-## What Does This Example Do?
+Multi-Channel AI Helpdesk with Ticketing — voice + SMS + WhatsApp support with auto-ticket creation.
 
-AI support agent that handles voice calls, SMS, and WhatsApp. Tries to resolve issues directly. When it can't, auto-creates support tickets via webhook and notifies the customer. Cross-channel context so a customer who called can follow up via text.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- SMS/MMS Messaging
+- Speech Recognition / DTMF
+- WhatsApp Business API
 
-- SMBs needing a helpdesk without Zendesk-level costs.
-- Support teams automating tier-1 issue resolution.
-- Developers building multi-channel support systems.
+## Human-in-the-Loop
 
-## Why Telnyx?
+This example includes human oversight at key decision points:
 
-Telnyx is an **AI Communications Infrastructure** platform. Voice + SMS + WhatsApp + AI + ticketing on one platform. Replace a helpdesk tool, phone system, and messaging provider with a single integration.
+- **Escalation to human agents**
 
-## Prerequisites
+## How It Works
 
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Human reviews** via dashboard, Slack, or SMS reply
+6. **Customer notified** of outcome via SMS
+
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                     Human Review
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/multi-channel-ai-helpdesk-with-ticketing-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t multi-channel-ai-helpdesk-with-ticketing .
+docker run --env-file .env -p 5000:5000 multi-channel-ai-helpdesk-with-ticketing
+```
 
-| Product | Role |
-|---------|------|
-| Voice API | Phone support |
-| SMS | Text support |
-| WhatsApp | WhatsApp support |
-| Inference | Issue resolution and ticket creation |
-| Webhooks | Ticket system integration |
+### Expose Your Webhook
 
-## Complete Code
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-See [app.py](./app.py) for the full implementation.
+```bash
+ngrok http 5000
+```
 
-## FAQ
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-**Q: Which ticketing systems does it support?**
-Any system with a webhook or API: Jira, ServiceNow, Zendesk, Linear, or custom.
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: Can it escalate to a human?**
-Yes. Configure transfer numbers for live agent escalation when the AI detects complex issues.
+## Environment Variables
 
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `HELPDESK_NUMBER` | Phone number in E.164 format | Yes |
+| `TICKET_WEBHOOK_URL` | Webhook URL for external notifications | Yes |
+| `MESSAGING_PROFILE_ID` | Messaging Profile Id | Yes |
 
-## Related Examples
+## Webhook Endpoints
 
-- [Omnichannel AI Receptionist](../omnichannel-ai-receptionist-python/)
-- [AI Insurance Claims Intake Voice](../ai-insurance-claims-intake-voice-python/)
-- [SMS Chatbot With Conversation Memory](../sms-chatbot-with-conversation-memory-python/)
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
+| `POST` | `/webhooks/messaging` | External webhook handler |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/tickets` | List all tickets |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/tickets
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [WhatsApp Guide](https://developers.telnyx.com/docs/messaging/whatsapp)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -1,60 +1,118 @@
-# AI Appointment Reminder (SMS + Voice)
+# Ai Appointment Reminder Sms Voice
 
-## What Does This Example Do?
+AI Appointment Reminder — SMS first, voice call for non-responders, AI handles rescheduling.
 
-Sends SMS reminders for upcoming appointments. If no reply within a configurable window, escalates to an AI voice call that can confirm, reschedule, or cancel. Handles all responses via AI conversation.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- SMS/MMS Messaging
+- Speech Recognition / DTMF
+- Voice Call Control
 
-- Healthcare practices reducing no-show rates.
-- Service businesses (salons, auto shops, dental) automating reminders.
-- Developers building appointment management systems.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. SMS reminder → voice escalation → AI rescheduling in a single platform. No Twilio for SMS + Calendly for scheduling + a separate voice vendor.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/ai-appointment-reminder-sms-voice-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t ai-appointment-reminder-sms-voice .
+docker run --env-file .env -p 5000:5000 ai-appointment-reminder-sms-voice
+```
 
-| Product | Role |
-|---------|------|
-| SMS | Reminder delivery and reply handling |
-| Voice API | Escalation calls for non-responders |
-| Inference | Natural conversation for rescheduling |
+### Expose Your Webhook
 
-## Complete Code
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-See [app.py](./app.py) for the full implementation.
+```bash
+ngrok http 5000
+```
 
-## FAQ
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-**Q: Can it integrate with my calendar?**
-Yes. Add a calendar API call in the /appointments endpoint to check availability before offering times.
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: What about HIPAA?**
-This is a demo. Production healthcare deployments need BAA and PHI handling review.
+## Environment Variables
 
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `FROM_NUMBER` | Phone number in E.164 format | Yes |
+| `CONNECTION_ID` | Telnyx Call Control connection ID | Yes |
 
-## Related Examples
+## Webhook Endpoints
 
-- [SMS Appointment No Show Predictor](../sms-appointment-no-show-predictor-python/)
-- [AI Medical Appointment Prep Caller](../ai-medical-appointment-prep-caller-python/)
-- [Omnichannel AI Receptionist](../omnichannel-ai-receptionist-python/)
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/messaging` | External webhook handler |
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/appointments` | Create new record |
+| `POST` | `/remind` | Trigger workflow execution |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/appointments \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

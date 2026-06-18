@@ -1,59 +1,107 @@
-# Messaging Campaign A/B Test Optimizer
+# Messaging Campaign Ab Test Optimizer
 
-## What Does This Example Do?
+Messaging Campaign A/B Test Optimizer — test SMS copy variants, AI picks winners, auto-scales.
 
-Create SMS campaigns with multiple copy variants, randomly distribute to contacts, track reply rates per variant, and use AI to analyze which copy performs best and suggest the next test.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- SMS/MMS Messaging
 
-- Marketing teams optimizing SMS campaign copy.
-- Growth hackers running rapid message testing.
-- Developers building campaign management tools.
+## How It Works
 
-## Why Telnyx?
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. SMS sending + A/B distribution + AI analysis on one platform. No separate campaign tool or analytics provider.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/messaging-campaign-ab-test-optimizer-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t messaging-campaign-ab-test-optimizer .
+docker run --env-file .env -p 5000:5000 messaging-campaign-ab-test-optimizer
+```
 
-| Product | Role |
-|---------|------|
-| SMS | Campaign delivery with variant tracking |
-| Inference | Performance analysis and copy suggestions |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `CAMPAIGN_NUMBER` | Phone number in E.164 format | Yes |
+| `MESSAGING_PROFILE_ID` | Messaging Profile Id | Yes |
 
-See [app.py](./app.py) for the full implementation.
+## Webhook Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/messaging` | External webhook handler |
 
-**Q: How many variants can I test?**
-Unlimited. The AI analyzes any number of variants.
+## API Endpoints
 
-**Q: Does it auto-select the winner?**
-The /analyze endpoint identifies the winner and provides confidence levels. Add auto-scaling logic to promote the winner automatically.
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/campaigns` | Create new record |
+| `POST` | `/campaigns/<cid>/send` | Trigger workflow execution |
+| `GET` | `/campaigns/<cid>/analyze` | `GET` /campaigns/<cid>/analyze |
+| `GET` | `/health` | Health check and service status |
 
+## Testing
 
-## Related Examples
+**List records:**
 
-- [RCS Rich Card Product Catalog](../rcs-rich-card-product-catalog-python/)
-- [Number Reputation Monitor Auto Rotate](../number-reputation-monitor-auto-rotate-python/)
-- [SMS Chatbot With Conversation Memory](../sms-chatbot-with-conversation-memory-python/)
+```bash
+curl http://localhost:5000/campaigns/<cid>/analyze
+```
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/campaigns \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -1,57 +1,104 @@
-# Fax-to-Structured-Data Pipeline
+# Fax To Structured Data Pipeline
 
-## What Does This Example Do?
+Fax-to-Structured-Data Pipeline — receive faxes, AI extracts structured data (invoices, orders, prescriptions) into JSON.
 
-Receive faxes via webhook, then AI extracts structured JSON from the content: invoices, purchase orders, prescriptions. Auto-detect document type.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- MMS Media Handling
 
-- Developers building with Telnyx APIs.
-- Teams looking for production-ready starting points.
-- Anyone exploring what's possible with communications infrastructure + AI.
+## How It Works
 
-## Why Telnyx?
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. This example runs entirely on Telnyx -- no third-party APIs, no middleware, no glue code between vendors.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/fax-to-structured-data-pipeline-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t fax-to-structured-data-pipeline .
+docker run --env-file .env -p 5000:5000 fax-to-structured-data-pipeline
+```
 
-| Product | Role |
-|---------|------|
-| Fax API | Inbound fax reception |
-| Inference | Document parsing + extraction |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
 
-See [app.py](./app.py) for the full implementation.
+## Webhook Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/fax` | External webhook handler |
 
-**Q: Can I use this in production?**
-This is a working starting point. Add error handling, persistent storage, and authentication for production use.
+## API Endpoints
 
-**Q: What model should I use?**
-Default is Kimi K2.6 via Telnyx Inference. Any model on Telnyx works -- swap the AI_MODEL env var.
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/extract` | `POST` /extract |
+| `GET` | `/faxes` | List all faxes |
+| `GET` | `/extracted` | List all extracted |
+| `GET` | `/health` | Health check and service status |
 
-## Related Examples
+## Testing
 
-- [Fax To Ai Document Processor](../fax-to-ai-document-processor-python/)
-- [Mms Receipt Scanner Expense Tracker](../mms-receipt-scanner-expense-tracker-python/)
+**List records:**
+
+```bash
+curl http://localhost:5000/faxes
+```
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/extract \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

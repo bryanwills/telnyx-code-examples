@@ -1,59 +1,90 @@
-# MMS Receipt Scanner & Expense Tracker
+# Mms Receipt Scanner Expense Tracker
 
-## What Does This Example Do?
+MMS Receipt Scanner & Expense Tracker — text a photo of a receipt, AI extracts data and tracks expenses.
 
-Text a photo of a receipt and the AI extracts vendor, amount, and category. Type expenses manually. Text 'summary' for a categorized expense report. All via MMS/SMS.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- MMS Media Handling
+- SMS/MMS Messaging
 
-- Freelancers tracking business expenses.
-- Small teams without expense management software.
-- Developers building MMS-powered data capture.
+## How It Works
 
-## Why Telnyx?
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. MMS media handling + AI extraction + SMS responses on one platform. The receipt photo goes from phone to AI analysis without touching a third-party OCR service.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/mms-receipt-scanner-expense-tracker-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t mms-receipt-scanner-expense-tracker .
+docker run --env-file .env -p 5000:5000 mms-receipt-scanner-expense-tracker
+```
 
-| Product | Role |
-|---------|------|
-| MMS | Receipt photo upload |
-| SMS | Expense entry and reports |
-| Inference | Receipt data extraction and categorization |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `BOT_NUMBER` | Phone number in E.164 format | Yes |
 
-See [app.py](./app.py) for the full implementation.
+## Webhook Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/messaging` | External webhook handler |
 
-**Q: Does it actually read the receipt image?**
-The AI analyzes text descriptions and amounts. For production OCR, add a vision model or image preprocessing step.
+## API Endpoints
 
-**Q: Can I export to QuickBooks?**
-Add a QuickBooks API call in the expense logging flow.
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/health` | Health check and service status |
 
+## Testing
 
-## Related Examples
+**Health check:**
 
-- [SMS Chatbot With Conversation Memory](../sms-chatbot-with-conversation-memory-python/)
-- [Whatsapp Order Tracking Notifications](../whatsapp-order-tracking-notifications-python/)
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

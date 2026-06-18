@@ -1,100 +1,117 @@
-# Omnichannel AI Receptionist
+# Omnichannel Ai Receptionist
 
-## What Does This Example Do?
+Omnichannel AI Receptionist — one AI brain across voice, SMS, and WhatsApp.
 
-One AI brain that handles voice calls, SMS, and WhatsApp with shared context across channels. A customer who calls about a refund and then texts "any update?" gets a relevant response because the AI remembers the previous call. Books appointments, answers FAQs, transfers to humans, sends MMS with directions.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- MMS Media Handling
+- SMS/MMS Messaging
+- Speech Recognition / DTMF
+- WhatsApp Business API
 
-- Small businesses that need a 24/7 receptionist without staffing costs.
-- Developers building unified AI customer service across channels.
-- Enterprises consolidating voice + messaging into a single AI layer.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform with voice, SMS, MMS, and WhatsApp on the same network.
-
-- **True omnichannel** — Voice, SMS, and WhatsApp from a single API key with shared phone numbers.
-- **Cross-channel memory** — Same conversation history regardless of how the customer reaches you.
-- **One platform** — No Twilio for SMS + Vonage for WhatsApp + another vendor for voice. One integration, one bill.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key
-- Telnyx phone number with voice + messaging enabled
-- Messaging Profile configured for SMS/WhatsApp
-- [ngrok](https://ngrok.com) for webhooks
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/omnichannel-ai-receptionist-python
+# Configure
 cp .env.example .env
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Shared context architecture
-
-```
-     Voice Call          SMS            WhatsApp
-         |                |                |
-         v                v                v
-    /webhooks/voice  /webhooks/messaging  /webhooks/messaging
-         |                |                |
-         +-------+--------+--------+------+
-                 |                  |
-          Customer Context Store (shared)
-                 |
-          Telnyx Inference (same conversation)
-                 |
-          Response via original channel
+```bash
+docker build -t omnichannel-ai-receptionist .
+docker run --env-file .env -p 5000:5000 omnichannel-ai-receptionist
 ```
 
-### Products used
+### Expose Your Webhook
 
-| Product | Role |
-|---------|------|
-| Voice API | Inbound calls, speech, TTS |
-| SMS/MMS | Text conversations, image responses |
-| WhatsApp | WhatsApp Business messaging |
-| Inference | Unified AI conversation |
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-## Complete Code
+```bash
+ngrok http 5000
+```
 
-See [app.py](./app.py) for the full implementation.
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-## Troubleshooting
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-| Issue | Solution |
-|-------|----------|
-| SMS not routing | Check Messaging Profile ID and webhook URL |
-| WhatsApp messages not arriving | Verify WhatsApp Business is enabled on your Messaging Profile |
-| No cross-channel memory | Ensure customer phone number format is consistent (E.164) |
+## Environment Variables
 
-## FAQ
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `BUSINESS_NUMBER` | Phone number in E.164 format | Yes |
+| `MESSAGING_PROFILE_ID` | Messaging Profile Id | Yes |
+| `FLASK_DEBUG` | Flask Debug | No |
 
-**Q: Does it remember conversations across days?**
-In this example, memory is in-process. For production, swap the dictionary for Redis or a database.
+## Webhook Endpoints
 
-**Q: Can I add webchat?**
-Yes. Add a `/webhooks/chat` endpoint that feeds into the same customer context store.
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
+| `POST` | `/webhooks/messaging` | External webhook handler |
 
-**Q: How many channels can one phone number handle?**
-A Telnyx number with voice + messaging enabled handles calls and texts simultaneously.
+## API Endpoints
 
-## Resources
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/customers` | List all customers |
+| `GET` | `/health` | Health check and service status |
 
-- [Voice API](https://developers.telnyx.com/docs/voice)
-- [Messaging API](https://developers.telnyx.com/docs/messaging)
-- [WhatsApp](https://developers.telnyx.com/docs/messaging/whatsapp)
-- [Inference](https://developers.telnyx.com/docs/inference)
+## Testing
 
-## Related Examples
+**List records:**
 
-- [Build a Voice AI Agent](../build-voice-ai-agent-python/)
-- [Global Lead Response Engine](../global-lead-response-engine-python/)
-- [AI-Powered IVR Replacement](../ai-powered-ivr-replacement-python/)
+```bash
+curl http://localhost:5000/customers
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [WhatsApp Guide](https://developers.telnyx.com/docs/messaging/whatsapp)
+- [Telnyx Portal](https://portal.telnyx.com)

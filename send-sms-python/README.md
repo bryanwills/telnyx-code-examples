@@ -1,146 +1,95 @@
-# Send Single SMS with Python and Flask
+# Send Sms
 
-## What Does This Example Do?
+Production-ready Flask endpoint for sending SMS via Telnyx.
 
-Build a production-ready Flask endpoint that sends SMS messages using the Telnyx Python SDK. This tutorial demonstrates the new client-based initialization pattern, proper error handling for telecom APIs, and secure credential management via environment variables.
+## How It Works
 
-## Who Is This For?
+1. Customer **texts** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. App **takes action** (creates record, dispatches, notifies)
+4. **Customer notified** of outcome via SMS
 
-- **Python developers** building sms features with Flask.
-- **Backend engineers** integrating telephony or messaging into existing applications.
-- **DevOps teams** looking for containerized, production-ready telecom examples.
-- **Startups and enterprises** replacing legacy telecom providers with a modern API-first platform.
-
-## Why Telnyx?
-
-Telnyx is an **AI Communications Infrastructure** platform that gives developers a single API for voice, messaging, SIP, AI, and IoT — no Frankenstack required.
-
-- **Integrated platform** — Voice, SMS, SIP trunking, AI assistants, and IoT SIM management under one roof. No stitching together multiple vendors.
-- **Global private network** — Calls and messages traverse the Telnyx-owned IP network for lower latency and higher reliability than the public internet.
-- **Developer-first** — SDKs for Python, Node.js, Go, Ruby, Java, and PHP. Comprehensive webhook event model. Sandbox environment for testing.
-- **Competitive pricing** — Pay-as-you-go with no minimums, contracts, or per-seat fees.
-
-## Prerequisites
-
-- Python 3.8 or higher.
-- A Telnyx account with an active API key from the [Telnyx Portal](https://portal.telnyx.com).
-- A Telnyx phone number enabled for outbound SMS.
-- pip (Python package manager).
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (SMS)                                      │
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
-### Option 1: Local (recommended)
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+
+### Install & Run
 
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/send-sms-python
+# Configure
 cp .env.example .env
-# Edit .env with your Telnyx API key and phone number
-make setup
-make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-### Option 2: Docker
+### Docker
 
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/send-sms-python
-cp .env.example .env
-# Edit .env with your credentials
-make docker-build
-make docker-run
+docker build -t send-sms .
+docker run --env-file .env -p 5000:5000 send-sms
 ```
 
-### Option 3: Manual
+### Expose Your Webhook
 
-See the [Implementation Details](#implementation-details) section below for step-by-step instructions.
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-## Implementation Details
-
-Create `app.py` and initialize the Telnyx client using the new pattern. Define a helper function to handle message creation with proper validation:
-
-```python
-import os
-import telnyx
-from dotenv import load_dotenv
-
-load_dotenv()
-
-# Initialize client with the new SDK pattern
-client = telnyx.Telnyx(api_key=os.getenv("TELNYX_API_KEY"))
-
-
-def send_sms(to_number: str, message: str) -> dict:
-    """Send SMS via Telnyx and return JSON-serializable response data."""
-    from_number = os.getenv("TELNYX_PHONE_NUMBER")
-    if not from_number:
-        raise ValueError("TELNYX_PHONE_NUMBER environment variable not set")
-    
-    # Validate E.164 format to prevent API errors
-    if not to_number.startswith("+"):
-        raise ValueError("Phone number must be in E.164 format (e.g., +15551234567)")
-    
-    # Use client.messages.create() with proper parameters
-    response = client.messages.create(
-        from_=from_number,
-        to=to_number,
-        text=message,
-    )
-    
-    # Extract serializable data — SDK objects are NOT JSON-serializable
-    return {
-        "message_id": response.data.id,
-        "status": response.data.to[0].status if response.data.to else "unknown",
-        "from": from_number,
-        "to": to_number,
-    }
+```bash
+ngrok http 5000
 ```
 
-## Complete Code
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-See [`app.py`](./app.py) for the full implementation.
+- **Messaging:** `https://<your-ngrok>.ngrok.io/webhooks/sms`
 
-## Troubleshooting
+## Environment Variables
 
-| Issue | Problem | Solution |
-|-------|---------|----------|
-| Authentication Error (401) | The endpoint returns `{"error": "Invalid API key"}` with HTTP 401. | Verify your `TELNYX_API_KEY` in the `.env` file matches the key shown in the [Telnyx Portal](https://portal.telnyx.com). Ensure there are no trailing spaces or quotes. If the key was regenerated recently, update your environment file and restart the Flask server. |
-| Invalid Phone Number Format | You receive a 400 error stating "Phone number must be in E.164 format" or a Telnyx API error about invalid destination. | Ensure all phone numbers use E.164 format: start with `+`, followed by country code and number without spaces or dashes. Example: `+15551234567` (US) or `+447700900123` (UK). Update your test curl command to use properly formatted numbers. |
-| Environment Variable Not Set | The application raises `ValueError: TELNYX_PHONE_NUMBER environment variable not set` on startup or first request. | Confirm your `.env` file exists in the same directory as `app.py` and contains the variable. Ensure the file is named exactly `.env` (not `.env.txt` or `env`). The `load_dotenv()` call must execute before `os.getenv()` is called—verify this import order in your code. |
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `TELNYX_PHONE_NUMBER` | Phone number in E.164 format | Yes |
+| `FLASK_DEBUG` | Flask Debug | No |
 
-## FAQ
+## API Endpoints
 
-**Q: Do I need a Telnyx account to run this example?**
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/sms/send` | Trigger workflow execution |
 
-Yes. Sign up at [portal.telnyx.com](https://portal.telnyx.com) to get an API key. Telnyx offers free trial credit for testing.
+## Testing
 
-**Q: Can I use this SMS example in production?**
+**Trigger action:**
 
-Yes. This example includes error handling, environment-based configuration, and a Dockerfile for containerized deployment. Review the security and scaling sections before deploying to production.
+```bash
+curl -X POST http://localhost:5000/sms/send \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
 
-**Q: What Python version do I need?**
+**Health check:**
 
-Python 3.8 or higher. Python 3.12+ is recommended.
+```bash
+curl http://localhost:5000/health
+```
 
-**Q: How is Telnyx different from Twilio?**
+## Learn More
 
-Telnyx is an AI Communications Infrastructure platform with a private global network, integrated voice + messaging + AI + SIP + IoT under one API, and significantly lower pricing. No need to stitch together multiple vendors.
-
-**Q: Where do I get a Telnyx phone number?**
-
-Log into the [Telnyx Portal](https://portal.telnyx.com), navigate to Numbers > Search & Buy, and purchase a number with the capabilities you need (SMS, voice, or both).
-
-## Resources
-
-- [Messaging Overview](https://developers.telnyx.com/docs/messaging)
-- [Send an SMS — Quickstart](https://developers.telnyx.com/docs/messaging/messages/send-message)
-- [Messaging API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
-- [Python SDK](https://developers.telnyx.com/development/sdk/python)
-- [Telnyx SMS API](https://telnyx.com/products/sms-api)
-- [Messaging Pricing](https://telnyx.com/pricing/messaging)
-
-## Related Examples
-
-- [Receive SMS Webhooks with Python](/tutorials/sms/python/receive-sms-webhook).
-- [Send Bulk SMS Messages](/tutorials/sms/python/send-bulk-sms).
-- [Implement Two-Factor Authentication with SMS](/tutorials/sms/python/otp-2fa).
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

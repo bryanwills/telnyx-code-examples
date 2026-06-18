@@ -1,61 +1,110 @@
-# AI Voicemail Transcription & Forwarding
+# Ai Voicemail Transcription Forwarding
 
-## What Does This Example Do?
+AI Voicemail Transcription & Forwarding — voicemail to AI-summarized SMS/email with priority classification.
 
-Answers calls, records voicemails, transcribes them in real time, uses AI to classify priority (urgent/normal/spam), summarizes the message, and forwards the summary via SMS. Urgent voicemails get instant alerts.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- SMS/MMS Messaging
 
-- Professionals who miss calls and need fast voicemail triage.
-- Small businesses without a receptionist.
-- On-call teams that need priority-based voicemail routing.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. Recording, transcription, AI classification, and SMS forwarding on one platform. No third-party transcription service or voicemail provider.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/ai-voicemail-transcription-forwarding-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t ai-voicemail-transcription-forwarding .
+docker run --env-file .env -p 5000:5000 ai-voicemail-transcription-forwarding
+```
 
-| Product | Role |
-|---------|------|
-| Voice API | Call answering and recording |
-| Transcription | Real-time voicemail-to-text |
-| Inference | Priority classification and summarization |
-| SMS | Forwarding summaries to your phone |
+### Expose Your Webhook
 
-## Complete Code
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-See [app.py](./app.py) for the full implementation.
+```bash
+ngrok http 5000
+```
 
-## FAQ
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-**Q: Can it forward to email instead?**
-Yes. Replace the SMS call with an email API or webhook to your email service.
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: Does it filter spam calls?**
-The AI classifies voicemails as spam. You can auto-delete or archive spam-classified messages.
+## Environment Variables
 
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `FORWARD_NUMBER` | Phone number in E.164 format | Yes |
 
-## Related Examples
+## Webhook Endpoints
 
-- [AI Appointment Reminder SMS Voice](../ai-appointment-reminder-sms-voice-python/)
-- [Omnichannel AI Receptionist](../omnichannel-ai-receptionist-python/)
-- [Compliance Call Recorder AI Auditor](../compliance-call-recorder-ai-auditor-python/)
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/voicemails` | List all voicemails |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/voicemails
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

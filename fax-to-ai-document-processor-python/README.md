@@ -1,60 +1,108 @@
-# Fax to AI Document Processor
+# Fax To Ai Document Processor
 
-## What Does This Example Do?
+Fax to AI Document Processor — receive fax, AI extracts data, forwards structured summary.
 
-Receive faxes on a Telnyx number, AI classifies the document type (invoice, contract, medical form, etc.), extracts key fields, assigns priority, and sends urgent fax alerts via SMS.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- MMS Media Handling
+- SMS/MMS Messaging
 
-- Healthcare offices still receiving faxed prescriptions and referrals.
-- Legal firms processing faxed documents.
-- Any business modernizing fax workflows with AI.
+## Human-in-the-Loop
 
-## Why Telnyx?
+This example includes human oversight at key decision points:
 
-Telnyx is an **AI Communications Infrastructure** platform. Fax reception + AI document intelligence + SMS alerting without a separate fax service, OCR provider, or document management system.
+- **Manual review queues**
 
-## Prerequisites
+## How It Works
 
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Human reviews** via dashboard, Slack, or SMS reply
+6. **Customer notified** of outcome via SMS
+
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                     Human Review
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/fax-to-ai-document-processor-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t fax-to-ai-document-processor .
+docker run --env-file .env -p 5000:5000 fax-to-ai-document-processor
+```
 
-| Product | Role |
-|---------|------|
-| Fax API | Fax reception |
-| Inference | Document classification and data extraction |
-| SMS | Urgent fax alerts |
-| Cloud Storage | Document archival |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `FAX_NUMBER` | Phone number in E.164 format | Yes |
+| `FORWARD_EMAIL` | Forward Email | Yes |
 
-See [app.py](./app.py) for the full implementation.
+## Webhook Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/fax` | External webhook handler |
 
-**Q: Can it read handwritten faxes?**
-The AI classifies based on available metadata. For handwritten content, add a vision model for OCR.
+## API Endpoints
 
-**Q: Why is fax still relevant?**
-Healthcare, legal, and government still rely on fax for compliance. This modernizes the workflow without eliminating the channel.
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/faxes` | List all faxes |
+| `GET` | `/health` | Health check and service status |
 
+## Testing
 
-## Related Examples
+**List records:**
 
-- [Compliance Call Recorder AI Auditor](../compliance-call-recorder-ai-auditor-python/)
-- [AI Insurance Claims Intake Voice](../ai-insurance-claims-intake-voice-python/)
+```bash
+curl http://localhost:5000/faxes
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

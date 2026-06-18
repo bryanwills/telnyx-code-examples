@@ -1,59 +1,119 @@
-# AI Podcast Call-In Show
+# Ai Podcast Call In Show
 
-## What Does This Example Do?
+AI Podcast Call-In Show — callers dial in, AI screens and queues them, host manages live.
 
-Listeners call a number, AI screens them (name, topic, topic quality), approved callers enter a queue, and the host manages who goes live. Real-time caller management for live shows.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- Speech Recognition / DTMF
 
-- Podcast hosts wanting live call-in segments.
-- Radio stations modernizing their call-in systems.
-- Event organizers running live Q&A sessions.
+## Human-in-the-Loop
 
-## Why Telnyx?
+This example includes human oversight at key decision points:
 
-Telnyx is an **AI Communications Infrastructure** platform. PSTN call handling + AI screening + queue management on one platform. No studio phone system or producer needed for screening.
+- **Approval workflows**
 
-## Prerequisites
+## How It Works
 
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Human reviews** via dashboard, Slack, or SMS reply
+6. **Customer notified** of outcome via SMS
+
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                     Human Review
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/ai-podcast-call-in-show-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t ai-podcast-call-in-show .
+docker run --env-file .env -p 5000:5000 ai-podcast-call-in-show
+```
 
-| Product | Role |
-|---------|------|
-| Voice API | Inbound call handling and queue |
-| Inference | Caller screening and topic evaluation |
-| SMS | Queue position updates |
+### Expose Your Webhook
 
-## Complete Code
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-See [app.py](./app.py) for the full implementation.
+```bash
+ngrok http 5000
+```
 
-## FAQ
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-**Q: Can it bridge callers to a live stream?**
-Yes. Use Telnyx conference or multi-participant calls to bridge screened callers to the host line.
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: How does the host manage the queue?**
-The /queue endpoint shows all approved callers. Build a simple dashboard or use the API directly.
+## Environment Variables
 
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `SHOW_NUMBER` | Phone number in E.164 format | Yes |
 
-## Related Examples
+## Webhook Endpoints
 
-- [AI Conference Note Taker](../ai-conference-note-taker-python/)
-- [Video Room AI Meeting Moderator](../video-room-ai-meeting-moderator-python/)
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/queue` | List all queue |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/queue
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -1,31 +1,99 @@
 # Video Webinar Recording Manager
 
-## What Does This Example Do?
+Video Webinar Recording Manager — manage video room webinars with automatic recording, transcription, and clip extraction.
 
-Manage video room webinars with automatic recording. AI generates summaries, key points, Q&A extraction, and timestamps from transcripts.
+## Telnyx Products Used
 
-## Prerequisites
+- AI Inference
 
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
+## How It Works
+
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
+
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/video-webinar-recording-manager-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Products Used
+### Docker
 
-| Product | Role |
-|---------|------|
-| Video Rooms | Webinar hosting + recording |
-| Inference | Transcript summarization |
+```bash
+docker build -t video-webinar-recording-manager .
+docker run --env-file .env -p 5000:5000 video-webinar-recording-manager
+```
 
-## Complete Code
+## Environment Variables
 
-See [app.py](./app.py) for the full implementation.
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webinars` | Create new record |
+| `GET` | `/webinars/<room_id>/recordings` | List all recordings |
+| `POST` | `/recordings/<recording_id>/transcribe` | `POST` /recordings/<recording_id>/transcribe |
+| `GET` | `/webinars` | List all webinars |
+| `GET` | `/recordings` | List all processed |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/webinars/<room_id>/recordings
+```
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/webinars \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

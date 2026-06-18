@@ -1,31 +1,92 @@
 # Billing Anomaly Detector
 
-## What Does This Example Do?
+Billing Anomaly Detector — monitor usage and billing for anomalies, alert on cost spikes and unusual patterns.
 
-Monitor usage and billing for anomalies. Detect cost spikes, volume drops, and expensive calls. Alert via webhook when thresholds exceeded.
+## How It Works
 
-## Prerequisites
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. App **takes action** (creates record, dispatches, notifies)
+4. **Customer notified** of outcome via SMS
 
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/billing-anomaly-detector-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Products Used
+### Docker
 
-| Product | Role |
-|---------|------|
-| Reporting API | Usage monitoring |
-| Balance API | Cost tracking |
+```bash
+docker build -t billing-anomaly-detector .
+docker run --env-file .env -p 5000:5000 billing-anomaly-detector
+```
 
-## Complete Code
+## Environment Variables
 
-See [app.py](./app.py) for the full implementation.
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `ALERT_WEBHOOK` | Webhook URL for external notifications | Yes |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/config` | `POST` /config |
+| `GET` | `/config` | List all baselines |
+| `POST` | `/check` | Trigger workflow execution |
+| `GET` | `/balance` | `GET` /balance |
+| `GET` | `/alerts` | List all alerts |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/config
+```
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/config \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

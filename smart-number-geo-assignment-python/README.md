@@ -1,57 +1,100 @@
-# Smart Number Geo-Assignment
+# Smart Number Geo Assignment
 
-## What Does This Example Do?
+Smart Number Geo-Assignment — automatically purchase and assign local numbers based on caller geography to maximize answer rates.
 
-Automatically search and purchase local numbers matching your caller's area code. Increases answer rates by showing a local caller ID. Caches numbers per area code.
+## Human-in-the-Loop
 
-## Who Is This For?
+This example includes human oversight at key decision points:
 
-- Developers building with Telnyx APIs.
-- Teams looking for production-ready starting points.
-- Anyone exploring what's possible with communications infrastructure + AI.
+- **Manual assignment**
 
-## Why Telnyx?
+## How It Works
 
-Telnyx is an **AI Communications Infrastructure** platform. This example runs entirely on Telnyx -- no third-party APIs, no middleware, no glue code between vendors.
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. App **takes action** (creates record, dispatches, notifies)
+4. **Human reviews** via dashboard, Slack, or SMS reply
+5. **Customer notified** of outcome via SMS
 
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          │
+                                          ▼
+                                     Human Review
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/smart-number-geo-assignment-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t smart-number-geo-assignment .
+docker run --env-file .env -p 5000:5000 smart-number-geo-assignment
+```
 
-| Product | Role |
-|---------|------|
-| Numbers API | Search + purchase |
-| Number Orders | Automated provisioning |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
 
-See [app.py](./app.py) for the full implementation.
+## API Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/assign` | Assign to a team member (triggers notifications) |
+| `POST` | `/lookup-and-assign` | Assign to a team member (triggers notifications) |
+| `GET` | `/inventory` | `GET` /inventory |
+| `GET` | `/assignments` | List all assignments |
+| `GET` | `/health` | Health check and service status |
 
-**Q: Can I use this in production?**
-This is a working starting point. Add error handling, persistent storage, and authentication for production use.
+## Testing
 
-**Q: What model should I use?**
-Default is Kimi K2.6 via Telnyx Inference. Any model on Telnyx works -- swap the AI_MODEL env var.
+**List records:**
 
-## Related Examples
+```bash
+curl http://localhost:5000/inventory
+```
 
-- [Number Search And Purchase Api](../number-search-and-purchase-api-python/)
-- [Number Reputation Monitor Auto Rotate](../number-reputation-monitor-auto-rotate-python/)
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/assign \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

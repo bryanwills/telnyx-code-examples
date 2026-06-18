@@ -1,58 +1,101 @@
 # Number Porting Status Tracker
 
-## What Does This Example Do?
+Number Porting Status Tracker — track porting orders with status webhooks and SMS alerts.
 
-Track number porting orders with real-time webhook updates. SMS alerts when ports complete, fail, or get FOC dates confirmed.
+## Telnyx Products Used
 
-## Who Is This For?
+- SMS/MMS Messaging
 
-- Developers building with Telnyx APIs.
-- Teams looking for production-ready starting points.
-- Anyone exploring what's possible with communications infrastructure + AI.
+## How It Works
 
-## Why Telnyx?
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. App **takes action** (creates record, dispatches, notifies)
+4. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. This example runs entirely on Telnyx -- no third-party APIs, no middleware, no glue code between vendors.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/number-porting-status-tracker-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t number-porting-status-tracker .
+docker run --env-file .env -p 5000:5000 number-porting-status-tracker
+```
 
-| Product | Role |
-|---------|------|
-| Porting API | Order creation and tracking |
-| Webhooks | Status change notifications |
-| SMS | Status alerts |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `ALERT_NUMBER` | Phone number in E.164 format | Yes |
 
-See [app.py](./app.py) for the full implementation.
+## Webhook Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/porting` | External webhook handler |
 
-**Q: Can I use this in production?**
-This is a working starting point. Add error handling, persistent storage, and authentication for production use.
+## API Endpoints
 
-**Q: What model should I use?**
-Default is Kimi K2.6 via Telnyx Inference. Any model on Telnyx works -- swap the AI_MODEL env var.
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/ports/list` | List all ports |
+| `POST` | `/ports/create` | Create new record |
+| `GET` | `/ports/<order_id>` | List all port |
+| `GET` | `/health` | Health check and service status |
 
-## Related Examples
+## Testing
 
-- [Number Search And Purchase Api](../number-search-and-purchase-api-python/)
-- [Sip Trunking Failover Monitor](../sip-trunking-failover-monitor-python/)
+**List records:**
+
+```bash
+curl http://localhost:5000/ports/list
+```
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/ports/create \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [Telnyx Portal](https://portal.telnyx.com)

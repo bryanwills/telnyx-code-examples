@@ -1,59 +1,121 @@
-# Multi-Language Customer Survey
+# Multi Language Customer Survey
 
-## What Does This Example Do?
+Multi-Language Customer Survey — outbound voice surveys in the caller's language with AI analysis.
 
-Outbound voice surveys in the caller's language. The AI translates questions on the fly, conducts the survey conversationally, and generates structured analysis with NPS scores and sentiment.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- Speech Recognition / DTMF
+- Voice Call Control
 
-- Customer success teams measuring satisfaction globally.
-- Market research firms conducting multilingual surveys.
-- Product teams gathering user feedback at scale.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. Outbound calling + real-time translation + AI analysis on one platform. No survey tool + translation service + voice provider stack.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/multi-language-customer-survey-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t multi-language-customer-survey .
+docker run --env-file .env -p 5000:5000 multi-language-customer-survey
+```
 
-| Product | Role |
-|---------|------|
-| Voice API | Outbound survey calls |
-| Inference | Question translation and response analysis |
-| Number Lookup | Country detection for language selection |
+### Expose Your Webhook
 
-## Complete Code
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-See [app.py](./app.py) for the full implementation.
+```bash
+ngrok http 5000
+```
 
-## FAQ
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-**Q: How many languages?**
-Any language supported by Telnyx TTS/STT — 20+ languages including CJK, Arabic, and European languages.
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: Can I customize the questions?**
-Yes. Edit the SURVEY_QUESTIONS list in app.py.
+## Environment Variables
 
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `SURVEY_NUMBER` | Phone number in E.164 format | Yes |
+| `CONNECTION_ID` | Telnyx Call Control connection ID | Yes |
 
-## Related Examples
+## Webhook Endpoints
 
-- [AI Voice Survey Sentiment Tracker](../ai-voice-survey-sentiment-tracker-python/)
-- [Global Lead Response Engine](../global-lead-response-engine-python/)
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/survey/start` | `POST` /survey/start |
+| `GET` | `/survey/results` | List all results |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/survey/results
+```
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/survey/start \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

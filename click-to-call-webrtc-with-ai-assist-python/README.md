@@ -1,60 +1,99 @@
-# Click-to-Call WebRTC with AI Assist
+# Click To Call Webrtc With Ai Assist
 
-## What Does This Example Do?
+Click-to-Call WebRTC with AI Assist — browser-based calling with real-time AI coaching sidebar.
 
-A browser-based click-to-call widget with an AI coaching sidebar. Sales reps click to call from their browser via WebRTC. During the call, AI analyzes the conversation and provides real-time coaching tips.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
 
-- Sales teams wanting browser-based calling with AI coaching.
-- Support teams needing integrated phone + knowledge base.
-- Developers building WebRTC calling into web apps.
+## How It Works
 
-## Why Telnyx?
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. WebRTC calling + AI coaching on one platform. No separate softphone app, coaching tool, or conversation intelligence subscription.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/click-to-call-webrtc-with-ai-assist-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t click-to-call-webrtc-with-ai-assist .
+docker run --env-file .env -p 5000:5000 click-to-call-webrtc-with-ai-assist
+```
 
-| Product | Role |
-|---------|------|
-| WebRTC | Browser-based calling |
-| Inference | Real-time coaching suggestions |
-| Voice API | Call control and transcription |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `WEBRTC_CREDENTIAL_ID` | Webrtc Credential Id | Yes |
+| `CONNECTION_ID` | Telnyx Call Control connection ID | Yes |
 
-See [app.py](./app.py) for the full implementation.
+## API Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/` | `GET` / |
+| `POST` | `/webrtc/token` | List all token |
+| `POST` | `/coaching` | List all coaching |
+| `GET` | `/health` | Health check and service status |
 
-**Q: Does it work on mobile browsers?**
-WebRTC is supported on modern mobile browsers. The UI adapts to smaller screens.
+## Testing
 
-**Q: Can the prospect hear the AI coaching?**
-No. Coaching appears as text in the sidebar — only the rep sees it.
+**List records:**
 
+```bash
+curl http://localhost:5000/
+```
 
-## Related Examples
+**Trigger action:**
 
-- [Real Time Call Intelligence Dashboard](../real-time-call-intelligence-dashboard-python/)
-- [AI Sales Call With Live Crm Updates](../ai-sales-call-with-live-crm-updates-python/)
-- [AI Cold Caller Objection Trainer](../ai-cold-caller-objection-trainer-python/)
+```bash
+curl -X POST http://localhost:5000/webrtc/token \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

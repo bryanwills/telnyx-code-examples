@@ -1,31 +1,92 @@
-# x402 USDC Account Funder
+# X402 Usdc Account Funder
 
-## What Does This Example Do?
+x402 USDC Account Funder — fund your Telnyx account with USDC cryptocurrency on the Base blockchain.
 
-Fund your Telnyx account with USDC cryptocurrency on the Base blockchain using the x402 payment protocol. Get quotes, sign payments, check balance.
+## How It Works
 
-## Prerequisites
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. App **takes action** (creates record, dispatches, notifies)
+4. **Customer notified** of outcome via SMS
 
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/x402-usdc-account-funder-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Products Used
+### Docker
 
-| Product | Role |
-|---------|------|
-| x402 Payments | Crypto account funding |
-| Base Blockchain | USDC on-chain payments |
+```bash
+docker build -t x402-usdc-account-funder .
+docker run --env-file .env -p 5000:5000 x402-usdc-account-funder
+```
 
-## Complete Code
+## Environment Variables
 
-See [app.py](./app.py) for the full implementation.
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/quote` | List all quote |
+| `POST` | `/pay` | `POST` /pay |
+| `GET` | `/balance` | List all balance |
+| `GET` | `/info` | `GET` /info |
+| `GET` | `/quotes` | List all quotes |
+| `GET` | `/payments` | List all payments |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/balance
+```
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/quote \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -1,58 +1,92 @@
-# TeXML Dynamic Call Router
+# Texml Dynamic Call Router
 
-## What Does This Example Do?
+TeXML Dynamic Call Router — time-of-day and caller-based routing with TeXML responses.
 
-Time-of-day and VIP-based call routing using TeXML. Business hours go to agents, after hours go to voicemail, VIP callers skip the queue.
+## How It Works
 
-## Who Is This For?
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. App **takes action** (creates record, dispatches, notifies)
+4. **Customer notified** of outcome via SMS
 
-- Developers building with Telnyx APIs.
-- Teams looking for production-ready starting points.
-- Anyone exploring what's possible with communications infrastructure + AI.
-
-## Why Telnyx?
-
-Telnyx is an **AI Communications Infrastructure** platform. This example runs entirely on Telnyx -- no third-party APIs, no middleware, no glue code between vendors.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/texml-dynamic-call-router-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t texml-dynamic-call-router .
+docker run --env-file .env -p 5000:5000 texml-dynamic-call-router
+```
 
-| Product | Role |
-|---------|------|
-| TeXML | Dynamic XML call routing |
-| Voice API | Call handling |
-| Recording | Voicemail capture |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `BUSINESS_HOURS_NUMBER` | Phone number in E.164 format | No |
+| `AFTER_HOURS_NUMBER` | Phone number in E.164 format | No |
+| `VOICEMAIL_URL` | Service URL | No |
 
-See [app.py](./app.py) for the full implementation.
+## API Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/texml/route` | `POST` /texml/route |
+| `POST` | `/texml/recording` | `POST` /texml/recording |
+| `POST` | `/vip` | Create new record |
+| `GET` | `/calls` | List all calls |
+| `GET` | `/health` | Health check and service status |
 
-**Q: Can I use this in production?**
-This is a working starting point. Add error handling, persistent storage, and authentication for production use.
+## Testing
 
-**Q: What model should I use?**
-Default is Kimi K2.6 via Telnyx Inference. Any model on Telnyx works -- swap the AI_MODEL env var.
+**List records:**
 
-## Related Examples
+```bash
+curl http://localhost:5000/calls
+```
 
-- [Ai Phone Tree Builder From Description](../ai-phone-tree-builder-from-description-python/)
-- [Call Queue With Hold Music](../call-queue-with-hold-music-python/)
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/texml/route \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

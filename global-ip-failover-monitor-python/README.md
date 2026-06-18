@@ -1,31 +1,101 @@
-# Global IP Failover Monitor
+# Global Ip Failover Monitor
 
-## What Does This Example Do?
+Global IP Failover Monitor — monitor Global IP endpoints across regions, auto-failover between healthy endpoints.
 
-Monitor Global IP endpoints across regions with health checks. Auto-failover to healthy endpoints when primary goes down. Track uptime metrics.
+## Human-in-the-Loop
 
-## Prerequisites
+This example includes human oversight at key decision points:
 
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
+- **Manual assignment**
+
+## How It Works
+
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. App **takes action** (creates record, dispatches, notifies)
+4. **Human reviews** via dashboard, Slack, or SMS reply
+5. **Customer notified** of outcome via SMS
+
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          │
+                                          ▼
+                                     Human Review
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/global-ip-failover-monitor-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Products Used
+### Docker
 
-| Product | Role |
-|---------|------|
-| Global IP | Multi-region IP management |
-| Health Checks | Endpoint monitoring + failover |
+```bash
+docker build -t global-ip-failover-monitor .
+docker run --env-file .env -p 5000:5000 global-ip-failover-monitor
+```
 
-## Complete Code
+## Environment Variables
 
-See [app.py](./app.py) for the full implementation.
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/endpoints` | List all endpoints |
+| `POST` | `/endpoints` | Create new record |
+| `POST` | `/check` | Trigger workflow execution |
+| `GET` | `/failover-log` | List all failover log |
+| `GET` | `/regions` | `GET` /regions |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/endpoints
+```
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/endpoints \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

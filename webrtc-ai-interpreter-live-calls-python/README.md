@@ -1,61 +1,110 @@
-# WebRTC AI Interpreter for Live Calls
+# Webrtc Ai Interpreter Live Calls
 
-## What Does This Example Do?
+WebRTC AI Interpreter for Live Calls — real-time translation between two callers speaking different languages.
 
-Real-time language translation during phone calls. One caller speaks English, the other hears Spanish (or any supported language pair). AI translates each utterance and speaks it via TTS.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
 
-- International businesses with multilingual customers.
-- Healthcare providers serving non-English speakers.
-- Government agencies providing multilingual services.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. Real-time transcription + AI translation + TTS on one network. No interpreter service or translation API stitched together with a separate voice provider.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/webrtc-ai-interpreter-live-calls-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t webrtc-ai-interpreter-live-calls .
+docker run --env-file .env -p 5000:5000 webrtc-ai-interpreter-live-calls
+```
 
-| Product | Role |
-|---------|------|
-| Voice API | Call handling and transcription |
-| Inference | Real-time translation |
-| TTS | Translated speech delivery |
-| WebRTC | Browser-based calling option |
+### Expose Your Webhook
 
-## Complete Code
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-See [app.py](./app.py) for the full implementation.
+```bash
+ngrok http 5000
+```
 
-## FAQ
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-**Q: How much latency does translation add?**
-Inference typically responds in under 1 second. Total turnaround is 1-3 seconds per utterance.
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: Which language pairs?**
-Any pair supported by Telnyx STT and TTS — 20+ languages.
+## Environment Variables
 
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `CONNECTION_ID` | Telnyx Call Control connection ID | Yes |
 
-## Related Examples
+## Webhook Endpoints
 
-- [Global Lead Response Engine](../global-lead-response-engine-python/)
-- [Multi Language Customer Survey](../multi-language-customer-survey-python/)
-- [Click To Call WebRTC With AI Assist](../click-to-call-webrtc-with-ai-assist-python/)
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/interpret` | `POST` /interpret |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/interpret \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

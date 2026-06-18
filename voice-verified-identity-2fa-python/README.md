@@ -1,87 +1,104 @@
-# Voice-Verified Identity + 2FA
+# Voice Verified Identity 2Fa
 
-## What Does This Example Do?
+Voice-Verified Identity + 2FA — Number Lookup, SMS OTP, and AI-assisted secure transactions.
 
-A complete identity verification chain for sensitive phone transactions. Incoming call triggers Number Lookup to identify the caller, Verify API sends an SMS OTP for two-factor authentication, and once verified, an AI assistant handles the secure transaction with full audit trail. Banking, healthcare, insurance — any workflow that needs verified identity before action.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- Speech Recognition / DTMF
+- Verify API
 
-- Financial services teams building phone-based secure transactions.
-- Healthcare developers handling PHI over voice with identity verification.
-- Security engineers implementing multi-factor authentication for voice channels.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. Identity, verification, voice, and AI on one network.
-
-- **Number Lookup + Verify + Voice + AI** — The entire identity-to-transaction chain in one platform. No Twilio Lookup + Authy + separate voice + separate AI.
-- **Verify API** — Built-in OTP delivery and verification. No third-party auth provider.
-- **Audit trail** — Every step (lookup, verification, conversation) logged on one platform.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key
-- Verify Profile configured in Telnyx Portal
-- Telnyx phone number with voice enabled
-- [ngrok](https://ngrok.com) for webhooks
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/voice-verified-identity-2fa-python
+# Configure
 cp .env.example .env
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Verification flow
-
-```
-Inbound Call → Number Lookup (identify caller)
-                    |
-              Send OTP via Verify API (SMS)
-                    |
-              Caller enters/speaks 6-digit code
-                    |
-              Verify OTP → Identity confirmed
-                    |
-              AI Assistant handles secure transaction
-                    |
-              Audit log stored
+```bash
+docker build -t voice-verified-identity-2fa .
+docker run --env-file .env -p 5000:5000 voice-verified-identity-2fa
 ```
 
-### Products used
+### Expose Your Webhook
 
-| Product | Role |
-|---------|------|
-| Number Lookup | Caller identification, carrier info |
-| Verify API | SMS OTP delivery and validation |
-| Voice API | Call handling, DTMF + speech input |
-| Inference | AI-assisted secure transactions |
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-## Complete Code
+```bash
+ngrok http 5000
+```
 
-See [app.py](./app.py) for the full implementation.
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-## FAQ
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: Can I use voice biometrics instead of OTP?**
-This example uses OTP. Voice biometrics can be layered on via the Telnyx AI platform for additional verification.
+## Environment Variables
 
-**Q: Is this PCI/HIPAA compliant?**
-This is a technical demonstration. Production deployments need compliance review for your specific use case.
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `VERIFY_PROFILE_ID` | Verify Profile Id | Yes |
+| `FLASK_DEBUG` | Flask Debug | No |
 
-## Resources
+## Webhook Endpoints
 
-- [Verify API](https://developers.telnyx.com/docs/verify)
-- [Number Lookup](https://developers.telnyx.com/docs/numbers/number-lookup)
-- [Voice API](https://developers.telnyx.com/docs/voice)
-- [Inference](https://developers.telnyx.com/docs/inference)
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
 
-## Related Examples
+## API Endpoints
 
-- [Build a Voice AI Agent](../build-voice-ai-agent-python/)
-- [Compliance Call Recorder](../compliance-call-recorder-ai-auditor-python/)
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

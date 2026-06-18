@@ -1,60 +1,113 @@
-# AI Real Estate Showing Scheduler
+# Ai Real Estate Showing Scheduler
 
-## What Does This Example Do?
+AI Real Estate Showing Scheduler — buyers call or text, AI checks availability and books showings.
 
-Buyers call or text about property listings. AI describes available homes, checks showing availability, books appointments, and sends SMS confirmations. Handles both voice and SMS with the same listing data.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- SMS/MMS Messaging
+- Speech Recognition / DTMF
 
-- Real estate agents managing showing requests.
-- Property management companies handling inquiries.
-- Real estate tech companies building listing tools.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. Voice + SMS + AI with shared listing data on one platform. No separate answering service, scheduling tool, and text messaging vendor.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/ai-real-estate-showing-scheduler-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t ai-real-estate-showing-scheduler .
+docker run --env-file .env -p 5000:5000 ai-real-estate-showing-scheduler
+```
 
-| Product | Role |
-|---------|------|
-| Voice API | Inbound property inquiry calls |
-| SMS | Text inquiries and confirmations |
-| Inference | Listing recommendations and scheduling |
+### Expose Your Webhook
 
-## Complete Code
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-See [app.py](./app.py) for the full implementation.
+```bash
+ngrok http 5000
+```
 
-## FAQ
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-**Q: Can it connect to MLS?**
-Yes. Replace the static listings with MLS API calls for live inventory.
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: Does it handle multiple properties per call?**
-Yes. The AI can discuss and compare multiple listings in a single conversation.
+## Environment Variables
 
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `AGENT_NUMBER` | Phone number in E.164 format | Yes |
+| `MESSAGING_PROFILE_ID` | Messaging Profile Id | Yes |
 
-## Related Examples
+## Webhook Endpoints
 
-- [AI Restaurant Reservation Voice Agent](../ai-restaurant-reservation-voice-agent-python/)
-- [AI Appointment Reminder SMS Voice](../ai-appointment-reminder-sms-voice-python/)
-- [Omnichannel AI Receptionist](../omnichannel-ai-receptionist-python/)
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
+| `POST` | `/webhooks/messaging` | External webhook handler |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/showings` | List all showings |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/showings
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

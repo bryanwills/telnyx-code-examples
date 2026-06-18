@@ -1,59 +1,128 @@
 # Emergency Mass Notification System
 
-## What Does This Example Do?
+Emergency Mass Notification System — SMS + voice calls with delivery tracking and escalation.
 
-Send emergency alerts to hundreds of contacts via SMS simultaneously, with voice call escalation for critical alerts. Track delivery and acknowledgment per contact. Press 1 to acknowledge.
+## Telnyx Products Used
 
-## Who Is This For?
+- SMS/MMS Messaging
+- Speech Recognition / DTMF
+- Voice Call Control
 
-- Schools, hospitals, and municipalities with emergency notification requirements.
-- Enterprise safety teams managing crisis communications.
-- Event organizers needing mass notification capability.
+## Human-in-the-Loop
 
-## Why Telnyx?
+This example includes human oversight at key decision points:
 
-Telnyx is an **AI Communications Infrastructure** platform. SMS blast + voice escalation + delivery tracking on one platform. No Everbridge or AlertMedia subscription needed for basic mass notification.
+- **Escalation to human agents**
 
-## Prerequisites
+## How It Works
 
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. App **takes action** (creates record, dispatches, notifies)
+4. **Human reviews** via dashboard, Slack, or SMS reply
+5. **Customer notified** of outcome via SMS
+
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          │
+                                          ▼
+                                     Human Review
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/emergency-mass-notification-system-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t emergency-mass-notification-system .
+docker run --env-file .env -p 5000:5000 emergency-mass-notification-system
+```
 
-| Product | Role |
-|---------|------|
-| SMS | Mass alert delivery |
-| Voice API | Critical alert voice calls |
-| Number Lookup | Contact validation |
+### Expose Your Webhook
 
-## Complete Code
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-See [app.py](./app.py) for the full implementation.
+```bash
+ngrok http 5000
+```
 
-## FAQ
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-**Q: How many contacts can it handle?**
-Telnyx SMS supports high-throughput sending. Add rate limiting for very large lists.
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: Can I track who acknowledged?**
-Yes. The /notifications endpoint shows delivery and acknowledgment status per contact.
+## Environment Variables
 
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `ALERT_NUMBER` | Phone number in E.164 format | Yes |
+| `CONNECTION_ID` | Telnyx Call Control connection ID | Yes |
 
-## Related Examples
+## Webhook Endpoints
 
-- [IoT Fleet Alert Escalation](../iot-fleet-alert-escalation-python/)
-- [SIP Trunking Failover Monitor](../sip-trunking-failover-monitor-python/)
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/notify` | Trigger workflow execution |
+| `GET` | `/notifications` | List all notifications |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/notifications
+```
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/notify \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [Telnyx Portal](https://portal.telnyx.com)

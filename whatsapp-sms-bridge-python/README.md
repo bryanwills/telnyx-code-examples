@@ -1,58 +1,105 @@
-# WhatsApp-SMS Bridge
+# Whatsapp Sms Bridge
 
-## What Does This Example Do?
+WhatsApp-SMS Bridge — receive messages on WhatsApp and forward them via SMS, and vice versa. Bidirectional bridge between two messaging channels.
 
-Bidirectional message bridge between WhatsApp and SMS. Messages from one channel get forwarded to the other, with sender attribution.
+## Telnyx Products Used
 
-## Who Is This For?
+- SMS/MMS Messaging
+- WhatsApp Business API
 
-- Developers building with Telnyx APIs.
-- Teams looking for production-ready starting points.
-- Anyone exploring what's possible with communications infrastructure + AI.
+## How It Works
 
-## Why Telnyx?
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. App **takes action** (creates record, dispatches, notifies)
+4. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. This example runs entirely on Telnyx -- no third-party APIs, no middleware, no glue code between vendors.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/whatsapp-sms-bridge-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t whatsapp-sms-bridge .
+docker run --env-file .env -p 5000:5000 whatsapp-sms-bridge
+```
 
-| Product | Role |
-|---------|------|
-| SMS | SMS leg of bridge |
-| WhatsApp | WhatsApp leg of bridge |
-| Messaging Profiles | Multi-channel routing |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `SMS_NUMBER` | Phone number in E.164 format | Yes |
+| `WHATSAPP_NUMBER` | WhatsApp-enabled Telnyx number | Yes |
+| `MESSAGING_PROFILE_ID` | Messaging Profile Id | Yes |
 
-See [app.py](./app.py) for the full implementation.
+## Webhook Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/messaging` | External webhook handler |
 
-**Q: Can I use this in production?**
-This is a working starting point. Add error handling, persistent storage, and authentication for production use.
+## API Endpoints
 
-**Q: What model should I use?**
-Default is Kimi K2.6 via Telnyx Inference. Any model on Telnyx works -- swap the AI_MODEL env var.
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/bridge` | Create new record |
+| `GET` | `/bridges` | List all bridges |
+| `GET` | `/messages` | List all messages |
+| `GET` | `/health` | Health check and service status |
 
-## Related Examples
+## Testing
 
-- [Multi Channel Appointment Confirmation](../multi-channel-appointment-confirmation-python/)
-- [Omnichannel Ai Receptionist](../omnichannel-ai-receptionist-python/)
+**List records:**
+
+```bash
+curl http://localhost:5000/bridges
+```
+
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/bridge \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [WhatsApp Guide](https://developers.telnyx.com/docs/messaging/whatsapp)
+- [Telnyx Portal](https://portal.telnyx.com)

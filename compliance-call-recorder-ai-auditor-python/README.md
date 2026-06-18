@@ -1,94 +1,110 @@
-# Compliance Call Recorder + AI Auditor
+# Compliance Call Recorder Ai Auditor
 
-## What Does This Example Do?
+Compliance Call Recorder + AI Auditor — auto-record, batch-process with AI, flag violations, create tickets.
 
-Every outbound sales call is automatically recorded and stored in Telnyx Cloud Storage. After each call, AI processes the transcript to verify required disclosures were made, detects compliance violations, generates risk scores per rep, and creates tickets for violations. A compliance dashboard shows rates by rep and recent violations.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
 
-- Compliance officers monitoring outbound sales teams.
-- Contact center operators with regulatory recording requirements.
-- Legal teams building automated audit trails.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. Recording, storage, transcription, and inference on one network.
-
-- **Recording + Storage** — Dual-channel recording stored directly in Telnyx Cloud Storage. No S3 configuration, no third-party recording vendor.
-- **On-network transcription** — Audio transcribed on the same infrastructure. Never leaves the Telnyx network.
-- **AI audit** — Inference analyzes every call against your compliance checklist. Not sampling — every call.
-- **Ticket automation** — Violations automatically create tickets via webhook to ServiceNow, Jira, or any system.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key
-- Telnyx Cloud Storage bucket
-- Ticketing webhook (optional — ServiceNow, Jira, etc.)
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/compliance-call-recorder-ai-auditor-python
+# Configure
 cp .env.example .env
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-View audit results: `http://localhost:5000/audit/results`
+### Docker
 
-## Implementation Details
-
-### Audit pipeline
-
-```
-Outbound Call → Auto-Record (dual-channel MP3)
-                    |
-              Real-time Transcription
-                    |
-              Call Ends → Recording Saved to Cloud Storage
-                    |
-              AI Compliance Audit (Telnyx Inference)
-                    |
-              +-----+-----+
-              |           |
-          Compliant    Violation Detected
-              |           |
-          Log result   Create Ticket + Alert
+```bash
+docker build -t compliance-call-recorder-ai-auditor .
+docker run --env-file .env -p 5000:5000 compliance-call-recorder-ai-auditor
 ```
 
-### Products used
+### Expose Your Webhook
 
-| Product | Role |
-|---------|------|
-| Voice API | Recording, transcription |
-| Cloud Storage | Recording archival |
-| Inference | Compliance analysis |
-| Webhooks | Ticket creation |
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-## Complete Code
+```bash
+ngrok http 5000
+```
 
-See [app.py](./app.py) for the full implementation.
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-## FAQ
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: Can I customize the compliance checklist?**
-Yes. Edit the REQUIRED_DISCLOSURES list in app.py to match your regulatory requirements.
+## Environment Variables
 
-**Q: Is this a replacement for manual QA?**
-It augments QA by auditing 100% of calls. Use it to flag calls for human review rather than replacing human judgment entirely.
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `STORAGE_BUCKET` | Storage Bucket | Yes |
+| `TICKET_WEBHOOK_URL` | Webhook URL for external notifications | Yes |
+| `FLASK_DEBUG` | Flask Debug | No |
 
-**Q: What about call recording consent?**
-This example includes a "recording disclosure" check. Configure your compliance rules according to your jurisdiction (one-party vs two-party consent states).
+## Webhook Endpoints
 
-## Resources
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
 
-- [Voice API](https://developers.telnyx.com/docs/voice)
-- [Cloud Storage](https://developers.telnyx.com/docs/storage)
-- [Inference](https://developers.telnyx.com/docs/inference)
+## API Endpoints
 
-## Related Examples
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/audit/results` | List all audit results |
+| `GET` | `/health` | Health check and service status |
 
-- [Real-Time Call Intelligence Dashboard](../real-time-call-intelligence-dashboard-python/)
-- [AI Sales Call with Live CRM Updates](../ai-sales-call-with-live-crm-updates-python/)
-- [Voice-Verified Identity + 2FA](../voice-verified-identity-2fa-python/)
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/audit/results
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

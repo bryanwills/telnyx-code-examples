@@ -1,60 +1,97 @@
-# AI Competitive Win/Loss Call Analyzer
+# Ai Competitive Win Loss Call Analyzer
 
-## What Does This Example Do?
+AI Competitive Win/Loss Call Analyzer — analyze recorded sales calls for competitive intelligence.
 
-Feed sales call transcripts and the AI extracts competitive intelligence: which competitors were mentioned, what strengths/weaknesses were cited, pricing discussions, decision factors, and win/loss reasons. Aggregates insights across multiple calls.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
 
-- Sales leadership tracking competitive dynamics.
-- Product teams gathering competitive feedback.
-- Competitive intelligence teams building battle cards.
+## How It Works
 
-## Why Telnyx?
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. Call analysis + AI competitive intelligence + trend aggregation on one platform. No separate conversation intelligence tool for competitive analysis.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/ai-competitive-win-loss-call-analyzer-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t ai-competitive-win-loss-call-analyzer .
+docker run --env-file .env -p 5000:5000 ai-competitive-win-loss-call-analyzer
+```
 
-| Product | Role |
-|---------|------|
-| Inference | Competitive signal extraction and trend analysis |
-| Cloud Storage | Call transcript archival |
-| Voice API | Source call recordings |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `STORAGE_BUCKET` | Storage Bucket | Yes |
 
-See [app.py](./app.py) for the full implementation.
+## API Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/analyze` | `POST` /analyze |
+| `GET` | `/insights` | List all insights |
+| `GET` | `/health` | Health check and service status |
 
-**Q: Can I analyze calls from other platforms?**
-Yes. POST any transcript to /analyze — it doesn't have to be a Telnyx call.
+## Testing
 
-**Q: How many calls do I need for useful insights?**
-Insights emerge after 5-10 calls. The /insights endpoint synthesizes patterns across all analyzed calls.
+**List records:**
 
+```bash
+curl http://localhost:5000/insights
+```
 
-## Related Examples
+**Trigger action:**
 
-- [Real Time Call Intelligence Dashboard](../real-time-call-intelligence-dashboard-python/)
-- [Compliance Call Recorder AI Auditor](../compliance-call-recorder-ai-auditor-python/)
-- [AI Cold Caller Objection Trainer](../ai-cold-caller-objection-trainer-python/)
+```bash
+curl -X POST http://localhost:5000/analyze \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Portal](https://portal.telnyx.com)

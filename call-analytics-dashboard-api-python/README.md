@@ -1,58 +1,86 @@
-# Call Analytics Dashboard API
+# Call Analytics Dashboard Api
 
-## What Does This Example Do?
+Call Analytics Dashboard API — pull CDRs and build usage analytics.
 
-Pull call detail records, number inventory, and message history from Telnyx APIs to build usage analytics dashboards.
+## Telnyx Products Used
 
-## Who Is This For?
+- SMS/MMS Messaging
 
-- Developers building with Telnyx APIs.
-- Teams looking for production-ready starting points.
-- Anyone exploring what's possible with communications infrastructure + AI.
+## How It Works
 
-## Why Telnyx?
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. App **takes action** (creates record, dispatches, notifies)
+4. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. This example runs entirely on Telnyx -- no third-party APIs, no middleware, no glue code between vendors.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/call-analytics-dashboard-api-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t call-analytics-dashboard-api .
+docker run --env-file .env -p 5000:5000 call-analytics-dashboard-api
+```
 
-| Product | Role |
-|---------|------|
-| Reporting API | Call event data |
-| Numbers API | Inventory analytics |
-| Messaging API | Message volume tracking |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
 
-See [app.py](./app.py) for the full implementation.
+## API Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/analytics/calls` | `GET` /analytics/calls |
+| `GET` | `/analytics/numbers` | `GET` /analytics/numbers |
+| `GET` | `/analytics/messaging` | `GET` /analytics/messaging |
+| `GET` | `/health` | Health check and service status |
 
-**Q: Can I use this in production?**
-This is a working starting point. Add error handling, persistent storage, and authentication for production use.
+## Testing
 
-**Q: What model should I use?**
-Default is Kimi K2.6 via Telnyx Inference. Any model on Telnyx works -- swap the AI_MODEL env var.
+**List records:**
 
-## Related Examples
+```bash
+curl http://localhost:5000/analytics/calls
+```
 
-- [Number Lookup Lead Enrichment](../number-lookup-lead-enrichment-python/)
-- [Number Reputation Monitor Auto Rotate](../number-reputation-monitor-auto-rotate-python/)
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [Telnyx Portal](https://portal.telnyx.com)

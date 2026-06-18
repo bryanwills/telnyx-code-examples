@@ -1,79 +1,115 @@
 # Global Lead Response Engine
 
-## What Does This Example Do?
+Global Lead Response Engine — multi-language AI qualification with live transfer and omnichannel follow-up.
 
-Inbound calls from any country are auto-detected for language and region via Number Lookup. The AI greets the caller in their language, qualifies them through conversation, then routes: hot leads get live-transferred to the nearest AE via SIP trunking, warm leads receive WhatsApp follow-up, cold leads get an SMS with self-serve links. All logged to CRM. Sub-3-second response time because everything is on-net.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- SMS/MMS Messaging
+- Speech Recognition / DTMF
+- WhatsApp Business API
 
-- Global sales teams handling inbound leads from multiple countries.
-- Growth engineers building automated lead routing and qualification.
-- Companies expanding internationally that need multilingual AI.
+## How It Works
 
-## Why Telnyx?
+1. Customer **calls** your Telnyx number
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform with a global private network in 60+ countries.
-
-- **Global numbers** — Local phone numbers in 140+ countries. Prospects call a local number, AI answers.
-- **Auto language detection** — Number Lookup identifies country. AI greets and qualifies in the right language.
-- **Multi-channel follow-up** — SMS for domestic, WhatsApp for international. Same API.
-- **SIP trunking** — Hot leads transferred to AEs via global SIP infrastructure. No PSTN hairpinning.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key
-- Telnyx phone numbers in target countries
-- Messaging Profile for SMS/WhatsApp
-- AE phone numbers for live transfer
+```
+Customer ──► Telnyx Number ──► Webhook ──► Your App
+  (call)                                     │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+- A Telnyx phone number with voice and/or messaging enabled
+- A [Call Control Application](https://portal.telnyx.com/app#/call-control/applications) configured with your webhook URL
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/global-lead-response-engine-python
+# Configure
 cp .env.example .env
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t global-lead-response-engine .
+docker run --env-file .env -p 5000:5000 global-lead-response-engine
+```
 
-| Product | Role |
-|---------|------|
-| Global Numbers | Local numbers in target countries |
-| Number Lookup | Country and carrier detection |
-| Voice API | Multilingual call handling |
-| Inference | Lead qualification |
-| SMS | Domestic follow-ups |
-| WhatsApp | International follow-ups |
-| SIP Trunking | Live transfer to AEs |
+### Expose Your Webhook
 
-## Complete Code
+For local development, use [ngrok](https://ngrok.com) to expose your server:
 
-See [app.py](./app.py) for the full implementation.
+```bash
+ngrok http 5000
+```
 
-## FAQ
+Then set your Telnyx webhook URL to the ngrok HTTPS URL:
 
-**Q: Which languages are supported?**
-This example includes English, Spanish, Portuguese, French, German, and Japanese. Telnyx supports 20+ languages for STT/TTS.
+- **Voice:** `https://<your-ngrok>.ngrok.io/webhooks/voice`
 
-**Q: How fast is the qualification?**
-The AI qualifies after 3 conversational exchanges — typically under 2 minutes.
+## Environment Variables
 
-**Q: Can I add more countries?**
-Yes. Add entries to the LANGUAGE_MAP dictionary and purchase local numbers via the Telnyx Numbers API.
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `MESSAGING_PROFILE_ID` | Messaging Profile Id | Yes |
+| `AE_NUMBERS` | Phone number in E.164 format | Yes |
+| `FLASK_DEBUG` | Flask Debug | No |
 
-## Resources
+## Webhook Endpoints
 
-- [Global Numbers](https://developers.telnyx.com/docs/numbers)
-- [Number Lookup](https://developers.telnyx.com/docs/numbers/number-lookup)
-- [Voice API](https://developers.telnyx.com/docs/voice)
-- [WhatsApp](https://developers.telnyx.com/docs/messaging/whatsapp)
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/voice` | Telnyx voice webhook handler (call lifecycle events) |
 
-## Related Examples
+## API Endpoints
 
-- [Autonomous Outbound Sales Agent](../autonomous-outbound-sales-agent-python/)
-- [Omnichannel AI Receptionist](../omnichannel-ai-receptionist-python/)
-- [AI Sales Call with Live CRM Updates](../ai-sales-call-with-live-crm-updates-python/)
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/leads` | List all leads |
+| `GET` | `/health` | Health check and service status |
+
+## Testing
+
+**List records:**
+
+```bash
+curl http://localhost:5000/leads
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [WhatsApp Guide](https://developers.telnyx.com/docs/messaging/whatsapp)
+- [Telnyx Portal](https://portal.telnyx.com)

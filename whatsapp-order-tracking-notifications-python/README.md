@@ -1,60 +1,102 @@
-# WhatsApp Order Tracking Notifications
+# Whatsapp Order Tracking Notifications
 
-## What Does This Example Do?
+WhatsApp Order Tracking Notifications — proactive shipping updates and AI-powered order inquiries.
 
-Proactive shipping updates on WhatsApp: order confirmed, shipped, out for delivery, delivered. Customers can reply anytime to check status, and AI answers questions about their orders.
+## Telnyx Products Used
 
-## Who Is This For?
+- AI Inference
+- SMS/MMS Messaging
+- WhatsApp Business API
 
-- E-commerce companies with international customers.
-- Logistics teams sending delivery notifications.
-- Developers building order management integrations.
+## How It Works
 
-## Why Telnyx?
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. **AI processes** the request using Telnyx Inference
+4. App **takes action** (creates record, dispatches, notifies)
+5. **Customer notified** of outcome via SMS
 
-Telnyx is an **AI Communications Infrastructure** platform. WhatsApp Business messaging + AI order intelligence on one platform. No separate notification service or chatbot provider for WhatsApp.
-
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          ├──► Telnyx AI Inference
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/whatsapp-order-tracking-notifications-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t whatsapp-order-tracking-notifications .
+docker run --env-file .env -p 5000:5000 whatsapp-order-tracking-notifications
+```
 
-| Product | Role |
-|---------|------|
-| WhatsApp | Rich notification delivery |
-| Inference | AI-powered order inquiries |
-| SMS | Fallback for non-WhatsApp users |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
+| `AI_MODEL` | AI model for inference (default: `moonshotai/Kimi-K2.6`) | No |
+| `WHATSAPP_NUMBER` | WhatsApp-enabled Telnyx number | Yes |
+| `MESSAGING_PROFILE_ID` | Messaging Profile Id | Yes |
 
-See [app.py](./app.py) for the full implementation.
+## Webhook Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/webhooks/messaging` | External webhook handler |
 
-**Q: Do I need WhatsApp Business approval?**
-Yes. Configure a WhatsApp Business sender via your Telnyx Messaging Profile.
+## API Endpoints
 
-**Q: Can it send tracking links?**
-Yes. Include tracking URLs in the notification messages.
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/orders` | Create new record |
+| `PUT` | `/orders/<order_id>/status` | Update status |
+| `GET` | `/health` | Health check and service status |
 
+## Testing
 
-## Related Examples
+**Trigger action:**
 
-- [Omnichannel AI Receptionist](../omnichannel-ai-receptionist-python/)
-- [RCS Rich Card Product Catalog](../rcs-rich-card-product-catalog-python/)
-- [Emergency Mass Notification System](../emergency-mass-notification-system-python/)
+```bash
+curl -X POST http://localhost:5000/orders \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [SMS & MMS Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [WhatsApp Guide](https://developers.telnyx.com/docs/messaging/whatsapp)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -1,57 +1,99 @@
 # E911 Address Validator
 
-## What Does This Example Do?
+E911 Address Validator — validate and provision E911 addresses via API.
 
-Validate and provision E911 emergency addresses via API. Assign validated addresses to phone numbers for emergency service compliance.
+## Human-in-the-Loop
 
-## Who Is This For?
+This example includes human oversight at key decision points:
 
-- Developers building with Telnyx APIs.
-- Teams looking for production-ready starting points.
-- Anyone exploring what's possible with communications infrastructure + AI.
+- **Manual assignment**
 
-## Why Telnyx?
+## How It Works
 
-Telnyx is an **AI Communications Infrastructure** platform. This example runs entirely on Telnyx -- no third-party APIs, no middleware, no glue code between vendors.
+1. **API call** triggers the workflow
+2. Telnyx **webhook** delivers the event to your app
+3. App **takes action** (creates record, dispatches, notifies)
+4. **Human reviews** via dashboard, Slack, or SMS reply
+5. **Customer notified** of outcome via SMS
 
-## Prerequisites
-
-- Python 3.8+
-- Telnyx account with API key from [portal.telnyx.com](https://portal.telnyx.com)
-- [ngrok](https://ngrok.com) for local development
+```
+API Trigger ──────────────────────────► Your App
+                                          │
+                                          │
+                                          ▼
+                                     Human Review
+                                          │
+                                          ▼
+                                  Customer Notification
+                                      (SMS/Voice)
+```
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.8+
+- A [Telnyx account](https://portal.telnyx.com/sign-up) with API key
+
+### Install & Run
+
 ```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/e911-address-validator-python
+# Configure
 cp .env.example .env
-# Edit .env with your credentials
-make setup && make run
+# Edit .env with your real credentials
+
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
 ```
 
-## Implementation Details
+### Docker
 
-### Products used
+```bash
+docker build -t e911-address-validator .
+docker run --env-file .env -p 5000:5000 e911-address-validator
+```
 
-| Product | Role |
-|---------|------|
-| Addresses API | E911 address validation |
-| Numbers API | Emergency address assignment |
+## Environment Variables
 
-## Complete Code
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TELNYX_API_KEY` | Your Telnyx API key from [portal.telnyx.com](https://portal.telnyx.com) | Yes |
 
-See [app.py](./app.py) for the full implementation.
+## API Endpoints
 
-## FAQ
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/e911/validate` | Create new record |
+| `POST` | `/e911/assign` | Assign to a team member (triggers notifications) |
+| `GET` | `/e911/addresses` | List all addresses |
+| `GET` | `/health` | Health check and service status |
 
-**Q: Can I use this in production?**
-This is a working starting point. Add error handling, persistent storage, and authentication for production use.
+## Testing
 
-**Q: What model should I use?**
-Default is Kimi K2.6 via Telnyx Inference. Any model on Telnyx works -- swap the AI_MODEL env var.
+**List records:**
 
-## Related Examples
+```bash
+curl http://localhost:5000/e911/addresses
+```
 
-- [Number Search And Purchase Api](../number-search-and-purchase-api-python/)
-- [Sip Trunking Failover Monitor](../sip-trunking-failover-monitor-python/)
+**Trigger action:**
+
+```bash
+curl -X POST http://localhost:5000/e911/validate \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Health check:**
+
+```bash
+curl http://localhost:5000/health
+```
+
+## Learn More
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)
