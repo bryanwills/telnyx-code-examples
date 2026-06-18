@@ -5,4 +5,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 EXPOSE 5000
 HEALTHCHECK --interval=30s --timeout=5s CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"
+RUN useradd -r -s /bin/false appuser
+USER appuser
 CMD ["python", "app.py"]
