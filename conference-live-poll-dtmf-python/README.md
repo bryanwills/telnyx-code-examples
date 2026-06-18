@@ -28,23 +28,18 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 ## Architecture
 
 ```
-  Participants (N)
-    │   │   │
-    ▼   ▼   ▼
-  ┌───────────────────────┐
-  │  Telnyx Conference     │
-  │  Bridge                │
-  └───────────┬────────────┘
-              │
-              ▼
-  ┌───────────────────────┐
-  │  AI Inference          │
-  │  (Routing)  │
-  └───────────┬────────────┘
-              │
-              ├──► JSON API response
-              ▼
-         Session Log
+  Inbound Phone Call
+        │
+        ▼
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► DTMF
+           ├──► Conferencing
+           │
+           ▼
+     JSON response
 ```
 
 ## Environment Variables

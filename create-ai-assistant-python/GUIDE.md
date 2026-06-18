@@ -9,13 +9,17 @@ Create a new Telnyx AI Assistant with a system prompt, model selection, and tool
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
+           ▼
+  ┌──────────────────┐
+  │ Telnyx AI         │
+  │ Assistants API    │
+  └────────┬─────────┘
            │
            ▼
-     JSON API response
+     JSON response
 ```
 
 ## Telnyx Products Used

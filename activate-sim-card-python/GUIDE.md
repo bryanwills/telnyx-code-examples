@@ -5,18 +5,19 @@ Application. Built with Telnyx IoT/SIM, Migration, Number Porting.
 ## How It Works
 
 ```
-  ┌──────────────┐
-  │ API Request  │
-  │ (SIM/sensor)  │
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────┐
-  │ Process      │ ── threshold check
-  └──────┬───────┘
-         │
-         ▼
-    JSON API response
+  ┌──────────────────┐
+  │ API Request      │
+  │ (SIM data /       │
+  │  sensor reading)   │
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Threshold Check   │
+  └────────┬─────────┘
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

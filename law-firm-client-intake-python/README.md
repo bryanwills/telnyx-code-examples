@@ -41,31 +41,29 @@ This app handles these webhook events ([Call Control docs](https://developers.te
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call         │
-  │ Answered     │
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌──────────────────┐
-  │ TTS Prompt  │────►│ Gather Speech     │
-  └─────────────┘     └────────┬─────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │ AI Inference      │
-                    │ • Scheduling       │
-                    │ • Conversation memory│
-                    └────────┬─────────┘
-                             │
-                    ┌────────┴────────┐
-                    ├──► SMS to customer
-                    ├──► Slack notification
-                    └──► Email notification
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather Speech     │ ── STT transcription
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Classification / triage│
+  │ • Appointment scheduling│
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ├──► SMS notification
+           ├──► Voice response
+           ├──► Slack alert
+           └──► Payment
 
-  External: Stripe
-
-  State: In-memory state
+  State: In-memory dict
 ```
 
 ## Environment Variables

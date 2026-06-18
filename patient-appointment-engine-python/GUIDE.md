@@ -8,34 +8,28 @@ AI answers calls, checks availability, books appointments, collects copay via St
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call         │
-  │ Answered     │
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌──────────────────┐
-  │ TTS Prompt  │────►│ Gather Speech     │
-  └─────────────┘     └────────┬─────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │ AI Inference      │
-                    │ • Scheduling       │
-                    │ • Summarization    │
-                    └────────┬─────────┘
-                             │
-                    ┌────────┴────────┐
-                    ├──► SMS to customer
-                    ├──► Slack notification
-                    └──► Payment processing
-                             │
-                             ▼
-                    Transfer to Human Agent
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather Speech     │ ── STT transcription
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Appointment scheduling│
+  │ • Summarization    │
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ├──► SMS notification
+           ├──► Voice response
+           └──► Slack alert
 
-  External: Stripe
-
-  State: In-memory state
+  State: In-memory dict
 ```
 
 ## Telnyx Products Used

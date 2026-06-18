@@ -29,20 +29,19 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 ## Architecture
 
 ```
-  ┌──────────────┐
+  ┌──────────────────┐
   │ Inbound Phone Call │
-  │ (SIM/sensor)  │
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────┐
-  │ Process      │ ── threshold check
-  └──────┬───────┘
-         │
-         ▼
-    JSON API response
-
-  State: In-memory state
+  │ (SIM data /       │
+  │  sensor reading)   │
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Threshold Check   │
+  └────────┬─────────┘
+           │
+           ▼
+     JSON response
 ```
 
 ## Environment Variables

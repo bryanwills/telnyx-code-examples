@@ -5,26 +5,19 @@ Missions Workflow Orchestrator — create and manage multi-step mission workflow
 ## How It Works
 
 ```
-  Source Platform
+  API Request
         │
         ▼
-  ┌─────────────┐
-  │ Audit       │ ── inventory numbers, configs, profiles
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐
-  │ Map & Plan  │ ── match source features to Telnyx equivalents
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌─────────────────┐
-  │ Provision   │────►│ Telnyx Platform  │
-  │ on Telnyx   │     │ (numbers, SIP,   │
-  └──────┬──────┘     │  messaging)      │
-         │            └─────────────────┘
-         ▼
-  Migration Report
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► Messaging
+           ├──► Number Porting
+           ├──► Number Management
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

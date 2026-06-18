@@ -5,18 +5,21 @@ Voice-Activated IoT Command — call a number, speak commands to control IoT dev
 ## How It Works
 
 ```
-  ┌──────────────┐
+  ┌──────────────────┐
   │ Inbound Phone Call │
-  │ (SIM/sensor)  │
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────┐
-  │ AI Classify  │ ── severity / category
-  └──────┬───────┘
-         │
-         ▼
-    JSON API response
+  │ (SIM data /       │
+  │  sensor reading)   │
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Classification │
+  │ • Severity level  │
+  │ • Action required │
+  └────────┬─────────┘
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

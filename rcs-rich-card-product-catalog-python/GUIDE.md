@@ -5,21 +5,21 @@ RCS Rich Card Product Catalog — AI-powered product recommendations with rich c
 ## How It Works
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Parse message     │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Conversation memory │
-  │  • Routing         │
+  │ AI Inference      │
+  │ • Business logic   │
   └────────┬─────────┘
+           │ ◄──── conversation loop
            │
-           ├──► JSON API response
+           └──► SMS notification
 ```
 
 ## Telnyx Products Used

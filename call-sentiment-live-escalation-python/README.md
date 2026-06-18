@@ -22,25 +22,24 @@ Call Sentiment Live Escalation — monitor call transcripts in real-time. When n
   API Request
         │
         ▼
-  ┌─────────────┐
-  │ Call         │
-  │ Answered     │
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌──────────────────┐
-  │ TTS Prompt  │────►│ Gather Speech     │
-  └─────────────┘     └────────┬─────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │ AI Inference      │
-                    │ • Escalation       │
-                    │ • Scoring          │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    SMS to customer
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather Speech     │ ── STT transcription
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Escalation logic │
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ▼
+     Voice response
 ```
 
 ## Environment Variables

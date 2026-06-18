@@ -8,16 +8,16 @@ Call Whisper & Screen Pop — whisper caller info to agent before connecting the
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► Number Lookup
-         ├──► Number Porting
-         │
-         ▼
-    Ticket creation
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► Number Lookup
+           │
+           ├──► Case / claim handling
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

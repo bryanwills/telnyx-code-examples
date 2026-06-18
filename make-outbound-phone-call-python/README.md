@@ -25,14 +25,12 @@ Programmatically place an outbound phone call using Telnyx Call Control and hand
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Call Control      │
   └────────┬─────────┘
            │
-           ├──► Telnyx Call Control
-           ├──► Telnyx Number Porting
            │
            ▼
-     JSON API response
+     JSON response
 ```
 
 ## Environment Variables

@@ -5,18 +5,21 @@ SIM Fleet Data Usage Anomaly Detector — monitor IoT SIM usage, AI detects anom
 ## How It Works
 
 ```
-  ┌──────────────┐
-  │ API Request  │
-  │ (SIM/sensor)  │
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────┐
-  │ AI Classify  │ ── severity / category
-  └──────┬───────┘
-         │
-         ▼
-    JSON API response
+  ┌──────────────────┐
+  │ API Request      │
+  │ (SIM data /       │
+  │  sensor reading)   │
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Classification │
+  │ • Severity level  │
+  │ • Action required │
+  └────────┬─────────┘
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

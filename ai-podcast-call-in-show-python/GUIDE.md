@@ -5,20 +5,22 @@ AI Podcast Call-In Show — callers dial in, AI screens and queues them, host ma
 ## How It Works
 
 ```
-  Input (script/text)
+  Inbound Phone Call
         │
         ▼
-  ┌─────────────────┐
-  │  AI Inference    │ ── process / direct / rewrite
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ AI Inference      │ ── direction cues, rewrites
+  └────────┬─────────┘
            │
            ▼
-  ┌─────────────────┐
-  │  TTS Generation  │ ── render audio (multiple takes/voices)
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ TTS Generation    │ ── render audio
+  │ (multiple takes/  │
+  │  voices/languages)│
+  └────────┬─────────┘
            │
-           ▼
-     JSON API response
+           ├──► JSON response
+           └──► Download / stream
 ```
 
 ## Telnyx Products Used

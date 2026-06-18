@@ -5,28 +5,29 @@ Voice application powered by Telnyx AI Inference. Built with Telnyx AI Assistant
 ## How It Works
 
 ```
-  Source Platform
+  Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Audit       │ ── inventory numbers, configs, profiles
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐
-  │ Map & Plan  │ ── match source features to Telnyx equivalents
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌─────────────────┐
-  │ Provision   │────►│ Telnyx Platform  │
-  │ on Telnyx   │     │ (numbers, SIP,   │
-  └──────┬──────┘     │  messaging)      │
-         │            └─────────────────┘
-         ▼
-  Migration Report
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather Speech     │ ── STT transcription
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Case / claim handling│
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ├──► Email
+           └──► Ticket / issue
 
-  State: Redis cache
+  State: Redis
 ```
 
 ## Telnyx Products Used

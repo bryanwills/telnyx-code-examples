@@ -5,25 +5,17 @@ Application. Built with Telnyx Migration, Number Porting, Voice.
 ## How It Works
 
 ```
-  Participants (N)
-    │   │   │
-    ▼   ▼   ▼
-  ┌───────────────────────┐
-  │  Telnyx Conference     │
-  │  Bridge                │
-  └───────────┬────────────┘
-              │
-              ▼
-  ┌───────────────────────┐
-  │  AI Inference          │
-  │  (Verification)  │
-  └───────────┬────────────┘
-              │
-              ├──► JSON API response
-              ▼
-         Session Log
-
-  State: Database
+  Inbound Phone Call
+        │
+        ▼
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► Conferencing
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

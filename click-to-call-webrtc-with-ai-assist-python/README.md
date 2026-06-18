@@ -22,24 +22,24 @@ Click-to-Call WebRTC with AI Assist — browser-based calling with real-time AI 
   API Request
         │
         ▼
-  ┌─────────────┐
-  │ Call         │
-  │ Answered     │
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌──────────────────┐
-  │ TTS Prompt  │────►│ Gather Speech     │
-  └─────────────┘     └────────┬─────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │ AI Inference      │
-                    │ • Routing          │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    JSON API response
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather Speech     │ ── STT transcription
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Business logic   │
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ▼
+     JSON response
 ```
 
 ## Environment Variables

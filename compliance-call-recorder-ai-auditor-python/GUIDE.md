@@ -8,27 +8,26 @@ Compliance Call Recorder + AI Auditor — auto-record, batch-process with AI, fl
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call         │
-  │ Answered     │
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌──────────────────┐
-  │ TTS Prompt  │────►│ Gather Speech     │
-  └─────────────┘     └────────┬─────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │ AI Inference      │
-                    │ • Risk scoring     │
-                    │ • Classification   │
-                    └────────┬─────────┘
-                             │
-                    ┌────────┴────────┐
-                    ├──► Ticket creation
-                    ├──► Report / export
-                    └──► Cloud Storage upload
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather Speech     │ ── STT transcription
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Risk analysis    │
+  │ • Classification / triage│
+  │ • Case / claim handling│
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ▼
+     Ticket / issue
 ```
 
 ## Telnyx Products Used

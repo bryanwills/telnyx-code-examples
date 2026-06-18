@@ -38,32 +38,25 @@ This app handles these webhook events ([Call Control docs](https://developers.te
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call         │
-  │ Answered     │
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌──────────────────┐
-  │ TTS Prompt  │────►│ Gather DTMF      │
-  └─────────────┘     └────────┬─────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │ AI Inference      │
-                    │ • Verification     │
-                    │ • Routing          │
-                    └────────┬─────────┘
-                             │
-                    ┌────────┴────────┐
-                    ├──► SMS to customer
-                    ├──► Slack notification
-                    └──► Payment processing
-                             │
-                             ▼
-                    Transfer to Human Agent
-
-  External: Stripe
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather DTMF      │ ── caller presses keys
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Campaign / drip logic│
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ├──► SMS notification
+           ├──► Voice response
+           └──► Slack alert
 ```
 
 ## Environment Variables

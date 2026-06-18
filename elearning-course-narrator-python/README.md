@@ -14,21 +14,22 @@ Upload course content, AI structures into audio modules with pacing cues and qui
 ## Architecture
 
 ```
-  Input (script/text)
+  API Request
         │
         ▼
-  ┌─────────────────┐
-  │  AI Inference    │ ── process / direct / rewrite
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ AI Inference      │ ── score + rank voice fits
+  └────────┬─────────┘
            │
            ▼
-  ┌─────────────────┐
-  │  TTS Generation  │ ── render audio (multiple takes/voices)
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ TTS Generation    │ ── render audio
+  │ (multiple takes/  │
+  │  voices/languages)│
+  └────────┬─────────┘
            │
-           ▼
-     Email notification
-     Cloud Storage upload
+           ├──► Cloud Storage
+           └──► Cloud Storage (final assets)
 ```
 
 ## Telnyx API Endpoints Used

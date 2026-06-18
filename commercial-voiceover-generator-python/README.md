@@ -14,20 +14,22 @@ Provide product name, target audience, and tone. AI writes 3 script variations w
 ## Architecture
 
 ```
-  Input (script/text)
+  API Request
         │
         ▼
-  ┌─────────────────┐
-  │  AI Inference    │ ── process / direct / rewrite
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ AI Inference      │ ── direction cues, rewrites
+  └────────┬─────────┘
            │
            ▼
-  ┌─────────────────┐
-  │  TTS Generation  │ ── render audio (multiple takes/voices)
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ TTS Generation    │ ── render audio
+  │ (multiple takes/  │
+  │  voices/languages)│
+  └────────┬─────────┘
            │
-           ▼
-     SMS to customer
+           ├──► SMS notification
+           └──► Download / stream
 ```
 
 ## Telnyx API Endpoints Used

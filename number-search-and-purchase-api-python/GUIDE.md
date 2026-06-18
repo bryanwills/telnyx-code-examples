@@ -9,13 +9,15 @@ Number Search and Purchase API — search, filter, and buy phone numbers program
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
+           ├──► Telnyx Number Management
+           │
+           ├──► Appointment scheduling
            │
            ▼
-     Email notification
+     JSON response
 ```
 
 ## Telnyx Products Used

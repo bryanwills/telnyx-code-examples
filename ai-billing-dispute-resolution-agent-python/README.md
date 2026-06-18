@@ -30,26 +30,27 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 ## Architecture
 
 ```
-  Source Platform
+  Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Audit       │ ── inventory numbers, configs, profiles
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐
-  │ Map & Plan  │ ── match source features to Telnyx equivalents
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌─────────────────┐
-  │ Provision   │────►│ Telnyx Platform  │
-  │ on Telnyx   │     │ (numbers, SIP,   │
-  └──────┬──────┘     │  messaging)      │
-         │            └─────────────────┘
-         ▼
-  Migration Report
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather DTMF      │ ── caller presses keys
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Escalation logic │
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ▼
+     JSON response
 ```
 
 ## Environment Variables

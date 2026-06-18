@@ -5,26 +5,19 @@
 ## How It Works
 
 ```
-  Source Platform
+  Porting Webhook
         │
         ▼
-  ┌─────────────┐
-  │ Audit       │ ── inventory numbers, configs, profiles
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐
-  │ Map & Plan  │ ── match source features to Telnyx equivalents
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌─────────────────┐
-  │ Provision   │────►│ Telnyx Platform  │
-  │ on Telnyx   │     │ (numbers, SIP,   │
-  └──────┬──────┘     │  messaging)      │
-         │            └─────────────────┘
-         ▼
-  Migration Report
+  ┌──────────────────┐
+  │ Your App          │
+  └────────┬─────────┘
+           │
+           ├──► Telnyx Number Porting
+           │
+           ├──► A/B testing
+           │
+           ▼
+     JSON response
 ```
 
 ## API Endpoints

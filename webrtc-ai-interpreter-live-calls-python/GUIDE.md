@@ -8,25 +8,24 @@ WebRTC AI Interpreter for Live Calls — real-time translation between two calle
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call         │
-  │ Answered     │
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌──────────────────┐
-  │ TTS Prompt  │────►│ Gather Speech     │
-  └─────────────┘     └────────┬─────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │ AI Inference      │
-                    │ • Translation      │
-                    │ • Conversation memory│
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    JSON API response
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather Speech     │ ── STT transcription
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Translation      │
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

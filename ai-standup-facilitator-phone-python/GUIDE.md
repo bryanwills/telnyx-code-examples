@@ -5,24 +5,28 @@ AI Standup Facilitator Phone — team members call in their daily standup update
 ## How It Works
 
 ```
-  Participants (N)
-    │   │   │
-    ▼   ▼   ▼
-  ┌───────────────────────┐
-  │  Telnyx Conference     │
-  │  Bridge                │
-  └───────────┬────────────┘
-              │
-              ▼
-  ┌───────────────────────┐
-  │  AI Inference          │
-  │  (Summarization)  │
-  └───────────┬────────────┘
-              │
-              ├──► Slack notification
-              ├──► Webhook callback
-              ▼
-         Session Log
+  Inbound Phone Call
+        │
+        ▼
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather Speech     │ ── STT transcription
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Summarization    │
+  │ • Data extraction  │
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ▼
+     Slack alert
 ```
 
 ## Telnyx Products Used

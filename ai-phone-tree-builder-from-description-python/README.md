@@ -22,15 +22,23 @@ AI Phone Tree Builder — describe your business in English, AI creates a workin
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Answer + Greet    │ ── TTS welcome message
   └────────┬─────────┘
            │
-           ├──► Telnyx AI Inference (LLM)
-           ├──► Telnyx Call Transfer
-           ├──► Telnyx Number Porting
+           ▼
+  ┌──────────────────┐
+  │ Listen for Input  │
+  └────────┬─────────┘
            │
            ▼
-     JSON API response
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Business logic   │
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ▼
+     JSON response
 ```
 
 ## Environment Variables

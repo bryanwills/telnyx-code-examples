@@ -14,21 +14,23 @@ Submit a script, hear it read by every available TTS voice. AI scores and ranks 
 ## Architecture
 
 ```
-  Input (script/text)
+  API Request
         │
         ▼
-  ┌─────────────────┐
-  │  AI Inference    │ ── process / direct / rewrite
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ AI Inference      │ ── score + rank voice fits
+  └────────┬─────────┘
            │
            ▼
-  ┌─────────────────┐
-  │  TTS Generation  │ ── render audio (multiple takes/voices)
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ TTS Generation    │ ── render audio
+  │ (multiple takes/  │
+  │  voices/languages)│
+  └────────┬─────────┘
            │
-           ▼
-     SMS to customer
-     Cloud Storage upload
+           ├──► SMS notification
+           ├──► Cloud Storage
+           └──► Cloud Storage (final assets)
 ```
 
 ## Telnyx API Endpoints Used

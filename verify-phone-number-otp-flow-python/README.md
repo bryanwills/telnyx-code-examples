@@ -19,18 +19,22 @@ Verify Phone Number OTP Flow — Telnyx Verify API with SMS primary and voice ca
 ## Architecture
 
 ```
-  API Request
+  User requests verification
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Generate OTP     │
   └────────┬─────────┘
            │
-           ├──► Telnyx Verify API
-           ├──► Telnyx Number Porting
+           ├──► SMS code
            │
            ▼
-     JSON API response
+  ┌──────────────────┐
+  │ Verify code      │ ── user submits OTP
+  └────────┬─────────┘
+           │
+           ▼
+     ✓ Verified / ✗ Denied
 ```
 
 ## Environment Variables

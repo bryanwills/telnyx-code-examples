@@ -5,17 +5,14 @@ SMS application. Built with Telnyx CDR, Migration, Number Porting, SMS/MMS.
 ## How It Works
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
   ┌──────────────────┐
-  │  Messaging API    │
+  │ Telnyx Messaging  │
   └────────┬─────────┘
            │
-           ├──► Routing
-           │
-           ▼
-     Report / export
+           └──► JSON response
 ```
 
 ## Telnyx Products Used

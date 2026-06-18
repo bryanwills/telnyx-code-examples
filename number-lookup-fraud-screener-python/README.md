@@ -29,15 +29,16 @@ This app handles these webhook events ([Call Control docs](https://developers.te
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► Number Lookup
-         ├──► Number Porting
-         │
-         ▼
-    JSON API response
+  ┌──────────────────┐
+  │ Your App          │
+  └────────┬─────────┘
+           │
+           ├──► Telnyx Number Lookup
+           │
+           ├──► Risk analysis
+           │
+           ▼
+     JSON response
 ```
 
 ## Environment Variables

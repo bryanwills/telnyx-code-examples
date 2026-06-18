@@ -26,23 +26,24 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 - `call.machine.detection.ended` — Answering machine detection completed — human or machine result
 - `call.playback.ended` — Audio file playback completed
 
+## External Service Integrations
+
+- **Email / SMTP** — Email notifications and alerts
+
 ## Architecture
 
 ```
-  API Request
+  Inbound Phone Call
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Call Control      │
   └────────┬─────────┘
            │
-           ├──► Telnyx Call Control
-           ├──► Telnyx Call Recording
-           ├──► Telnyx Number Porting
+           ├──► TeXML
            │
            ▼
-     Email notification
-     Webhook callback
+     Email
 ```
 
 ## Environment Variables

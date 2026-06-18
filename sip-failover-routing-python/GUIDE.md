@@ -5,17 +5,16 @@ Voice application. Built with Telnyx Migration, Number Porting.
 ## How It Works
 
 ```
-  API Request
+  Your PBX / SBC
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Telnyx SIP Trunk  │
+  │ (IP / FQDN auth)  │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
-           │
            ▼
-     Webhook callback
+     PSTN / Telnyx Network
 ```
 
 ## Telnyx Products Used

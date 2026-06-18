@@ -5,24 +5,23 @@ AI joins legal deposition calls, produces real-time transcript, flags objectiona
 ## How It Works
 
 ```
-  Participants (N)
+  Participants
     │   │   │
     ▼   ▼   ▼
-  ┌───────────────────────┐
-  │  Telnyx Conference     │
-  │  Bridge                │
-  └───────────┬────────────┘
-              │
-              ▼
-  ┌───────────────────────┐
-  │  AI Inference          │
-  │  (Escalation)  │
-  └───────────┬────────────┘
-              │
-              ├──► Slack notification
-              ├──► Report / export
-              ▼
-         Session Log
+  ┌──────────────────────────┐
+  │  Telnyx Conference Bridge  │
+  │  (mixed audio stream)      │
+  └────────────┬───────────────┘
+               │ media stream
+               ▼
+  ┌──────────────────────────┐
+  │  AI Inference             │
+  │  • Escalation logic       │
+  │  • Summarization          │
+  └────────────┬───────────────┘
+               │
+               ├──► Voice response
+               └──► Slack alert
 ```
 
 ## Telnyx Products Used

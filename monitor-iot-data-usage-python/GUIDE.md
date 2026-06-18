@@ -5,20 +5,19 @@ Production-ready Flask application for monitoring SIM card data usage via Telnyx
 ## How It Works
 
 ```
-  ┌──────────────┐
+  ┌──────────────────┐
   │ IoT Device Event │
-  │ (SIM/sensor)  │
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────┐
-  │ Process      │ ── threshold check
-  └──────┬───────┘
-         │
-         ▼
-    JSON API response
-
-  State: Database
+  │ (SIM data /       │
+  │  sensor reading)   │
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Threshold Check   │
+  └────────┬─────────┘
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

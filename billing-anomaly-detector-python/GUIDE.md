@@ -9,16 +9,15 @@ Billing Anomaly Detector — monitor usage and billing for anomalies, alert on c
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
+           ├──► Telnyx CDR / Billing
+           │
+           ├──► Risk analysis
            │
            ▼
-     Webhook callback
-     Report / export
-
-  State: In-memory state
+     JSON response
 ```
 
 ## Telnyx Products Used

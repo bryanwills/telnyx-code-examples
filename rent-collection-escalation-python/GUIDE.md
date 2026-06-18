@@ -8,19 +8,17 @@ Automated multi-channel rent reminders. Day 1: SMS + Stripe payment link. Day 3:
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► Messaging API
-         ├──► Number Porting
-         │
-         ▼
-    SMS to customer
-    Slack notification
-
-  External: Stripe
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► TTS
+           ├──► Messaging
+           │
+           ├──► Escalation logic
+           │
+           ▼
+     SMS notification
 ```
 
 ## Telnyx Products Used

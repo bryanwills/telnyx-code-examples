@@ -5,23 +5,28 @@ AI Property Management Maintenance Line — tenants call, AI triages maintenance
 ## How It Works
 
 ```
-  Participants (N)
-    │   │   │
-    ▼   ▼   ▼
-  ┌───────────────────────┐
-  │  Telnyx Conference     │
-  │  Bridge                │
-  └───────────┬────────────┘
-              │
-              ▼
-  ┌───────────────────────┐
-  │  AI Inference          │
-  │  (Classification)  │
-  └───────────┬────────────┘
-              │
-              ├──► Email notification
-              ▼
-         Session Log
+  Inbound Phone Call
+        │
+        ▼
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather Speech     │ ── STT transcription
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Classification / triage│
+  │ • Data extraction  │
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

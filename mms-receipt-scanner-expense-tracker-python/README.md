@@ -26,23 +26,23 @@ This app handles these webhook events ([Messaging docs](https://developers.telny
 ## Architecture
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Parse message     │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Summarization   │
-  │  • Data extraction │
+  │ AI Inference      │
+  │ • Summarization    │
+  │ • Data extraction  │
   └────────┬─────────┘
+           │ ◄──── conversation loop
            │
-           ├──► SMS to customer
-           ├──► Email notification
-           ├──► Report / export
+           ├──► SMS notification
+           └──► Email
 ```
 
 ## Environment Variables

@@ -5,19 +5,23 @@ Verify Multi-Channel Auth — multi-channel verification: SMS first, fallback to
 ## How It Works
 
 ```
-  API Request
+  User requests verification
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Generate OTP     │
   └────────┬─────────┘
            │
-           ├──► Telnyx Verify API
-           ├──► Telnyx Number Porting
-           ├──► Telnyx WhatsApp
+           ├──► SMS code
+           ├──► WhatsApp (fallback)
            │
            ▼
-     JSON API response
+  ┌──────────────────┐
+  │ Verify code      │ ── user submits OTP
+  └────────┬─────────┘
+           │
+           ▼
+     ✓ Verified / ✗ Denied
 ```
 
 ## Telnyx Products Used

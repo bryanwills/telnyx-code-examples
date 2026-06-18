@@ -9,14 +9,15 @@ Bulk Number Validation & Cleaner — validate and clean phone number lists via T
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
            ├──► Telnyx Number Lookup
-           ├──► Telnyx Number Porting
+           │
+           ├──► Summarization
            │
            ▼
-     JSON API response
+     JSON response
 ```
 
 ## Telnyx Products Used

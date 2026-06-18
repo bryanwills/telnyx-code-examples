@@ -5,23 +5,28 @@ AI Sales Demo Booking Agent — inbound calls, AI qualifies the lead, books a de
 ## How It Works
 
 ```
-  Participants (N)
-    │   │   │
-    ▼   ▼   ▼
-  ┌───────────────────────┐
-  │  Telnyx Conference     │
-  │  Bridge                │
-  └───────────┬────────────┘
-              │
-              ▼
-  ┌───────────────────────┐
-  │  AI Inference          │
-  │  (Scheduling)  │
-  └───────────┬────────────┘
-              │
-              ├──► Email notification
-              ▼
-         Session Log
+  Inbound Phone Call
+        │
+        ▼
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather Speech     │ ── STT transcription
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Appointment scheduling│
+  │ • Data extraction  │
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

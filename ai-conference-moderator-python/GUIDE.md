@@ -5,24 +5,23 @@ AI moderator for multi-party calls. Manages agenda, enforces time limits, tracks
 ## How It Works
 
 ```
-  Participants (N)
+  Participants
     │   │   │
     ▼   ▼   ▼
-  ┌───────────────────────┐
-  │  Telnyx Conference     │
-  │  Bridge                │
-  └───────────┬────────────┘
-              │
-              ▼
-  ┌───────────────────────┐
-  │  AI Inference          │
-  │  (Escalation)  │
-  └───────────┬────────────┘
-              │
-              ├──► Slack notification
-              ├──► Webhook callback
-              ▼
-         Session Log
+  ┌──────────────────────────┐
+  │  Telnyx Conference Bridge  │
+  │  (mixed audio stream)      │
+  └────────────┬───────────────┘
+               │ media stream
+               ▼
+  ┌──────────────────────────┐
+  │  AI Inference             │
+  │  • Escalation logic       │
+  │  • Summarization          │
+  └────────────┬───────────────┘
+               │
+               ├──► Voice response
+               └──► Slack alert
 ```
 
 ## Telnyx Products Used

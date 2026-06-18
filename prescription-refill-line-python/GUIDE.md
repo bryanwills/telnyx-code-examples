@@ -8,28 +8,27 @@ Patient calls, AI verifies identity (DOB + last 4 of phone), checks refill eligi
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call         │
-  │ Answered     │
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌──────────────────┐
-  │ TTS Prompt  │────►│ Gather DTMF      │
-  └─────────────┘     └────────┬─────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │ AI Inference      │
-                    │ • Verification     │
-                    │ • Conversation memory│
-                    └────────┬─────────┘
-                             │
-                    ┌────────┴────────┐
-                    ├──► SMS to customer
-                    └──► Slack notification
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather Speech     │ ── STT transcription
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Business logic   │
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ├──► SMS notification
+           ├──► Voice response
+           └──► Slack alert
 
-  State: In-memory state
+  State: In-memory dict
 ```
 
 ## Telnyx Products Used

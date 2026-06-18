@@ -8,15 +8,14 @@ Media Stream Voice Cloak — real-time voice modification via media streaming AP
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► Media Streaming
-         ├──► Number Porting
-         │
-         ▼
-    JSON API response
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► Media Streaming
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

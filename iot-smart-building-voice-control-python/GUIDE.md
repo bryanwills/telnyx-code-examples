@@ -5,20 +5,21 @@ IoT Smart Building Voice Control — call a number to control building systems v
 ## How It Works
 
 ```
-  ┌──────────────┐
+  ┌──────────────────┐
   │ Inbound Phone Call │
-  │ (SIM/sensor)  │
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────┐
-  │ AI Classify  │ ── severity / category
-  └──────┬───────┘
-         │
-    ┌────┴────┐
-    │         ├──► Email notification
-    │         ├──► Report / export
-    └─────────┘
+  │ (SIM data /       │
+  │  sensor reading)   │
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Classification │
+  │ • Severity level  │
+  │ • Action required │
+  └────────┬─────────┘
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

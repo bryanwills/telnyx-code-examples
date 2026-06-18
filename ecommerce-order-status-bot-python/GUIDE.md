@@ -8,30 +8,28 @@ Customers call or text order number, get real-time Shopify tracking. AI detects 
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call         │
-  │ Answered     │
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌──────────────────┐
-  │ TTS Prompt  │────►│ Gather Speech     │
-  └─────────────┘     └────────┬─────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │ AI Inference      │
-                    │ • Escalation       │
-                    │ • Conversation memory│
-                    └────────┬─────────┘
-                             │
-                    ┌────────┴────────┐
-                    ├──► SMS to customer
-                    └──► Slack notification
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather Speech     │ ── STT transcription
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Escalation logic │
+  │ • Order tracking   │
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ├──► SMS notification
+           ├──► Voice response
+           └──► Slack alert
 
-  External: Shopify
-
-  State: In-memory state
+  State: In-memory dict
 ```
 
 ## Telnyx Products Used

@@ -8,17 +8,15 @@ Storage Voicemail Archive — record voicemails to Telnyx Cloud Storage with sea
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► Cloud Storage
-         ├──► Call Recording
-         │
-         ▼
-    Email notification
-    Cloud Storage upload
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► Cloud Storage
+           ├──► Call Recording
+           │
+           ▼
+     Email
 ```
 
 ## Telnyx Products Used

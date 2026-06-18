@@ -8,18 +8,16 @@ CNAM Caller ID Lookup Enrichment — look up CNAM for inbound callers, enrich CR
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► Call Recording
-         ├──► Number Lookup
-         ├──► Number Porting
-         │
-         ▼
-    CRM update
+  ┌──────────────────┐
+  │ Your App          │
+  └────────┬─────────┘
+           │
+           ├──► Telnyx Number Lookup
+           │
+           ▼
+     JSON response
 
-  State: Redis cache
+  State: Redis
 ```
 
 ## Telnyx Products Used

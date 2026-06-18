@@ -5,18 +5,15 @@ Hosted Messaging Campaign Manager — manage hosted messaging campaigns with sub
 ## How It Works
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
   ┌──────────────────┐
-  │  Messaging API    │
+  │ Telnyx Messaging  │
+  │ • Campaign / drip logic│
   └────────┬─────────┘
            │
-           ├──► Escalation
-           ├──► Campaign logic
-           │
-           ▼
-     JSON API response
+           └──► JSON response
 ```
 
 ## Telnyx Products Used

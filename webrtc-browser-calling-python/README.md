@@ -30,18 +30,14 @@ This app handles these webhook events ([Call Control docs](https://developers.te
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► Call Transfer
-         ├──► Number Porting
-         ├──► DTMF Input
-         │
-         ▼
-    Email notification
-
-  State: Redis cache
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► DTMF
+           │
+           ▼
+     Call completed
 ```
 
 ## Environment Variables

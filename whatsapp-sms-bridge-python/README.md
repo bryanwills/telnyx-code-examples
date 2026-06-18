@@ -25,17 +25,14 @@ This app handles these webhook events ([Messaging docs](https://developers.telny
 ## Architecture
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
   ┌──────────────────┐
-  │  Messaging API    │
+  │ Telnyx Messaging  │
   └────────┬─────────┘
            │
-           ├──► Routing
-           │
-           ▼
-     SMS to customer
+           └──► SMS notification
 ```
 
 ## Environment Variables

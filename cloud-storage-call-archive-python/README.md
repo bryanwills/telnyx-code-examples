@@ -28,16 +28,14 @@ This app handles these webhook events ([Call Control docs](https://developers.te
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Call Control      │
   └────────┬─────────┘
            │
-           ├──► Telnyx Call Control
-           ├──► Telnyx Cloud Storage
-           ├──► Telnyx Call Recording
+           ├──► Cloud Storage
+           ├──► Call Recording
            │
            ▼
-     Report / export
-     Cloud Storage upload
+     JSON response
 ```
 
 ## Environment Variables
@@ -59,6 +57,19 @@ cp .env.example .env    # ← fill in your credentials
 pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
+
+### Webhook Configuration
+
+1. Expose your local server:
+
+   ```bash
+   ngrok http 5000
+   ```
+
+2. Copy the HTTPS URL and configure in [Telnyx Portal](https://portal.telnyx.com):
+
+   - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
+   - **Messaging Profile** → Inbound Webhook URL → `https://<id>.ngrok.io/webhooks/sms`
 
 ### Docker
 

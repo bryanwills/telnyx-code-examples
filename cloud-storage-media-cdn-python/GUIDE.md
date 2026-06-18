@@ -9,16 +9,17 @@ Cloud Storage Media CDN — use Telnyx Cloud Storage as a CDN for IVR prompts, h
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Call Control      │
   └────────┬─────────┘
            │
-           ├──► Telnyx Cloud Storage
-           ├──► Telnyx Number Porting
-           ├──► Telnyx TeXML
+           ├──► Cloud Storage
+           ├──► TeXML
+           ├──► Messaging (MMS)
+           │
+           ├──► Classification / triage
            │
            ▼
-     Email notification
-     Cloud Storage upload
+     Email
 ```
 
 ## Telnyx Products Used

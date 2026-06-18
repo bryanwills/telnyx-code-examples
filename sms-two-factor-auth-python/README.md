@@ -21,18 +21,12 @@ SMS application. Built with Telnyx Cloud Storage, Migration, Number Porting, SMS
   API Request
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► Verify API
-         ├──► Number Porting
-         ├──► DTMF Input
-         │
-         ▼
-    Email notification
-
-  State: Database + Redis cache
+  ┌──────────────────┐
+  │ Telnyx Messaging  │
+  │ • Summarization    │
+  └────────┬─────────┘
+           │
+           └──► JSON response
 ```
 
 ## Environment Variables

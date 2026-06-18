@@ -27,34 +27,35 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 - `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
 - `message.received` — Inbound SMS/MMS received
 
+## External Service Integrations
+
+- **Email / SMTP** — Email notifications and alerts
+
 ## Architecture
 
 ```
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call         │
-  │ Answered     │
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌──────────────────┐
-  │ TTS Greeting│────►│ Listen for Input  │
-  └─────────────┘     └────────┬─────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │ AI Inference      │
-                    │ • Scoring          │
-                    │ • Verification     │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    Email notification
-                             │
-                             ▼
-                    Transfer to Human Agent
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather Speech     │ ── STT transcription
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Scoring / evaluation│
+  │ • Case / claim handling│
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ▼
+     Email
 ```
 
 ## Environment Variables

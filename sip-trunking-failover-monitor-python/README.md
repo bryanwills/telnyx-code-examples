@@ -24,16 +24,17 @@ SIP Trunking Failover Monitor — health-check SIP connections, auto-failover, S
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Parse message     │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Routing         │
+  │ AI Inference      │
+  │ • Business logic   │
   └────────┬─────────┘
+           │ ◄──── conversation loop
            │
-           ├──► JSON API response
+           └──► JSON response
 ```
 
 ## Environment Variables

@@ -22,14 +22,13 @@ AI Assistant Phone Setup — create and configure a managed Telnyx AI Assistant 
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx AI Inference (LLM)
-           ├──► Telnyx Number Porting
+           ├──► Telnyx AI Inference
            │
            ▼
-     Webhook callback
+     JSON response
 ```
 
 ## Environment Variables

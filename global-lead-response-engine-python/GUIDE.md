@@ -8,28 +8,25 @@ Global Lead Response Engine — multi-language AI qualification with live transf
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call         │
-  │ Answered     │
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌──────────────────┐
-  │ TTS Greeting│────►│ Listen for Input  │
-  └─────────────┘     └────────┬─────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │ AI Inference      │
-                    │ • Translation      │
-                    │ • Summarization    │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    Email notification
-                             │
-                             ▼
-                    Transfer to Human Agent
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Listen for Input  │
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Summarization    │
+  │ • Campaign / drip logic│
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ▼
+     Voice response
 ```
 
 ## Telnyx Products Used

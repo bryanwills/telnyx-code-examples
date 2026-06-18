@@ -8,17 +8,14 @@ Voice application. Built with Telnyx Migration, Number Porting, Voice.
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► Number Porting
-         │
-         ▼
-    JSON API response
-
-  State: Database
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► TTS
+           │
+           ▼
+     Voice response
 ```
 
 ## Telnyx Products Used

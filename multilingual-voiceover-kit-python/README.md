@@ -14,21 +14,22 @@ Submit a script in one language, AI translates to multiple targets preserving to
 ## Architecture
 
 ```
-  Input (script/text)
+  API Request
         │
         ▼
-  ┌─────────────────┐
-  │  AI Inference    │ ── process / direct / rewrite
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ AI Inference      │ ── translate + adapt tone
+  └────────┬─────────┘
            │
            ▼
-  ┌─────────────────┐
-  │  TTS Generation  │ ── render audio (multiple takes/voices)
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ TTS Generation    │ ── render audio
+  │ (multiple takes/  │
+  │  voices/languages)│
+  └────────┬─────────┘
            │
-           ▼
-     JSON API response
-     Cloud Storage upload
+           ├──► Cloud Storage
+           └──► Cloud Storage (final assets)
 ```
 
 ## Telnyx API Endpoints Used

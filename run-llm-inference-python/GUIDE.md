@@ -9,14 +9,13 @@ Application powered by Telnyx AI Inference. Built with Telnyx AI Inference, Migr
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx AI Inference (LLM)
-           ├──► Telnyx Number Porting
+           ├──► Telnyx AI Inference
            │
            ▼
-     JSON API response
+     JSON response
 ```
 
 ## Telnyx Products Used

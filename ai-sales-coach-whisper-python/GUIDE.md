@@ -5,27 +5,24 @@ AI coach listens to a live sales call and whispers real-time suggestions to the 
 ## How It Works
 
 ```
-  Participants (N)
+  Participants
     │   │   │
     ▼   ▼   ▼
-  ┌───────────────────────┐
-  │  Telnyx Conference     │
-  │  Bridge                │
-  └───────────┬────────────┘
-              │
-              ▼
-  ┌───────────────────────┐
-  │  AI Inference          │
-  │  (Escalation)  │
-  └───────────┬────────────┘
-              │
-              ├──► Slack notification
-              ├──► Email notification
-              ├──► Webhook callback
-              ▼
-         Session Log
+  ┌──────────────────────────┐
+  │  Telnyx Conference Bridge  │
+  │  (mixed audio stream)      │
+  └────────────┬───────────────┘
+               │ media stream
+               ▼
+  ┌──────────────────────────┐
+  │  AI Inference             │
+  │  • Escalation logic       │
+  └────────────┬───────────────┘
+               │
+               ├──► Voice response
+               └──► Slack alert
 
-  State: In-memory state
+  State: In-memory dict
 ```
 
 ## Telnyx Products Used

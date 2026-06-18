@@ -8,18 +8,14 @@ Voice application. Built with Telnyx Migration, Number Porting, Voice, WebRTC.
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► Call Transfer
-         ├──► Number Porting
-         ├──► DTMF Input
-         │
-         ▼
-    Email notification
-
-  State: Redis cache
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► DTMF
+           │
+           ▼
+     Call completed
 ```
 
 ## Telnyx Products Used

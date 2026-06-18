@@ -36,24 +36,23 @@ Hosts on a conference call, listeners call in. AI screens callers via STT, queue
 ## Architecture
 
 ```
-  Participants (N)
-    │   │   │
-    ▼   ▼   ▼
-  ┌───────────────────────┐
-  │  Telnyx Conference     │
-  │  Bridge                │
-  └───────────┬────────────┘
-              │
-              ▼
-  ┌───────────────────────┐
-  │  AI Inference          │
-  │  (Queue management)  │
-  └───────────┬────────────┘
-              │
-              ├──► Slack notification
-              ├──► Webhook callback
-              ▼
-         Session Log
+  Inbound Phone Call
+        │
+        ▼
+  ┌──────────────────┐
+  │ AI Inference      │ ── score + rank voice fits
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ TTS Generation    │ ── render audio
+  │ (multiple takes/  │
+  │  voices/languages)│
+  └────────┬─────────┘
+           │
+           ├──► Voice response
+           ├──► Slack alert
+           └──► Download / stream
 ```
 
 ## Environment Variables
@@ -121,6 +120,12 @@ curl http://localhost:5000/health
 ```json
 {"status": "ok"}
 ```
+
+## Webhook Endpoints
+
+### `POST /webhooks/voice`
+
+Handles Telnyx Call Control webhook events. Called automatically by Telnyx — do not call directly.
 
 ## Resources
 

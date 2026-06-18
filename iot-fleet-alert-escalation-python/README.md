@@ -29,20 +29,22 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 ## Architecture
 
 ```
-  ┌──────────────┐
-  │ Inbound Phone Call │
-  │ (SIM/sensor)  │
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────┐
-  │ AI Classify  │ ── severity / category
-  └──────┬───────┘
-         │
-         ▼
-    SMS to customer
-
-  State: In-memory state
+  Participants
+    │   │   │
+    ▼   ▼   ▼
+  ┌──────────────────────────┐
+  │  Telnyx Conference Bridge  │
+  │  (mixed audio stream)      │
+  └────────────┬───────────────┘
+               │ media stream
+               ▼
+  ┌──────────────────────────┐
+  │  AI Inference             │
+  │  • Classification / triage│
+  │  • Escalation logic       │
+  └────────────┬───────────────┘
+               │
+               └──► SMS notification
 ```
 
 ## Environment Variables

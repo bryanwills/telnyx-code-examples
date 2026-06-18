@@ -5,20 +5,17 @@ Voice application. Built with Telnyx Migration, Number Porting, Voice.
 ## How It Works
 
 ```
-  API Request
+  Inbound Phone Call
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Call Control      │
   └────────┬─────────┘
            │
-           ├──► Telnyx Call Control
-           ├──► Telnyx Call Recording
-           ├──► Telnyx Number Porting
+           ├──► TeXML
            │
            ▼
-     Email notification
-     Webhook callback
+     Email
 ```
 
 ## Telnyx Products Used

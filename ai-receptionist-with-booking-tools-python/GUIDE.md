@@ -9,14 +9,15 @@ AI Receptionist with Booking Tools — AI Assistant with tool_use for real calen
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx AI Inference (LLM)
-           ├──► Telnyx Number Porting
+           ├──► Telnyx AI Inference
+           │
+           ├──► Appointment scheduling
            │
            ▼
-     JSON API response
+     JSON response
 ```
 
 ## Telnyx Products Used

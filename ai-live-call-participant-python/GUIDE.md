@@ -5,26 +5,25 @@ AI joins a live multi-human conference call as an active participant. Listens vi
 ## How It Works
 
 ```
-  Participants (N)
+  Participants
     │   │   │
     ▼   ▼   ▼
-  ┌───────────────────────┐
-  │  Telnyx Conference     │
-  │  Bridge                │
-  └───────────┬────────────┘
-              │
-              ▼
-  ┌───────────────────────┐
-  │  AI Inference          │
-  │  (Escalation)  │
-  └───────────┬────────────┘
-              │
-              ├──► Slack notification
-              ├──► Webhook callback
-              ▼
-         Session Log
+  ┌──────────────────────────┐
+  │  Telnyx Conference Bridge  │
+  │  (mixed audio stream)      │
+  └────────────┬───────────────┘
+               │ media stream
+               ▼
+  ┌──────────────────────────┐
+  │  AI Inference             │
+  │  • Escalation logic       │
+  │  • Summarization          │
+  └────────────┬───────────────┘
+               │
+               ├──► Voice response
+               └──► Slack alert
 
-  State: In-memory state
+  State: In-memory dict
 ```
 
 ## Telnyx Products Used

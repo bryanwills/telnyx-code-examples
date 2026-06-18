@@ -24,14 +24,13 @@ Global IP Failover Monitor — monitor Global IP endpoints across regions, auto-
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
            ├──► Telnyx Global IP / WireGuard
            │
            ▼
-     JSON API response
+     JSON response
 ```
 
 ## Environment Variables

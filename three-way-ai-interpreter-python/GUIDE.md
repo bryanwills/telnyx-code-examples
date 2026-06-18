@@ -5,28 +5,30 @@ Two humans speak different languages on the same call. AI translates in real-tim
 ## How It Works
 
 ```
-  Caller A (Translation)
-        │
-        ▼
-  ┌───────────────────────────────────────┐
-  │          Telnyx Conference Bridge      │
-  │                                        │
-  │  Leg A ◄──► Media Stream ◄──► Leg B   │
-  └────────────────┬───────────────────────┘
+  Caller A                    Caller B
+  (Language 1)                (Language 2)
+      │                           │
+      ▼                           ▼
+  ┌────────────────────────────────────┐
+  │       Telnyx Conference Bridge      │
+  │                                      │
+  │  Leg A ◄────── Media ──────► Leg B  │
+  └────────────────┬─────────────────────┘
                    │
                    ▼
         ┌──────────────────┐
-        │   AI Inference    │
-        │   (translate +    │
-        │    speak back)    │
+        │  AI Inference     │
+        │  • STT both legs  │
+        │  • Translate       │
+        │  • TTS each lang   │
         └──────────────────┘
                    │
           ┌────────┴────────┐
           ▼                  ▼
-    TTS → Leg A        TTS → Leg B
-    (translated)       (translated)
+    Translated audio   Translated audio
+    injected → Leg A   injected → Leg B
 
-  State: In-memory state
+  State: In-memory dict
 ```
 
 ## Telnyx Products Used

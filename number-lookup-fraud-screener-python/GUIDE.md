@@ -8,15 +8,16 @@ Number Lookup Fraud Screener — screen inbound calls/messages for fraud indicat
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► Number Lookup
-         ├──► Number Porting
-         │
-         ▼
-    JSON API response
+  ┌──────────────────┐
+  │ Your App          │
+  └────────┬─────────┘
+           │
+           ├──► Telnyx Number Lookup
+           │
+           ├──► Risk analysis
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

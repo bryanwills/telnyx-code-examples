@@ -9,15 +9,15 @@ Smart Number Geo-Assignment — automatically purchase and assign local numbers 
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
+           ├──► Telnyx Number Management
            │
            ▼
-     JSON API response
+     JSON response
 
-  State: Redis cache
+  State: Redis
 ```
 
 ## Telnyx Products Used

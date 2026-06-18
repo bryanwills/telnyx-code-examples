@@ -5,21 +5,21 @@ SMS Drip Campaign Engine — multi-step nurture sequences with branch logic and 
 ## How It Works
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Parse message     │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Routing         │
-  │  • Campaign logic  │
+  │ AI Inference      │
+  │ • Campaign / drip logic│
   └────────┬─────────┘
+           │ ◄──── conversation loop
            │
-           ├──► SMS to customer
+           └──► SMS notification
 ```
 
 ## Telnyx Products Used

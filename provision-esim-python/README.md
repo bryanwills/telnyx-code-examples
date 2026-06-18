@@ -20,20 +20,19 @@ Application. Built with Telnyx IoT/SIM, Migration, Number Porting.
 ## Architecture
 
 ```
-  ┌──────────────┐
+  ┌──────────────────┐
   │ IoT Device Event │
-  │ (SIM/sensor)  │
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────┐
-  │ Process      │ ── threshold check
-  └──────┬───────┘
-         │
-         ▼
-    JSON API response
-
-  State: Database
+  │ (SIM data /       │
+  │  sensor reading)   │
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Threshold Check   │
+  └────────┬─────────┘
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Webhook Events
@@ -60,6 +59,19 @@ cp .env.example .env    # ← fill in your credentials
 pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
+
+### Webhook Configuration
+
+1. Expose your local server:
+
+   ```bash
+   ngrok http 5000
+   ```
+
+2. Copy the HTTPS URL and configure in [Telnyx Portal](https://portal.telnyx.com):
+
+   - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
+   - **Messaging Profile** → Inbound Webhook URL → `https://<id>.ngrok.io/webhooks/sms`
 
 ### Docker
 

@@ -5,20 +5,22 @@ IoT Fleet Alert Escalation — severity-based routing from IoT sensors to SMS, c
 ## How It Works
 
 ```
-  ┌──────────────┐
-  │ Inbound Phone Call │
-  │ (SIM/sensor)  │
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────┐
-  │ AI Classify  │ ── severity / category
-  └──────┬───────┘
-         │
-         ▼
-    SMS to customer
-
-  State: In-memory state
+  Participants
+    │   │   │
+    ▼   ▼   ▼
+  ┌──────────────────────────┐
+  │  Telnyx Conference Bridge  │
+  │  (mixed audio stream)      │
+  └────────────┬───────────────┘
+               │ media stream
+               ▼
+  ┌──────────────────────────┐
+  │  AI Inference             │
+  │  • Classification / triage│
+  │  • Escalation logic       │
+  └────────────┬───────────────┘
+               │
+               └──► SMS notification
 ```
 
 ## Telnyx Products Used

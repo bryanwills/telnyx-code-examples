@@ -8,23 +8,29 @@ Migrate from ElevenLabs — import ElevenLabs voice configurations to Telnyx TTS
   ElevenLabs (source)
         │
         ▼
-  ┌─────────────┐
-  │ Audit       │ ── inventory numbers, configs, profiles
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐
-  │ Map & Plan  │ ── match source features to Telnyx equivalents
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌─────────────────┐
-  │ Provision   │────►│ Telnyx Platform  │
-  │ on Telnyx   │     │ (numbers, SIP,   │
-  └──────┬──────┘     │  messaging)      │
-         │            └─────────────────┘
-         ▼
-  Migration Report
+  ┌──────────────────┐     ┌───────────────────┐
+  │ 1. Audit         │────►│ Inventory Report  │
+  │    (numbers,     │     │ (numbers, configs,│
+  │     configs)     │     │  webhooks, apps)  │
+  └────────┬─────────┘     └───────────────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ 2. Map Features  │ ── source capability → Telnyx equivalent
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐     ┌───────────────────┐
+  │ 3. Provision     │────►│ Telnyx Platform   │
+  │    on Telnyx     │     │ • Phone numbers   │
+  └────────┬─────────┘     │ • SIP connections │
+           │               │ • Messaging       │
+           ▼               └───────────────────┘
+  ┌──────────────────┐
+  │ Migration Report │
+  │ (success/fail    │
+  │  per resource)   │
+  └──────────────────┘
 ```
 
 ## Telnyx Products Used

@@ -9,13 +9,17 @@ List all Telnyx AI Assistants in your account with filtering and pagination.
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
+           ▼
+  ┌──────────────────┐
+  │ Telnyx AI         │
+  │ Assistants API    │
+  └────────┬─────────┘
            │
            ▼
-     JSON API response
+     JSON response
 ```
 
 ## Telnyx Products Used

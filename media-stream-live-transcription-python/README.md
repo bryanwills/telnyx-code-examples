@@ -33,16 +33,15 @@ This app handles these webhook events ([Call Control docs](https://developers.te
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► STT (Speech Recognition)
-         ├──► Media Streaming
-         │
-         ▼
-    JSON API response
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► STT
+           ├──► Media Streaming
+           │
+           ▼
+     JSON response
 ```
 
 ## Environment Variables

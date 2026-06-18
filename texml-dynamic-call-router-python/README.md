@@ -18,6 +18,10 @@ TeXML Dynamic Call Router — time-of-day and caller-based routing with TeXML re
 - **TeXML Gather**: Collect DTMF or speech input — [reference](https://developers.telnyx.com/docs/voice/texml/verbs/gather)
 - **TeXML Say**: Text-to-speech — [reference](https://developers.telnyx.com/docs/voice/texml/verbs/say)
 
+## External Service Integrations
+
+- **Email / SMTP** — Email notifications and alerts
+
 ## Architecture
 
 ```
@@ -25,16 +29,15 @@ TeXML Dynamic Call Router — time-of-day and caller-based routing with TeXML re
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Call Control      │
   └────────┬─────────┘
            │
-           ├──► Telnyx Call Recording
-           ├──► Telnyx Number Porting
-           ├──► Telnyx TeXML
+           ├──► TeXML
+           │
+           ├──► Routing / dispatch
            │
            ▼
-     Voice response (TTS)
-     Email notification
+     Email
 ```
 
 ## Environment Variables

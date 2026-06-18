@@ -5,25 +5,23 @@ When an agent transfers a call, AI summarizes the conversation and briefs the ne
 ## How It Works
 
 ```
-  Participants (N)
+  Participants
     │   │   │
     ▼   ▼   ▼
-  ┌───────────────────────┐
-  │  Telnyx Conference     │
-  │  Bridge                │
-  └───────────┬────────────┘
-              │
-              ▼
-  ┌───────────────────────┐
-  │  AI Inference          │
-  │  (Queue management)  │
-  └───────────┬────────────┘
-              │
-              ├──► JSON API response
-              ▼
-         Session Log
+  ┌──────────────────────────┐
+  │  Telnyx Conference Bridge  │
+  │  (mixed audio stream)      │
+  └────────────┬───────────────┘
+               │ media stream
+               ▼
+  ┌──────────────────────────┐
+  │  AI Inference             │
+  │  • Summarization          │
+  └────────────┬───────────────┘
+               │
+               └──► Voice response
 
-  State: In-memory state
+  State: In-memory dict
 ```
 
 ## Telnyx Products Used

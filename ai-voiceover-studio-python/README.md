@@ -14,21 +14,22 @@ Upload a script, select voice/style/pacing, AI adds professional direction cues 
 ## Architecture
 
 ```
-  Input (script/text)
+  API Request
         │
         ▼
-  ┌─────────────────┐
-  │  AI Inference    │ ── process / direct / rewrite
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ AI Inference      │ ── direction cues, rewrites
+  └────────┬─────────┘
            │
            ▼
-  ┌─────────────────┐
-  │  TTS Generation  │ ── render audio (multiple takes/voices)
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ TTS Generation    │ ── render audio
+  │ (multiple takes/  │
+  │  voices/languages)│
+  └────────┬─────────┘
            │
-           ▼
-     Email notification
-     Cloud Storage upload
+           ├──► Cloud Storage
+           └──► Cloud Storage (final assets)
 ```
 
 ## Telnyx API Endpoints Used

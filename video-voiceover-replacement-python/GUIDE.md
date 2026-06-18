@@ -5,21 +5,22 @@ Upload audio with existing voice-over. STT extracts the script, AI rewrites/impr
 ## How It Works
 
 ```
-  Input (script/text)
+  API Request
         │
         ▼
-  ┌─────────────────┐
-  │  AI Inference    │ ── process / direct / rewrite
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ AI Inference      │ ── direction cues, rewrites
+  └────────┬─────────┘
            │
            ▼
-  ┌─────────────────┐
-  │  TTS Generation  │ ── render audio (multiple takes/voices)
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ TTS Generation    │ ── render audio
+  │ (multiple takes/  │
+  │  voices/languages)│
+  └────────┬─────────┘
            │
-           ▼
-     JSON API response
-     Cloud Storage upload
+           ├──► Cloud Storage
+           └──► Cloud Storage (final assets)
 ```
 
 ## Telnyx Products Used

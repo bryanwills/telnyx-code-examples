@@ -37,17 +37,17 @@ This app handles these webhook events ([Call Control docs](https://developers.te
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► STT (Speech Recognition)
-         ├──► Messaging API
-         │
-         ▼
-    SMS to customer
-    Slack notification
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► TTS
+           ├──► STT
+           ├──► DTMF
+           ├──► Messaging
+           │
+           ▼
+     SMS notification
 ```
 
 ## Environment Variables

@@ -27,23 +27,25 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 - `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
 - `message.received` — Inbound SMS/MMS received
 
+## External Service Integrations
+
+- **Email / SMTP** — Email notifications and alerts
+
 ## Architecture
 
 ```
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► Cloud Storage
-         ├──► Call Recording
-         │
-         ▼
-    Email notification
-    Cloud Storage upload
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► Cloud Storage
+           ├──► Call Recording
+           │
+           ▼
+     Email
 ```
 
 ## Environment Variables

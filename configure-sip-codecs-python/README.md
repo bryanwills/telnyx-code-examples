@@ -20,17 +20,16 @@ Voice application. Built with Telnyx Migration, Number Porting, SIP Trunking.
 ## Architecture
 
 ```
-  API Request
+  Your PBX / SBC
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Telnyx SIP Trunk  │
+  │ (IP / FQDN auth)  │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
-           │
            ▼
-     Email notification
+     PSTN / Telnyx Network
 ```
 
 ## Environment Variables

@@ -5,20 +5,19 @@ IoT Panic Button Voice Alert — IoT device triggers SIM-based alert, system cal
 ## How It Works
 
 ```
-  ┌──────────────┐
+  ┌──────────────────┐
   │ Inbound Phone Call │
-  │ (SIM/sensor)  │
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────┐
-  │ Process      │ ── threshold check
-  └──────┬───────┘
-         │
-         ▼
-    JSON API response
-
-  State: In-memory state
+  │ (SIM data /       │
+  │  sensor reading)   │
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Threshold Check   │
+  └────────┬─────────┘
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

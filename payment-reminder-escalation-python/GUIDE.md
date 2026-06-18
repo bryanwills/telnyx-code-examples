@@ -8,19 +8,17 @@ Invoice overdue: day 1 SMS, day 7 voice call with payment link, day 14 escalatio
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► Messaging API
-         ├──► Number Porting
-         │
-         ▼
-    SMS to customer
-    Slack notification
-
-  External: Stripe
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► TTS
+           ├──► Messaging
+           │
+           ├──► Escalation logic
+           │
+           ▼
+     SMS notification
 ```
 
 ## Telnyx Products Used

@@ -31,17 +31,14 @@ This app handles these webhook events ([Call Control docs](https://developers.te
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► Number Porting
-         │
-         ▼
-    JSON API response
-
-  State: Database
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► TTS
+           │
+           ▼
+     Voice response
 ```
 
 ## Environment Variables

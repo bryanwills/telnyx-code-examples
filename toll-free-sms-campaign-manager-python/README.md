@@ -26,18 +26,15 @@ This app handles these webhook events ([Messaging docs](https://developers.telny
 ## Architecture
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
   ┌──────────────────┐
-  │  Messaging API    │
+  │ Telnyx Messaging  │
+  │ • Campaign / drip logic│
   └────────┬─────────┘
            │
-           ├──► Escalation
-           ├──► Campaign logic
-           │
-           ▼
-     JSON API response
+           └──► JSON response
 ```
 
 ## Environment Variables

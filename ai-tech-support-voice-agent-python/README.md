@@ -27,31 +27,36 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 - `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
 - `message.received` — Inbound SMS/MMS received
 
+## External Service Integrations
+
+- **Email / SMTP** — Email notifications and alerts
+
 ## Architecture
 
 ```
-  Source Platform
+  Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Audit       │ ── inventory numbers, configs, profiles
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐
-  │ Map & Plan  │ ── match source features to Telnyx equivalents
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌─────────────────┐
-  │ Provision   │────►│ Telnyx Platform  │
-  │ on Telnyx   │     │ (numbers, SIP,   │
-  └──────┬──────┘     │  messaging)      │
-         │            └─────────────────┘
-         ▼
-  Migration Report
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Gather Speech     │ ── STT transcription
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Case / claim handling│
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ├──► Email
+           └──► Ticket / issue
 
-  State: Redis cache
+  State: Redis
 ```
 
 ## Environment Variables

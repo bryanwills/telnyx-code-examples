@@ -17,6 +17,10 @@ Cloud Storage Media CDN — use Telnyx Cloud Storage as a CDN for IVR prompts, h
 - **Download Object**: `GET https://storage.telnyx.com/{bucket}/{key}` — [Cloud Storage docs](https://developers.telnyx.com/docs/cloud-storage)
 - **List Objects**: `GET /v2/storage/buckets/{bucket}/objects` — [API reference](https://developers.telnyx.com/api/cloud-storage/list-objects)
 
+## External Service Integrations
+
+- **Email / SMTP** — Email notifications and alerts
+
 ## Architecture
 
 ```
@@ -24,16 +28,17 @@ Cloud Storage Media CDN — use Telnyx Cloud Storage as a CDN for IVR prompts, h
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Call Control      │
   └────────┬─────────┘
            │
-           ├──► Telnyx Cloud Storage
-           ├──► Telnyx Number Porting
-           ├──► Telnyx TeXML
+           ├──► Cloud Storage
+           ├──► TeXML
+           ├──► Messaging (MMS)
+           │
+           ├──► Classification / triage
            │
            ▼
-     Email notification
-     Cloud Storage upload
+     Email
 ```
 
 ## Environment Variables

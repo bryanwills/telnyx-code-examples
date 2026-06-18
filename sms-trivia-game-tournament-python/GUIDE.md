@@ -5,21 +5,21 @@ SMS Trivia Game Tournament — multi-player trivia via SMS. Players join, answer
 ## How It Works
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Parse message     │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Scoring         │
-  │  • Routing         │
+  │ AI Inference      │
+  │ • Business logic   │
   └────────┬─────────┘
+           │ ◄──── conversation loop
            │
-           ├──► SMS to customer
+           └──► SMS notification
 ```
 
 ## Telnyx Products Used

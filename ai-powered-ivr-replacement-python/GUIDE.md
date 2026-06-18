@@ -8,16 +8,15 @@ AI-Powered IVR Replacement — natural language routing with A/B testing and str
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► Call Transfer
-         ├──► Call Recording
-         ├──► Number Porting
-         │
-         ▼
-    Email notification
+  ┌──────────────────┐
+  │ Your App          │
+  └────────┬─────────┘
+           │
+           │
+           ├──► Escalation logic
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

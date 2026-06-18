@@ -9,16 +9,14 @@ Cloud Storage Call Archive — archive call recordings to Telnyx Cloud Storage w
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Call Control      │
   └────────┬─────────┘
            │
-           ├──► Telnyx Call Control
-           ├──► Telnyx Cloud Storage
-           ├──► Telnyx Call Recording
+           ├──► Cloud Storage
+           ├──► Call Recording
            │
            ▼
-     Report / export
-     Cloud Storage upload
+     JSON response
 ```
 
 ## Telnyx Products Used

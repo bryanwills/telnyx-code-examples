@@ -9,15 +9,16 @@ Pull Call Detail Records, build usage analytics with cost breakdowns, peak-hour 
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx AI Inference (LLM)
-           ├──► Telnyx Call Recording
-           ├──► Telnyx Number Porting
+           ├──► Telnyx AI Inference
+           ├──► Telnyx CDR / Billing
+           │
+           ├──► Summarization
            │
            ▼
-     Report / export
+     JSON response
 ```
 
 ## Telnyx Products Used

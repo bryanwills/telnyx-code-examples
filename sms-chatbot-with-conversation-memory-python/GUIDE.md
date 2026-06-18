@@ -5,22 +5,22 @@ SMS Chatbot with Conversation Memory — persistent AI conversations over text w
 ## How It Works
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Parse message     │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Summarization   │
-  │  • Conversation memory │
+  │ AI Inference      │
+  │ • Summarization    │
+  │ • Conversation memory│
   └────────┬─────────┘
+           │ ◄──── conversation loop
            │
-           ├──► SMS to customer
-           ├──► Email notification
+           └──► SMS notification
 ```
 
 ## Telnyx Products Used

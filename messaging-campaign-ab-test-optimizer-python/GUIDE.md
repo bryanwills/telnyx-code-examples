@@ -5,21 +5,22 @@ Messaging Campaign A/B Test Optimizer — test SMS copy variants, AI picks winne
 ## How It Works
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Parse message     │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Routing         │
-  │  • Campaign logic  │
+  │ AI Inference      │
+  │ • Campaign / drip logic│
+  │ • A/B testing      │
   └────────┬─────────┘
+           │ ◄──── conversation loop
            │
-           ├──► SMS to customer
+           └──► SMS notification
 ```
 
 ## Telnyx Products Used

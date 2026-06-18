@@ -24,15 +24,15 @@ Branded Caller ID Manager — register, manage, and verify branded calling profi
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx Verify API
-           ├──► Telnyx Number Lookup
-           ├──► Telnyx Number Porting
+           ├──► Telnyx CNAM / Branded Calling
+           │
+           ├──► Appointment scheduling
            │
            ▼
-     JSON API response
+     JSON response
 ```
 
 ## Environment Variables

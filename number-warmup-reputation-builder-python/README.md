@@ -18,18 +18,15 @@ Number Warmup & Reputation Builder — gradually ramp SMS volume on new numbers 
 ## Architecture
 
 ```
-  API Request
+  Scheduled Timer
         │
         ▼
   ┌──────────────────┐
-  │  Messaging API    │
+  │ Telnyx Messaging  │
+  │ • Reputation warmup│
   └────────┬─────────┘
            │
-           ├──► Scheduling
-           ├──► Routing
-           │
-           ▼
-     JSON API response
+           └──► JSON response
 ```
 
 ## Environment Variables

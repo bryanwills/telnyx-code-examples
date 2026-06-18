@@ -5,22 +5,23 @@ Tenant texts issue, AI categorizes and estimates cost, auto-dispatches vendor fo
 ## How It Works
 
 ```
-  API Request
+  Scheduled Timer
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Parse message     │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Classification  │
-  │  • Scheduling      │
+  │ AI Inference      │
+  │ • Classification / triage│
+  │ • Summarization    │
   └────────┬─────────┘
+           │ ◄──── conversation loop
            │
-           ├──► SMS to customer
-           ├──► Slack notification
+           ├──► SMS notification
+           └──► Slack alert
 ```
 
 ## Telnyx Products Used

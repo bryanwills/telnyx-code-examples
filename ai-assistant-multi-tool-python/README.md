@@ -22,14 +22,15 @@ AI Assistant Multi-Tool — AI Assistant with custom function-calling tools for 
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx AI Inference (LLM)
-           ├──► Telnyx Number Porting
+           ├──► Telnyx AI Inference
+           │
+           ├──► Appointment scheduling
            │
            ▼
-     CRM update
+     JSON response
 ```
 
 ## Environment Variables

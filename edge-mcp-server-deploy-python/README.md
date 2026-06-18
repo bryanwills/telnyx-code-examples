@@ -36,16 +36,17 @@ Deploy a [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server 
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Parse message     │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Business logic  │
+  │ AI Inference      │
+  │ • Business logic   │
   └────────┬─────────┘
+           │ ◄──── conversation loop
            │
-           ├──► SMS to customer
+           └──► SMS notification
 ```
 
 ## Quick Start

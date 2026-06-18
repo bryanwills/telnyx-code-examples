@@ -9,16 +9,15 @@ TeXML Dynamic Call Router — time-of-day and caller-based routing with TeXML re
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Call Control      │
   └────────┬─────────┘
            │
-           ├──► Telnyx Call Recording
-           ├──► Telnyx Number Porting
-           ├──► Telnyx TeXML
+           ├──► TeXML
+           │
+           ├──► Routing / dispatch
            │
            ▼
-     Voice response (TTS)
-     Email notification
+     Email
 ```
 
 ## Telnyx Products Used

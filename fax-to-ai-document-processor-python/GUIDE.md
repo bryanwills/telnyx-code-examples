@@ -9,18 +9,18 @@ Fax to AI Document Processor — receive fax, AI extracts data, forwards structu
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Parse message     │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Classification  │
-  │  • Summarization   │
+  │ AI Inference      │
+  │ • Classification / triage│
+  │ • Summarization    │
   └────────┬─────────┘
+           │ ◄──── conversation loop
            │
-           ├──► Email notification
-           ├──► Payment processing
+           └──► Email
 ```
 
 ## Telnyx Products Used

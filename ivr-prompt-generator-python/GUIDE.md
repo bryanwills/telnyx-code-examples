@@ -5,21 +5,28 @@ Generate professional IVR/phone system prompts. AI writes caller-friendly script
 ## How It Works
 
 ```
-  Input (script/text)
+  Inbound Phone Call
         │
         ▼
-  ┌─────────────────┐
-  │  AI Inference    │ ── process / direct / rewrite
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
            │
            ▼
-  ┌─────────────────┐
-  │  TTS Generation  │ ── render audio (multiple takes/voices)
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ Listen for Input  │
+  └────────┬─────────┘
            │
            ▼
-     Email notification
-     Cloud Storage upload
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Business logic   │
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ├──► Voice response
+           ├──► Email
+           └──► Cloud Storage
 ```
 
 ## Telnyx Products Used

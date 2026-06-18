@@ -5,18 +5,14 @@ Voice and SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS,
 ## How It Works
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► Number Porting
-         │
-         ▼
-    Email notification
+  ┌──────────────────┐
+  │ Telnyx Messaging  │
+  └────────┬─────────┘
+           │
+           └──► JSON response
 ```
 
 ## Telnyx Products Used

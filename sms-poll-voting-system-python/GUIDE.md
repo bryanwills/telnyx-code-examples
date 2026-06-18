@@ -5,18 +5,14 @@ SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS.
 ## How It Works
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
   ┌──────────────────┐
-  │  Messaging API    │
+  │ Telnyx Messaging  │
   └────────┬─────────┘
            │
-           ├──► Routing
-           │
-           ▼
-     SMS to customer
-     Email notification
+           └──► SMS notification
 ```
 
 ## Telnyx Products Used

@@ -5,21 +5,22 @@ SMS Appointment No-Show Predictor — AI predicts no-shows from SMS response pat
 ## How It Works
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Parse message     │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Risk scoring    │
-  │  • Scheduling      │
+  │ AI Inference      │
+  │ • Risk analysis    │
+  │ • Appointment scheduling│
   └────────┬─────────┘
+           │ ◄──── conversation loop
            │
-           ├──► SMS to customer
+           └──► SMS notification
 ```
 
 ## Telnyx Products Used

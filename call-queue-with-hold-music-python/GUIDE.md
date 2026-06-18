@@ -8,16 +8,15 @@ Call Queue with Hold Music — queue callers with position announcements and hol
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► Call Transfer
-         ├──► Number Porting
-         │
-         ▼
-    JSON API response
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           │
+           ▼
+     JSON response
+
+  State: In-memory dict
 ```
 
 ## Telnyx Products Used

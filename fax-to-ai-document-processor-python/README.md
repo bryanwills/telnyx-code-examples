@@ -22,6 +22,10 @@ This app handles these webhook events:
 
 - `fax.received` — Inbound fax received — media URL available
 
+## External Service Integrations
+
+- **Email / SMTP** — Email notifications and alerts
+
 ## Architecture
 
 ```
@@ -29,18 +33,18 @@ This app handles these webhook events:
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Parse message     │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Classification  │
-  │  • Summarization   │
+  │ AI Inference      │
+  │ • Classification / triage│
+  │ • Summarization    │
   └────────┬─────────┘
+           │ ◄──── conversation loop
            │
-           ├──► Email notification
-           ├──► Payment processing
+           └──► Email
 ```
 
 ## Environment Variables

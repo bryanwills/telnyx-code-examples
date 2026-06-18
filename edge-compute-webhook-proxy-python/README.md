@@ -28,12 +28,14 @@ Receive Telnyx voice and SMS webhooks at the edge with sub-10ms cold starts. Val
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
+           │
+           ├──► Summarization
            │
            ▼
+     Response
 ```
 
 ## Prerequisites

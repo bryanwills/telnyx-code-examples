@@ -29,18 +29,15 @@ This app handles these webhook events ([Call Control docs](https://developers.te
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► Call Transfer
-         ├──► Call Recording
-         ├──► Number Porting
-         │
-         ▼
-    JSON API response
-
-  State: Redis cache
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           │
+           ├──► Routing / dispatch
+           │
+           ▼
+     JSON response
 ```
 
 ## Environment Variables

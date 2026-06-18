@@ -29,28 +29,30 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 ## Architecture
 
 ```
-  Caller A (Translation)
-        │
-        ▼
-  ┌───────────────────────────────────────┐
-  │          Telnyx Conference Bridge      │
-  │                                        │
-  │  Leg A ◄──► Media Stream ◄──► Leg B   │
-  └────────────────┬───────────────────────┘
+  Caller A                    Caller B
+  (Language 1)                (Language 2)
+      │                           │
+      ▼                           ▼
+  ┌────────────────────────────────────┐
+  │       Telnyx Conference Bridge      │
+  │                                      │
+  │  Leg A ◄────── Media ──────► Leg B  │
+  └────────────────┬─────────────────────┘
                    │
                    ▼
         ┌──────────────────┐
-        │   AI Inference    │
-        │   (translate +    │
-        │    speak back)    │
+        │  AI Inference     │
+        │  • STT both legs  │
+        │  • Translate       │
+        │  • TTS each lang   │
         └──────────────────┘
                    │
           ┌────────┴────────┐
           ▼                  ▼
-    TTS → Leg A        TTS → Leg B
-    (translated)       (translated)
+    Translated audio   Translated audio
+    injected → Leg A   injected → Leg B
 
-  State: In-memory state
+  State: In-memory dict
 ```
 
 ## Environment Variables

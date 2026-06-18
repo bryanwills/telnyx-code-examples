@@ -5,18 +5,16 @@ Application. Built with Telnyx Migration, Number Porting.
 ## How It Works
 
 ```
-  API Request
+  Your PBX / SBC
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► Number Porting
-         ├──► DTMF Input
-         │
-         ▼
-    Webhook callback
+  ┌──────────────────┐
+  │ Telnyx SIP Trunk  │
+  │ (IP / FQDN auth)  │
+  └────────┬─────────┘
+           │
+           ▼
+     PSTN / Telnyx Network
 ```
 
 ## Telnyx Products Used

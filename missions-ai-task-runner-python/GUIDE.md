@@ -9,17 +9,23 @@ Missions AI Task Runner — AI-driven task execution within the Telnyx Missions 
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Answer + Greet    │ ── TTS welcome message
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Conversation memory │
-  │  • Routing         │
+  │ Listen for Input  │
   └────────┬─────────┘
            │
-           ├──► SMS to customer
+           ▼
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Business logic   │
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ▼
+     SMS notification
 ```
 
 ## Telnyx Products Used

@@ -22,13 +22,10 @@ Send an MMS message with image attachments using the Telnyx Messaging API.
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Telnyx Messaging  │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
-           │
-           ▼
-     JSON API response
+           └──► JSON response
 ```
 
 ## Environment Variables

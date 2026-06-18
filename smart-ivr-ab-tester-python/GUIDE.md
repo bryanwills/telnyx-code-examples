@@ -8,16 +8,17 @@ Smart IVR A/B Tester — run two IVR flows simultaneously and track which conver
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► Call Transfer
-         ├──► Number Porting
-         │
-         ▼
-    JSON API response
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► STT
+           ├──► DTMF
+           │
+           ├──► A/B testing
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

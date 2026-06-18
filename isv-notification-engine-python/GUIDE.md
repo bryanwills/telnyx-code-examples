@@ -8,16 +8,18 @@ SaaS platform sends alerts via SMS/voice/WhatsApp based on customer preference a
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► Messaging API
-         ├──► Number Porting
-         │
-         ▼
-    SMS to customer
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► TTS
+           ├──► Messaging
+           ├──► WhatsApp
+           │
+           ├──► Classification / triage
+           │
+           ▼
+     SMS notification
 ```
 
 ## Telnyx Products Used

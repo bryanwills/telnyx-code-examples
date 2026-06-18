@@ -8,17 +8,17 @@ Open shift triggers calls down the availability list. First to confirm gets it, 
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► STT (Speech Recognition)
-         ├──► Messaging API
-         │
-         ▼
-    SMS to customer
-    Slack notification
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► TTS
+           ├──► STT
+           ├──► DTMF
+           ├──► Messaging
+           │
+           ▼
+     SMS notification
 ```
 
 ## Telnyx Products Used

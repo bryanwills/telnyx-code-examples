@@ -5,23 +5,21 @@ AI Conference Note-Taker — joins calls, transcribes, extracts action items, se
 ## How It Works
 
 ```
-  Participants (N)
+  Participants
     │   │   │
     ▼   ▼   ▼
-  ┌───────────────────────┐
-  │  Telnyx Conference     │
-  │  Bridge                │
-  └───────────┬────────────┘
-              │
-              ▼
-  ┌───────────────────────┐
-  │  AI Inference          │
-  │  (Summarization)  │
-  └───────────┬────────────┘
-              │
-              ├──► SMS to customer
-              ▼
-         Session Log
+  ┌──────────────────────────┐
+  │  Telnyx Conference Bridge  │
+  │  (mixed audio stream)      │
+  └────────────┬───────────────┘
+               │ media stream
+               ▼
+  ┌──────────────────────────┐
+  │  AI Inference             │
+  │  • Summarization          │
+  └────────────┬───────────────┘
+               │
+               └──► SMS notification
 ```
 
 ## Telnyx Products Used

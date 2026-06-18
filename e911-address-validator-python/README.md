@@ -22,13 +22,13 @@ Application. Built with Telnyx E911, Migration, Number Porting.
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
+           ├──► Telnyx Number Management
            │
            ▼
-     Email notification
+     JSON response
 ```
 
 ## Environment Variables

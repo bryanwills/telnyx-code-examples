@@ -5,17 +5,18 @@ SMS application. Built with Telnyx Migration, Number Porting.
 ## How It Works
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
+           │
+           ├──► Data extraction
            │
            ▼
-     JSON API response
+     JSON response
 ```
 
 ## Telnyx Products Used

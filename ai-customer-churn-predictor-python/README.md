@@ -22,15 +22,15 @@ AI Customer Churn Predictor — analyze call/message patterns via Telnyx APIs, A
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx AI Inference (LLM)
-           ├──► Telnyx Number Porting
+           ├──► Telnyx AI Inference
+           │
+           ├──► Classification / triage
            │
            ▼
-     Email notification
-     Ticket creation
+     JSON response
 ```
 
 ## Environment Variables

@@ -20,18 +20,19 @@ Application. Built with Telnyx IoT/SIM, Migration, Number Porting.
 ## Architecture
 
 ```
-  ┌──────────────┐
-  │ API Request  │
-  │ (SIM/sensor)  │
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────┐
-  │ Process      │ ── threshold check
-  └──────┬───────┘
-         │
-         ▼
-    JSON API response
+  ┌──────────────────┐
+  │ API Request      │
+  │ (SIM data /       │
+  │  sensor reading)   │
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Threshold Check   │
+  └────────┬─────────┘
+           │
+           ▼
+     JSON response
 ```
 
 ## Environment Variables

@@ -28,18 +28,18 @@ Buyer texts about a listing, AI responds with details, facilitates anonymous buy
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Parse message     │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Scheduling      │
-  │  • Conversation memory │
+  │ AI Inference      │
+  │ • Business logic   │
   └────────┬─────────┘
+           │ ◄──── conversation loop
            │
-           ├──► SMS to customer
-           ├──► Slack notification
+           ├──► SMS notification
+           └──► Slack alert
 ```
 
 ## Telnyx Webhook Events

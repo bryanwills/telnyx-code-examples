@@ -28,16 +28,15 @@ This app handles these webhook events ([Call Control docs](https://developers.te
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► Call Transfer
-         ├──► Call Recording
-         ├──► Number Porting
-         │
-         ▼
-    Email notification
+  ┌──────────────────┐
+  │ Your App          │
+  └────────┬─────────┘
+           │
+           │
+           ├──► Escalation logic
+           │
+           ▼
+     JSON response
 ```
 
 ## Environment Variables

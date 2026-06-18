@@ -11,24 +11,42 @@ telnyx_products: [Voice, AI Inference, Cloud Storage]
 
 Generate professional IVR/phone system prompts. AI writes caller-friendly scripts from business descriptions, TTS renders in multiple voices, test via live Telnyx call playback.
 
+## Telnyx Webhook Events
+
+This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
+
+- `call.answered` — Call connected — app begins interaction (TTS greeting, gather)
+- `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
+
+## External Service Integrations
+
+- **Email / SMTP** — Email notifications and alerts
+
 ## Architecture
 
 ```
-  Input (script/text)
+  Inbound Phone Call
         │
         ▼
-  ┌─────────────────┐
-  │  AI Inference    │ ── process / direct / rewrite
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ Answer + Greet    │ ── TTS welcome message
+  └────────┬─────────┘
            │
            ▼
-  ┌─────────────────┐
-  │  TTS Generation  │ ── render audio (multiple takes/voices)
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ Listen for Input  │
+  └────────┬─────────┘
            │
            ▼
-     Email notification
-     Cloud Storage upload
+  ┌──────────────────┐
+  │ AI Inference      │
+  │ • Business logic   │
+  └────────┬─────────┘
+           │ ◄──── conversation loop
+           │
+           ├──► Voice response
+           ├──► Email
+           └──► Cloud Storage
 ```
 
 ## Telnyx API Endpoints Used
@@ -62,6 +80,19 @@ pip install -r requirements.txt
 python app.py
 ```
 
+### Webhook Configuration
+
+1. Expose your local server:
+
+   ```bash
+   ngrok http 5000
+   ```
+
+2. Copy the HTTPS URL and configure in [Telnyx Portal](https://portal.telnyx.com):
+
+   - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
+   - **Messaging Profile** → Inbound Webhook URL → `https://<id>.ngrok.io/webhooks/sms`
+
 ### Docker
 
 ```bash
@@ -94,6 +125,12 @@ curl http://localhost:5000/health
 ```json
 {"status": "ok"}
 ```
+
+## Webhook Endpoints
+
+### `POST /webhooks/voice`
+
+Handles Telnyx Call Control webhook events. Called automatically by Telnyx — do not call directly.
 
 ## Resources
 

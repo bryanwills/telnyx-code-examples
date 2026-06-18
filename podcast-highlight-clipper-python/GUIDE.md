@@ -5,21 +5,23 @@ Upload audio, STT + AI Inference identifies viral moments with virality scoring,
 ## How It Works
 
 ```
-  Input (script/text)
+  API Request
         │
         ▼
-  ┌─────────────────┐
-  │  AI Inference    │ ── process / direct / rewrite
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ AI Inference      │ ── direction cues, rewrites
+  └────────┬─────────┘
            │
            ▼
-  ┌─────────────────┐
-  │  TTS Generation  │ ── render audio (multiple takes/voices)
-  └────────┬────────┘
+  ┌──────────────────┐
+  │ TTS Generation    │ ── render audio
+  │ (multiple takes/  │
+  │  voices/languages)│
+  └────────┬─────────┘
            │
-           ▼
-     SMS to customer
-     Slack notification
+           ├──► SMS notification
+           ├──► Slack alert
+           └──► Download / stream
 ```
 
 ## Telnyx Products Used

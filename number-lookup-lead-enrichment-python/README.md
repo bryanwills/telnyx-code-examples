@@ -16,6 +16,10 @@ Number Lookup Lead Enrichment — CNAM and carrier lookup to qualify and enrich 
 - **Number Lookup**: `GET /v2/number_lookup/{phone}` — [API reference](https://developers.telnyx.com/api/number-lookup/lookup)
 - **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
+## External Service Integrations
+
+- **Email / SMTP** — Email notifications and alerts
+
 ## Architecture
 
 ```
@@ -23,15 +27,14 @@ Number Lookup Lead Enrichment — CNAM and carrier lookup to qualify and enrich 
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx AI Inference (LLM)
+           ├──► Telnyx AI Inference
            ├──► Telnyx Number Lookup
-           ├──► Telnyx Number Porting
            │
            ▼
-     Email notification
+     Email
 ```
 
 ## Environment Variables

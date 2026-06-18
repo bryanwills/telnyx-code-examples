@@ -8,27 +8,19 @@ Real-Time Call Intelligence Dashboard — live transcription, sentiment analysis
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call         │
-  │ Answered     │
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐     ┌──────────────────┐
-  │ TTS Prompt  │────►│ Gather Speech     │
-  └─────────────┘     └────────┬─────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │ AI Inference      │
-                    │ • Escalation       │
-                    │ • Scoring          │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    JSON API response
-
-  External: Twilio API (source)
+  ┌──────────────────┐
+  │ AI Inference      │ ── direction cues, rewrites
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ TTS Generation    │ ── render audio
+  │ (multiple takes/  │
+  │  voices/languages)│
+  └────────┬─────────┘
+           │
+           ├──► JSON response
+           └──► Download / stream
 ```
 
 ## Telnyx Products Used

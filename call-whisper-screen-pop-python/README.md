@@ -32,16 +32,16 @@ This app handles these webhook events ([Call Control docs](https://developers.te
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► Number Lookup
-         ├──► Number Porting
-         │
-         ▼
-    Ticket creation
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► Number Lookup
+           │
+           ├──► Case / claim handling
+           │
+           ▼
+     JSON response
 ```
 
 ## Environment Variables

@@ -19,17 +19,16 @@ Provision and configure a SIP trunk connection on Telnyx with codec preferences,
 ## Architecture
 
 ```
-  API Request
+  Your PBX / SBC
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Telnyx SIP Trunk  │
+  │ (IP / FQDN auth)  │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
-           │
            ▼
-     JSON API response
+     PSTN / Telnyx Network
 ```
 
 ## Environment Variables

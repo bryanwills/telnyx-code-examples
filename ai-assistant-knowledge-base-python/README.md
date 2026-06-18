@@ -22,14 +22,13 @@ AI Assistant Knowledge Base — AI Assistant with document knowledge base for co
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx AI Inference (LLM)
-           ├──► Telnyx Number Porting
+           ├──► Telnyx AI Inference
            │
            ▼
-     JSON API response
+     JSON response
 ```
 
 ## Environment Variables

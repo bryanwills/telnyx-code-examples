@@ -9,14 +9,13 @@ WireGuard Private Voice Network — create WireGuard mesh network for private SI
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
            ├──► Telnyx Global IP / WireGuard
            │
            ▼
-     JSON API response
+     JSON response
 ```
 
 ## Telnyx Products Used

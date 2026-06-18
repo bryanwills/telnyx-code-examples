@@ -22,14 +22,13 @@ Webhook Debugger AI Assistant — catch, inspect, and debug Telnyx webhooks with
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx AI Inference (LLM)
-           ├──► Telnyx Number Porting
+           ├──► Telnyx AI Inference
            │
            ▼
-     JSON API response
+     JSON response
 ```
 
 ## Environment Variables

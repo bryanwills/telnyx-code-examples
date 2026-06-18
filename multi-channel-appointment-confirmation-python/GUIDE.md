@@ -8,17 +8,18 @@ Multi-Channel Appointment Confirmation — confirm appointments via SMS, voice c
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► Messaging API
-         ├──► Number Porting
-         │
-         ▼
-    SMS to customer
-    Voice response (TTS)
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► DTMF
+           ├──► Messaging
+           ├──► WhatsApp
+           │
+           ├──► Appointment scheduling
+           │
+           ▼
+     SMS notification
 ```
 
 ## Telnyx Products Used

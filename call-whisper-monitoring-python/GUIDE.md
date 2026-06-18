@@ -8,18 +8,16 @@ Voice application. Built with Telnyx AI Assistants, Migration, Number Porting, S
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► STT (Speech Recognition)
-         ├──► Call Recording
-         │
-         ▼
-    Report / export
-
-  State: Redis cache
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► TTS
+           ├──► STT
+           ├──► Call Recording
+           │
+           ▼
+     Voice response
 ```
 
 ## Telnyx Products Used

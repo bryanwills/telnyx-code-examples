@@ -8,16 +8,13 @@ Multi-Number Identity Router — route calls based on which number was dialed. E
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► Call Transfer
-         ├──► Number Porting
-         │
-         ▼
-    JSON API response
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

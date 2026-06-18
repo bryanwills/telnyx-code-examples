@@ -8,16 +8,15 @@ Media Stream Live Transcription — fork call audio to WebSocket for real-time t
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► STT (Speech Recognition)
-         ├──► Media Streaming
-         │
-         ▼
-    JSON API response
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► STT
+           ├──► Media Streaming
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

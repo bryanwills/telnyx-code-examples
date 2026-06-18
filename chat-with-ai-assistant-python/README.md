@@ -23,13 +23,17 @@ Send messages to a Telnyx AI Assistant and receive responses. Supports conversat
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
+           ▼
+  ┌──────────────────┐
+  │ Telnyx AI         │
+  │ Assistants API    │
+  └────────┬─────────┘
            │
            ▼
-     JSON API response
+     SMS notification
 ```
 
 ## Environment Variables

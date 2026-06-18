@@ -5,18 +5,15 @@ SMS Emergency Check-In — periodic wellness checks via SMS with escalation to e
 ## How It Works
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
   ┌──────────────────┐
-  │  Messaging API    │
+  │ Telnyx Messaging  │
+  │ • Escalation logic │
   └────────┬─────────┘
            │
-           ├──► Escalation
-           ├──► Verification
-           │
-           ▼
-     SMS to customer
+           └──► SMS notification
 ```
 
 ## Telnyx Products Used

@@ -23,13 +23,12 @@ SIP Load Balancer Health Check — monitor SIP trunk health across multiple endp
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
            │
            ▼
-     Email notification
+     JSON response
 ```
 
 ## Environment Variables

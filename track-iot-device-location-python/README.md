@@ -18,18 +18,19 @@ Production-ready Flask application for device location tracking via Telnyx IoT A
 ## Architecture
 
 ```
-  ┌──────────────┐
-  │ IoT Device Event │
-  │ (SIM/sensor)  │
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────┐
-  │ Process      │ ── threshold check
-  └──────┬───────┘
-         │
-         ▼
-    JSON API response
+  ┌──────────────────┐
+  │ API Request      │
+  │ (SIM data /       │
+  │  sensor reading)   │
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ Threshold Check   │
+  └────────┬─────────┘
+           │
+           ▼
+     JSON response
 ```
 
 ## Environment Variables

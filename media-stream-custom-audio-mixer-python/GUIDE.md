@@ -8,15 +8,14 @@ Media Stream Custom Audio Mixer — mix custom audio into live calls via WebSock
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► Media Streaming
-         ├──► Number Porting
-         │
-         ▼
-    JSON API response
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► Media Streaming
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

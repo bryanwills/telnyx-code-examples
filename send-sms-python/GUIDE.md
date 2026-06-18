@@ -9,14 +9,10 @@ Send an SMS message using the Telnyx Messaging API. Supports delivery status web
         │
         ▼
   ┌──────────────────┐
-  │  Messaging API    │
+  │ Telnyx Messaging  │
   └────────┬─────────┘
            │
-           ├──► Data extraction
-           ├──► Verification
-           │
-           ▼
-     SMS to customer
+           └──► SMS notification
 ```
 
 ## Telnyx Products Used

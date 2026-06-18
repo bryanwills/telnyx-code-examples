@@ -20,18 +20,16 @@ Application. Built with Telnyx Migration, Number Porting.
 ## Architecture
 
 ```
-  API Request
+  Your PBX / SBC
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► Number Porting
-         ├──► DTMF Input
-         │
-         ▼
-    Webhook callback
+  ┌──────────────────┐
+  │ Telnyx SIP Trunk  │
+  │ (IP / FQDN auth)  │
+  └────────┬─────────┘
+           │
+           ▼
+     PSTN / Telnyx Network
 ```
 
 ## Environment Variables

@@ -8,16 +8,18 @@ Emergency Mass Notification System — SMS + voice calls with delivery tracking 
   Inbound Phone Call
         │
         ▼
-  ┌─────────────┐
-  │ Call Control │
-  └──────┬──────┘
-         │
-         ├──► TTS (Text-to-Speech)
-         ├──► Messaging API
-         ├──► Number Porting
-         │
-         ▼
-    JSON API response
+  ┌──────────────────┐
+  │ Call Control      │
+  └────────┬─────────┘
+           │
+           ├──► STT
+           ├──► DTMF
+           ├──► Messaging
+           │
+           ├──► Classification / triage
+           │
+           ▼
+     JSON response
 ```
 
 ## Telnyx Products Used

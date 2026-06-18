@@ -30,20 +30,21 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 ## Architecture
 
 ```
-  ┌──────────────┐
+  ┌──────────────────┐
   │ Inbound Phone Call │
-  │ (SIM/sensor)  │
-  └──────┬───────┘
-         │
-         ▼
-  ┌──────────────┐
-  │ AI Classify  │ ── severity / category
-  └──────┬───────┘
-         │
-    ┌────┴────┐
-    │         ├──► Email notification
-    │         ├──► Report / export
-    └─────────┘
+  │ (SIM data /       │
+  │  sensor reading)   │
+  └────────┬─────────┘
+           │
+           ▼
+  ┌──────────────────┐
+  │ AI Classification │
+  │ • Severity level  │
+  │ • Action required │
+  └────────┬─────────┘
+           │
+           ▼
+     JSON response
 ```
 
 ## Environment Variables

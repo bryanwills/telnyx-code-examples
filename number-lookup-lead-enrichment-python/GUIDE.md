@@ -9,15 +9,14 @@ Number Lookup Lead Enrichment — CNAM and carrier lookup to qualify and enrich 
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx AI Inference (LLM)
+           ├──► Telnyx AI Inference
            ├──► Telnyx Number Lookup
-           ├──► Telnyx Number Porting
            │
            ▼
-     Email notification
+     Email
 ```
 
 ## Telnyx Products Used

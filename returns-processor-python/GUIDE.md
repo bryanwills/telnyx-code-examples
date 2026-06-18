@@ -9,19 +9,20 @@ Customer texts photo of defective item via MMS, AI evaluates damage, auto-approv
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Parse message     │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Escalation      │
-  │  • Scoring         │
+  │ AI Inference      │
+  │ • Escalation logic │
+  │ • Scoring / evaluation│
   └────────┬─────────┘
+           │ ◄──── conversation loop
            │
-           ├──► SMS to customer
-           ├──► Slack notification
-           ├──► Payment processing
+           ├──► SMS notification
+           ├──► Slack alert
+           └──► Payment
 ```
 
 ## Telnyx Products Used

@@ -9,13 +9,17 @@ Update an existing Telnyx AI Assistant's configuration, model, system prompt, an
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
+           ▼
+  ┌──────────────────┐
+  │ Telnyx AI         │
+  │ Assistants API    │
+  └────────┬─────────┘
            │
            ▼
-     JSON API response
+     JSON response
 ```
 
 ## Telnyx Products Used

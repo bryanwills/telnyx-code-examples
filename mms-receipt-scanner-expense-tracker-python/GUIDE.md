@@ -5,23 +5,23 @@ MMS Receipt Scanner & Expense Tracker — text a photo of a receipt, AI extracts
 ## How It Works
 
 ```
-  Inbound SMS
+  Inbound SMS/MMS
         │
         ▼
   ┌──────────────────┐
-  │  Parse Message    │
+  │ Parse message     │
   └────────┬─────────┘
            │
            ▼
   ┌──────────────────┐
-  │  AI Inference     │
-  │  • Summarization   │
-  │  • Data extraction │
+  │ AI Inference      │
+  │ • Summarization    │
+  │ • Data extraction  │
   └────────┬─────────┘
+           │ ◄──── conversation loop
            │
-           ├──► SMS to customer
-           ├──► Email notification
-           ├──► Report / export
+           ├──► SMS notification
+           └──► Email
 ```
 
 ## Telnyx Products Used

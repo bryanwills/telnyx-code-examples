@@ -23,13 +23,10 @@ SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS.
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Telnyx Messaging  │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
-           │
-           ▼
-     Email notification
+           └──► JSON response
 ```
 
 ## Environment Variables

@@ -9,12 +9,14 @@ Receive Telnyx voice and SMS webhooks at the edge with minimal latency. Validate
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx Number Porting
+           │
+           ├──► Summarization
            │
            ▼
+     Response
 ```
 
 ## Telnyx Products Used

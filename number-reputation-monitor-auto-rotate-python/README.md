@@ -23,14 +23,16 @@ Number Reputation Monitor — track outbound number reputation, auto-rotate flag
         │
         ▼
   ┌──────────────────┐
-  │  Your App         │
+  │ Your App          │
   └────────┬─────────┘
            │
-           ├──► Telnyx AI Inference (LLM)
-           ├──► Telnyx Number Porting
+           ├──► Telnyx AI Inference
+           ├──► Telnyx Number Management
+           │
+           ├──► Reputation warmup
            │
            ▼
-     Report / export
+     JSON response
 ```
 
 ## Environment Variables
