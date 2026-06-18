@@ -13,25 +13,16 @@ Webhook Debugger AI Assistant — catch, inspect, and debug Telnyx webhooks with
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference (Chat Completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Telnyx Inference │
-                                          │ (AI processing) │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -40,8 +31,9 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Inference model identifier | [→ link](https://developers.telnyx.com/docs/inference/models) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -56,147 +48,18 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t webhook-debugger-ai-assistant .
-docker run --env-file .env -p 5000:5000 webhook-debugger-ai-assistant
+docker build -t webhook-debugger-ai-assistant-python .
+docker run --env-file .env -p 5000:5000 webhook-debugger-ai-assistant-python
 ```
 
 ## API Reference
 
-### `GET /catch/<path:subpath>`
+### `GET", "POST", "PUT", "DELETE /catch/<path:subpath>`
 
-Handles `GET /catch/<path:subpath>`.
-
-**Request:**
+Triggers path:subpath
 
 ```bash
-curl http://localhost:5000/catch/example-id
-```
-
-**Response:**
-
-```json
-{
-  "status": "ok",
-  "id": "..."
-}
-```
-
-### `POST /catch/<path:subpath>`
-
-Handles `POST /catch/<path:subpath>`.
-
-**Request:**
-
-```bash
-curl -X POST http://localhost:5000/catch/example-id
-```
-
-**Response:**
-
-```json
-{
-  "status": "ok",
-  "id": "..."
-}
-```
-
-### `PUT /catch/<path:subpath>`
-
-Handles `PUT /catch/<path:subpath>`.
-
-**Request:**
-
-```bash
-curl -X PUT http://localhost:5000/catch/example-id
-```
-
-**Response:**
-
-```json
-{
-  "status": "ok",
-  "id": "..."
-}
-```
-
-### `DELETE /catch/<path:subpath>`
-
-Handles `DELETE /catch/<path:subpath>`.
-
-**Response:**
-
-```json
-{
-  "status": "ok",
-  "id": "..."
-}
-```
-
-### `GET /analyze/<int:index>`
-
-Handles `GET /analyze/<int:index>`.
-
-**Request:**
-
-```bash
-curl http://localhost:5000/analyze/example-id
-```
-
-**Response:**
-
-```json
-{
-  "webhook": "...",
-  "analysis": "..."
-}
-```
-
-### `GET /analyze/recent`
-
-Handles `GET /analyze/recent`.
-
-**Request:**
-
-```bash
-curl http://localhost:5000/analyze/recent
-```
-
-**Response:**
-
-```json
-{
-  "recent_count": 3,
-  "analysis": "..."
-}
-```
-
-### `GET /log`
-
-Handles `GET /log`.
-
-**Request:**
-
-```bash
-curl http://localhost:5000/log
-```
-
-**Response:**
-
-```json
-{
-  "webhooks": "...",
-  "total": 3
-}
-```
-
-### `GET /health`
-
-Returns service health and operational metrics.
-
-**Request:**
-
-```bash
-curl http://localhost:5000/health
+curl -X GET", "POST", "PUT", "DELETE http://localhost:5000/catch/<path:subpath>
 ```
 
 **Response:**
@@ -207,8 +70,93 @@ curl http://localhost:5000/health
 }
 ```
 
+### `GET /analyze/<int:index>`
+
+Returns int:index
+
+```bash
+curl http://localhost:5000/analyze/<int:index>
+```
+
+**Response:**
+
+```json
+{
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
+}
+```
+
+### `GET /analyze/recent`
+
+Returns recent
+
+```bash
+curl http://localhost:5000/analyze/recent
+```
+
+**Response:**
+
+```json
+{
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
+}
+```
+
+### `GET /log`
+
+Returns log
+
+```bash
+curl http://localhost:5000/log
+```
+
+**Response:**
+
+```json
+{
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
+}
+```
+
+### `GET /health`
+
+Returns health
+
+```bash
+curl http://localhost:5000/health
+```
+
+**Response:**
+
+```json
+{
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
+}
+```
+
 ## Resources
 
-- [AI Inference (Chat Completions) — API Reference](https://developers.telnyx.com/api/inference/chat-completions)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -12,25 +12,15 @@ channel: [voice]
 
 Migrate from ElevenLabs — import ElevenLabs voice configurations to Telnyx TTS with voice mapping and cost comparison.
 
-
-## Telnyx API Endpoints Used
-
-- **AI Inference**: `POST /v2/ai/chat/completions` -- [API reference](https://developers.telnyx.com/api/inference/chat-completions)
-
-
 ## Architecture
 
 ```text
 ┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
-│  Phone Call  │────►│   Telnyx   │────►│  POST /webhooks/voice│
+│ Phone Call   │────►│   Telnyx   │────►│ POST /webhooks/voice │
 └─────────────┘     │   Cloud    │     └──────────┬───────────┘
                     └────────────┘                │
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+                                           TTS response
+                                           back to caller
 ```
 
 ## Environment Variables
@@ -39,8 +29,9 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `ELEVENLABS_API_KEY` | `string` | `...` | **yes** | elevenlabs api key | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `ELEVENLABS_API_KEY` | `string` | `your_value` | **yes** | Elevenlabs api key | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -67,17 +58,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t migrate-from-elevenlabs .
-docker run --env-file .env -p 5000:5000 migrate-from-elevenlabs
+docker build -t migrate-from-elevenlabs-python .
+docker run --env-file .env -p 5000:5000 migrate-from-elevenlabs-python
 ```
 
 ## API Reference
 
 ### `GET /audit/elevenlabs`
 
-Handles `GET /audit/elevenlabs`.
-
-**Request:**
+Returns elevenlabs
 
 ```bash
 curl http://localhost:5000/audit/elevenlabs
@@ -87,40 +76,47 @@ curl http://localhost:5000/audit/elevenlabs
 
 ```json
 {
-  "elevenlabs_voices": "...",
-  "total": 3,
-  "auto_mappable": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `POST /migrate/voice-config`
 
-Handles `POST /migrate/voice-config`.
-
-**Request:**
+Triggers voice-config
 
 ```bash
 curl -X POST http://localhost:5000/migrate/voice-config \
   -H "Content-Type: application/json" \
   -d '{
-  "elevenlabs_voice_name": "Jane Doe",
-  "speed": "1.0"
-}'
+    "source_api_key": "SK_twilio_xxx",
+    "dry_run": true
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "migration": {
+    "status": "completed",
+    "resources_migrated": 12,
+    "phone_numbers": 5,
+    "applications": 3,
+    "messaging_profiles": 2,
+    "webhooks": 2
+  }
 }
 ```
 
 ### `GET /mapping/voices`
 
-Handles `GET /mapping/voices`.
-
-**Request:**
+Returns voices
 
 ```bash
 curl http://localhost:5000/mapping/voices
@@ -130,16 +126,19 @@ curl http://localhost:5000/mapping/voices
 
 ```json
 {
-  "mappings": "...",
-  "custom_note": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /cost-comparison`
 
-Handles `GET /cost-comparison`.
-
-**Request:**
+Returns cost-comparison
 
 ```bash
 curl http://localhost:5000/cost-comparison
@@ -149,39 +148,39 @@ curl http://localhost:5000/cost-comparison
 
 ```json
 {
-  "status": "ok"
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `POST /test-tts`
 
-Handles `POST /test-tts`.
-
-**Request:**
+Triggers test-tts
 
 ```bash
 curl -X POST http://localhost:5000/test-tts \
   -H "Content-Type: application/json" \
-  -d '{
-  "voice_id": "en-US-Neural2-F"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok",
-  "voice": "...",
-  "note": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /migration-log`
 
-Returns log details.
-
-**Request:**
+Returns migration-log
 
 ```bash
 curl http://localhost:5000/migration-log
@@ -191,15 +190,20 @@ curl http://localhost:5000/migration-log
 
 ```json
 {
-  "log": "..."
+  "migration": {
+    "status": "completed",
+    "resources_migrated": 12,
+    "phone_numbers": 5,
+    "applications": 3,
+    "messaging_profiles": 2,
+    "webhooks": 2
+  }
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -209,11 +213,15 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

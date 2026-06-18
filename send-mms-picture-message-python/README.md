@@ -1,34 +1,28 @@
 ---
 name: send-mms-picture-message
-title: "Production-ready Flask endpoint for sending MMS via Telnyx."
-description: "Application. Built with Telnyx Migration, Number Porting, SMS/MMS."
+title: "Send MMS Picture Message"
+description: "Send an MMS message with image attachments using the Telnyx Messaging API."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting, SMS/MMS]
+telnyx_products: [Messaging]
 ---
 
-# Production-ready Flask endpoint for sending MMS via Telnyx.
+# Send MMS Picture Message
 
-Production-ready Flask endpoint for sending MMS via Telnyx.
-
+Send an MMS message with image attachments using the Telnyx Messaging API.
 
 ## Telnyx API Endpoints Used
 
-- **Messaging (MMS)**: `POST /v2/messages` -- [API reference](https://developers.telnyx.com/api/messaging/send-message)
-
+- **Send Message**: `POST /v2/messages` -- [API reference](https://developers.telnyx.com/api/messaging/send-message)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -37,9 +31,9 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `TELNYX_PHONE_NUMBER` | `string` | `+18005551234` | **yes** | telnyx phone number | — |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `TELNYX_PHONE_NUMBER` | `string` | `your_value` | **yes** | Telnyx phone number | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
 
 ## Setup
 
@@ -54,36 +48,37 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t send-mms-picture-message .
-docker run --env-file .env -p 5000:5000 send-mms-picture-message
+docker build -t send-mms-picture-message-python .
+docker run --env-file .env -p 5000:5000 send-mms-picture-message-python
 ```
 
 ## API Reference
 
 ### `POST /mms/send`
 
-Sends notifications to applicable recipients.
-
-**Request:**
+HTTP endpoint to send MMS with media attachments.
 
 ```bash
 curl -X POST http://localhost:5000/mms/send \
   -H "Content-Type: application/json" \
   -d '{
-  "message": "Customer reported issue with service",
-  "media_urls": "[]"
-}'
+    "to": "+12125551234",
+    "message": "Hello from Telnyx!"
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "status_code": "..."
+  "message_id": "msg-f5d7a7e0-1234-5678",
+  "status": "queued",
+  "to": "+12125551234",
+  "segments": 1
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

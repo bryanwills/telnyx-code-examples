@@ -13,26 +13,18 @@ SIP Trunking Failover Monitor — health-check SIP connections, auto-failover, S
 
 ## Telnyx API Endpoints Used
 
-- **Messaging**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **AI Inference (Chat Completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Credential Connections**: `POST /v2/credential_connections` — [API reference](https://developers.telnyx.com/api/webrtc/create-credential-connection)
+- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Telnyx Inference │
-                                          │ (AI processing) │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -41,11 +33,12 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Inference model identifier | [→ link](https://developers.telnyx.com/docs/inference/models) |
-| `ALERT_NUMBER` | `string` | `+18005551234` | **yes** | alert number | — |
-| `PRIMARY_SIP_CONNECTION_ID` | `string` | `...` | **yes** | primary sip connection id | — |
-| `BACKUP_SIP_CONNECTION_ID` | `string` | `...` | **yes** | backup sip connection id | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
+| `ALERT_NUMBER` | `string` | `your_value` | **yes** | Alert number | — |
+| `PRIMARY_SIP_CONNECTION_ID` | `string` | `your_value` | **yes** | Primary sip connection id | — |
+| `BACKUP_SIP_CONNECTION_ID` | `string` | `your_value` | **yes** | Backup sip connection id | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -60,35 +53,39 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t sip-trunking-failover-monitor .
-docker run --env-file .env -p 5000:5000 sip-trunking-failover-monitor
+docker build -t sip-trunking-failover-monitor-python .
+docker run --env-file .env -p 5000:5000 sip-trunking-failover-monitor-python
 ```
 
 ## API Reference
 
 ### `POST /check`
 
-Returns service health and operational metrics.
-
-**Request:**
+Triggers check
 
 ```bash
-curl -X POST http://localhost:5000/check
+curl -X POST http://localhost:5000/check \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phone": "+12125551234",
+    "channel": "sms"
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "verification_id": "ver-abc123",
+  "status": "pending",
+  "channel": "sms",
+  "phone": "+12125551234"
 }
 ```
 
 ### `GET /status`
 
-Returns status details.
-
-**Request:**
+Returns status
 
 ```bash
 curl http://localhost:5000/status
@@ -98,18 +95,19 @@ curl http://localhost:5000/status
 
 ```json
 {
-  "active_connection": 3,
-  "primary_id": "...",
-  "backup_id": "...",
-  "recent_checks": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -119,13 +117,15 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Messaging — API Reference](https://developers.telnyx.com/api/messaging/send-message)
-- [AI Inference (Chat Completions) — API Reference](https://developers.telnyx.com/api/inference/chat-completions)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

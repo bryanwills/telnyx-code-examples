@@ -9,29 +9,20 @@ telnyx_products: [AI Inference]
 
 # Run LLM inference on Telnyx — OpenAI-compatible chat completions API.
 
-Run LLM inference on Telnyx — OpenAI-compatible chat completions API.
+Application powered by Telnyx AI Inference. Built with Telnyx AI Inference, Migration, Number Porting, SMS/MMS.
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference (Chat Completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Telnyx Inference │
-                                          │ (AI processing) │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -40,9 +31,10 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Inference model identifier | [→ link](https://developers.telnyx.com/docs/inference/models) |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -57,63 +49,57 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t run-llm-inference .
-docker run --env-file .env -p 5000:5000 run-llm-inference
+docker build -t run-llm-inference-python .
+docker run --env-file .env -p 5000:5000 run-llm-inference-python
 ```
 
 ## API Reference
 
 ### `POST /inference/chat`
 
-Handles `POST /inference/chat`.
-
-**Request:**
+HTTP endpoint for chat completions — pass through to Telnyx Inference.
 
 ```bash
 curl -X POST http://localhost:5000/inference/chat \
   -H "Content-Type: application/json" \
   -d '{
-  "model": "example_value",
-  "max_tokens": 500,
-  "temperature": "0.7"
-}'
+    "message": "How do I set up a voice AI agent with Telnyx?"
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "response": "Based on the Telnyx API documentation, you can implement programmable voice using Call Control...",
+  "model": "moonshotai/Kimi-K2.6",
+  "tokens_used": 284
 }
 ```
 
 ### `POST /inference/ask`
 
-Handles `POST /inference/ask`.
-
-**Request:**
+Simplified endpoint — send a question, get an answer.
 
 ```bash
 curl -X POST http://localhost:5000/inference/ask \
   -H "Content-Type: application/json" \
-  -d '{
-  "system_prompt": "example_value"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "answer": "..."
+  "response": "Based on the Telnyx API documentation, you can implement programmable voice using Call Control...",
+  "model": "moonshotai/Kimi-K2.6",
+  "tokens_used": 284
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Health check.
 
 ```bash
 curl http://localhost:5000/health
@@ -123,12 +109,15 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [AI Inference (Chat Completions) — API Reference](https://developers.telnyx.com/api/inference/chat-completions)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

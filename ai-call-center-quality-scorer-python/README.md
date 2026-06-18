@@ -13,25 +13,16 @@ AI Call Center Quality Scorer — automatically score agent performance from cal
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference (Chat Completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Telnyx Inference │
-                                          │ (AI processing) │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -40,8 +31,9 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Inference model identifier | [→ link](https://developers.telnyx.com/docs/inference/models) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -56,62 +48,65 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t ai-call-center-quality-scorer .
-docker run --env-file .env -p 5000:5000 ai-call-center-quality-scorer
+docker build -t ai-call-center-quality-scorer-python .
+docker run --env-file .env -p 5000:5000 ai-call-center-quality-scorer-python
 ```
 
 ## API Reference
 
 ### `POST /score`
 
-Handles `POST /score`.
-
-**Request:**
+Triggers score
 
 ```bash
 curl -X POST http://localhost:5000/score \
   -H "Content-Type: application/json" \
-  -d '{
-  "transcript": "example_value",
-  "call_id": "f\"CALL-{int(time.time("
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "raw_analysis": "..."
+  "results": [
+    {
+      "id": "eval-001",
+      "score": 8.5,
+      "feedback": "Strong opening, good discovery questions. Improve: handle pricing objection earlier.",
+      "completed_at": "2026-07-15T14:45:00Z"
+    }
+  ]
 }
 ```
 
 ### `POST /score/batch`
 
-Handles `POST /score/batch`.
-
-**Request:**
+Triggers batch
 
 ```bash
 curl -X POST http://localhost:5000/score/batch \
   -H "Content-Type: application/json" \
-  -d '{
-  "transcripts": "[]"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "results": "..."
+  "results": [
+    {
+      "id": "eval-001",
+      "score": 8.5,
+      "feedback": "Strong opening, good discovery questions. Improve: handle pricing objection earlier.",
+      "completed_at": "2026-07-15T14:45:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /scorecards`
 
-Returns all scorecards.
-
-**Request:**
+Returns scorecards
 
 ```bash
 curl http://localhost:5000/scorecards
@@ -121,15 +116,20 @@ curl http://localhost:5000/scorecards
 
 ```json
 {
-  "scorecards": "..."
+  "results": [
+    {
+      "id": "eval-001",
+      "score": 8.5,
+      "feedback": "Strong opening, good discovery questions. Improve: handle pricing objection earlier.",
+      "completed_at": "2026-07-15T14:45:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /scorecards/summary`
 
-Handles `GET /scorecards/summary`.
-
-**Request:**
+Returns summary
 
 ```bash
 curl http://localhost:5000/scorecards/summary
@@ -139,20 +139,20 @@ curl http://localhost:5000/scorecards/summary
 
 ```json
 {
-  "message": "...",
-  "count": 3,
-  "avg_overall": "...",
-  "avg_empathy": "...",
-  "avg_compliance": "...",
-  "avg_resolution": "..."
+  "results": [
+    {
+      "id": "eval-001",
+      "score": 8.5,
+      "feedback": "Strong opening, good discovery questions. Improve: handle pricing objection earlier.",
+      "completed_at": "2026-07-15T14:45:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -162,12 +162,15 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [AI Inference (Chat Completions) — API Reference](https://developers.telnyx.com/api/inference/chat-completions)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

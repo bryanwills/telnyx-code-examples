@@ -13,26 +13,18 @@ SIM Fleet Data Usage Anomaly Detector — monitor IoT SIM usage, AI detects anom
 
 ## Telnyx API Endpoints Used
 
-- **Messaging**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **AI Inference (Chat Completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **SIM Cards**: `GET /v2/sim_cards` — [API reference](https://developers.telnyx.com/api/sim-cards/list-sim-cards)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Telnyx Inference │
-                                          │ (AI processing) │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -41,9 +33,10 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Inference model identifier | [→ link](https://developers.telnyx.com/docs/inference/models) |
-| `ALERT_NUMBER` | `string` | `+18005551234` | **yes** | alert number | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
+| `ALERT_NUMBER` | `string` | `your_value` | **yes** | Alert number | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -58,37 +51,35 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t sim-fleet-data-usage-anomaly-detector .
-docker run --env-file .env -p 5000:5000 sim-fleet-data-usage-anomaly-detector
+docker build -t sim-fleet-data-usage-anomaly-detector-python .
+docker run --env-file .env -p 5000:5000 sim-fleet-data-usage-anomaly-detector-python
 ```
 
 ## API Reference
 
 ### `POST /scan`
 
-Handles `POST /scan`.
-
-**Request:**
+Triggers scan
 
 ```bash
-curl -X POST http://localhost:5000/scan
+curl -X POST http://localhost:5000/scan \
+  -H "Content-Type: application/json" \
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "anomalies_found": "...",
-  "details": "...",
-  "message": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /anomalies`
 
-Returns all anomalies.
-
-**Request:**
+Returns anomalies
 
 ```bash
 curl http://localhost:5000/anomalies
@@ -98,15 +89,19 @@ curl http://localhost:5000/anomalies
 
 ```json
 {
-  "anomalies": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -116,13 +111,15 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Messaging — API Reference](https://developers.telnyx.com/api/messaging/send-message)
-- [AI Inference (Chat Completions) — API Reference](https://developers.telnyx.com/api/inference/chat-completions)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

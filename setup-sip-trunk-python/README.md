@@ -1,34 +1,29 @@
 ---
 name: setup-sip-trunk
-title: "Production-ready Flask endpoint for setting up SIP trunking via Telnyx."
-description: "Application. Built with Telnyx Migration, Number Porting."
+title: "Setup SIP Trunk"
+description: "Provision and configure a SIP trunk connection on Telnyx with codec preferences, authentication, and failover."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting]
+telnyx_products: [SIP Trunking]
 ---
 
-# Production-ready Flask endpoint for setting up SIP trunking via Telnyx.
+# Setup SIP Trunk
 
-Production-ready Flask endpoint for setting up SIP trunking via Telnyx.
-
+Provision and configure a SIP trunk connection on Telnyx with codec preferences, authentication, and failover.
 
 ## Telnyx API Endpoints Used
 
-- **SIP Connections**: `GET /v2/sip_connections` — [API reference](https://developers.telnyx.com/api/sip-trunking/list-sip-connections)
-
+- **Create SIP Connection**: `POST /v2/sip_connections` -- [API reference](https://developers.telnyx.com/api/sip/create-sip-connection)
+- **List SIP Connections**: `GET /v2/sip_connections` -- [API reference](https://developers.telnyx.com/api/sip/list-sip-connections)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -37,8 +32,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
 
 ## Setup
 
@@ -53,37 +48,38 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t setup-sip-trunk .
-docker run --env-file .env -p 5000:5000 setup-sip-trunk
+docker build -t setup-sip-trunk-python .
+docker run --env-file .env -p 5000:5000 setup-sip-trunk-python
 ```
 
 ## API Reference
 
 ### `POST /sip/setup`
 
-Handles `POST /sip/setup`.
-
-**Request:**
+HTTP endpoint to set up SIP trunking.
 
 ```bash
 curl -X POST http://localhost:5000/sip/setup \
   -H "Content-Type: application/json" \
-  -d '{
-  "name": "Jane Doe",
-  "username": "Jane Doe",
-  "password": "example_value"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status_code": "..."
+  "connections": [
+    {
+      "id": "1494404757140276705",
+      "name": "Production SIP",
+      "status": "active",
+      "ip": "192.168.1.100"
+    }
+  ]
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

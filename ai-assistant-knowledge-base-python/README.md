@@ -13,25 +13,16 @@ AI Assistant Knowledge Base — AI Assistant with document knowledge base for co
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference (Chat Completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Telnyx Inference │
-                                          │ (AI processing) │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -40,8 +31,9 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Inference model identifier | [→ link](https://developers.telnyx.com/docs/inference/models) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -56,65 +48,55 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t ai-assistant-knowledge-base .
-docker run --env-file .env -p 5000:5000 ai-assistant-knowledge-base
+docker build -t ai-assistant-knowledge-base-python .
+docker run --env-file .env -p 5000:5000 ai-assistant-knowledge-base-python
 ```
 
 ## API Reference
 
 ### `POST /documents`
 
-Adds a new entry.
-
-**Request:**
+Triggers documents
 
 ```bash
 curl -X POST http://localhost:5000/documents \
   -H "Content-Type: application/json" \
-  -d '{
-  "title": "f\"doc-{int(time.time(",
-  "content": "example_value"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok",
-  "document": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `POST /ask`
 
-Handles `POST /ask`.
-
-**Request:**
+Triggers ask
 
 ```bash
 curl -X POST http://localhost:5000/ask \
   -H "Content-Type: application/json" \
-  -d '{
-  "question": "example_value",
-  "top_k": 3
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "answer": "...",
-  "sources": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /documents`
 
-Returns all documents.
-
-**Request:**
+Returns documents
 
 ```bash
 curl http://localhost:5000/documents
@@ -124,16 +106,19 @@ curl http://localhost:5000/documents
 
 ```json
 {
-  "documents": "...",
-  "total_chunks": 3
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -143,12 +128,15 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [AI Inference (Chat Completions) — API Reference](https://developers.telnyx.com/api/inference/chat-completions)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

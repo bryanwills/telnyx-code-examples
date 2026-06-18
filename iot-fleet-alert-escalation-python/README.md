@@ -14,36 +14,30 @@ IoT Fleet Alert Escalation — severity-based routing from IoT sensors to SMS, c
 
 ## Telnyx API Endpoints Used
 
-- **Messaging**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **Call Control: Dial**: `POST /v2/calls` — [API reference](https://developers.telnyx.com/api/call-control/dial)
-- **AI Inference (Chat Completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Create Call**: `POST /v2/calls` — [API reference](https://developers.telnyx.com/api/call-control/create-call)
+- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Telnyx Webhook Events
 
-This app handles these [Call Control](https://developers.telnyx.com/docs/api/v2/call-control) and [Messaging](https://developers.telnyx.com/docs/api/v2/messaging) webhook events:
+This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.answered` — call connected, app speaks greeting
-- `call.speak.ended` — TTS finished, app starts listening
-- `call.hangup` — call ended, app cleans up session
+- `call.answered` — Call connected — app begins interaction
+- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
+- `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
 
 ## Architecture
 
 ```text
 ┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
-│  Phone Call  │────►│   Telnyx   │────►│  POST /webhooks/voice│
+│ Phone Call   │────►│   Telnyx   │────►│ POST /webhooks/voice │
 └─────────────┘     │   Cloud    │     └──────────┬───────────┘
                     └────────────┘                │
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Telnyx Inference │
-                                          │ (AI processing) │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+                                           AI Inference
+                                           (Telnyx LLM)
+                                                │
+                                           TTS response
+                                           back to caller
 ```
 
 ## Environment Variables
@@ -52,13 +46,14 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Inference model identifier | [→ link](https://developers.telnyx.com/docs/inference/models) |
-| `ALERT_NUMBER` | `string` | `+18005551234` | **yes** | alert number | — |
-| `ONCALL_NUMBER` | `string` | `+18005551234` | **yes** | oncall number | — |
-| `DISPATCHER_NUMBER` | `string` | `+18005551234` | **yes** | dispatcher number | — |
-| `CONNECTION_ID` | `string` | `1234567890` | **yes** | Call Control connection ID | [→ link](https://portal.telnyx.com/call-control/applications) |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
+| `ALERT_NUMBER` | `string` | `your_value` | **yes** | Alert number | — |
+| `ONCALL_NUMBER` | `string` | `your_value` | **yes** | Oncall number | — |
+| `DISPATCHER_NUMBER` | `string` | `your_value` | **yes** | Dispatcher number | — |
+| `CONNECTION_ID` | `string` | `1494404757140276705` | **yes** | Call Control connection/app ID | [Portal](https://portal.telnyx.com/call-control/applications) |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -85,36 +80,40 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t iot-fleet-alert-escalation .
-docker run --env-file .env -p 5000:5000 iot-fleet-alert-escalation
+docker build -t iot-fleet-alert-escalation-python .
+docker run --env-file .env -p 5000:5000 iot-fleet-alert-escalation-python
 ```
 
 ## API Reference
 
 ### `POST /alert`
 
-Handles `POST /alert`.
-
-**Request:**
+Receive IoT sensor alert and route based on AI-classified severity.
 
 ```bash
-curl -X POST http://localhost:5000/alert
+curl -X POST http://localhost:5000/alert \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phone": "+12125551234",
+    "event": "suspicious_transaction",
+    "amount": 150.00
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "severity": "...",
-  "action": "..."
+  "alert_id": "alrt-98234",
+  "status": "sent",
+  "phone": "+12125551234",
+  "channel": "voice"
 }
 ```
 
 ### `GET /alerts`
 
-Returns all alerts.
-
-**Request:**
+List recent alerts.
 
 ```bash
 curl http://localhost:5000/alerts
@@ -124,16 +123,22 @@ curl http://localhost:5000/alerts
 
 ```json
 {
-  "alerts": "...",
-  "total": 3
+  "alerts": [
+    {
+      "id": "alrt-98234",
+      "transaction": "TXN-98234",
+      "amount": 150.00,
+      "risk_score": 85,
+      "status": "verified",
+      "verified_at": "2026-07-15T14:32:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -143,7 +148,10 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
@@ -153,22 +161,28 @@ curl http://localhost:5000/health
 
 Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-control) webhook events.
 
-**Events handled:** `call.answered`, `call.speak.ended`, `call.hangup`
+**Events handled:** `call.answered`, `call.hangup`, `call.speak.ended`
 
-**Example inbound payload:**
+**Example payload:**
 
 ```json
 {
   "data": {
     "event_type": "call.initiated",
-    "call_control_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
-    "connection_id": "1494404757140276705",
-    "direction": "incoming",
-    "from": "+12125551234",
-    "to": "+13105559876",
-    "call_leg_id": "428c31b6-7af4-4bcb-b7f5-5013ef9657c1",
-    "client_state": null,
-    "state": "ringing"
+    "id": "0ccc7b54-4df3-4bca-a65a-3da1ecc777f0",
+    "occurred_at": "2026-07-15T14:30:00.000Z",
+    "payload": {
+      "call_control_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+      "connection_id": "1494404757140276705",
+      "call_leg_id": "428c31b6-7af4-4bcb-b7f5-5013ef9657c1",
+      "call_session_id": "428c31b6-abcd-1234-5678-5013ef9657c1",
+      "client_state": null,
+      "from": "+12125551234",
+      "to": "+13105559876",
+      "direction": "incoming",
+      "state": "ringing"
+    },
+    "record_type": "event"
   },
   "meta": {
     "attempt": 1,
@@ -179,8 +193,7 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Resources
 
-- [Messaging — API Reference](https://developers.telnyx.com/api/messaging/send-message)
-- [Call Control: Dial — API Reference](https://developers.telnyx.com/api/call-control/dial)
-- [AI Inference (Chat Completions) — API Reference](https://developers.telnyx.com/api/inference/chat-completions)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

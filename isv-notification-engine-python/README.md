@@ -14,27 +14,23 @@ SaaS platform sends alerts via SMS/voice/WhatsApp based on customer preference a
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Speak (TTS)**: `POST /v2/calls/{call_control_id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
+- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
 
 ## Telnyx Webhook Events
 
-This app handles these [Call Control](https://developers.telnyx.com/docs/api/v2/call-control) and [Messaging](https://developers.telnyx.com/docs/api/v2/messaging) webhook events:
+This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.answered` — call connected, app speaks greeting
+- `call.answered` — Call connected — app begins interaction
 
 ## Architecture
 
 ```text
 ┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
-│  Phone Call  │────►│   Telnyx   │────►│  POST /webhooks/voice│
+│ Phone Call   │────►│   Telnyx   │────►│ POST /webhooks/voice │
 └─────────────┘     │   Cloud    │     └──────────┬───────────┘
                     └────────────┘                │
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+                                           TTS response
+                                           back to caller
 ```
 
 ## Environment Variables
@@ -43,10 +39,11 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [→ link](https://portal.telnyx.com/numbers/my-numbers) |
-| `CONNECTION_ID` | `string` | `1234567890` | **yes** | Call Control connection ID | [→ link](https://portal.telnyx.com/call-control/applications) |
-| `WHATSAPP_NUMBER` | `string` | `+18005551234` | no | WhatsApp-enabled Telnyx number | [→ link](https://portal.telnyx.com/numbers/my-numbers) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
+| `CONNECTION_ID` | `string` | `1494404757140276705` | **yes** | Call Control connection/app ID | [Portal](https://portal.telnyx.com/call-control/applications) |
+| `WHATSAPP_NUMBER` | `string` | `your_value` | **yes** | Whatsapp number | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -73,65 +70,55 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t isv-notification-engine .
-docker run --env-file .env -p 5000:5000 isv-notification-engine
+docker build -t isv-notification-engine-python .
+docker run --env-file .env -p 5000:5000 isv-notification-engine-python
 ```
 
 ## API Reference
 
 ### `POST /notify`
 
-Handles `POST /notify`.
-
-**Request:**
+Triggers notify
 
 ```bash
 curl -X POST http://localhost:5000/notify \
   -H "Content-Type: application/json" \
-  -d '{
-  "customer_id": "cust-001",
-  "message": "Customer reported issue with service",
-  "urgency": "normal"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "notification": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `POST /notify/bulk`
 
-Handles `POST /notify/bulk`.
-
-**Request:**
+Triggers bulk
 
 ```bash
 curl -X POST http://localhost:5000/notify/bulk \
   -H "Content-Type: application/json" \
-  -d '{
-  "customer_ids": "[]",
-  "message": "Customer reported issue with service",
-  "urgency": "normal"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "results": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /customers`
 
-Returns all customers.
-
-**Request:**
+Returns customers
 
 ```bash
 curl http://localhost:5000/customers
@@ -141,38 +128,35 @@ curl http://localhost:5000/customers
 
 ```json
 {
-  "customers": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `PUT /customers/<cid>/preference`
 
-Updates the record.
-
-**Request:**
+Triggers preference
 
 ```bash
-curl -X PUT http://localhost:5000/customers/cust-001/preference \
-  -H "Content-Type: application/json" \
-  -d '{
-  "preference": "customers[cid][\"preference\"]",
-  "fallback": "customers[cid].get(\"fallback\", []"
-}'
+curl -X PUT http://localhost:5000/customers/example-id/preference
 ```
 
 **Response:**
 
 ```json
 {
-  "customer": "..."
+  "status": "ok"
 }
 ```
 
 ### `GET /notifications`
 
-Returns all notifications.
-
-**Request:**
+Returns notifications
 
 ```bash
 curl http://localhost:5000/notifications
@@ -182,17 +166,19 @@ curl http://localhost:5000/notifications
 
 ```json
 {
-  "notifications": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -202,7 +188,10 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
@@ -214,20 +203,26 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 **Events handled:** `call.answered`
 
-**Example inbound payload:**
+**Example payload:**
 
 ```json
 {
   "data": {
     "event_type": "call.initiated",
-    "call_control_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
-    "connection_id": "1494404757140276705",
-    "direction": "incoming",
-    "from": "+12125551234",
-    "to": "+13105559876",
-    "call_leg_id": "428c31b6-7af4-4bcb-b7f5-5013ef9657c1",
-    "client_state": null,
-    "state": "ringing"
+    "id": "0ccc7b54-4df3-4bca-a65a-3da1ecc777f0",
+    "occurred_at": "2026-07-15T14:30:00.000Z",
+    "payload": {
+      "call_control_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+      "connection_id": "1494404757140276705",
+      "call_leg_id": "428c31b6-7af4-4bcb-b7f5-5013ef9657c1",
+      "call_session_id": "428c31b6-abcd-1234-5678-5013ef9657c1",
+      "client_state": null,
+      "from": "+12125551234",
+      "to": "+13105559876",
+      "direction": "incoming",
+      "state": "ringing"
+    },
+    "record_type": "event"
   },
   "meta": {
     "attempt": 1,
@@ -238,6 +233,6 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Resources
 
-- [Call Control: Speak (TTS) — API Reference](https://developers.telnyx.com/api/call-control/speak)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

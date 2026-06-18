@@ -13,26 +13,21 @@ Call Sentiment Live Escalation — monitor call transcripts in real-time. When n
 
 ## Telnyx API Endpoints Used
 
-- **Messaging**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **AI Inference (Chat Completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Telnyx Inference │
-                                          │ (AI processing) │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
+│ Phone Call   │────►│   Telnyx   │────►│ POST /webhooks/voice │
+└─────────────┘     │   Cloud    │     └──────────┬───────────┘
+                    └────────────┘                │
+                                           AI Inference
+                                           (Telnyx LLM)
+                                                │
+                                           TTS response
+                                           back to caller
 ```
 
 ## Environment Variables
@@ -41,10 +36,11 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Inference model identifier | [→ link](https://developers.telnyx.com/docs/inference/models) |
-| `SUPERVISOR_NUMBER` | `string` | `+18005551234` | **yes** | supervisor number | — |
-| `CONNECTION_ID` | `string` | `1234567890` | **yes** | Call Control connection ID | [→ link](https://portal.telnyx.com/call-control/applications) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
+| `SUPERVISOR_NUMBER` | `string` | `your_value` | **yes** | Supervisor number | — |
+| `CONNECTION_ID` | `string` | `1494404757140276705` | **yes** | Call Control connection/app ID | [Portal](https://portal.telnyx.com/call-control/applications) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -56,68 +52,80 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
+### Webhook Configuration
+
+1. Expose your local server:
+
+   ```bash
+   ngrok http 5000
+   ```
+
+2. Copy the HTTPS URL and configure in [Telnyx Portal](https://portal.telnyx.com):
+
+   - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
+
 ### Docker
 
 ```bash
-docker build -t call-sentiment-live-escalation .
-docker run --env-file .env -p 5000:5000 call-sentiment-live-escalation
+docker build -t call-sentiment-live-escalation-python .
+docker run --env-file .env -p 5000:5000 call-sentiment-live-escalation-python
 ```
 
 ## API Reference
 
 ### `POST /monitor`
 
-Handles `POST /monitor`.
-
-**Request:**
+Triggers monitor
 
 ```bash
 curl -X POST http://localhost:5000/monitor \
   -H "Content-Type: application/json" \
-  -d '{
-  "call_id": "abc-123",
-  "agent": "Sarah Chen",
-  "customer": "example_value"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok",
-  "call_id": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `POST /transcript`
 
-Handles `POST /transcript`.
-
-**Request:**
+Triggers transcript
 
 ```bash
 curl -X POST http://localhost:5000/transcript \
   -H "Content-Type: application/json" \
-  -d '{
-  "call_id": "abc-123",
-  "speaker": "customer"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "transcript": [
+    {
+      "time": 1750280400.0,
+      "speaker": "...1234",
+      "text": "I think we should proceed with option B"
+    },
+    {
+      "time": 1750280415.0,
+      "speaker": "...5678",
+      "text": "Agreed, let me draft the proposal"
+    }
+  ],
+  "summary": "Team agreed to proceed with option B. Proposal draft assigned."
 }
 ```
 
 ### `GET /calls/<call_id>/sentiment`
 
-Handles `GET /calls/<call_id>/sentiment`.
-
-**Request:**
+Returns sentiment
 
 ```bash
 curl http://localhost:5000/calls/example-id/sentiment
@@ -127,19 +135,21 @@ curl http://localhost:5000/calls/example-id/sentiment
 
 ```json
 {
-  "call_id": "...",
-  "avg_sentiment": "...",
-  "trend": "...",
-  "escalated": "...",
-  "chunks": "..."
+  "calls": [
+    {
+      "call_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+      "from": "+18005551234",
+      "to": "+12125559876",
+      "duration_seconds": 145,
+      "status": "completed"
+    }
+  ]
 }
 ```
 
 ### `GET /escalations`
 
-Returns all escalations.
-
-**Request:**
+Returns escalations
 
 ```bash
 curl http://localhost:5000/escalations
@@ -149,15 +159,19 @@ curl http://localhost:5000/escalations
 
 ```json
 {
-  "escalations": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -167,13 +181,16 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Messaging — API Reference](https://developers.telnyx.com/api/messaging/send-message)
-- [AI Inference (Chat Completions) — API Reference](https://developers.telnyx.com/api/inference/chat-completions)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

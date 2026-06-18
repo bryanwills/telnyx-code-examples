@@ -11,24 +11,18 @@ telnyx_products: [IoT/SIM, Migration, Number Porting, Verify]
 
 Production-ready Flask application for device location tracking via Telnyx IoT API.
 
-
 ## Telnyx API Endpoints Used
 
 - **SIM Cards**: `GET /v2/sim_cards` — [API reference](https://developers.telnyx.com/api/sim-cards/list-sim-cards)
 
-
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -37,8 +31,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
 
 ## Setup
 
@@ -53,17 +47,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t track-iot-device-location .
-docker run --env-file .env -p 5000:5000 track-iot-device-location
+docker build -t track-iot-device-location-python .
+docker run --env-file .env -p 5000:5000 track-iot-device-location-python
 ```
 
 ## API Reference
 
 ### `GET /devices`
 
-Returns all devices.
-
-**Request:**
+List all SIM cards (devices) in the account.
 
 ```bash
 curl http://localhost:5000/devices
@@ -73,15 +65,19 @@ curl http://localhost:5000/devices
 
 ```json
 {
-  "devices": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /devices/<sim_card_id>`
 
-Returns device location details.
-
-**Request:**
+Retrieve device location and network information for a specific SIM card.
 
 ```bash
 curl http://localhost:5000/devices/example-id
@@ -91,17 +87,19 @@ curl http://localhost:5000/devices/example-id
 
 ```json
 {
-  "device_location": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `GET /devices/<sim_card_id>/location`
 
-Returns location only details.
-
-**Request:**
+Retrieve only location information for a device (lightweight endpoint).
 
 ```bash
 curl http://localhost:5000/devices/example-id/location
@@ -111,17 +109,19 @@ curl http://localhost:5000/devices/example-id/location
 
 ```json
 {
-  "location_only": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Health check endpoint to verify API connectivity.
 
 ```bash
 curl http://localhost:5000/health
@@ -131,11 +131,14 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

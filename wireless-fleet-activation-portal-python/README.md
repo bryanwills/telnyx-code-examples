@@ -9,27 +9,20 @@ telnyx_products: [IoT/SIM, Migration, Number Porting]
 
 # Wireless Fleet Activation Portal — bulk activate SIMs with status tracking.
 
-Wireless Fleet Activation Portal — bulk activate SIMs with status tracking.
-
+Application. Built with Telnyx IoT/SIM, Migration, Number Porting.
 
 ## Telnyx API Endpoints Used
 
-- **SIM Cards: Activate**: `POST /v2/sim_cards/{id}/actions/enable` — [API reference](https://developers.telnyx.com/api/sim-cards/sim-card-actions)
-- **Porting Orders**: `POST /v2/porting_orders` — [API reference](https://developers.telnyx.com/api/porting/create-porting-order)
-
+- **SIM Cards**: `GET /v2/sim_cards` — [API reference](https://developers.telnyx.com/api/sim-cards/list-sim-cards)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -38,7 +31,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -53,17 +47,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t wireless-fleet-activation-portal .
-docker run --env-file .env -p 5000:5000 wireless-fleet-activation-portal
+docker build -t wireless-fleet-activation-portal-python .
+docker run --env-file .env -p 5000:5000 wireless-fleet-activation-portal-python
 ```
 
 ## API Reference
 
 ### `GET /sims`
 
-Returns all sims.
-
-**Request:**
+Returns sims
 
 ```bash
 curl http://localhost:5000/sims
@@ -73,62 +65,59 @@ curl http://localhost:5000/sims
 
 ```json
 {
-  "sims": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `POST /sims/activate`
 
-Handles `POST /sims/activate`.
-
-**Request:**
+Triggers activate
 
 ```bash
 curl -X POST http://localhost:5000/sims/activate \
   -H "Content-Type: application/json" \
-  -d '{
-  "sim_ids": "[]"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "results": "...",
-  "activated": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `POST /sims/deactivate`
 
-Handles `POST /sims/deactivate`.
-
-**Request:**
+Triggers deactivate
 
 ```bash
 curl -X POST http://localhost:5000/sims/deactivate \
   -H "Content-Type: application/json" \
-  -d '{
-  "sim_ids": "[]"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "results": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /activation-log`
 
-Returns log details.
-
-**Request:**
+Returns activation-log
 
 ```bash
 curl http://localhost:5000/activation-log
@@ -138,15 +127,19 @@ curl http://localhost:5000/activation-log
 
 ```json
 {
-  "log": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -156,11 +149,14 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

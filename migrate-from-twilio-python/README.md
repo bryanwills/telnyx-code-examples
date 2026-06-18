@@ -12,28 +12,32 @@ channel: [sms]
 
 Migrate from Twilio — complete Twilio-to-Telnyx migration tool: numbers, messaging profiles, voice apps, and webhook configs.
 
-
 ## Telnyx API Endpoints Used
 
-- **Messaging**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **Messaging Profiles**: `GET /v2/messaging_profiles` — [API reference](https://developers.telnyx.com/api/messaging/list-messaging-profiles)
-- **Phone Numbers**: `GET /v2/phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-phone-numbers)
+- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` — [API reference](https://developers.telnyx.com/api/call-control/answer-call)
+- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
 
+## External Service Integrations
+
+- **Twilio (migration source)** — Source platform being migrated from ([docs](https://www.twilio.com/docs))
 
 ## Architecture
 
 ```text
-┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
-│   SMS/MMS   │────►│   Telnyx   │────►│  POST /webhooks/sms  │
-└─────────────┘     │   Cloud    │     └──────────┬───────────┘
+┌─────────────┐     ┌────────────┐     ┌────────────────────────┐
+│   SMS/MMS    │────►│   Telnyx   │────►│ POST /webhooks/messaging│
+└─────────────┘     │   Cloud    │     └──────────┬─────────────┘
                     └────────────┘                │
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+                                           SMS reply back
 ```
+
+## Telnyx Webhook Events
+
+This app handles these [Call Control](https://developers.telnyx.com/docs/api/v2/call-control) webhook events:
+
+- `call.initiated` -- New inbound or outbound call detected
+- `call.answered` -- Call connected, app begins interaction
+- `call.hangup` -- Call ended, app cleans up session
 
 ## Environment Variables
 
@@ -41,9 +45,10 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `TWILIO_ACCOUNT_SID` | `string` | `...` | **yes** | twilio account sid | — |
-| `TWILIO_AUTH_TOKEN` | `string` | `...` | **yes** | twilio auth token | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `TWILIO_ACCOUNT_SID` | `string` | `your_value` | **yes** | Twilio account sid | — |
+| `TWILIO_AUTH_TOKEN` | `string` | `your_value` | **yes** | Twilio auth token | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -70,17 +75,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t migrate-from-twilio .
-docker run --env-file .env -p 5000:5000 migrate-from-twilio
+docker build -t migrate-from-twilio-python .
+docker run --env-file .env -p 5000:5000 migrate-from-twilio-python
 ```
 
 ## API Reference
 
 ### `GET /audit/twilio`
 
-Handles `GET /audit/twilio`.
-
-**Request:**
+Returns twilio
 
 ```bash
 curl http://localhost:5000/audit/twilio
@@ -90,61 +93,75 @@ curl http://localhost:5000/audit/twilio
 
 ```json
 {
-  "status": "ok"
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `POST /migrate/messaging-profile`
 
-Handles `POST /migrate/messaging-profile`.
-
-**Request:**
+Triggers messaging-profile
 
 ```bash
 curl -X POST http://localhost:5000/migrate/messaging-profile \
   -H "Content-Type: application/json" \
   -d '{
-  "name": "Migrated from Twilio",
-  "webhook_url": "https://pay.example.com/inv-123"
-}'
+    "source_api_key": "SK_twilio_xxx",
+    "dry_run": true
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "migration": {
+    "status": "completed",
+    "resources_migrated": 12,
+    "phone_numbers": 5,
+    "applications": 3,
+    "messaging_profiles": 2,
+    "webhooks": 2
+  }
 }
 ```
 
 ### `POST /migrate/numbers`
 
-Handles `POST /migrate/numbers`.
-
-**Request:**
+Triggers numbers
 
 ```bash
 curl -X POST http://localhost:5000/migrate/numbers \
   -H "Content-Type: application/json" \
   -d '{
-  "numbers": "[]",
-  "authorized_person": "example_value"
-}'
+    "source_api_key": "SK_twilio_xxx",
+    "dry_run": true
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "results": "..."
+  "numbers": [
+    {
+      "phone_number": "+18005551234",
+      "status": "active",
+      "type": "local",
+      "region": "US-CA"
+    }
+  ]
 }
 ```
 
 ### `GET /migrate/code-changes`
 
-Handles `GET /migrate/code-changes`.
-
-**Request:**
+Returns code-changes
 
 ```bash
 curl http://localhost:5000/migrate/code-changes
@@ -154,15 +171,20 @@ curl http://localhost:5000/migrate/code-changes
 
 ```json
 {
-  "status": "ok"
+  "migration": {
+    "status": "completed",
+    "resources_migrated": 12,
+    "phone_numbers": 5,
+    "applications": 3,
+    "messaging_profiles": 2,
+    "webhooks": 2
+  }
 }
 ```
 
 ### `GET /migration-log`
 
-Returns log details.
-
-**Request:**
+Returns migration-log
 
 ```bash
 curl http://localhost:5000/migration-log
@@ -172,15 +194,20 @@ curl http://localhost:5000/migration-log
 
 ```json
 {
-  "log": "..."
+  "migration": {
+    "status": "completed",
+    "resources_migrated": 12,
+    "phone_numbers": 5,
+    "applications": 3,
+    "messaging_profiles": 2,
+    "webhooks": 2
+  }
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -190,7 +217,10 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
@@ -198,9 +228,10 @@ curl http://localhost:5000/health
 
 ### `POST /migrate/webhook-map`
 
-Receives external webhook events.
+Receives Telnyx webhook events for `/migrate/webhook-map`.
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Messaging Guide](https://developers.telnyx.com/docs/messaging)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

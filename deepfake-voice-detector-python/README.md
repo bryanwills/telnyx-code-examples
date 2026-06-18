@@ -11,137 +11,191 @@ channel: [voice]
 
 # Deepfake Voice Detector
 
-Real-time synthetic speech detection on live phone calls. Captures audio via Telnyx media streaming, extracts acoustic features (pitch regularity, breathing patterns, spectral distribution, crest factor), and uses AI Inference to score deepfake probability. Alerts security team via Slack when synthetic speech is detected.
+Real-time synthetic speech detection on live phone calls. Captures audio via media streaming, extracts acoustic features, scores deepfake probability with AI Inference, alerts security team via Slack.
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` -- [API reference](https://developers.telnyx.com/api/call-control/answer-call)
-- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` -- [API reference](https://developers.telnyx.com/api/call-control/speak)
-- **Call Control: Start Streaming**: `POST /v2/calls/{id}/actions/streaming_start` -- [API reference](https://developers.telnyx.com/api/call-control/start-streaming)
-- **AI Inference**: `POST /v2/ai/chat/completions` -- [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Telnyx Webhook Events
 
-- `call.initiated` -- incoming call detected, app answers
-- `call.answered` -- starts media streaming + greeting
-- `call.streaming.started` -- audio capture begins
-- `call.streaming.stopped` -- triggers deepfake analysis
-- `call.hangup` -- session finalized
+This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-## External Service Integrations
-
-- **Slack** -- Security team alerts via incoming webhooks
+- `call.answered` — Call connected — app begins interaction
+- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
+- `call.initiated` — New inbound or outbound call detected
+- `call.streaming.started` — Event handled by application
+- `call.streaming.stopped` — Event handled by application
 
 ## Architecture
 
 ```text
-Phone Call --> Telnyx Cloud --> /webhooks/voice (call lifecycle)
-                   |
-              Media Stream --> /webhooks/media (raw 8kHz PCM)
-                                       |
-                              Feature Extraction
-                              (ZCR, crest, energy, pitch, silence)
-                                       |
-                              Telnyx AI Inference (scoring)
-                                       |
-                          < threshold        >= threshold
-                          [Cleared]           [ALERT -> Slack]
+┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
+│ Phone Call   │────►│   Telnyx   │────►│ POST /webhooks/voice │
+└─────────────┘     │   Cloud    │     └──────────┬───────────┘
+                    └────────────┘                │
+                                           AI Inference
+                                           (Telnyx LLM)
+                                                │
+                                           TTS response
+                                           back to caller
 ```
 
 ## Environment Variables
 
+Copy `.env.example` to `.env` and fill in:
+
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [link](https://portal.telnyx.com/api-keys) |
-| `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number | [link](https://portal.telnyx.com/numbers/my-numbers) |
-| `CONNECTION_ID` | `string` | `1234567890` | **yes** | Call Control connection ID | [link](https://portal.telnyx.com/call-control/applications) |
-| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Inference model | [link](https://developers.telnyx.com/docs/inference/models) |
-| `DETECTION_THRESHOLD` | `float` | `0.75` | no | Deepfake score threshold | -- |
-| `ALERT_WEBHOOK` | `string` | `https://hooks.slack.com/...` | no | Slack webhook for alerts | [link](https://api.slack.com/messaging/webhooks) |
-| `MEDIA_STREAM_URL` | `string` | `wss://your-server/media` | no | WebSocket URL for streaming | -- |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
+| `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
+| `CONNECTION_ID` | `string` | `1494404757140276705` | **yes** | Call Control connection/app ID | [Portal](https://portal.telnyx.com/call-control/applications) |
+| `ALERT_WEBHOOK` | `string` | `your_value` | **yes** | Alert webhook | — |
+| `DETECTION_THRESHOLD` | `string` | `0.75` | no | Detection threshold | — |
+| `MEDIA_STREAM_URL` | `string` | `request.url_root.rstrip("/` | no | Media stream url | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
 ```bash
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
 cd telnyx-code-examples/deepfake-voice-detector-python
-cp .env.example .env
+cp .env.example .env    # ← fill in your credentials
 pip install -r requirements.txt
-python app.py
+python app.py           # starts on http://localhost:5000
 ```
+
+### Webhook Configuration
+
+1. Expose your local server:
+
+   ```bash
+   ngrok http 5000
+   ```
+
+2. Copy the HTTPS URL and configure in [Telnyx Portal](https://portal.telnyx.com):
+
+   - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
 
 ### Docker
 
 ```bash
-docker build -t deepfake-voice-detector .
-docker run --env-file .env -p 5000:5000 deepfake-voice-detector
+docker build -t deepfake-voice-detector-python .
+docker run --env-file .env -p 5000:5000 deepfake-voice-detector-python
 ```
 
 ## API Reference
 
 ### `POST /calls/<call_id>/analyze`
 
-Force deepfake analysis on collected audio.
+Force analysis of a call's collected audio.
 
 ```bash
-curl -X POST http://localhost:5000/calls/v3_abc123/analyze
+curl -X POST http://localhost:5000/calls/example-id/analyze \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+12125551234"
+  }'
 ```
+
+**Response:**
 
 ```json
 {
-  "call_id": "v3_abc123",
-  "analysis": {
-    "score": 0.82,
-    "assessment": "likely_synthetic",
-    "indicators": ["low_crest_factor", "absent_breathing_pauses"]
-  },
-  "flagged": true
+  "call_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+  "status": "initiated",
+  "from": "+18005551234",
+  "to": "+12125559876"
 }
 ```
 
 ### `GET /calls`
 
-List all analyzed calls sorted by risk.
+List all analyzed calls with deepfake scores.
 
 ```bash
 curl http://localhost:5000/calls
 ```
 
+**Response:**
+
 ```json
 {
-  "total": 47,
-  "flagged": 3,
-  "calls": [{"call_id": "v3_abc123", "score": 0.82, "assessment": "likely_synthetic"}]
+  "calls": [
+    {
+      "call_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+      "from": "+18005551234",
+      "to": "+12125559876",
+      "duration_seconds": 145,
+      "status": "completed"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
+Returns health
+
 ```bash
 curl http://localhost:5000/health
 ```
 
+**Response:**
+
 ```json
-{"status": "ok", "active_calls": 2, "deepfakes_detected": 3, "detection_threshold": 0.75}
+{
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
+}
 ```
 
 ## Webhook Endpoints
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/webhooks/voice` | Call Control events |
-| `POST` | `/webhooks/media` | Raw audio chunks from media streaming |
+### `POST /webhooks/voice`
 
-## How Detection Works
+Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-control) webhook events.
 
-1. **Audio capture** -- Media streaming delivers raw 8kHz PCM chunks
-2. **Feature extraction** -- Zero-crossing rate, crest factor, energy CV, silence ratio, pitch regularity
-3. **AI scoring** -- Features sent to Telnyx AI Inference for forensic assessment
-4. **Alerting** -- Calls above threshold trigger Slack alerts
+**Events handled:** `call.answered`, `call.hangup`, `call.initiated`, `call.streaming.started`, `call.streaming.stopped`
+
+**Example payload:**
+
+```json
+{
+  "data": {
+    "event_type": "call.initiated",
+    "id": "0ccc7b54-4df3-4bca-a65a-3da1ecc777f0",
+    "occurred_at": "2026-07-15T14:30:00.000Z",
+    "payload": {
+      "call_control_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+      "connection_id": "1494404757140276705",
+      "call_leg_id": "428c31b6-7af4-4bcb-b7f5-5013ef9657c1",
+      "call_session_id": "428c31b6-abcd-1234-5678-5013ef9657c1",
+      "client_state": null,
+      "from": "+12125551234",
+      "to": "+13105559876",
+      "direction": "incoming",
+      "state": "ringing"
+    },
+    "record_type": "event"
+  },
+  "meta": {
+    "attempt": 1,
+    "delivered_to": "https://your-server.example.com/webhooks/voice"
+  }
+}
+```
+
+### `POST /webhooks/media`
+
+Receives Telnyx webhook events for `/webhooks/media`.
 
 ## Resources
 
-- [Media Streaming Guide](https://developers.telnyx.com/docs/voice/media-streaming)
-- [Call Control: Start Streaming](https://developers.telnyx.com/api/call-control/start-streaming)
-- [AI Inference](https://developers.telnyx.com/api/inference/chat-completions)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -13,25 +13,20 @@ AI Assistant Multi-Tool — AI Assistant with custom function-calling tools for 
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference (Chat Completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Telnyx Inference │
-                                          │ (AI processing) │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
+│ Phone Call   │────►│   Telnyx   │────►│ POST /webhooks/voice │
+└─────────────┘     │   Cloud    │     └──────────┬───────────┘
+                    └────────────┘                │
+                                           AI Inference
+                                           (Telnyx LLM)
+                                                │
+                                           TTS response
+                                           back to caller
 ```
 
 ## Environment Variables
@@ -40,8 +35,9 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Inference model identifier | [→ link](https://developers.telnyx.com/docs/inference/models) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -53,42 +49,52 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
+### Webhook Configuration
+
+1. Expose your local server:
+
+   ```bash
+   ngrok http 5000
+   ```
+
+2. Copy the HTTPS URL and configure in [Telnyx Portal](https://portal.telnyx.com):
+
+   - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
+
 ### Docker
 
 ```bash
-docker build -t ai-assistant-multi-tool .
-docker run --env-file .env -p 5000:5000 ai-assistant-multi-tool
+docker build -t ai-assistant-multi-tool-python .
+docker run --env-file .env -p 5000:5000 ai-assistant-multi-tool-python
 ```
 
 ## API Reference
 
 ### `POST /chat`
 
-Handles `POST /chat`.
-
-**Request:**
+Triggers chat
 
 ```bash
 curl -X POST http://localhost:5000/chat \
   -H "Content-Type: application/json" \
   -d '{
-  "messages": "[]"
-}'
+    "message": "How do I set up a voice AI agent with Telnyx?"
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "response": "Based on the Telnyx API documentation, you can implement programmable voice using Call Control...",
+  "model": "moonshotai/Kimi-K2.6",
+  "tokens_used": 284
 }
 ```
 
 ### `GET /tools`
 
-Returns all tools.
-
-**Request:**
+Returns tools
 
 ```bash
 curl http://localhost:5000/tools
@@ -98,15 +104,19 @@ curl http://localhost:5000/tools
 
 ```json
 {
-  "tools": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /tool-calls`
 
-Returns all tool calls.
-
-**Request:**
+Returns tool-calls
 
 ```bash
 curl http://localhost:5000/tool-calls
@@ -116,15 +126,21 @@ curl http://localhost:5000/tool-calls
 
 ```json
 {
-  "calls": "..."
+  "calls": [
+    {
+      "call_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+      "from": "+18005551234",
+      "to": "+12125559876",
+      "duration_seconds": 145,
+      "status": "completed"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -134,12 +150,16 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [AI Inference (Chat Completions) — API Reference](https://developers.telnyx.com/api/inference/chat-completions)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

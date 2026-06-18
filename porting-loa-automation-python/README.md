@@ -11,25 +11,14 @@ telnyx_products: [Migration, Missions, Number Porting]
 
 Porting LOA Automation — automate Letter of Authorization generation and porting order submission.
 
-
-## Telnyx API Endpoints Used
-
-- **Phone Numbers**: `GET /v2/phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-phone-numbers)
-- **Porting Orders**: `POST /v2/porting_orders` — [API reference](https://developers.telnyx.com/api/porting/create-porting-order)
-
-
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -38,7 +27,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -53,97 +43,84 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t porting-loa-automation .
-docker run --env-file .env -p 5000:5000 porting-loa-automation
+docker build -t porting-loa-automation-python .
+docker run --env-file .env -p 5000:5000 porting-loa-automation-python
 ```
 
 ## API Reference
 
 ### `POST /loa/generate`
 
-Handles `POST /loa/generate`.
-
-**Request:**
+Triggers generate
 
 ```bash
 curl -X POST http://localhost:5000/loa/generate \
   -H "Content-Type: application/json" \
-  -d '{
-  "authorized_person": "example_value",
-  "current_provider": "abc-123",
-  "phone_numbers": "[]",
-  "billing_number": "example_value",
-  "account_number": 4,
-  "service_address": "123 Main St, Apt 4",
-  "title": "example_value",
-  "company": "Acme Corp"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "loa_id": "...",
-  "loa_text": "...",
-  "record": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `POST /loa/submit-and-port`
 
-Handles `POST /loa/submit-and-port`.
-
-**Request:**
+Triggers submit-and-port
 
 ```bash
 curl -X POST http://localhost:5000/loa/submit-and-port \
   -H "Content-Type: application/json" \
-  -d '{
-  "phone_numbers": "+12125551234",
-  "authorized_person": "example_value",
-  "current_provider": "abc-123",
-  "billing_number": "example_value"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "loa_id": "...",
-  "porting_order": "...",
-  "pipeline": "..."
+  "porting_orders": [
+    {
+      "id": "port-abc123",
+      "numbers": ["+12125551234"],
+      "status": "submitted",
+      "target_date": "2026-07-22"
+    }
+  ]
 }
 ```
 
 ### `POST /loa/check-portability`
 
-Handles `POST /loa/check-portability`.
-
-**Request:**
+Triggers check-portability
 
 ```bash
 curl -X POST http://localhost:5000/loa/check-portability \
   -H "Content-Type: application/json" \
   -d '{
-  "phone_numbers": "[]"
-}'
+    "phone": "+12125551234",
+    "channel": "sms"
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "results": "..."
+  "verification_id": "ver-abc123",
+  "status": "pending",
+  "channel": "sms",
+  "phone": "+12125551234"
 }
 ```
 
 ### `GET /loa`
 
-Returns all loas.
-
-**Request:**
+Returns loa
 
 ```bash
 curl http://localhost:5000/loa
@@ -153,15 +130,19 @@ curl http://localhost:5000/loa
 
 ```json
 {
-  "loas": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /pipeline`
 
-Handles `GET /pipeline`.
-
-**Request:**
+Returns pipeline
 
 ```bash
 curl http://localhost:5000/pipeline
@@ -171,15 +152,19 @@ curl http://localhost:5000/pipeline
 
 ```json
 {
-  "pipeline": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -189,11 +174,14 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -11,24 +11,19 @@ telnyx_products: [Migration, Number Porting, Numbers]
 
 Smart Number Geo-Assignment — automatically purchase and assign local numbers based on caller geography to maximize answer rates.
 
-
 ## Telnyx API Endpoints Used
 
-- **Phone Numbers**: `GET /v2/available_phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-available-phone-numbers)
-
+- **Search Available Numbers**: `GET /v2/available_phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-available-phone-numbers)
+- **Create Number Order**: `POST /v2/number_orders` — [API reference](https://developers.telnyx.com/api/numbers/create-number-order)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -37,7 +32,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -52,63 +48,55 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t smart-number-geo-assignment .
-docker run --env-file .env -p 5000:5000 smart-number-geo-assignment
+docker build -t smart-number-geo-assignment-python .
+docker run --env-file .env -p 5000:5000 smart-number-geo-assignment-python
 ```
 
 ## API Reference
 
 ### `POST /assign`
 
-Assigns to a team member. Notifies both assignee and customer.
-
-**Request:**
+Triggers assign
 
 ```bash
 curl -X POST http://localhost:5000/assign \
   -H "Content-Type: application/json" \
-  -d '{
-  "area_code": "example_value",
-  "use_case": "outbound"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "number": "...",
-  "source": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `POST /lookup-and-assign`
 
-Assigns to a team member. Notifies both assignee and customer.
-
-**Request:**
+Triggers lookup-and-assign
 
 ```bash
 curl -X POST http://localhost:5000/lookup-and-assign \
   -H "Content-Type: application/json" \
-  -d '{
-  "target_number": "example_value"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /inventory`
 
-Handles `GET /inventory`.
-
-**Request:**
+Returns inventory
 
 ```bash
 curl http://localhost:5000/inventory
@@ -118,16 +106,19 @@ curl http://localhost:5000/inventory
 
 ```json
 {
-  "numbers": "...",
-  "total": 3
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /assignments`
 
-Returns all assignments.
-
-**Request:**
+Returns assignments
 
 ```bash
 curl http://localhost:5000/assignments
@@ -137,15 +128,19 @@ curl http://localhost:5000/assignments
 
 ```json
 {
-  "assignments": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -155,11 +150,14 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -11,26 +11,14 @@ telnyx_products: [Migration, Missions, Number Porting, SMS/MMS, Verify, Voice]
 
 Missions Workflow Orchestrator — create and manage multi-step mission workflows using the Telnyx Missions API.
 
-
-## Telnyx API Endpoints Used
-
-- **Messaging**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **Phone Numbers**: `GET /v2/available_phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-available-phone-numbers)
-- **Missions**: `POST /v2/ai/missions` — [API reference](https://developers.telnyx.com/api/missions)
-
-
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -39,7 +27,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -54,41 +43,35 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t missions-workflow-orchestrator .
-docker run --env-file .env -p 5000:5000 missions-workflow-orchestrator
+docker build -t missions-workflow-orchestrator-python .
+docker run --env-file .env -p 5000:5000 missions-workflow-orchestrator-python
 ```
 
 ## API Reference
 
 ### `POST /missions`
 
-Creates a new record.
-
-**Request:**
+Triggers missions
 
 ```bash
 curl -X POST http://localhost:5000/missions \
   -H "Content-Type: application/json" \
-  -d '{
-  "name": "Jane Doe",
-  "description": "Customer reported issue with service",
-  "tasks": "[]"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /missions`
 
-Returns all missions.
-
-**Request:**
+Returns missions
 
 ```bash
 curl http://localhost:5000/missions
@@ -98,15 +81,19 @@ curl http://localhost:5000/missions
 
 ```json
 {
-  "local": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /missions/<mission_id>`
 
-Returns mission details.
-
-**Request:**
+Returns mission id
 
 ```bash
 curl http://localhost:5000/missions/example-id
@@ -116,60 +103,59 @@ curl http://localhost:5000/missions/example-id
 
 ```json
 {
-  "mission": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `POST /missions/<mission_id>/tasks`
 
-Adds a new entry.
-
-**Request:**
+Triggers tasks
 
 ```bash
 curl -X POST http://localhost:5000/missions/example-id/tasks \
   -H "Content-Type: application/json" \
-  -d '{
-  "name": "Jane Doe",
-  "type": "action",
-  "config": "example_value",
-  "depends_on": "[]"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `POST /missions/<mission_id>/run`
 
-Executes the batch workflow.
-
-**Request:**
+Triggers run
 
 ```bash
-curl -X POST http://localhost:5000/missions/example-id/run
+curl -X POST http://localhost:5000/missions/example-id/run \
+  -H "Content-Type: application/json" \
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /missions/<mission_id>/runs`
 
-Returns all runs.
-
-**Request:**
+Returns runs
 
 ```bash
 curl http://localhost:5000/missions/example-id/runs
@@ -179,17 +165,19 @@ curl http://localhost:5000/missions/example-id/runs
 
 ```json
 {
-  "runs": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `GET /templates`
 
-Handles `GET /templates`.
-
-**Request:**
+Returns templates
 
 ```bash
 curl http://localhost:5000/templates
@@ -199,15 +187,19 @@ curl http://localhost:5000/templates
 
 ```json
 {
-  "status": "ok"
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -217,11 +209,14 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

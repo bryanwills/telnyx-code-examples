@@ -9,27 +9,20 @@ telnyx_products: [E911, Migration, Number Porting]
 
 # E911 Address Validator — validate and provision E911 addresses via API.
 
-E911 Address Validator — validate and provision E911 addresses via API.
-
+Application. Built with Telnyx E911, Migration, Number Porting.
 
 ## Telnyx API Endpoints Used
 
-- **Phone Numbers**: `GET /v2/phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-phone-numbers)
-- **E911 Addresses**: `POST /v2/addresses` — [API reference](https://developers.telnyx.com/api/e911/list-addresses)
-
+- **List Phone Numbers**: `GET /v2/phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-phone-numbers)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -38,7 +31,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -53,71 +47,56 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t e911-address-validator .
-docker run --env-file .env -p 5000:5000 e911-address-validator
+docker build -t e911-address-validator-python .
+docker run --env-file .env -p 5000:5000 e911-address-validator-python
 ```
 
 ## API Reference
 
 ### `POST /e911/validate`
 
-Adds a new entry.
-
-**Request:**
+Triggers validate
 
 ```bash
 curl -X POST http://localhost:5000/e911/validate \
   -H "Content-Type: application/json" \
-  -d '{
-  "street": "example_value",
-  "street2": "example_value",
-  "city": "example_value",
-  "state": "example_value",
-  "zip": "example_value",
-  "country": "US",
-  "business_name": "Acme Services"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "valid": "...",
-  "address_id": "...",
-  "address": "..."
+  "verification_id": "ver-abc123",
+  "status": "pending",
+  "channel": "sms",
+  "phone": "+12125551234"
 }
 ```
 
 ### `POST /e911/assign`
 
-Assigns to a team member. Notifies both assignee and customer.
-
-**Request:**
+Triggers assign
 
 ```bash
 curl -X POST http://localhost:5000/e911/assign \
   -H "Content-Type: application/json" \
-  -d '{
-  "address_id": "123 Main St, Apt 4"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok",
-  "phone": "...",
-  "address_id": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /e911/addresses`
 
-Returns all addresses.
-
-**Request:**
+Returns addresses
 
 ```bash
 curl http://localhost:5000/e911/addresses
@@ -127,15 +106,19 @@ curl http://localhost:5000/e911/addresses
 
 ```json
 {
-  "addresses": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -145,11 +128,14 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

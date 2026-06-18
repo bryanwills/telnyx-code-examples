@@ -9,28 +9,23 @@ telnyx_products: [IoT/SIM, Migration, Number Porting]
 
 # Production-ready Flask application for eSIM provisioning via Telnyx.
 
-Production-ready Flask application for eSIM provisioning via Telnyx.
-
-
-## Telnyx API Endpoints Used
-
-- **SIM Cards: Activate**: `POST /v2/sim_cards/{id}/actions/enable` — [API reference](https://developers.telnyx.com/api/sim-cards/sim-card-actions)
-- **eSIM Provisioning**: `POST /v2/sim_cards/actions/bulk_set_public_ips` — [API reference](https://developers.telnyx.com/api/sim-cards)
-
+Application. Built with Telnyx IoT/SIM, Migration, Number Porting.
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
+
+## Telnyx Webhook Events
+
+This app handles these webhook events:
+
+- `sim_card.status.changed` -- SIM card status changed (active, suspended, deactivated)
 
 ## Environment Variables
 
@@ -38,8 +33,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
 
 ## Setup
 
@@ -54,58 +49,55 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t provision-esim .
-docker run --env-file .env -p 5000:5000 provision-esim
+docker build -t provision-esim-python .
+docker run --env-file .env -p 5000:5000 provision-esim-python
 ```
 
 ## API Reference
 
 ### `POST /esim/profiles`
 
-Handles `POST /esim/profiles`.
-
-**Request:**
+Provision a new eSIM profile.
 
 ```bash
 curl -X POST http://localhost:5000/esim/profiles \
   -H "Content-Type: application/json" \
-  -d '{
-  "device_name": "Jane Doe",
-  "sim_card_group_id": "abc-123"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status_code": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `POST /esim/profiles/<sim_card_id>/activate`
 
-Handles `POST /esim/profiles/<sim_card_id>/activate`.
-
-**Request:**
+Activate an eSIM profile for network connectivity.
 
 ```bash
-curl -X POST http://localhost:5000/esim/profiles/example-id/activate
+curl -X POST http://localhost:5000/esim/profiles/example-id/activate \
+  -H "Content-Type: application/json" \
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status_code": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /esim/profiles/<sim_card_id>`
 
-Returns esim details.
-
-**Request:**
+Retrieve details of an eSIM profile.
 
 ```bash
 curl http://localhost:5000/esim/profiles/example-id
@@ -115,15 +107,19 @@ curl http://localhost:5000/esim/profiles/example-id
 
 ```json
 {
-  "status_code": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /esim/profiles`
 
-Returns all esims.
-
-**Request:**
+List eSIM profiles with optional filtering.
 
 ```bash
 curl http://localhost:5000/esim/profiles
@@ -133,15 +129,19 @@ curl http://localhost:5000/esim/profiles
 
 ```json
 {
-  "status_code": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Health check endpoint.
 
 ```bash
 curl http://localhost:5000/health
@@ -151,7 +151,10 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
@@ -159,9 +162,9 @@ curl http://localhost:5000/health
 
 ### `POST /esim/webhooks/sim-status`
 
-Receives external webhook events.
+Receives Telnyx webhook events for `/esim/webhooks/sim-status`.
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

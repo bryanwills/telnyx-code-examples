@@ -15,7 +15,7 @@ Buyer texts about a listing, AI responds with details, facilitates anonymous buy
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference (Chat Completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## External Service Integrations
 
@@ -24,26 +24,22 @@ Buyer texts about a listing, AI responds with details, facilitates anonymous buy
 ## Architecture
 
 ```text
-┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
-│   SMS/MMS   │────►│   Telnyx   │────►│  POST /webhooks/sms  │
-└─────────────┘     │   Cloud    │     └──────────┬───────────┘
+┌─────────────┐     ┌────────────┐     ┌────────────────────────┐
+│   SMS/MMS    │────►│   Telnyx   │────►│ POST /webhooks/messaging│
+└─────────────┘     │   Cloud    │     └──────────┬─────────────┘
                     └────────────┘                │
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Telnyx Inference │
-                                          │ (AI processing) │
-                                          └────────┬────────┘
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Slack            │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+                                           AI Inference
+                                                │
+                                           SMS reply back
 ```
+
+## Telnyx Webhook Events
+
+This app handles these [Messaging](https://developers.telnyx.com/docs/api/v2/messaging) webhook events:
+
+- `message.received` -- Inbound SMS/MMS received
+- `message.sent` -- Outbound message accepted by carrier
+- `message.finalized` -- Final delivery status
 
 ## Environment Variables
 
@@ -51,10 +47,11 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [→ link](https://portal.telnyx.com/numbers/my-numbers) |
-| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Inference model identifier | [→ link](https://developers.telnyx.com/docs/inference/models) |
-| `OPS_SLACK_WEBHOOK` | `string` | `https://hooks.slack.com/...` | no | Slack webhook for ops alerts | [→ link](https://api.slack.com/messaging/webhooks) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
+| `OPS_SLACK_WEBHOOK` | `string` | `your_value` | **yes** | Ops slack webhook | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -81,17 +78,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t marketplace-comms-bridge .
-docker run --env-file .env -p 5000:5000 marketplace-comms-bridge
+docker build -t marketplace-comms-bridge-python .
+docker run --env-file .env -p 5000:5000 marketplace-comms-bridge-python
 ```
 
 ## API Reference
 
 ### `GET /listings`
 
-Returns all listings.
-
-**Request:**
+Returns listings
 
 ```bash
 curl http://localhost:5000/listings
@@ -101,15 +96,19 @@ curl http://localhost:5000/listings
 
 ```json
 {
-  "listings": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /conversations`
 
-Returns all conversations.
-
-**Request:**
+Returns conversations
 
 ```bash
 curl http://localhost:5000/conversations
@@ -119,15 +118,19 @@ curl http://localhost:5000/conversations
 
 ```json
 {
-  "conversations": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /flagged`
 
-Returns all flagged.
-
-**Request:**
+Returns flagged
 
 ```bash
 curl http://localhost:5000/flagged
@@ -137,15 +140,19 @@ curl http://localhost:5000/flagged
 
 ```json
 {
-  "flagged": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -155,7 +162,10 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
@@ -165,37 +175,37 @@ curl http://localhost:5000/health
 
 Receives [Telnyx Messaging](https://developers.telnyx.com/docs/messaging) webhook events.
 
-**Example inbound payload:**
+**Example payload:**
 
 ```json
 {
   "data": {
     "event_type": "message.received",
-    "direction": "inbound",
+    "id": "f5d7a7e0-1234-5678-9abc-def012345678",
+    "occurred_at": "2026-07-15T14:30:00.000Z",
     "payload": {
       "id": "f5d7a7e0-1234-5678-9abc-def012345678",
+      "direction": "inbound",
+      "type": "SMS",
       "from": {
         "phone_number": "+12125551234",
         "carrier": "Verizon",
         "line_type": "Wireless"
       },
-      "to": [
-        {
-          "phone_number": "+13105559876"
-        }
-      ],
-      "text": "HELP",
-      "type": "SMS",
+      "to": [{"phone_number": "+13105559876"}],
+      "text": "Hello, I need help",
       "media": [],
-      "received_at": "2026-07-15T14:30:00Z"
-    }
+      "received_at": "2026-07-15T14:30:00.000Z",
+      "messaging_profile_id": "40017b7e-b3c0-4ac3-8740-9c3c5a0a0e0c"
+    },
+    "record_type": "event"
   }
 }
 ```
 
 ## Resources
 
-- [AI Inference (Chat Completions) — API Reference](https://developers.telnyx.com/api/inference/chat-completions)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
-- [Slack Documentation](https://api.slack.com/messaging/webhooks)
+- [Messaging Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

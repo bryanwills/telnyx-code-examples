@@ -15,41 +15,32 @@ Customer texts photo of defective item via MMS, AI evaluates damage, auto-approv
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference (Chat Completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## External Service Integrations
 
-- **Stripe** — Payments, refunds, checkout sessions ([docs](https://docs.stripe.com/api))
-- **Shopify** — Orders, carts, product data, webhooks ([docs](https://shopify.dev/docs/api))
 - **Slack** — Team notifications via incoming webhooks ([docs](https://api.slack.com/messaging/webhooks))
+- **Stripe** — Payment processing ([docs](https://docs.stripe.com/api))
 
 ## Architecture
 
 ```text
-┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
-│   SMS/MMS   │────►│   Telnyx   │────►│  POST /webhooks/sms  │
-└─────────────┘     │   Cloud    │     └──────────┬───────────┘
+┌─────────────┐     ┌────────────┐     ┌────────────────────────┐
+│   SMS/MMS    │────►│   Telnyx   │────►│ POST /webhooks/messaging│
+└─────────────┘     │   Cloud    │     └──────────┬─────────────┘
                     └────────────┘                │
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Telnyx Inference │
-                                          │ (AI processing) │
-                                          └────────┬────────┘
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Stripe           │
-                                          ├─────────────────┤
-                                          │ Shopify          │
-                                          ├─────────────────┤
-                                          │ Slack            │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+                                           AI Inference
+                                                │
+                                           SMS reply back
 ```
+
+## Telnyx Webhook Events
+
+This app handles these [Messaging](https://developers.telnyx.com/docs/api/v2/messaging) webhook events:
+
+- `message.received` -- Inbound SMS/MMS received
+- `message.sent` -- Outbound message accepted by carrier
+- `message.finalized` -- Final delivery status
 
 ## Environment Variables
 
@@ -57,14 +48,15 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [→ link](https://portal.telnyx.com/numbers/my-numbers) |
-| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Inference model identifier | [→ link](https://developers.telnyx.com/docs/inference/models) |
-| `STRIPE_API_KEY` | `string` | `sk_live_...` | **yes** | Stripe secret key | [→ link](https://dashboard.stripe.com/apikeys) |
-| `SHOPIFY_STORE` | `string` | `my-store` | **yes** | Shopify store subdomain | — |
-| `SHOPIFY_ACCESS_TOKEN` | `string` | `shpat_...` | **yes** | Shopify Admin API token | — |
-| `SUPPORT_SLACK_WEBHOOK` | `string` | `https://hooks.slack.com/...` | no | Slack webhook for support alerts | [→ link](https://api.slack.com/messaging/webhooks) |
-| `AUTO_REFUND_THRESHOLD` | `integer` | `50` | no | Max auto-refund (USD) | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
+| `STRIPE_API_KEY` | `string` | `your_value` | **yes** | Stripe api key | — |
+| `SHOPIFY_STORE` | `string` | `your_value` | **yes** | Shopify store | — |
+| `SHOPIFY_ACCESS_TOKEN` | `string` | `your_value` | **yes** | Shopify access token | — |
+| `SUPPORT_SLACK_WEBHOOK` | `string` | `your_value` | **yes** | Support slack webhook | — |
+| `AUTO_REFUND_THRESHOLD` | `string` | `50` | no | Auto refund threshold | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -91,17 +83,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t returns-processor .
-docker run --env-file .env -p 5000:5000 returns-processor
+docker build -t returns-processor-python .
+docker run --env-file .env -p 5000:5000 returns-processor-python
 ```
 
 ## API Reference
 
 ### `GET /returns`
 
-Returns all returns.
-
-**Request:**
+Returns returns
 
 ```bash
 curl http://localhost:5000/returns
@@ -111,41 +101,39 @@ curl http://localhost:5000/returns
 
 ```json
 {
-  "returns": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `POST /returns/<int:idx>/approve`
 
-Approves a pending item. Sends confirmation to the customer via SMS.
-
-**Request:**
+Triggers approve
 
 ```bash
-curl -X POST http://localhost:5000/returns/0/approve \
+curl -X POST http://localhost:5000/returns/<int:idx>/approve \
   -H "Content-Type: application/json" \
-  -d '{
-  "agent": "unknown",
-  "refund_amount": 150.0,
-  "payment_intent": "pi_abc123"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "return": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -155,7 +143,10 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
@@ -165,39 +156,37 @@ curl http://localhost:5000/health
 
 Receives [Telnyx Messaging](https://developers.telnyx.com/docs/messaging) webhook events.
 
-**Example inbound payload:**
+**Example payload:**
 
 ```json
 {
   "data": {
     "event_type": "message.received",
-    "direction": "inbound",
+    "id": "f5d7a7e0-1234-5678-9abc-def012345678",
+    "occurred_at": "2026-07-15T14:30:00.000Z",
     "payload": {
       "id": "f5d7a7e0-1234-5678-9abc-def012345678",
+      "direction": "inbound",
+      "type": "SMS",
       "from": {
         "phone_number": "+12125551234",
         "carrier": "Verizon",
         "line_type": "Wireless"
       },
-      "to": [
-        {
-          "phone_number": "+13105559876"
-        }
-      ],
-      "text": "HELP",
-      "type": "SMS",
+      "to": [{"phone_number": "+13105559876"}],
+      "text": "Hello, I need help",
       "media": [],
-      "received_at": "2026-07-15T14:30:00Z"
-    }
+      "received_at": "2026-07-15T14:30:00.000Z",
+      "messaging_profile_id": "40017b7e-b3c0-4ac3-8740-9c3c5a0a0e0c"
+    },
+    "record_type": "event"
   }
 }
 ```
 
 ## Resources
 
-- [AI Inference (Chat Completions) — API Reference](https://developers.telnyx.com/api/inference/chat-completions)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
-- [Stripe Documentation](https://docs.stripe.com/api)
-- [Shopify Documentation](https://shopify.dev/docs/api)
-- [Slack Documentation](https://api.slack.com/messaging/webhooks)
+- [Messaging Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -13,25 +13,17 @@ Number Reputation Monitor — track outbound number reputation, auto-rotate flag
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference (Chat Completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **List Phone Numbers**: `GET /v2/phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-phone-numbers)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Telnyx Inference │
-                                          │ (AI processing) │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -40,9 +32,10 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Inference model identifier | [→ link](https://developers.telnyx.com/docs/inference/models) |
-| `ALERT_NUMBER` | `string` | `+18005551234` | **yes** | alert number | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
+| `ALERT_NUMBER` | `string` | `your_value` | **yes** | Alert number | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -57,36 +50,35 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t number-reputation-monitor-auto-rotate .
-docker run --env-file .env -p 5000:5000 number-reputation-monitor-auto-rotate
+docker build -t number-reputation-monitor-auto-rotate-python .
+docker run --env-file .env -p 5000:5000 number-reputation-monitor-auto-rotate-python
 ```
 
 ## API Reference
 
 ### `POST /scan`
 
-Handles `POST /scan`.
-
-**Request:**
+Triggers scan
 
 ```bash
-curl -X POST http://localhost:5000/scan
+curl -X POST http://localhost:5000/scan \
+  -H "Content-Type: application/json" \
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "scanned": "...",
-  "results": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /health-report`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health-report
 
 ```bash
 curl http://localhost:5000/health-report
@@ -96,15 +88,20 @@ curl http://localhost:5000/health-report
 
 ```json
 {
-  "status": "ok"
+  "porting_orders": [
+    {
+      "id": "port-abc123",
+      "numbers": ["+12125551234"],
+      "status": "submitted",
+      "target_date": "2026-07-22"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -114,12 +111,15 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [AI Inference (Chat Completions) — API Reference](https://developers.telnyx.com/api/inference/chat-completions)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

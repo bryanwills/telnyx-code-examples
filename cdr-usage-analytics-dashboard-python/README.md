@@ -13,25 +13,16 @@ Pull Call Detail Records, build usage analytics with cost breakdowns, peak-hour 
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference (Chat Completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Telnyx Inference │
-                                          │ (AI processing) │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -40,8 +31,9 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Inference model identifier | [→ link](https://developers.telnyx.com/docs/inference/models) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -56,17 +48,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t cdr-usage-analytics-dashboard .
-docker run --env-file .env -p 5000:5000 cdr-usage-analytics-dashboard
+docker build -t cdr-usage-analytics-dashboard-python .
+docker run --env-file .env -p 5000:5000 cdr-usage-analytics-dashboard-python
 ```
 
 ## API Reference
 
 ### `GET /cdrs`
 
-Returns cdrs details.
-
-**Request:**
+Returns cdrs
 
 ```bash
 curl http://localhost:5000/cdrs
@@ -76,17 +66,19 @@ curl http://localhost:5000/cdrs
 
 ```json
 {
-  "cdrs": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `GET /analytics/summary`
 
-Handles `GET /analytics/summary`.
-
-**Request:**
+Returns summary
 
 ```bash
 curl http://localhost:5000/analytics/summary
@@ -96,15 +88,19 @@ curl http://localhost:5000/analytics/summary
 
 ```json
 {
-  "status": "ok"
+  "period": "2026-07-15",
+  "total_calls": 1247,
+  "avg_duration_seconds": 186,
+  "inbound": 823,
+  "outbound": 424,
+  "peak_hour": "14:00",
+  "cost_usd": 42.18
 }
 ```
 
 ### `GET /analytics/peak-hours`
 
-Handles `GET /analytics/peak-hours`.
-
-**Request:**
+Returns peak-hours
 
 ```bash
 curl http://localhost:5000/analytics/peak-hours
@@ -114,15 +110,19 @@ curl http://localhost:5000/analytics/peak-hours
 
 ```json
 {
-  "status": "ok"
+  "period": "2026-07-15",
+  "total_calls": 1247,
+  "avg_duration_seconds": 186,
+  "inbound": 823,
+  "outbound": 424,
+  "peak_hour": "14:00",
+  "cost_usd": 42.18
 }
 ```
 
 ### `GET /analytics/top-routes`
 
-Handles `GET /analytics/top-routes`.
-
-**Request:**
+Returns top-routes
 
 ```bash
 curl http://localhost:5000/analytics/top-routes
@@ -132,15 +132,19 @@ curl http://localhost:5000/analytics/top-routes
 
 ```json
 {
-  "status": "ok"
+  "period": "2026-07-15",
+  "total_calls": 1247,
+  "avg_duration_seconds": 186,
+  "inbound": 823,
+  "outbound": 424,
+  "peak_hour": "14:00",
+  "cost_usd": 42.18
 }
 ```
 
 ### `GET /analytics/ai-insights`
 
-Handles `GET /analytics/ai-insights`.
-
-**Request:**
+Returns ai-insights
 
 ```bash
 curl http://localhost:5000/analytics/ai-insights
@@ -150,16 +154,19 @@ curl http://localhost:5000/analytics/ai-insights
 
 ```json
 {
-  "insights": "...",
-  "summary": "..."
+  "period": "2026-07-15",
+  "total_calls": 1247,
+  "avg_duration_seconds": 186,
+  "inbound": 823,
+  "outbound": 424,
+  "peak_hour": "14:00",
+  "cost_usd": 42.18
 }
 ```
 
 ### `GET /analytics/daily`
 
-Handles `GET /analytics/daily`.
-
-**Request:**
+Returns daily
 
 ```bash
 curl http://localhost:5000/analytics/daily
@@ -169,15 +176,19 @@ curl http://localhost:5000/analytics/daily
 
 ```json
 {
-  "daily": "..."
+  "period": "2026-07-15",
+  "total_calls": 1247,
+  "avg_duration_seconds": 186,
+  "inbound": 823,
+  "outbound": 424,
+  "peak_hour": "14:00",
+  "cost_usd": 42.18
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -187,12 +198,15 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [AI Inference (Chat Completions) — API Reference](https://developers.telnyx.com/api/inference/chat-completions)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

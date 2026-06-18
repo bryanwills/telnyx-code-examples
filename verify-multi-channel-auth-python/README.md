@@ -11,24 +11,14 @@ telnyx_products: [Migration, Number Porting, Verify, WhatsApp]
 
 Verify Multi-Channel Auth — multi-channel verification: SMS first, fallback to voice call, then WhatsApp. Cascading 2FA.
 
-
-## Telnyx API Endpoints Used
-
-- **Verify**: `POST /v2/verifications` -- [API reference](https://developers.telnyx.com/api/verify/create-verification)
-
-
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -37,7 +27,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -52,109 +43,111 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t verify-multi-channel-auth .
-docker run --env-file .env -p 5000:5000 verify-multi-channel-auth
+docker build -t verify-multi-channel-auth-python .
+docker run --env-file .env -p 5000:5000 verify-multi-channel-auth-python
 ```
 
 ## API Reference
 
 ### `POST /verify/start`
 
-Handles `POST /verify/start`.
-
-**Request:**
+Triggers start
 
 ```bash
 curl -X POST http://localhost:5000/verify/start \
   -H "Content-Type: application/json" \
   -d '{
-  "channel": "sms",
-  "timeout": 300
-}'
+    "phone": "+12125551234",
+    "channel": "sms"
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "verification_id": "...",
-  "channel": "...",
-  "result": "..."
+  "verification_id": "ver-abc123",
+  "status": "pending",
+  "channel": "sms",
+  "phone": "+12125551234"
 }
 ```
 
 ### `POST /verify/check`
 
-Handles `POST /verify/check`.
-
-**Request:**
+Triggers check
 
 ```bash
 curl -X POST http://localhost:5000/verify/check \
   -H "Content-Type: application/json" \
   -d '{
-  "verification_id": "abc-123",
-  "code": "example_value"
-}'
+    "phone": "+12125551234",
+    "channel": "sms"
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "verified": "...",
-  "channel": "...",
-  "message": "..."
+  "verification_id": "ver-abc123",
+  "status": "pending",
+  "channel": "sms",
+  "phone": "+12125551234"
 }
 ```
 
 ### `POST /verify/escalate/<vid>`
 
-Handles `POST /verify/escalate/<vid>`.
-
-**Request:**
+Triggers vid
 
 ```bash
-curl -X POST http://localhost:5000/verify/escalate/example-id
+curl -X POST http://localhost:5000/verify/escalate/example-id \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phone": "+12125551234",
+    "channel": "sms"
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "verification_id": "...",
-  "channel": "...",
-  "attempt": "..."
+  "verification_id": "ver-abc123",
+  "status": "pending",
+  "channel": "sms",
+  "phone": "+12125551234"
 }
 ```
 
 ### `POST /verify/cascade`
 
-Handles `POST /verify/cascade`.
-
-**Request:**
+Triggers cascade
 
 ```bash
-curl -X POST http://localhost:5000/verify/cascade
+curl -X POST http://localhost:5000/verify/cascade \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phone": "+12125551234",
+    "channel": "sms"
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "phone": "...",
-  "flow": "...",
-  "start_url": "...",
-  "check_url": "...",
-  "escalate_url": "..."
+  "verification_id": "ver-abc123",
+  "status": "pending",
+  "channel": "sms",
+  "phone": "+12125551234"
 }
 ```
 
 ### `GET /verifications`
 
-Returns all verifications.
-
-**Request:**
+Returns verifications
 
 ```bash
 curl http://localhost:5000/verifications
@@ -164,15 +157,19 @@ curl http://localhost:5000/verifications
 
 ```json
 {
-  "verifications": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -182,11 +179,14 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -10,27 +10,16 @@ channel: [sms]
 
 # Production-ready Flask application for sending bulk SMS via Telnyx.
 
-Production-ready Flask application for sending bulk SMS via Telnyx.
-
-
-## Telnyx API Endpoints Used
-
-- **Messaging**: `POST /v2/messages` -- [API reference](https://developers.telnyx.com/api/messaging/send-message)
-
+SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS.
 
 ## Architecture
 
 ```text
-┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
-│   SMS/MMS   │────►│   Telnyx   │────►│  POST /webhooks/sms  │
-└─────────────┘     │   Cloud    │     └──────────┬───────────┘
+┌─────────────┐     ┌────────────┐     ┌────────────────────────┐
+│   SMS/MMS    │────►│   Telnyx   │────►│ POST /webhooks/messaging│
+└─────────────┘     │   Cloud    │     └──────────┬─────────────┘
                     └────────────┘                │
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+                                           SMS reply back
 ```
 
 ## Environment Variables
@@ -39,11 +28,11 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `TELNYX_PHONE_NUMBER` | `string` | `+18005551234` | **yes** | telnyx phone number | — |
-| `BULK_SMS_RATE_LIMIT` | `string` | `10` | no | bulk sms rate limit | — |
-| `BULK_SMS_DELAY` | `string` | `0.1` | no | bulk sms delay | — |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `TELNYX_PHONE_NUMBER` | `string` | `your_value` | **yes** | Telnyx phone number | — |
+| `BULK_SMS_RATE_LIMIT` | `string` | `10` | no | Bulk sms rate limit | — |
+| `BULK_SMS_DELAY` | `string` | `0.1` | no | Bulk sms delay | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
 
 ## Setup
 
@@ -70,40 +59,39 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t send-bulk-sms .
-docker run --env-file .env -p 5000:5000 send-bulk-sms
+docker build -t send-bulk-sms-python .
+docker run --env-file .env -p 5000:5000 send-bulk-sms-python
 ```
 
 ## API Reference
 
 ### `POST /sms/bulk/send`
 
-Sends notifications to applicable recipients.
-
-**Request:**
+HTTP endpoint to send bulk SMS messages.
 
 ```bash
 curl -X POST http://localhost:5000/sms/bulk/send \
   -H "Content-Type: application/json" \
   -d '{
-  "recipients": "[]",
-  "message": "Customer reported issue with service"
-}'
+    "to": "+12125551234",
+    "message": "Hello from Telnyx!"
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "message_id": "msg-f5d7a7e0-1234-5678",
+  "status": "queued",
+  "to": "+12125551234",
+  "segments": 1
 }
 ```
 
 ### `GET /sms/bulk/status`
 
-Handles `GET /sms/bulk/status`.
-
-**Request:**
+Health check endpoint for bulk SMS service.
 
 ```bash
 curl http://localhost:5000/sms/bulk/status
@@ -113,14 +101,20 @@ curl http://localhost:5000/sms/bulk/status
 
 ```json
 {
-  "service": "...",
-  "status": "ok",
-  "rate_limit": "...",
-  "delay_between_messages": "..."
+  "messages": [
+    {
+      "id": "msg-f5d7a7e0-1234-5678",
+      "to": "+12125551234",
+      "text": "Your appointment is confirmed for July 18 at 2:30 PM",
+      "status": "delivered",
+      "sent_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Messaging Guide](https://developers.telnyx.com/docs/messaging)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

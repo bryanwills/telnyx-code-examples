@@ -11,25 +11,15 @@ telnyx_products: [Branded Calling, CNAM Lookup, Migration, Number Porting, Verif
 
 Branded Caller ID Manager — register, manage, and verify branded calling profiles with STIR/SHAKEN attestation for higher answer rates.
 
-
-## Telnyx API Endpoints Used
-
-- **Phone Numbers**: `GET /v2/phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-phone-numbers)
-- **Branded Calling**: `POST /v2/branded_calling` — [API reference](https://developers.telnyx.com/api/branded-calling)
-
-
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
+│ Phone Call   │────►│   Telnyx   │────►│ POST /webhooks/voice │
+└─────────────┘     │   Cloud    │     └──────────┬───────────┘
+                    └────────────┘                │
+                                           TTS response
+                                           back to caller
 ```
 
 ## Environment Variables
@@ -38,7 +28,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -50,53 +41,50 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
+### Webhook Configuration
+
+1. Expose your local server:
+
+   ```bash
+   ngrok http 5000
+   ```
+
+2. Copy the HTTPS URL and configure in [Telnyx Portal](https://portal.telnyx.com):
+
+   - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
+
 ### Docker
 
 ```bash
-docker build -t branded-caller-id-manager .
-docker run --env-file .env -p 5000:5000 branded-caller-id-manager
+docker build -t branded-caller-id-manager-python .
+docker run --env-file .env -p 5000:5000 branded-caller-id-manager-python
 ```
 
 ## API Reference
 
 ### `POST /brands`
 
-Creates a new record.
-
-**Request:**
+Triggers brands
 
 ```bash
 curl -X POST http://localhost:5000/brands \
   -H "Content-Type: application/json" \
-  -d '{
-  "entity_type": "PRIVATE_PROFIT",
-  "display_name": "Jane Doe",
-  "company_name": "Jane Doe",
-  "ein": "example_value",
-  "phone": "+12125551234",
-  "street": "example_value",
-  "city": "example_value",
-  "state": "example_value",
-  "postal_code": "example_value",
-  "country": "US",
-  "vertical": "TECHNOLOGY",
-  "website": "example_value"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /brands`
 
-Returns all brands.
-
-**Request:**
+Returns brands
 
 ```bash
 curl http://localhost:5000/brands
@@ -106,65 +94,68 @@ curl http://localhost:5000/brands
 
 ```json
 {
-  "brands": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `POST /campaigns`
 
-Creates a new record.
-
-**Request:**
+Triggers campaigns
 
 ```bash
 curl -X POST http://localhost:5000/campaigns \
   -H "Content-Type: application/json" \
   -d '{
-  "brand_id": "abc-123",
-  "usecase": "MIXED",
-  "description": "Customer reported issue with service",
-  "sample_message": "[\"Your appointment is tomorrow at 2pm. Reply CONFIRM.\"]",
-  "phone_numbers": "[]"
-}'
+    "name": "Summer Outreach",
+    "recipients": ["+12125551234", "+13105559876"],
+    "message": "Your appointment reminder for tomorrow at 2 PM"
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "campaign_id": "camp-1750280400",
+  "status": "created",
+  "recipients": 150,
+  "scheduled_at": "2026-07-15T09:00:00Z"
 }
 ```
 
 ### `PUT /numbers/<number>/caller-id`
 
-Updates the record.
-
-**Request:**
+Triggers caller-id
 
 ```bash
-curl -X PUT http://localhost:5000/numbers/example-id/caller-id \
-  -H "Content-Type: application/json" \
-  -d '{
-  "business_name": "Acme Services"
-}'
+curl -X PUT http://localhost:5000/numbers/example-id/caller-id
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "calls": [
+    {
+      "call_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+      "from": "+18005551234",
+      "to": "+12125559876",
+      "duration_seconds": 145,
+      "status": "completed"
+    }
+  ]
 }
 ```
 
 ### `GET /stir-shaken/status`
 
-Handles `GET /stir-shaken/status`.
-
-**Request:**
+Returns status
 
 ```bash
 curl http://localhost:5000/stir-shaken/status
@@ -174,18 +165,19 @@ curl http://localhost:5000/stir-shaken/status
 
 ```json
 {
-  "number": "...",
-  "cnam_enabled": "...",
-  "caller_id_name": "...",
-  "purchased_at": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /campaigns`
 
-Returns all campaigns.
-
-**Request:**
+Returns campaigns
 
 ```bash
 curl http://localhost:5000/campaigns
@@ -195,15 +187,22 @@ curl http://localhost:5000/campaigns
 
 ```json
 {
-  "campaigns": "..."
+  "campaigns": [
+    {
+      "id": "camp-1750280400",
+      "name": "Summer Outreach",
+      "status": "active",
+      "sent": 120,
+      "delivered": 115,
+      "failed": 5
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -213,11 +212,15 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -9,26 +9,16 @@ telnyx_products: [Cloud Storage, Migration, Number Porting, SMS/MMS, Verify]
 
 # Production-ready OTP 2FA system with Flask and Telnyx SMS.
 
-Production-ready OTP 2FA system with Flask and Telnyx SMS.
-
-
-## Telnyx API Endpoints Used
-
-- **Messaging**: `POST /v2/messages` -- [API reference](https://developers.telnyx.com/api/messaging/send-message)
-
+SMS application. Built with Telnyx Cloud Storage, Migration, Number Porting, SMS/MMS.
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -37,10 +27,10 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `OTP_EXPIRY_SECONDS` | `string` | `300` | no | otp expiry seconds | — |
-| `TELNYX_PHONE_NUMBER` | `string` | `+18005551234` | **yes** | telnyx phone number | — |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `OTP_EXPIRY_SECONDS` | `string` | `300` | no | Otp expiry seconds | — |
+| `TELNYX_PHONE_NUMBER` | `string` | `your_value` | **yes** | Telnyx phone number | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
 
 ## Setup
 
@@ -55,63 +45,59 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t sms-two-factor-auth .
-docker run --env-file .env -p 5000:5000 sms-two-factor-auth
+docker build -t sms-two-factor-auth-python .
+docker run --env-file .env -p 5000:5000 sms-two-factor-auth-python
 ```
 
 ## API Reference
 
 ### `POST /auth/request-otp`
 
-Handles `POST /auth/request-otp`.
-
-**Request:**
+Request an OTP to be sent to the provided phone number.
 
 ```bash
-curl -X POST http://localhost:5000/auth/request-otp
+curl -X POST http://localhost:5000/auth/request-otp \
+  -H "Content-Type: application/json" \
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "message": "...",
-  "message_id": "...",
-  "expires_in_seconds": "...",
-  "status_code": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `POST /auth/verify-otp`
 
-Handles `POST /auth/verify-otp`.
-
-**Request:**
+Verify the OTP code provided by the user.
 
 ```bash
 curl -X POST http://localhost:5000/auth/verify-otp \
   -H "Content-Type: application/json" \
   -d '{
-  "code": "example_value"
-}'
+    "phone": "+12125551234",
+    "channel": "sms"
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "message": "...",
-  "session_token": "...",
-  "authenticated": "...",
-  "attempts_remaining": "..."
+  "verification_id": "ver-abc123",
+  "status": "pending",
+  "channel": "sms",
+  "phone": "+12125551234"
 }
 ```
 
 ### `GET /auth/otp-status`
 
-Handles `GET /auth/otp-status`.
-
-**Request:**
+Get OTP status for a phone number (for testing/debugging only).
 
 ```bash
 curl http://localhost:5000/auth/otp-status
@@ -121,11 +107,17 @@ curl http://localhost:5000/auth/otp-status
 
 ```json
 {
-  "status": "ok"
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

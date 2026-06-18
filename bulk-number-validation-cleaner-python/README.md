@@ -11,22 +11,14 @@ telnyx_products: [Number Lookup]
 
 Bulk Number Validation & Cleaner — validate and clean phone number lists via Telnyx Number Lookup API.
 
-## Telnyx API Endpoints Used
-
-- **Number Lookup**: `GET /v2/number_lookup/{phone_number}` — [API reference](https://developers.telnyx.com/api/number-lookup/lookup)
-
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -35,7 +27,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -50,39 +43,36 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t bulk-number-validation-cleaner .
-docker run --env-file .env -p 5000:5000 bulk-number-validation-cleaner
+docker build -t bulk-number-validation-cleaner-python .
+docker run --env-file .env -p 5000:5000 bulk-number-validation-cleaner-python
 ```
 
 ## API Reference
 
 ### `POST /validate`
 
-Handles `POST /validate`.
-
-**Request:**
+Triggers validate
 
 ```bash
 curl -X POST http://localhost:5000/validate \
   -H "Content-Type: application/json" \
-  -d '{
-  "numbers": "[]"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "verification_id": "ver-abc123",
+  "status": "pending",
+  "channel": "sms",
+  "phone": "+12125551234"
 }
 ```
 
 ### `GET /validate/single/<number>`
 
-Handles `GET /validate/single/<number>`.
-
-**Request:**
+Returns number
 
 ```bash
 curl http://localhost:5000/validate/single/example-id
@@ -92,15 +82,20 @@ curl http://localhost:5000/validate/single/example-id
 
 ```json
 {
-  "status": "ok"
+  "numbers": [
+    {
+      "phone_number": "+18005551234",
+      "status": "active",
+      "type": "local",
+      "region": "US-CA"
+    }
+  ]
 }
 ```
 
 ### `GET /jobs`
 
-Returns all jobs.
-
-**Request:**
+Returns jobs
 
 ```bash
 curl http://localhost:5000/jobs
@@ -110,15 +105,19 @@ curl http://localhost:5000/jobs
 
 ```json
 {
-  "jobs": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -128,12 +127,14 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Number Lookup — API Reference](https://developers.telnyx.com/api/number-lookup/lookup)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

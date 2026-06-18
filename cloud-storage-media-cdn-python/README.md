@@ -11,24 +11,14 @@ telnyx_products: [Cloud Storage, Migration, Number Porting, Voice]
 
 Cloud Storage Media CDN — use Telnyx Cloud Storage as a CDN for IVR prompts, hold music, and voice assets.
 
-
-## Telnyx API Endpoints Used
-
-- **Cloud Storage (S3)**: `S3-compatible API` — [API reference](https://developers.telnyx.com/api/cloud-storage)
-
-
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -37,8 +27,9 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `BUCKET_NAME` | `string` | `media-cdn` | no | bucket name | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `BUCKET_NAME` | `string` | `my-bucket` | no | Telnyx Cloud Storage bucket name | [Portal](https://portal.telnyx.com/storage) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -50,65 +41,69 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
+### Webhook Configuration
+
+1. Expose your local server:
+
+   ```bash
+   ngrok http 5000
+   ```
+
+2. Copy the HTTPS URL and configure in [Telnyx Portal](https://portal.telnyx.com):
+
+
 ### Docker
 
 ```bash
-docker build -t cloud-storage-media-cdn .
-docker run --env-file .env -p 5000:5000 cloud-storage-media-cdn
+docker build -t cloud-storage-media-cdn-python .
+docker run --env-file .env -p 5000:5000 cloud-storage-media-cdn-python
 ```
 
 ## API Reference
 
 ### `POST /setup`
 
-Handles `POST /setup`.
-
-**Request:**
+Triggers setup
 
 ```bash
-curl -X POST http://localhost:5000/setup
+curl -X POST http://localhost:5000/setup \
+  -H "Content-Type: application/json" \
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok",
-  "bucket": "...",
-  "categories": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `POST /upload`
 
-Handles `POST /upload`.
-
-**Request:**
+Triggers upload
 
 ```bash
 curl -X POST http://localhost:5000/upload \
   -H "Content-Type: application/json" \
-  -d '{
-  "category": "ivr_prompts",
-  "name": "Jane Doe",
-  "url": "https://pay.example.com/inv-123"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok",
-  "entry": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /media`
 
-Returns all media.
-
-**Request:**
+Returns media
 
 ```bash
 curl http://localhost:5000/media
@@ -118,16 +113,19 @@ curl http://localhost:5000/media
 
 ```json
 {
-  "media": "...",
-  "category": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /media/<category>/<name>`
 
-Returns media url details.
-
-**Request:**
+Returns name
 
 ```bash
 curl http://localhost:5000/media/example-id/example-id
@@ -137,16 +135,19 @@ curl http://localhost:5000/media/example-id/example-id
 
 ```json
 {
-  "url": "...",
-  "item": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /ivr-config`
 
-Handles `GET /ivr-config`.
-
-**Request:**
+Returns ivr-config
 
 ```bash
 curl http://localhost:5000/ivr-config
@@ -156,17 +157,19 @@ curl http://localhost:5000/ivr-config
 
 ```json
 {
-  "ivr_prompts": "...",
-  "hold_music": "...",
-  "usage": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -176,11 +179,14 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -1,34 +1,28 @@
 ---
 name: create-ai-assistant
-title: "Production-ready Flask endpoint for creating AI assistants via Telnyx."
-description: "Application. Built with Telnyx AI Assistants, Migration, Number Porting, SMS/MMS."
+title: "Create AI Assistant"
+description: "Create a new Telnyx AI Assistant with a system prompt, model selection, and tool configuration."
 language: python
 framework: flask
-telnyx_products: [AI Assistants, Migration, Number Porting, SMS/MMS]
+telnyx_products: [AI Assistants]
 ---
 
-# Production-ready Flask endpoint for creating AI assistants via Telnyx.
+# Create AI Assistant
 
-Production-ready Flask endpoint for creating AI assistants via Telnyx.
-
+Create a new Telnyx AI Assistant with a system prompt, model selection, and tool configuration.
 
 ## Telnyx API Endpoints Used
 
-- **AI Assistants: Create**: `POST /v2/ai/assistants` — [API reference](https://developers.telnyx.com/api/ai-assistants/create-assistant)
-
+- **Create AI Assistant**: `POST /v2/ai/assistants` -- [API reference](https://developers.telnyx.com/api/ai/create-assistant)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -37,8 +31,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
 
 ## Setup
 
@@ -53,38 +47,35 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t create-ai-assistant .
-docker run --env-file .env -p 5000:5000 create-ai-assistant
+docker build -t create-ai-assistant-python .
+docker run --env-file .env -p 5000:5000 create-ai-assistant-python
 ```
 
 ## API Reference
 
 ### `POST /ai/assistants`
 
-Creates a new record.
-
-**Request:**
+HTTP endpoint to create AI assistant.
 
 ```bash
 curl -X POST http://localhost:5000/ai/assistants \
   -H "Content-Type: application/json" \
-  -d '{
-  "name": "Jane Doe",
-  "instructions": "example_value",
-  "model": "meta-llama/Meta-Llama-3.1-70B-Instruct",
-  "enabled_features": "[\"messaging\"]"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status_code": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [AI Assistants Guide](https://developers.telnyx.com/docs/ai/assistants)
+
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

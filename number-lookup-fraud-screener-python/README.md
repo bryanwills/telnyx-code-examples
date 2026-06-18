@@ -14,27 +14,24 @@ Number Lookup Fraud Screener — screen inbound calls/messages for fraud indicat
 
 ## Telnyx API Endpoints Used
 
-- **Number Lookup**: `GET /v2/number_lookup/{phone_number}` — [API reference](https://developers.telnyx.com/api/number-lookup/lookup)
+- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` — [API reference](https://developers.telnyx.com/api/call-control/answer-call)
 
 ## Telnyx Webhook Events
 
-This app handles these [Call Control](https://developers.telnyx.com/docs/api/v2/call-control) and [Messaging](https://developers.telnyx.com/docs/api/v2/messaging) webhook events:
+This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)) ([Messaging docs](https://developers.telnyx.com/docs/api/v2/messaging)):
 
-- `call.initiated` — incoming call detected, app answers
+- `call.initiated` — New inbound or outbound call detected
+- `message.received` — Inbound SMS/MMS received
 
 ## Architecture
 
 ```text
 ┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
-│  Phone Call  │────►│   Telnyx   │────►│  POST /webhooks/voice│
+│ Phone Call   │────►│   Telnyx   │────►│ POST /webhooks/voice │
 └─────────────┘     │   Cloud    │     └──────────┬───────────┘
                     └────────────┘                │
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+                                           TTS response
+                                           back to caller
 ```
 
 ## Environment Variables
@@ -43,7 +40,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -70,17 +68,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t number-lookup-fraud-screener .
-docker run --env-file .env -p 5000:5000 number-lookup-fraud-screener
+docker build -t number-lookup-fraud-screener-python .
+docker run --env-file .env -p 5000:5000 number-lookup-fraud-screener-python
 ```
 
 ## API Reference
 
 ### `GET /screen/<number>`
 
-Handles `GET /screen/<number>`.
-
-**Request:**
+Returns number
 
 ```bash
 curl http://localhost:5000/screen/example-id
@@ -90,40 +86,40 @@ curl http://localhost:5000/screen/example-id
 
 ```json
 {
-  "number": "...",
-  "action": "...",
-  "reason": "..."
+  "numbers": [
+    {
+      "phone_number": "+18005551234",
+      "status": "active",
+      "type": "local",
+      "region": "US-CA"
+    }
+  ]
 }
 ```
 
 ### `POST /blocklist`
 
-Adds a new entry.
-
-**Request:**
+Triggers blocklist
 
 ```bash
 curl -X POST http://localhost:5000/blocklist \
   -H "Content-Type: application/json" \
-  -d '{
-  "number": "example_value"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok",
-  "number": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /blocklist`
 
-Returns all blocklist.
-
-**Request:**
+Returns blocklist
 
 ```bash
 curl http://localhost:5000/blocklist
@@ -133,15 +129,19 @@ curl http://localhost:5000/blocklist
 
 ```json
 {
-  "blocked": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /screening-log`
 
-Returns log details.
-
-**Request:**
+Returns screening-log
 
 ```bash
 curl http://localhost:5000/screening-log
@@ -151,15 +151,19 @@ curl http://localhost:5000/screening-log
 
 ```json
 {
-  "log": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -169,7 +173,10 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
@@ -181,20 +188,26 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 **Events handled:** `call.initiated`
 
-**Example inbound payload:**
+**Example payload:**
 
 ```json
 {
   "data": {
     "event_type": "call.initiated",
-    "call_control_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
-    "connection_id": "1494404757140276705",
-    "direction": "incoming",
-    "from": "+12125551234",
-    "to": "+13105559876",
-    "call_leg_id": "428c31b6-7af4-4bcb-b7f5-5013ef9657c1",
-    "client_state": null,
-    "state": "ringing"
+    "id": "0ccc7b54-4df3-4bca-a65a-3da1ecc777f0",
+    "occurred_at": "2026-07-15T14:30:00.000Z",
+    "payload": {
+      "call_control_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+      "connection_id": "1494404757140276705",
+      "call_leg_id": "428c31b6-7af4-4bcb-b7f5-5013ef9657c1",
+      "call_session_id": "428c31b6-abcd-1234-5678-5013ef9657c1",
+      "client_state": null,
+      "from": "+12125551234",
+      "to": "+13105559876",
+      "direction": "incoming",
+      "state": "ringing"
+    },
+    "record_type": "event"
   },
   "meta": {
     "attempt": 1,
@@ -205,6 +218,6 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Resources
 
-- [Number Lookup — API Reference](https://developers.telnyx.com/api/number-lookup/lookup)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

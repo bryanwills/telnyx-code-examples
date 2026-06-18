@@ -9,26 +9,16 @@ telnyx_products: [AI Assistants, Migration, Number Porting]
 
 # Production-ready Flask application for cloning AI Assistants via Telnyx.
 
-Production-ready Flask application for cloning AI Assistants via Telnyx.
-
-
-## Telnyx API Endpoints Used
-
-- **AI Assistants: Clone**: `POST /v2/ai/assistants/{id}/clone` — [API reference](https://developers.telnyx.com/api/ai-assistants/clone-assistant)
-
+Application. Built with Telnyx AI Assistants, Migration, Number Porting.
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -37,8 +27,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
 
 ## Setup
 
@@ -53,17 +43,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t clone-ai-assistant .
-docker run --env-file .env -p 5000:5000 clone-ai-assistant
+docker build -t clone-ai-assistant-python .
+docker run --env-file .env -p 5000:5000 clone-ai-assistant-python
 ```
 
 ## API Reference
 
 ### `GET /assistants/<assistant_id>`
 
-Returns assistant details.
-
-**Request:**
+Retrieve details of an assistant before cloning.
 
 ```bash
 curl http://localhost:5000/assistants/example-id
@@ -73,34 +61,37 @@ curl http://localhost:5000/assistants/example-id
 
 ```json
 {
-  "status_code": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `POST /assistants/<assistant_id>/clone`
 
-Handles `POST /assistants/<assistant_id>/clone`.
-
-**Request:**
+Clone an existing assistant with optional parameter overrides.
 
 ```bash
 curl -X POST http://localhost:5000/assistants/example-id/clone \
   -H "Content-Type: application/json" \
-  -d '{
-  "name": "Jane Doe",
-  "instructions": "example_value"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status_code": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

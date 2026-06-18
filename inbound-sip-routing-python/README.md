@@ -9,26 +9,16 @@ telnyx_products: [Migration, Number Porting]
 
 # Flask application for managing inbound SIP routing with Telnyx.
 
-Flask application for managing inbound SIP routing with Telnyx.
-
-
-## Telnyx API Endpoints Used
-
-- **SIP Connections**: `GET /v2/sip_connections` — [API reference](https://developers.telnyx.com/api/sip-trunking/list-sip-connections)
-
+Application. Built with Telnyx Migration, Number Porting.
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -37,8 +27,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
 
 ## Setup
 
@@ -53,17 +43,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t inbound-sip-routing .
-docker run --env-file .env -p 5000:5000 inbound-sip-routing
+docker build -t inbound-sip-routing-python .
+docker run --env-file .env -p 5000:5000 inbound-sip-routing-python
 ```
 
 ## API Reference
 
 ### `GET /sip/connections`
 
-Returns all connections.
-
-**Request:**
+List all SIP connections configured for inbound routing.
 
 ```bash
 curl http://localhost:5000/sip/connections
@@ -73,41 +61,45 @@ curl http://localhost:5000/sip/connections
 
 ```json
 {
-  "connections": "...",
-  "status_code": "..."
+  "connections": [
+    {
+      "id": "1494404757140276705",
+      "name": "Production SIP",
+      "status": "active",
+      "ip": "192.168.1.100"
+    }
+  ]
 }
 ```
 
 ### `POST /sip/connections`
 
-Creates a new record.
-
-**Request:**
+Create a new SIP connection for inbound call routing.
 
 ```bash
 curl -X POST http://localhost:5000/sip/connections \
   -H "Content-Type: application/json" \
-  -d '{
-  "name": "Jane Doe",
-  "sip_uri": "example_value",
-  "username": "Jane Doe",
-  "password": "example_value"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status_code": "..."
+  "connections": [
+    {
+      "id": "1494404757140276705",
+      "name": "Production SIP",
+      "status": "active",
+      "ip": "192.168.1.100"
+    }
+  ]
 }
 ```
 
 ### `GET /sip/connections/<connection_id>`
 
-Returns connection details.
-
-**Request:**
+Get detailed information about a specific SIP connection.
 
 ```bash
 curl http://localhost:5000/sip/connections/example-id
@@ -117,11 +109,18 @@ curl http://localhost:5000/sip/connections/example-id
 
 ```json
 {
-  "status_code": "..."
+  "connections": [
+    {
+      "id": "1494404757140276705",
+      "name": "Production SIP",
+      "status": "active",
+      "ip": "192.168.1.100"
+    }
+  ]
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

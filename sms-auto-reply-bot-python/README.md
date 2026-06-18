@@ -10,33 +10,26 @@ channel: [sms]
 
 # Production-ready SMS autoresponder using Telnyx webhooks.
 
-Production-ready SMS autoresponder using Telnyx webhooks.
-
+Voice and SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS, Voice.
 
 ## Telnyx API Endpoints Used
 
-- **Messaging**: `POST /v2/messages` -- [API reference](https://developers.telnyx.com/api/messaging/send-message)
-
+- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
 
 ## Telnyx Webhook Events
 
-This app handles these [Call Control](https://developers.telnyx.com/docs/api/v2/call-control) and [Messaging](https://developers.telnyx.com/docs/api/v2/messaging) webhook events:
+This app handles these webhook events ([Messaging docs](https://developers.telnyx.com/docs/api/v2/messaging)):
 
-- `message.received` — inbound SMS/MMS received
+- `message.received` — Inbound SMS/MMS received
 
 ## Architecture
 
 ```text
-┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
-│   SMS/MMS   │────►│   Telnyx   │────►│  POST /webhooks/sms  │
-└─────────────┘     │   Cloud    │     └──────────┬───────────┘
+┌─────────────┐     ┌────────────┐     ┌────────────────────────┐
+│   SMS/MMS    │────►│   Telnyx   │────►│ POST /webhooks/messaging│
+└─────────────┘     │   Cloud    │     └──────────┬─────────────┘
                     └────────────┘                │
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+                                           SMS reply back
 ```
 
 ## Environment Variables
@@ -45,9 +38,9 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `TELNYX_PHONE_NUMBER` | `string` | `+18005551234` | **yes** | telnyx phone number | — |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `TELNYX_PHONE_NUMBER` | `string` | `your_value` | **yes** | Telnyx phone number | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
 
 ## Setup
 
@@ -74,17 +67,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t sms-auto-reply-bot .
-docker run --env-file .env -p 5000:5000 sms-auto-reply-bot
+docker build -t sms-auto-reply-bot-python .
+docker run --env-file .env -p 5000:5000 sms-auto-reply-bot-python
 ```
 
 ## API Reference
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Health check endpoint for monitoring.
 
 ```bash
 curl http://localhost:5000/health
@@ -94,7 +85,10 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
@@ -104,35 +98,36 @@ curl http://localhost:5000/health
 
 Receives [Telnyx Messaging](https://developers.telnyx.com/docs/messaging) webhook events.
 
-**Example inbound payload:**
+**Example payload:**
 
 ```json
 {
   "data": {
     "event_type": "message.received",
-    "direction": "inbound",
+    "id": "f5d7a7e0-1234-5678-9abc-def012345678",
+    "occurred_at": "2026-07-15T14:30:00.000Z",
     "payload": {
       "id": "f5d7a7e0-1234-5678-9abc-def012345678",
+      "direction": "inbound",
+      "type": "SMS",
       "from": {
         "phone_number": "+12125551234",
         "carrier": "Verizon",
         "line_type": "Wireless"
       },
-      "to": [
-        {
-          "phone_number": "+13105559876"
-        }
-      ],
-      "text": "HELP",
-      "type": "SMS",
+      "to": [{"phone_number": "+13105559876"}],
+      "text": "Hello, I need help",
       "media": [],
-      "received_at": "2026-07-15T14:30:00Z"
-    }
+      "received_at": "2026-07-15T14:30:00.000Z",
+      "messaging_profile_id": "40017b7e-b3c0-4ac3-8740-9c3c5a0a0e0c"
+    },
+    "record_type": "event"
   }
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Messaging Guide](https://developers.telnyx.com/docs/messaging)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

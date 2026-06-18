@@ -9,27 +9,16 @@ telnyx_products: [Migration, Number Porting, SIP Trunking]
 
 # Production-ready Flask application for SIP codec configuration via Telnyx.
 
-Production-ready Flask application for SIP codec configuration via Telnyx.
-
-
-## Telnyx API Endpoints Used
-
-- **SIP Connections**: `GET /v2/sip_connections` — [API reference](https://developers.telnyx.com/api/sip-trunking/list-sip-connections)
-- **SIP Connection Codecs**: `PATCH /v2/sip_connections/{id}` — [API reference](https://developers.telnyx.com/api/sip-trunking/update-sip-connection)
-
+Voice application. Built with Telnyx Migration, Number Porting, SIP Trunking.
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -38,11 +27,11 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `SIP_USERNAME` | `string` | `...` | **yes** | sip username | — |
-| `SIP_PASSWORD` | `string` | `...` | **yes** | sip password | — |
-| `SIP_ENDPOINT` | `string` | `...` | **yes** | sip endpoint | — |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `SIP_USERNAME` | `string` | `your_value` | **yes** | Sip username | — |
+| `SIP_PASSWORD` | `string` | `your_value` | **yes** | Sip password | — |
+| `SIP_ENDPOINT` | `string` | `your_value` | **yes** | Sip endpoint | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
 
 ## Setup
 
@@ -57,17 +46,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t configure-sip-codecs .
-docker run --env-file .env -p 5000:5000 configure-sip-codecs
+docker build -t configure-sip-codecs-python .
+docker run --env-file .env -p 5000:5000 configure-sip-codecs-python
 ```
 
 ## API Reference
 
 ### `GET /sip/connections`
 
-Returns all connections.
-
-**Request:**
+HTTP endpoint to list all SIP connections.
 
 ```bash
 curl http://localhost:5000/sip/connections
@@ -77,41 +64,45 @@ curl http://localhost:5000/sip/connections
 
 ```json
 {
-  "status_code": "..."
+  "connections": [
+    {
+      "id": "1494404757140276705",
+      "name": "Production SIP",
+      "status": "active",
+      "ip": "192.168.1.100"
+    }
+  ]
 }
 ```
 
 ### `POST /sip/connections`
 
-Creates a new record.
-
-**Request:**
+HTTP endpoint to create a new SIP connection with codec configuration.
 
 ```bash
 curl -X POST http://localhost:5000/sip/connections \
   -H "Content-Type: application/json" \
-  -d '{
-  "name": "Jane Doe",
-  "codecs": "[\"G.711\"]",
-  "username": "Jane Doe",
-  "password": "example_value",
-  "sip_endpoint": "example_value"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status_code": "..."
+  "connections": [
+    {
+      "id": "1494404757140276705",
+      "name": "Production SIP",
+      "status": "active",
+      "ip": "192.168.1.100"
+    }
+  ]
 }
 ```
 
 ### `GET /sip/connections/<connection_id>`
 
-Returns connection details.
-
-**Request:**
+HTTP endpoint to retrieve codec configuration for a specific SIP connection.
 
 ```bash
 curl http://localhost:5000/sip/connections/example-id
@@ -121,11 +112,18 @@ curl http://localhost:5000/sip/connections/example-id
 
 ```json
 {
-  "status_code": "..."
+  "connections": [
+    {
+      "id": "1494404757140276705",
+      "name": "Production SIP",
+      "status": "active",
+      "ip": "192.168.1.100"
+    }
+  ]
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

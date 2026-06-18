@@ -11,24 +11,24 @@ telnyx_products: [Cloud Storage, Migration, Number Porting, Voice]
 
 Cloud Storage Call Archive — archive call recordings to Telnyx Cloud Storage with searchable metadata.
 
-
 ## Telnyx API Endpoints Used
 
-- **Cloud Storage (S3)**: `S3-compatible API` — [API reference](https://developers.telnyx.com/api/cloud-storage)
+- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` — [API reference](https://developers.telnyx.com/api/call-control/answer-call)
 
+## Telnyx Webhook Events
+
+This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
+
+- `call.recording.saved` — Call recording saved — URL available for download/processing
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -37,8 +37,9 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `BUCKET_NAME` | `string` | `call-archive` | no | bucket name | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `BUCKET_NAME` | `string` | `my-bucket` | no | Telnyx Cloud Storage bucket name | [Portal](https://portal.telnyx.com/storage) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -53,35 +54,35 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t cloud-storage-call-archive .
-docker run --env-file .env -p 5000:5000 cloud-storage-call-archive
+docker build -t cloud-storage-call-archive-python .
+docker run --env-file .env -p 5000:5000 cloud-storage-call-archive-python
 ```
 
 ## API Reference
 
 ### `POST /buckets`
 
-Creates a new record.
-
-**Request:**
+Triggers buckets
 
 ```bash
-curl -X POST http://localhost:5000/buckets
+curl -X POST http://localhost:5000/buckets \
+  -H "Content-Type: application/json" \
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /buckets`
 
-Returns all buckets.
-
-**Request:**
+Returns buckets
 
 ```bash
 curl http://localhost:5000/buckets
@@ -91,42 +92,39 @@ curl http://localhost:5000/buckets
 
 ```json
 {
-  "buckets": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `POST /archive`
 
-Handles `POST /archive`.
-
-**Request:**
+Triggers archive
 
 ```bash
 curl -X POST http://localhost:5000/archive \
   -H "Content-Type: application/json" \
-  -d '{
-  "recording_url": "https://pay.example.com/inv-123",
-  "call_id": "f\"call-{int(time.time(",
-  "metadata": "example_value"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok",
-  "entry": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /archive`
 
-Returns all archive.
-
-**Request:**
+Returns archive
 
 ```bash
 curl http://localhost:5000/archive
@@ -136,16 +134,19 @@ curl http://localhost:5000/archive
 
 ```json
 {
-  "recordings": "...",
-  "total": 3
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /archive/search`
 
-Handles `GET /archive/search`.
-
-**Request:**
+Returns search
 
 ```bash
 curl http://localhost:5000/archive/search
@@ -155,16 +156,19 @@ curl http://localhost:5000/archive/search
 
 ```json
 {
-  "results": "...",
-  "query": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -174,7 +178,10 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
@@ -182,9 +189,9 @@ curl http://localhost:5000/health
 
 ### `POST /webhooks/recording`
 
-Receives external webhook events.
+Receives Telnyx webhook events for `/webhooks/recording`.
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

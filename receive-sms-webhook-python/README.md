@@ -10,33 +10,22 @@ channel: [sms]
 
 # Production-ready Flask webhook endpoint for receiving inbound SMS via Telnyx.
 
-Production-ready Flask webhook endpoint for receiving inbound SMS via Telnyx.
-
-
-## Telnyx API Endpoints Used
-
-- **Messaging**: `POST /v2/messages` -- [API reference](https://developers.telnyx.com/api/messaging/send-message)
-
+SMS application. Built with Telnyx Migration, Number Porting.
 
 ## Telnyx Webhook Events
 
-This app handles these [Call Control](https://developers.telnyx.com/docs/api/v2/call-control) and [Messaging](https://developers.telnyx.com/docs/api/v2/messaging) webhook events:
+This app handles these webhook events ([Messaging docs](https://developers.telnyx.com/docs/api/v2/messaging)):
 
-- `message.received` — inbound SMS/MMS received
+- `message.received` — Inbound SMS/MMS received
 
 ## Architecture
 
 ```text
-┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
-│   SMS/MMS   │────►│   Telnyx   │────►│  POST /webhooks/sms  │
-└─────────────┘     │   Cloud    │     └──────────┬───────────┘
+┌─────────────┐     ┌────────────┐     ┌────────────────────────┐
+│   SMS/MMS    │────►│   Telnyx   │────►│ POST /webhooks/messaging│
+└─────────────┘     │   Cloud    │     └──────────┬─────────────┘
                     └────────────┘                │
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+                                           SMS reply back
 ```
 
 ## Environment Variables
@@ -45,8 +34,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
 
 ## Setup
 
@@ -73,8 +62,8 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t receive-sms-webhook .
-docker run --env-file .env -p 5000:5000 receive-sms-webhook
+docker build -t receive-sms-webhook-python .
+docker run --env-file .env -p 5000:5000 receive-sms-webhook-python
 ```
 
 ## Webhook Endpoints
@@ -83,35 +72,36 @@ docker run --env-file .env -p 5000:5000 receive-sms-webhook
 
 Receives [Telnyx Messaging](https://developers.telnyx.com/docs/messaging) webhook events.
 
-**Example inbound payload:**
+**Example payload:**
 
 ```json
 {
   "data": {
     "event_type": "message.received",
-    "direction": "inbound",
+    "id": "f5d7a7e0-1234-5678-9abc-def012345678",
+    "occurred_at": "2026-07-15T14:30:00.000Z",
     "payload": {
       "id": "f5d7a7e0-1234-5678-9abc-def012345678",
+      "direction": "inbound",
+      "type": "SMS",
       "from": {
         "phone_number": "+12125551234",
         "carrier": "Verizon",
         "line_type": "Wireless"
       },
-      "to": [
-        {
-          "phone_number": "+13105559876"
-        }
-      ],
-      "text": "HELP",
-      "type": "SMS",
+      "to": [{"phone_number": "+13105559876"}],
+      "text": "Hello, I need help",
       "media": [],
-      "received_at": "2026-07-15T14:30:00Z"
-    }
+      "received_at": "2026-07-15T14:30:00.000Z",
+      "messaging_profile_id": "40017b7e-b3c0-4ac3-8740-9c3c5a0a0e0c"
+    },
+    "record_type": "event"
   }
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Messaging Guide](https://developers.telnyx.com/docs/messaging)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

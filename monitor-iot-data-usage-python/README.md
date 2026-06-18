@@ -11,25 +11,25 @@ telnyx_products: [IoT/SIM, Migration, Number Porting]
 
 Production-ready Flask application for monitoring SIM card data usage via Telnyx IoT API.
 
-
 ## Telnyx API Endpoints Used
 
-- **SIM Cards: Activate**: `POST /v2/sim_cards/{id}/actions/enable` — [API reference](https://developers.telnyx.com/api/sim-cards/sim-card-actions)
-- **Call Control: Whisper**: `POST /v2/calls/{id}/actions/bridge` — [API reference](https://developers.telnyx.com/api/call-control/bridge-call)
+- **SIM Cards**: `GET /v2/sim_cards` — [API reference](https://developers.telnyx.com/api/sim-cards/list-sim-cards)
 
+## Telnyx Webhook Events
+
+This app handles these webhook events:
+
+- `sim_card.data_limit.reached` — SIM card data usage limit reached
+- `sim_card.status.changed` — SIM card status changed (active, suspended, etc.)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -38,9 +38,9 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `DATA_LIMIT_THRESHOLD_MB` | `integer` | `500` | no | data limit threshold mb | — |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `DATA_LIMIT_THRESHOLD_MB` | `string` | `500` | no | Data limit threshold mb | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
 
 ## Setup
 
@@ -55,17 +55,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t monitor-iot-data-usage .
-docker run --env-file .env -p 5000:5000 monitor-iot-data-usage
+docker build -t monitor-iot-data-usage-python .
+docker run --env-file .env -p 5000:5000 monitor-iot-data-usage-python
 ```
 
 ## API Reference
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Health check endpoint for monitoring infrastructure.
 
 ```bash
 curl http://localhost:5000/health
@@ -75,15 +73,16 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ### `GET /sim-cards`
 
-Returns all sims.
-
-**Request:**
+List all SIM cards in the account.
 
 ```bash
 curl http://localhost:5000/sim-cards
@@ -93,17 +92,19 @@ curl http://localhost:5000/sim-cards
 
 ```json
 {
-  "data": "...",
-  "count": 3,
-  "status_code": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /sim-cards/<sim_card_id>`
 
-Returns sim details.
-
-**Request:**
+Retrieve details for a specific SIM card.
 
 ```bash
 curl http://localhost:5000/sim-cards/example-id
@@ -113,15 +114,19 @@ curl http://localhost:5000/sim-cards/example-id
 
 ```json
 {
-  "status_code": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /sim-cards/<sim_card_id>/usage`
 
-Returns usage details.
-
-**Request:**
+Get data usage metrics for a specific SIM card.
 
 ```bash
 curl http://localhost:5000/sim-cards/example-id/usage
@@ -131,17 +136,19 @@ curl http://localhost:5000/sim-cards/example-id/usage
 
 ```json
 {
-  "usage": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `GET /sim-cards/<sim_card_id>/health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Get comprehensive health status for a SIM card.
 
 ```bash
 curl http://localhost:5000/sim-cards/example-id/health
@@ -151,28 +158,33 @@ curl http://localhost:5000/sim-cards/example-id/health
 
 ```json
 {
-  "status": "ok"
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `POST /sim-cards/<sim_card_id>/activate`
 
-Handles `POST /sim-cards/<sim_card_id>/activate`.
-
-**Request:**
+Activate a SIM card.
 
 ```bash
-curl -X POST http://localhost:5000/sim-cards/example-id/activate
+curl -X POST http://localhost:5000/sim-cards/example-id/activate \
+  -H "Content-Type: application/json" \
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "id": "...",
-  "status": "ok",
-  "message": "...",
-  "status_code": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
@@ -180,9 +192,9 @@ curl -X POST http://localhost:5000/sim-cards/example-id/activate
 
 ### `POST /webhooks/sim-events`
 
-Receives external webhook events.
+Receives Telnyx webhook events for `/webhooks/sim-events`.
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

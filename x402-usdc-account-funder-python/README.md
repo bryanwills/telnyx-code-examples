@@ -11,24 +11,14 @@ telnyx_products: [Migration, Number Porting]
 
 X402 USDC Account Funder — fund your Telnyx account with USDC cryptocurrency on the Base blockchain.
 
-
-## Telnyx API Endpoints Used
-
-- **x402 Payments**: `POST /v2/balance/fund` — [API reference](https://developers.telnyx.com/api/account)
-
-
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -37,7 +27,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -52,64 +43,55 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t x402-usdc-account-funder .
-docker run --env-file .env -p 5000:5000 x402-usdc-account-funder
+docker build -t x402-usdc-account-funder-python .
+docker run --env-file .env -p 5000:5000 x402-usdc-account-funder-python
 ```
 
 ## API Reference
 
 ### `POST /quote`
 
-Returns quote details.
-
-**Request:**
+Triggers quote
 
 ```bash
 curl -X POST http://localhost:5000/quote \
   -H "Content-Type: application/json" \
-  -d '{
-  "amount_usd": "50.00"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "quote": [
-    "..."
-  ]
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `POST /pay`
 
-Handles `POST /pay`.
-
-**Request:**
+Triggers pay
 
 ```bash
 curl -X POST http://localhost:5000/pay \
   -H "Content-Type: application/json" \
-  -d '{
-  "quote_id": "abc-123",
-  "payment_signature": "example_value"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /balance`
 
-Returns balance details.
-
-**Request:**
+Returns balance
 
 ```bash
 curl http://localhost:5000/balance
@@ -119,17 +101,19 @@ curl http://localhost:5000/balance
 
 ```json
 {
-  "balance": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `GET /info`
 
-Handles `GET /info`.
-
-**Request:**
+Returns info
 
 ```bash
 curl http://localhost:5000/info
@@ -139,21 +123,19 @@ curl http://localhost:5000/info
 
 ```json
 {
-  "chain": "...",
-  "chain_id": "...",
-  "usdc_contract": "...",
-  "min_amount": "...",
-  "max_amount": "...",
-  "quote_expiry": "...",
-  "steps": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /quotes`
 
-Returns all quotes.
-
-**Request:**
+Returns quotes
 
 ```bash
 curl http://localhost:5000/quotes
@@ -163,15 +145,19 @@ curl http://localhost:5000/quotes
 
 ```json
 {
-  "quotes": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /payments`
 
-Returns all payments.
-
-**Request:**
+Returns payments
 
 ```bash
 curl http://localhost:5000/payments
@@ -181,15 +167,19 @@ curl http://localhost:5000/payments
 
 ```json
 {
-  "payments": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -199,11 +189,14 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

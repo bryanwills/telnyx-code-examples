@@ -15,38 +15,32 @@ Automated multi-channel rent reminders. Day 1: SMS + Stripe payment link. Day 3:
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Speak (TTS)**: `POST /v2/calls/{call_control_id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
+- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
 
 ## Telnyx Webhook Events
 
-This app handles these [Call Control](https://developers.telnyx.com/docs/api/v2/call-control) and [Messaging](https://developers.telnyx.com/docs/api/v2/messaging) webhook events:
+This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.answered` — call connected, app speaks greeting
+- `call.answered` — Call connected — app begins interaction
 
 ## External Service Integrations
 
-- **Stripe** — Payments, refunds, checkout sessions ([docs](https://docs.stripe.com/api))
 - **Slack** — Team notifications via incoming webhooks ([docs](https://api.slack.com/messaging/webhooks))
+- **Stripe** — Payment processing ([docs](https://docs.stripe.com/api))
 
 ## Architecture
 
 ```text
 ┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
-│  Phone Call  │────►│   Telnyx   │────►│  POST /webhooks/voice│
+│ Phone Call   │────►│   Telnyx   │────►│ POST /webhooks/voice │
 └─────────────┘     │   Cloud    │     └──────────┬───────────┘
                     └────────────┘                │
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Stripe           │
-                                          ├─────────────────┤
-                                          │ Slack            │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+                                           ┌────┴────┐
+                                           │  Slack  │
+                                           └────┬────┘
+                                                │
+                                           TTS response
+                                           back to caller
 ```
 
 ## Environment Variables
@@ -55,11 +49,12 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [→ link](https://portal.telnyx.com/numbers/my-numbers) |
-| `CONNECTION_ID` | `string` | `1234567890` | **yes** | Call Control connection ID | [→ link](https://portal.telnyx.com/call-control/applications) |
-| `STRIPE_API_KEY` | `string` | `sk_live_...` | **yes** | Stripe secret key | [→ link](https://dashboard.stripe.com/apikeys) |
-| `MANAGER_SLACK_WEBHOOK` | `string` | `https://hooks.slack.com/...` | no | Slack webhook for manager alerts | [→ link](https://api.slack.com/messaging/webhooks) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
+| `CONNECTION_ID` | `string` | `1494404757140276705` | **yes** | Call Control connection/app ID | [Portal](https://portal.telnyx.com/call-control/applications) |
+| `STRIPE_API_KEY` | `string` | `your_value` | **yes** | Stripe api key | — |
+| `MANAGER_SLACK_WEBHOOK` | `string` | `https://hooks.slack.com/services/T.../B.../xxx` | no | Slack webhook for manager alerts | [Portal](https://api.slack.com/messaging/webhooks) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -86,39 +81,35 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t rent-collection-escalation .
-docker run --env-file .env -p 5000:5000 rent-collection-escalation
+docker build -t rent-collection-escalation-python .
+docker run --env-file .env -p 5000:5000 rent-collection-escalation-python
 ```
 
 ## API Reference
 
 ### `POST /collections/run`
 
-Executes the batch workflow.
-
-**Request:**
+Triggers run
 
 ```bash
 curl -X POST http://localhost:5000/collections/run \
   -H "Content-Type: application/json" \
-  -d '{
-  "day_overdue": 1
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "results": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /tenants`
 
-Returns all tenants.
-
-**Request:**
+Returns tenants
 
 ```bash
 curl http://localhost:5000/tenants
@@ -128,33 +119,35 @@ curl http://localhost:5000/tenants
 
 ```json
 {
-  "tenants": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `PUT /tenants/<int:idx>/status`
 
-Updates the record.
-
-**Request:**
+Triggers status
 
 ```bash
-curl -X PUT http://localhost:5000/tenants/0/status
+curl -X PUT http://localhost:5000/tenants/<int:idx>/status
 ```
 
 **Response:**
 
 ```json
 {
-  "tenant": "..."
+  "status": "ok"
 }
 ```
 
 ### `GET /collections/log`
 
-Returns log details.
-
-**Request:**
+Returns log
 
 ```bash
 curl http://localhost:5000/collections/log
@@ -164,15 +157,19 @@ curl http://localhost:5000/collections/log
 
 ```json
 {
-  "log": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -182,7 +179,10 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
@@ -194,20 +194,26 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 **Events handled:** `call.answered`
 
-**Example inbound payload:**
+**Example payload:**
 
 ```json
 {
   "data": {
     "event_type": "call.initiated",
-    "call_control_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
-    "connection_id": "1494404757140276705",
-    "direction": "incoming",
-    "from": "+12125551234",
-    "to": "+13105559876",
-    "call_leg_id": "428c31b6-7af4-4bcb-b7f5-5013ef9657c1",
-    "client_state": null,
-    "state": "ringing"
+    "id": "0ccc7b54-4df3-4bca-a65a-3da1ecc777f0",
+    "occurred_at": "2026-07-15T14:30:00.000Z",
+    "payload": {
+      "call_control_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+      "connection_id": "1494404757140276705",
+      "call_leg_id": "428c31b6-7af4-4bcb-b7f5-5013ef9657c1",
+      "call_session_id": "428c31b6-abcd-1234-5678-5013ef9657c1",
+      "client_state": null,
+      "from": "+12125551234",
+      "to": "+13105559876",
+      "direction": "incoming",
+      "state": "ringing"
+    },
+    "record_type": "event"
   },
   "meta": {
     "attempt": 1,
@@ -218,8 +224,6 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Resources
 
-- [Call Control: Speak (TTS) — API Reference](https://developers.telnyx.com/api/call-control/speak)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
-- [Stripe Documentation](https://docs.stripe.com/api)
-- [Slack Documentation](https://api.slack.com/messaging/webhooks)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

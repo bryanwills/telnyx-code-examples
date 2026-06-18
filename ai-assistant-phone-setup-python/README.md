@@ -13,25 +13,16 @@ AI Assistant Phone Setup — create and configure a managed Telnyx AI Assistant 
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference (Chat Completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Telnyx Inference │
-                                          │ (AI processing) │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -40,7 +31,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -55,46 +47,35 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t ai-assistant-phone-setup .
-docker run --env-file .env -p 5000:5000 ai-assistant-phone-setup
+docker build -t ai-assistant-phone-setup-python .
+docker run --env-file .env -p 5000:5000 ai-assistant-phone-setup-python
 ```
 
 ## API Reference
 
 ### `POST /assistants`
 
-Creates a new record.
-
-**Request:**
+Triggers assistants
 
 ```bash
 curl -X POST http://localhost:5000/assistants \
   -H "Content-Type: application/json" \
-  -d '{
-  "name": "My Assistant",
-  "instructions": "You are a helpful assistant. Be friendly and concise.",
-  "model": "meta-llama/Llama-3.3-70B-Instruct",
-  "voice_provider": "telnyx",
-  "voice_id": "en-US-Neural2-F",
-  "speed": "1.0",
-  "greeting": "Hello! How can I help you today?",
-  "hold_music_url": "https://pay.example.com/inv-123"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /assistants`
 
-Returns all assistants.
-
-**Request:**
+Returns assistants
 
 ```bash
 curl http://localhost:5000/assistants
@@ -104,17 +85,19 @@ curl http://localhost:5000/assistants
 
 ```json
 {
-  "assistants": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `GET /assistants/<assistant_id>`
 
-Returns assistant details.
-
-**Request:**
+Returns assistant id
 
 ```bash
 curl http://localhost:5000/assistants/example-id
@@ -124,17 +107,19 @@ curl http://localhost:5000/assistants/example-id
 
 ```json
 {
-  "assistant": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `PATCH /assistants/<assistant_id>`
 
-Updates the record.
-
-**Request:**
+Triggers assistant id
 
 ```bash
 curl -X PATCH http://localhost:5000/assistants/example-id
@@ -150,51 +135,47 @@ curl -X PATCH http://localhost:5000/assistants/example-id
 
 ### `POST /assistants/<assistant_id>/wire`
 
-Handles `POST /assistants/<assistant_id>/wire`.
-
-**Request:**
+Triggers wire
 
 ```bash
-curl -X POST http://localhost:5000/assistants/example-id/wire
+curl -X POST http://localhost:5000/assistants/example-id/wire \
+  -H "Content-Type: application/json" \
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "assistant_id": "...",
-  "phone_number": "...",
-  "instructions": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `POST /assistants/<assistant_id>/test`
 
-Handles `POST /assistants/<assistant_id>/test`.
-
-**Request:**
+Triggers test
 
 ```bash
 curl -X POST http://localhost:5000/assistants/example-id/test \
   -H "Content-Type: application/json" \
-  -d '{
-  "message": "Hello"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /models`
 
-Returns all models.
-
-**Request:**
+Returns models
 
 ```bash
 curl http://localhost:5000/models
@@ -204,17 +185,19 @@ curl http://localhost:5000/models
 
 ```json
 {
-  "models": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -224,12 +207,15 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [AI Inference (Chat Completions) — API Reference](https://developers.telnyx.com/api/inference/chat-completions)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

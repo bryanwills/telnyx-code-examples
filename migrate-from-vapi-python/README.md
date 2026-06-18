@@ -12,25 +12,15 @@ channel: [voice]
 
 Migrate from Vapi — import Vapi voice agents to Telnyx AI Assistants with voice, prompt, and tool configuration mapping.
 
-
-## Telnyx API Endpoints Used
-
-- **Call Control**: `POST /v2/calls` -- [API reference](https://developers.telnyx.com/api/call-control/dial)
-
-
 ## Architecture
 
 ```text
 ┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
-│  Phone Call  │────►│   Telnyx   │────►│  POST /webhooks/voice│
+│ Phone Call   │────►│   Telnyx   │────►│ POST /webhooks/voice │
 └─────────────┘     │   Cloud    │     └──────────┬───────────┘
                     └────────────┘                │
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+                                           TTS response
+                                           back to caller
 ```
 
 ## Environment Variables
@@ -39,8 +29,9 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `VAPI_API_KEY` | `string` | `...` | **yes** | vapi api key | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `VAPI_API_KEY` | `string` | `your_value` | **yes** | Vapi api key | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -67,17 +58,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t migrate-from-vapi .
-docker run --env-file .env -p 5000:5000 migrate-from-vapi
+docker build -t migrate-from-vapi-python .
+docker run --env-file .env -p 5000:5000 migrate-from-vapi-python
 ```
 
 ## API Reference
 
 ### `GET /audit/vapi`
 
-Handles `GET /audit/vapi`.
-
-**Request:**
+Returns vapi
 
 ```bash
 curl http://localhost:5000/audit/vapi
@@ -87,38 +76,47 @@ curl http://localhost:5000/audit/vapi
 
 ```json
 {
-  "vapi_agents": "...",
-  "total": 3
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `POST /migrate/agent`
 
-Handles `POST /migrate/agent`.
-
-**Request:**
+Triggers agent
 
 ```bash
 curl -X POST http://localhost:5000/migrate/agent \
   -H "Content-Type: application/json" \
   -d '{
-  "vapi_agent": "Sarah Chen"
-}'
+    "source_api_key": "SK_twilio_xxx",
+    "dry_run": true
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "migration": {
+    "status": "completed",
+    "resources_migrated": 12,
+    "phone_numbers": 5,
+    "applications": 3,
+    "messaging_profiles": 2,
+    "webhooks": 2
+  }
 }
 ```
 
 ### `GET /mapping/voices`
 
-Handles `GET /mapping/voices`.
-
-**Request:**
+Returns voices
 
 ```bash
 curl http://localhost:5000/mapping/voices
@@ -128,16 +126,19 @@ curl http://localhost:5000/mapping/voices
 
 ```json
 {
-  "vapi_to_telnyx": "...",
-  "note": "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /mapping/models`
 
-Handles `GET /mapping/models`.
-
-**Request:**
+Returns models
 
 ```bash
 curl http://localhost:5000/mapping/models
@@ -147,15 +148,19 @@ curl http://localhost:5000/mapping/models
 
 ```json
 {
-  "status": "ok"
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
+  ]
 }
 ```
 
 ### `GET /migration-log`
 
-Returns log details.
-
-**Request:**
+Returns migration-log
 
 ```bash
 curl http://localhost:5000/migration-log
@@ -165,15 +170,20 @@ curl http://localhost:5000/migration-log
 
 ```json
 {
-  "log": "..."
+  "migration": {
+    "status": "completed",
+    "resources_migrated": 12,
+    "phone_numbers": 5,
+    "applications": 3,
+    "messaging_profiles": 2,
+    "webhooks": 2
+  }
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -183,11 +193,15 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

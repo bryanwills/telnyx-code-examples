@@ -12,34 +12,29 @@ channel: [voice]
 
 Multi-Number Identity Router — route calls based on which number was dialed. Each number maps to a different business identity, greeting, and routing destination.
 
-
 ## Telnyx API Endpoints Used
 
-- **Call Control: Speak**: `POST /v2/calls/{id}/actions/speak` -- [API reference](https://developers.telnyx.com/api/call-control/speak)
-
+- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` — [API reference](https://developers.telnyx.com/api/call-control/answer-call)
+- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
 
 ## Telnyx Webhook Events
 
-This app handles these [Call Control](https://developers.telnyx.com/docs/api/v2/call-control) and [Messaging](https://developers.telnyx.com/docs/api/v2/messaging) webhook events:
+This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.initiated` — incoming call detected, app answers
-- `call.answered` — call connected, app speaks greeting
-- `call.speak.ended` — TTS finished, app starts listening
-- `call.hangup` — call ended, app cleans up session
+- `call.answered` — Call connected — app begins interaction
+- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
+- `call.initiated` — New inbound or outbound call detected
+- `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
 
 ## Architecture
 
 ```text
 ┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
-│  Phone Call  │────►│   Telnyx   │────►│  POST /webhooks/voice│
+│ Phone Call   │────►│   Telnyx   │────►│ POST /webhooks/voice │
 └─────────────┘     │   Cloud    │     └──────────┬───────────┘
                     └────────────┘                │
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+                                           TTS response
+                                           back to caller
 ```
 
 ## Environment Variables
@@ -48,8 +43,9 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `CONNECTION_ID` | `string` | `1234567890` | **yes** | Call Control connection ID | [→ link](https://portal.telnyx.com/call-control/applications) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `CONNECTION_ID` | `string` | `1494404757140276705` | **yes** | Call Control connection/app ID | [Portal](https://portal.telnyx.com/call-control/applications) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -76,44 +72,35 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t multi-number-identity-router .
-docker run --env-file .env -p 5000:5000 multi-number-identity-router
+docker build -t multi-number-identity-router-python .
+docker run --env-file .env -p 5000:5000 multi-number-identity-router-python
 ```
 
 ## API Reference
 
 ### `POST /identities`
 
-Adds a new entry.
-
-**Request:**
+Triggers identities
 
 ```bash
 curl -X POST http://localhost:5000/identities \
   -H "Content-Type: application/json" \
-  -d '{
-  "number": "example_value",
-  "name": "Jane Doe",
-  "greeting": "Thank you for calling Acme Services",
-  "forward_to": "example_value",
-  "hours": "24/7"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok",
-  "number": "..."
+  "id": "item-1750280400",
+  "status": "created",
+  "created_at": "2026-07-15T14:30:00Z"
 }
 ```
 
 ### `GET /identities`
 
-Returns all identities.
-
-**Request:**
+Returns identities
 
 ```bash
 curl http://localhost:5000/identities
@@ -123,17 +110,19 @@ curl http://localhost:5000/identities
 
 ```json
 {
-  "identities": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `GET /calls`
 
-Returns all calls.
-
-**Request:**
+Returns calls
 
 ```bash
 curl http://localhost:5000/calls
@@ -143,15 +132,21 @@ curl http://localhost:5000/calls
 
 ```json
 {
-  "calls": "..."
+  "calls": [
+    {
+      "call_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+      "from": "+18005551234",
+      "to": "+12125559876",
+      "duration_seconds": 145,
+      "status": "completed"
+    }
+  ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -161,7 +156,10 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
@@ -171,22 +169,28 @@ curl http://localhost:5000/health
 
 Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-control) webhook events.
 
-**Events handled:** `call.initiated`, `call.answered`, `call.speak.ended`, `call.hangup`
+**Events handled:** `call.answered`, `call.hangup`, `call.initiated`, `call.speak.ended`
 
-**Example inbound payload:**
+**Example payload:**
 
 ```json
 {
   "data": {
     "event_type": "call.initiated",
-    "call_control_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
-    "connection_id": "1494404757140276705",
-    "direction": "incoming",
-    "from": "+12125551234",
-    "to": "+13105559876",
-    "call_leg_id": "428c31b6-7af4-4bcb-b7f5-5013ef9657c1",
-    "client_state": null,
-    "state": "ringing"
+    "id": "0ccc7b54-4df3-4bca-a65a-3da1ecc777f0",
+    "occurred_at": "2026-07-15T14:30:00.000Z",
+    "payload": {
+      "call_control_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+      "connection_id": "1494404757140276705",
+      "call_leg_id": "428c31b6-7af4-4bcb-b7f5-5013ef9657c1",
+      "call_session_id": "428c31b6-abcd-1234-5678-5013ef9657c1",
+      "client_state": null,
+      "from": "+12125551234",
+      "to": "+13105559876",
+      "direction": "incoming",
+      "state": "ringing"
+    },
+    "record_type": "event"
   },
   "meta": {
     "attempt": 1,
@@ -197,5 +201,6 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

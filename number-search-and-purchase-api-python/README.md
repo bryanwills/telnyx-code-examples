@@ -11,24 +11,20 @@ telnyx_products: [Migration, Number Porting, Numbers]
 
 Number Search and Purchase API — search, filter, and buy phone numbers programmatically.
 
-
 ## Telnyx API Endpoints Used
 
-- **Phone Numbers**: `GET /v2/available_phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-available-phone-numbers)
-
+- **Search Available Numbers**: `GET /v2/available_phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-available-phone-numbers)
+- **Create Number Order**: `POST /v2/number_orders` — [API reference](https://developers.telnyx.com/api/numbers/create-number-order)
+- **List Phone Numbers**: `GET /v2/phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-phone-numbers)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
 
 ## Environment Variables
@@ -37,7 +33,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -52,17 +49,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t number-search-and-purchase-api .
-docker run --env-file .env -p 5000:5000 number-search-and-purchase-api
+docker build -t number-search-and-purchase-api-python .
+docker run --env-file .env -p 5000:5000 number-search-and-purchase-api-python
 ```
 
 ## API Reference
 
 ### `GET /numbers/search`
 
-Handles `GET /numbers/search`.
-
-**Request:**
+Returns search
 
 ```bash
 curl http://localhost:5000/numbers/search
@@ -72,40 +67,45 @@ curl http://localhost:5000/numbers/search
 
 ```json
 {
-  "numbers": "...",
-  "number": "...",
-  "features": "...",
-  "cost": "..."
+  "numbers": [
+    {
+      "phone_number": "+18005551234",
+      "status": "active",
+      "type": "local",
+      "region": "US-CA"
+    }
+  ]
 }
 ```
 
 ### `POST /numbers/purchase`
 
-Handles `POST /numbers/purchase`.
-
-**Request:**
+Triggers purchase
 
 ```bash
 curl -X POST http://localhost:5000/numbers/purchase \
   -H "Content-Type: application/json" \
-  -d '{
-  "phone_numbers": "[]"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "results": "..."
+  "numbers": [
+    {
+      "phone_number": "+18005551234",
+      "status": "active",
+      "type": "local",
+      "region": "US-CA"
+    }
+  ]
 }
 ```
 
 ### `GET /numbers/inventory`
 
-Returns all inventory.
-
-**Request:**
+Returns inventory
 
 ```bash
 curl http://localhost:5000/numbers/inventory
@@ -115,17 +115,20 @@ curl http://localhost:5000/numbers/inventory
 
 ```json
 {
-  "inventory": [
-    "..."
+  "numbers": [
+    {
+      "phone_number": "+18005551234",
+      "status": "active",
+      "type": "local",
+      "region": "US-CA"
+    }
   ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -135,11 +138,14 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -9,34 +9,27 @@ telnyx_products: [Migration, Number Porting, Voice]
 
 # Production-ready Flask application for managing conference calls via Telnyx.
 
-Production-ready Flask application for managing conference calls via Telnyx.
-
+Application. Built with Telnyx Migration, Number Porting, Voice.
 
 ## Telnyx API Endpoints Used
 
-- **Conference**: `POST /v2/conferences` — [API reference](https://developers.telnyx.com/api/call-control/create-conference)
-
+- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` — [API reference](https://developers.telnyx.com/api/call-control/answer-call)
 
 ## Telnyx Webhook Events
 
-This app handles these [Call Control](https://developers.telnyx.com/docs/api/v2/call-control) and [Messaging](https://developers.telnyx.com/docs/api/v2/messaging) webhook events:
+This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.initiated` — incoming call detected, app answers
-- `call.answered` — call connected, app speaks greeting
-- `call.hangup` — call ended, app cleans up session
+- `call.answered` — Call connected — app begins interaction
+- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+Participant A ──►┐
+Participant B ──►├──► Telnyx Conference ──► Webhooks ──► Your App
+Participant C ──►┘                                        │
+                                                    TTS / SMS back
+                                                    to participants
 ```
 
 ## Environment Variables
@@ -45,10 +38,10 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `TELNYX_PHONE_NUMBER` | `string` | `+18005551234` | **yes** | telnyx phone number | — |
-| `TELNYX_CONNECTION_ID` | `string` | `...` | **yes** | telnyx connection id | — |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `TELNYX_PHONE_NUMBER` | `string` | `your_value` | **yes** | Telnyx phone number | — |
+| `TELNYX_CONNECTION_ID` | `string` | `your_value` | **yes** | Telnyx connection id | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
 
 ## Setup
 
@@ -60,79 +53,99 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
+### Webhook Configuration
+
+1. Expose your local server:
+
+   ```bash
+   ngrok http 5000
+   ```
+
+2. Copy the HTTPS URL and configure in [Telnyx Portal](https://portal.telnyx.com):
+
+   - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
+
 ### Docker
 
 ```bash
-docker build -t build-conference-calling .
-docker run --env-file .env -p 5000:5000 build-conference-calling
+docker build -t build-conference-calling-python .
+docker run --env-file .env -p 5000:5000 build-conference-calling-python
 ```
 
 ## API Reference
 
 ### `POST /conference/create`
 
-Creates a new record.
-
-**Request:**
+HTTP endpoint to create a new conference.
 
 ```bash
 curl -X POST http://localhost:5000/conference/create \
   -H "Content-Type: application/json" \
   -d '{
-  "conference_name": "Jane Doe",
-  "participants": "[]"
-}'
+    "title": "Q3 Planning",
+    "participants": ["+12125551234", "+13105559876", "+14155553456"]
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "status_code": "..."
+  "conference_id": "conf-1750280400",
+  "status": "created",
+  "participants": 4
 }
 ```
 
 ### `POST /conference/<conference_name>/add-participant`
 
-Adds a new entry.
-
-**Request:**
+HTTP endpoint to add a participant to an existing conference.
 
 ```bash
-curl -X POST http://localhost:5000/conference/example-id/add-participant
+curl -X POST http://localhost:5000/conference/example-id/add-participant \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Q3 Planning",
+    "participants": ["+12125551234", "+13105559876", "+14155553456"]
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "status_code": "..."
+  "conference_id": "conf-1750280400",
+  "status": "created",
+  "participants": 4
 }
 ```
 
 ### `POST /conference/<conference_name>/end`
 
-Handles `POST /conference/<conference_name>/end`.
-
-**Request:**
+HTTP endpoint to end a conference and hang up all participants.
 
 ```bash
-curl -X POST http://localhost:5000/conference/example-id/end
+curl -X POST http://localhost:5000/conference/example-id/end \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Q3 Planning",
+    "participants": ["+12125551234", "+13105559876", "+14155553456"]
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "status_code": "..."
+  "conference_id": "conf-1750280400",
+  "status": "created",
+  "participants": 4
 }
 ```
 
 ### `GET /conference/<conference_name>/status`
 
-Returns conference status endpoint details.
-
-**Request:**
+HTTP endpoint to retrieve conference status.
 
 ```bash
 curl http://localhost:5000/conference/example-id/status
@@ -142,17 +155,20 @@ curl http://localhost:5000/conference/example-id/status
 
 ```json
 {
-  "conference_status_endpoint": [
-    "..."
+  "conferences": [
+    {
+      "id": "conf-1750280400",
+      "status": "active",
+      "participants": 4,
+      "duration_seconds": 1800
+    }
   ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Health check endpoint.
 
 ```bash
 curl http://localhost:5000/health
@@ -162,7 +178,10 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
@@ -170,9 +189,41 @@ curl http://localhost:5000/health
 
 ### `POST /webhooks/call-events`
 
-Receives external webhook events.
+Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-control) webhook events.
+
+**Events handled:** `call.answered`, `call.hangup`
+
+**Example payload:**
+
+```json
+{
+  "data": {
+    "event_type": "call.initiated",
+    "id": "0ccc7b54-4df3-4bca-a65a-3da1ecc777f0",
+    "occurred_at": "2026-07-15T14:30:00.000Z",
+    "payload": {
+      "call_control_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+      "connection_id": "1494404757140276705",
+      "call_leg_id": "428c31b6-7af4-4bcb-b7f5-5013ef9657c1",
+      "call_session_id": "428c31b6-abcd-1234-5678-5013ef9657c1",
+      "client_state": null,
+      "from": "+12125551234",
+      "to": "+13105559876",
+      "direction": "incoming",
+      "state": "ringing"
+    },
+    "record_type": "event"
+  },
+  "meta": {
+    "attempt": 1,
+    "delivered_to": "https://your-server.example.com/webhooks/voice"
+  }
+}
+```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [Conference Calling Guide](https://developers.telnyx.com/docs/voice/call-control/conference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

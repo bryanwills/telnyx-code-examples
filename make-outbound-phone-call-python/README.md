@@ -1,34 +1,32 @@
 ---
 name: make-outbound-phone-call
-title: "Production-ready Flask endpoint for initiating outbound calls via Telnyx."
-description: "Application. Built with Telnyx Migration, Number Porting, Voice."
+title: "Make Outbound Phone Call"
+description: "Programmatically place an outbound phone call using Telnyx Call Control and handle the call lifecycle."
 language: python
 framework: flask
-telnyx_products: [Migration, Number Porting, Voice]
+telnyx_products: [Voice, Call Control]
 ---
 
-# Production-ready Flask endpoint for initiating outbound calls via Telnyx.
+# Make Outbound Phone Call
 
-Production-ready Flask endpoint for initiating outbound calls via Telnyx.
-
+Programmatically place an outbound phone call using Telnyx Call Control and handle the call lifecycle.
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Dial**: `POST /v2/calls` — [API reference](https://developers.telnyx.com/api/call-control/dial)
+- **Create Call**: `POST /v2/calls` -- [API reference](https://developers.telnyx.com/api/call-control/create-call)
+- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` -- [API reference](https://developers.telnyx.com/api/call-control/speak)
+- **Call Control: Hangup**: `POST /v2/calls/{id}/actions/hangup` -- [API reference](https://developers.telnyx.com/api/call-control/hangup)
 
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
+│ Phone Call   │────►│   Telnyx   │────►│ POST /webhooks/voice │
+└─────────────┘     │   Cloud    │     └──────────┬───────────┘
+                    └────────────┘                │
+                                           TTS response
+                                           back to caller
 ```
 
 ## Environment Variables
@@ -37,10 +35,10 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `TELNYX_PHONE_NUMBER` | `string` | `+18005551234` | **yes** | telnyx phone number | — |
-| `TELNYX_CONNECTION_ID` | `string` | `...` | **yes** | telnyx connection id | — |
-| `FLASK_DEBUG` | `string` | `false` | no | flask debug | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `TELNYX_PHONE_NUMBER` | `string` | `your_value` | **yes** | Telnyx phone number | — |
+| `TELNYX_CONNECTION_ID` | `string` | `your_value` | **yes** | Telnyx connection id | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
 
 ## Setup
 
@@ -52,34 +50,52 @@ pip install -r requirements.txt
 python app.py           # starts on http://localhost:5000
 ```
 
+### Webhook Configuration
+
+1. Expose your local server:
+
+   ```bash
+   ngrok http 5000
+   ```
+
+2. Copy the HTTPS URL and configure in [Telnyx Portal](https://portal.telnyx.com):
+
+   - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
+
 ### Docker
 
 ```bash
-docker build -t make-outbound-phone-call .
-docker run --env-file .env -p 5000:5000 make-outbound-phone-call
+docker build -t make-outbound-phone-call-python .
+docker run --env-file .env -p 5000:5000 make-outbound-phone-call-python
 ```
 
 ## API Reference
 
 ### `POST /calls/dial`
 
-Handles `POST /calls/dial`.
-
-**Request:**
+HTTP endpoint to initiate an outbound call.
 
 ```bash
-curl -X POST http://localhost:5000/calls/dial
+curl -X POST http://localhost:5000/calls/dial \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+12125551234"
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "status_code": "..."
+  "call_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+  "status": "initiated",
+  "from": "+18005551234",
+  "to": "+12125559876"
 }
 ```
 
 ## Resources
 
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

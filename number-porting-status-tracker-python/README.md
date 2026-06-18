@@ -13,21 +13,25 @@ Number Porting Status Tracker — track porting orders with status webhooks and 
 
 ## Telnyx API Endpoints Used
 
-- **Messaging**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **Porting Orders**: `POST /v2/porting_orders` — [API reference](https://developers.telnyx.com/api/porting/create-porting-order)
 
 ## Architecture
 
 ```text
-┌─────────────┐                        ┌──────────────────────┐
-│  API Client │───────────────────────►│     Your App         │
-└─────────────┘                        └──────────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────────────┐
+│ API Call  │────►│   Telnyx   │────►│   Your App      │
+└──────────┘     │   Cloud    │     └────────┬────────┘
+                └────────────┘               │
+                                        Processing
 ```
+
+## Telnyx Webhook Events
+
+This app handles these webhook events:
+
+- `porting_order.status_changed` -- Porting order status updated (FOC date set, completed, rejected)
+- `number_order.complete` -- Phone number order completed and ready to use
 
 ## Environment Variables
 
@@ -35,8 +39,9 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `ALERT_NUMBER` | `string` | `+18005551234` | **yes** | alert number | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `ALERT_NUMBER` | `string` | `your_value` | **yes** | Alert number | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -51,17 +56,15 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t number-porting-status-tracker .
-docker run --env-file .env -p 5000:5000 number-porting-status-tracker
+docker build -t number-porting-status-tracker-python .
+docker run --env-file .env -p 5000:5000 number-porting-status-tracker-python
 ```
 
 ## API Reference
 
 ### `GET /ports/list`
 
-Returns all ports.
-
-**Request:**
+Returns list
 
 ```bash
 curl http://localhost:5000/ports/list
@@ -71,39 +74,45 @@ curl http://localhost:5000/ports/list
 
 ```json
 {
-  "ports": [
-    "..."
+  "porting_orders": [
+    {
+      "id": "port-abc123",
+      "numbers": ["+12125551234"],
+      "status": "submitted",
+      "target_date": "2026-07-22"
+    }
   ]
 }
 ```
 
 ### `POST /ports/create`
 
-Creates a new record.
-
-**Request:**
+Triggers create
 
 ```bash
 curl -X POST http://localhost:5000/ports/create \
   -H "Content-Type: application/json" \
-  -d '{
-  "phone_numbers": "[]"
-}'
+  -d '{}'
 ```
 
 **Response:**
 
 ```json
 {
-  "status": "ok"
+  "porting_orders": [
+    {
+      "id": "port-abc123",
+      "numbers": ["+12125551234"],
+      "status": "submitted",
+      "target_date": "2026-07-22"
+    }
+  ]
 }
 ```
 
 ### `GET /ports/<order_id>`
 
-Returns port details.
-
-**Request:**
+Returns order id
 
 ```bash
 curl http://localhost:5000/ports/example-id
@@ -113,17 +122,20 @@ curl http://localhost:5000/ports/example-id
 
 ```json
 {
-  "port": [
-    "..."
+  "orders": [
+    {
+      "id": "ORD-12345",
+      "status": "shipped",
+      "tracking": "1Z999AA10123456784",
+      "estimated_delivery": "2026-07-18"
+    }
   ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -133,7 +145,10 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
@@ -141,10 +156,9 @@ curl http://localhost:5000/health
 
 ### `POST /webhooks/porting`
 
-Receives external webhook events.
+Receives Telnyx webhook events for `/webhooks/porting`.
 
 ## Resources
 
-- [Messaging — API Reference](https://developers.telnyx.com/api/messaging/send-message)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)

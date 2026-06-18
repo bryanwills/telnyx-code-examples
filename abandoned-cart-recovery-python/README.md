@@ -15,48 +15,35 @@ SMS 1h after abandon with incentive, AI voice call 24h later if no purchase. Int
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Speak (TTS)**: `POST /v2/calls/{call_control_id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
-- **Call Control: Gather (STT/DTMF)**: `POST /v2/calls/{call_control_id}/actions/gather_using_speak` — [API reference](https://developers.telnyx.com/api/call-control/gather)
-- **AI Inference (Chat Completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Call Control: Gather (STT/DTMF)**: `POST /v2/calls/{id}/actions/gather_using_speak` — [API reference](https://developers.telnyx.com/api/call-control/gather)
+- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
+- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Telnyx Webhook Events
 
-This app handles these [Call Control](https://developers.telnyx.com/docs/api/v2/call-control) and [Messaging](https://developers.telnyx.com/docs/api/v2/messaging) webhook events:
+This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.answered` — call connected, app speaks greeting
-- `call.speak.ended` — TTS finished, app starts listening
-- `call.gather.ended` — caller input received (speech or DTMF)
+- `call.answered` — Call connected — app begins interaction
+- `call.gather.ended` — Caller input received (speech transcription or DTMF digits)
+- `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
 
 ## External Service Integrations
 
-- **Stripe** — Payments, refunds, checkout sessions ([docs](https://docs.stripe.com/api))
-- **Shopify** — Orders, carts, product data, webhooks ([docs](https://shopify.dev/docs/api))
+- **Stripe** — Payment processing ([docs](https://docs.stripe.com/api))
 
 ## Architecture
 
 ```text
 ┌─────────────┐     ┌────────────┐     ┌──────────────────────┐
-│  Phone Call  │────►│            │────►│  POST /webhooks/voice│
-│  or SMS/MMS  │     │   Telnyx   │     │  POST /webhooks/sms  │
+│ Phone Call   │────►│            │────►│ POST /webhooks/voice │
+│   or SMS     │     │   Telnyx   │     │ POST /webhooks/sms   │
 └─────────────┘     │   Cloud    │     └──────────┬───────────┘
                     └────────────┘                │
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Telnyx Inference │
-                                          │ (AI processing) │
-                                          └────────┬────────┘
-                                                   │
-                                          ┌────────┴────────┐
-                                          │ Stripe           │
-                                          ├─────────────────┤
-                                          │ Shopify          │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Response (SMS/  │
-                                          │ Voice/Webhook)  │
-                                          └─────────────────┘
+                                           AI Inference
+                                           (Telnyx LLM)
+                                                │
+                                           Response back
+                                           (TTS / SMS)
 ```
 
 ## Environment Variables
@@ -65,12 +52,13 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY...` | **yes** | Telnyx API v2 key | [→ link](https://portal.telnyx.com/api-keys) |
-| `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [→ link](https://portal.telnyx.com/numbers/my-numbers) |
-| `CONNECTION_ID` | `string` | `1234567890` | **yes** | Call Control connection ID | [→ link](https://portal.telnyx.com/call-control/applications) |
-| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Inference model identifier | [→ link](https://developers.telnyx.com/docs/inference/models) |
-| `SHOPIFY_STORE` | `string` | `my-store` | **yes** | Shopify store subdomain | — |
-| `SHOPIFY_ACCESS_TOKEN` | `string` | `shpat_...` | **yes** | Shopify Admin API token | — |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
+| `CONNECTION_ID` | `string` | `1494404757140276705` | **yes** | Call Control connection/app ID | [Portal](https://portal.telnyx.com/call-control/applications) |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
+| `SHOPIFY_STORE` | `string` | `your_value` | **yes** | Shopify store | — |
+| `SHOPIFY_ACCESS_TOKEN` | `string` | `your_value` | **yes** | Shopify access token | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
 ## Setup
 
@@ -98,53 +86,62 @@ python app.py           # starts on http://localhost:5000
 ### Docker
 
 ```bash
-docker build -t abandoned-cart-recovery .
-docker run --env-file .env -p 5000:5000 abandoned-cart-recovery
+docker build -t abandoned-cart-recovery-python .
+docker run --env-file .env -p 5000:5000 abandoned-cart-recovery-python
 ```
 
 ## API Reference
 
 ### `POST /recovery/run-sms`
 
-Executes the batch workflow.
-
-**Request:**
+Triggers run-sms
 
 ```bash
-curl -X POST http://localhost:5000/recovery/run-sms
+curl -X POST http://localhost:5000/recovery/run-sms \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+12125551234",
+    "message": "Hello from Telnyx!"
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "results": "..."
+  "message_id": "msg-f5d7a7e0-1234-5678",
+  "status": "queued",
+  "to": "+12125551234",
+  "segments": 1
 }
 ```
 
 ### `POST /recovery/run-calls`
 
-Executes the batch workflow.
-
-**Request:**
+Triggers run-calls
 
 ```bash
-curl -X POST http://localhost:5000/recovery/run-calls
+curl -X POST http://localhost:5000/recovery/run-calls \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+12125551234"
+  }'
 ```
 
 **Response:**
 
 ```json
 {
-  "results": "..."
+  "call_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+  "status": "initiated",
+  "from": "+18005551234",
+  "to": "+12125559876"
 }
 ```
 
 ### `GET /carts`
 
-Returns all carts.
-
-**Request:**
+Returns carts
 
 ```bash
 curl http://localhost:5000/carts
@@ -154,17 +151,19 @@ curl http://localhost:5000/carts
 
 ```json
 {
-  "carts": [
-    "..."
+  "items": [
+    {
+      "id": "item-001",
+      "status": "active",
+      "created_at": "2026-07-15T14:30:00Z"
+    }
   ]
 }
 ```
 
 ### `GET /health`
 
-Returns service health and operational metrics.
-
-**Request:**
+Returns health
 
 ```bash
 curl http://localhost:5000/health
@@ -174,7 +173,10 @@ curl http://localhost:5000/health
 
 ```json
 {
-  "status": "ok"
+  "status": "ok",
+  "uptime_seconds": 3842,
+  "active_sessions": 2,
+  "version": "1.0.0"
 }
 ```
 
@@ -182,45 +184,48 @@ curl http://localhost:5000/health
 
 ### `POST /webhooks/shopify/cart-abandoned`
 
-Receives [Shopify webhook](https://shopify.dev/docs/api/webhooks) events.
+Receives Telnyx webhook events for `/webhooks/shopify/cart-abandoned`.
 
 ### `POST /webhooks/voice`
 
 Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-control) webhook events.
 
-**Events handled:** `call.answered`, `call.speak.ended`, `call.gather.ended`
+**Events handled:** `call.answered`, `call.gather.ended`, `call.speak.ended`
 
-**Example inbound payload:**
+**Example payload:**
 
 ```json
 {
   "data": {
-    "event_type": "call.initiated",
-    "call_control_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
-    "connection_id": "1494404757140276705",
-    "direction": "incoming",
-    "from": "+12125551234",
-    "to": "+13105559876",
-    "call_leg_id": "428c31b6-7af4-4bcb-b7f5-5013ef9657c1",
-    "client_state": null,
-    "state": "ringing"
-  },
-  "meta": {
-    "attempt": 1,
-    "delivered_to": "https://your-server.example.com/webhooks/voice"
+    "event_type": "call.gather.ended",
+    "id": "a1b2c3d4-5678-9abc-def0-123456789abc",
+    "occurred_at": "2026-07-15T14:30:15.000Z",
+    "payload": {
+      "call_control_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+      "connection_id": "1494404757140276705",
+      "client_state": "eyJzdGVwIjoibWFpbl9tZW51In0=",
+      "digits": "1",
+      "from": "+12125551234",
+      "to": "+13105559876",
+      "speech": {
+        "result": "I need help with my account billing",
+        "confidence": 0.94
+      },
+      "status": "valid"
+    },
+    "record_type": "event"
   }
 }
 ```
 
 ### `POST /webhooks/shopify/order-created`
 
-Receives [Shopify webhook](https://shopify.dev/docs/api/webhooks) events.
+Receives Telnyx webhook events for `/webhooks/shopify/order-created`.
 
 ## Resources
 
-- [Call Control: Speak (TTS) — API Reference](https://developers.telnyx.com/api/call-control/speak)
-- [AI Inference (Chat Completions) — API Reference](https://developers.telnyx.com/api/inference/chat-completions)
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx Portal (dashboard)](https://portal.telnyx.com)
-- [Stripe Documentation](https://docs.stripe.com/api)
-- [Shopify Documentation](https://shopify.dev/docs/api)
+- [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [Messaging Guide](https://developers.telnyx.com/docs/messaging)
+- [AI Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Telnyx Developer Docs](https://developers.telnyx.com)
+- [Telnyx Portal](https://portal.telnyx.com)
