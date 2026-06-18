@@ -63,8 +63,26 @@ Send and receive text messages with the [Telnyx SMS API](https://telnyx.com/prod
 | [receive-sms-webhook-nodejs](./receive-sms-webhook-nodejs/) | Node.js | Receive inbound SMS via webhook. |
 | [sms-two-factor-auth-nodejs](./sms-two-factor-auth-nodejs/) | Node.js | Implement SMS-based two-factor authentication. |
 | [send-bulk-sms-nodejs](./send-bulk-sms-nodejs/) | Node.js | Send SMS messages to multiple recipients. |
+| [two-way-sms-chat-python](./two-way-sms-chat-python/) | Python | Build a two-way SMS chat application. |
+| [sms-survey-bot-python](./sms-survey-bot-python/) | Python | Create an SMS-driven survey bot with response tracking. |
+| [schedule-sms-messages-python](./schedule-sms-messages-python/) | Python | Schedule SMS messages for future delivery. |
+| [alphanumeric-sender-id-sms-python](./alphanumeric-sender-id-sms-python/) | Python | Send SMS using an alphanumeric sender ID. |
+| [long-code-sms-python](./long-code-sms-python/) | Python | Send and receive SMS using long code numbers. |
+| [toll-free-sms-python](./toll-free-sms-python/) | Python | Send and receive SMS using toll-free numbers. |
+| [shortcode-sms-python](./shortcode-sms-python/) | Python | Send and receive SMS using short codes. |
+| [receive-mms-webhook-python](./receive-mms-webhook-python/) | Python | Receive inbound MMS messages via webhook. |
+| [sms-delivery-receipts-python](./sms-delivery-receipts-python/) | Python | Track SMS delivery status with webhook receipts. |
+| [phone-number-lookup-python](./phone-number-lookup-python/) | Python | Look up phone number carrier and type information. |
+| [sms-opt-out-management-python](./sms-opt-out-management-python/) | Python | Manage SMS opt-out and opt-in compliance. |
+| [sms-conversation-threading-python](./sms-conversation-threading-python/) | Python | Thread SMS conversations by sender and recipient. |
+| [send-sms-notifications-python](./send-sms-notifications-python/) | Python | Send SMS notifications to subscribers. |
+| [sms-marketing-campaign-python](./sms-marketing-campaign-python/) | Python | Build an SMS marketing campaign system. |
 | [send-sms-go](./send-sms-go/) | Go | Send a single SMS message via the Telnyx API. |
 | [send-sms-ruby](./send-sms-ruby/) | Ruby | Send a single SMS message via the Telnyx API. |
+| [two-way-sms-chat-nodejs](./two-way-sms-chat-nodejs/) | Node.js | Build a two-way SMS chat application. |
+| [send-mms-picture-message-nodejs](./send-mms-picture-message-nodejs/) | Node.js | Send MMS messages with media attachments. |
+| [sms-auto-reply-bot-nodejs](./sms-auto-reply-bot-nodejs/) | Node.js | Build an SMS autoresponder bot. |
+| [sms-delivery-receipts-nodejs](./sms-delivery-receipts-nodejs/) | Node.js | Track SMS delivery status with webhook receipts. |
 
 ## AI Assistants
 
