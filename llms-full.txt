@@ -1,3 +1,7 @@
+# llms-full.txt — Extended Version
+
+> This is the extended version with full descriptions. See llms.txt for the compact version.
+
 # Telnyx Code Examples
 
 > 207 production-ready Python examples for building on the Telnyx AI communications platform. Voice AI, SMS, SIP, inference, IoT, conferencing, cloud storage, edge compute — every major product surface with working code.
