@@ -1,148 +1,131 @@
-# Create AI Assistant with Node.js and Express
+---
+name: create-ai-assistant
+title: "Create AI Assistant"
+description: "Create a Telnyx AI Assistant over an HTTP endpoint using the Telnyx Node.js SDK and Express."
+language: nodejs
+framework: express
+telnyx_products: [AI Assistants]
+channel: [voice, sms]
+---
 
-## What Does This Example Do?
+# Create AI Assistant
 
-Build a production-ready Express endpoint that creates AI assistants using the Telnyx AI Assistants API. This tutorial demonstrates the client-based initialization pattern, proper error handling for telecom APIs, secure credential management via environment variables, and JSON serialization of SDK responses for web frameworks.
+Create a Telnyx AI Assistant over an HTTP endpoint using the Telnyx Node.js SDK and Express.
 
-## Who Is This For?
+## Telnyx API Endpoints Used
 
-- **Node.js developers** building ai features with Express.
-- **Backend engineers** integrating telephony or messaging into existing applications.
-- **DevOps teams** looking for containerized, production-ready telecom examples.
-- **Startups and enterprises** replacing legacy telecom providers with a modern API-first platform.
+- **Create Assistant**: `POST /v2/ai/assistants` -- [API reference](https://developers.telnyx.com/api-reference/assistants/create-an-assistant)
 
-## Why Telnyx?
+## Architecture
 
-Telnyx is an **AI Communications Infrastructure** platform that gives developers a single API for [voice](https://telnyx.com/products/voice-ai-agents), [messaging](https://telnyx.com/products/sms-api), [SIP](https://telnyx.com/products/sip-trunks), [AI](https://telnyx.com/ai-assistants), and [IoT](https://telnyx.com/products/iot-sim-card) — no Frankenstack required.
+```
+  POST /assistants/create
+            │
+            ▼
+  ┌──────────────────────┐
+  │  Express (server.js)  │
+  │  createAssistant()    │
+  └──────────┬───────────┘
+             │ client.ai_assistants.create()
+             ▼
+  ┌──────────────────────┐
+  │  Telnyx AI Assistants │
+  └──────────┬───────────┘
+             │
+             └──► assistant id + config (JSON)
+```
 
-- **Integrated platform** — [Voice](https://telnyx.com/products/voice-ai-agents), [SMS](https://telnyx.com/products/sms-api), [SIP trunking](https://telnyx.com/products/sip-trunks), [AI assistants](https://telnyx.com/ai-assistants), and [IoT SIM management](https://telnyx.com/products/iot-sim-card) under one roof. No stitching together multiple vendors.
-- **Global private network** — Calls and messages traverse the Telnyx-owned IP network for lower latency and higher reliability than the public internet.
-- **Developer-first** — SDKs for Python, Node.js, Go, Ruby, Java, and PHP. Comprehensive webhook event model. Sandbox environment for testing.
-- **Competitive pricing** — Pay-as-you-go with no minimums, contracts, or per-seat fees.
+## Why Telnyx
 
-## Prerequisites
+Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. AI Assistants run natively on that network, so the same assistant can answer telephony calls and reply to messages without stitching together separate vendors.
 
-- Node.js 16 or higher.
-- A Telnyx account with an active API key from the [Telnyx Portal](https://portal.telnyx.com).
-- npm (Node package manager).
-- A code editor and terminal.
+- **Native AI** — assistants ship with built-in LLM hosting, telephony, and messaging.
+- **Single SDK** — `telnyx` for Node.js wraps every endpoint, including `ai_assistants`.
 
-## Quick Start
+## Environment Variables
 
-### Option 1: Local (recommended)
+Copy `.env.example` to `.env` and fill in:
+
+| Variable | Type | Example | Required | Description | Where to get it |
+|----------|------|---------|----------|-------------|-----------------|
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | — |
+
+## Setup
 
 ```bash
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
 cd telnyx-code-examples/create-ai-assistant-nodejs
-cp .env.example .env
-# Edit .env with your Telnyx API key and phone number
+cp .env.example .env    # ← fill in your credentials
 npm install
-node server.js
+node server.js          # starts on http://localhost:5000 (PORT from .env)
 ```
 
-### Option 2: Manual
+## API Reference
 
-See the [Implementation Details](#implementation-details) section below for step-by-step instructions.
+### `POST /assistants/create`
 
-## Implementation Details
+Create a new AI assistant. All four fields are required.
 
-Create `app.js` and initialize the Telnyx client using the SDK pattern. Define a helper function to handle assistant creation with proper validation:
+```bash
+curl -X POST http://localhost:5000/assistants/create \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Support Bot",
+    "instructions": "You are a friendly customer support agent for Acme Corp.",
+    "model": "meta-llama/Meta-Llama-3.1-70B-Instruct",
+    "enabled_features": ["telephony", "messaging"]
+  }'
+```
 
-```javascript
-require('dotenv').config();
-const Telnyx = require('telnyx');
-const express = require('express');
+**Response `201`:**
 
-const app = express();
-app.use(express.json());
-
-// Initialize client with the SDK pattern
-const client = new Telnyx({ apiKey: process.env.TELNYX_API_KEY });
-
-/**
- * Create an AI assistant and return JSON-serializable response data.
- * @param {string} name - Display name for the assistant.
- * @param {string} instructions - System prompt / persona for the assistant.
- * @param {string} model - LLM model ID (e.g., "meta-llama/Meta-Llama-3.1-70B-Instruct").
- * @param {array} enabledFeatures - Array of enabled features ("telephony" and/or "messaging").
- * @returns {object} Serializable assistant data.
- */
-async function createAssistant(name, instructions, model, enabledFeatures) {
-  // Validate required fields to prevent API errors
-  if (!name || !instructions || !model) {
-    throw new Error('Missing required fields: name, instructions, and model');
-  }
-
-  if (!Array.isArray(enabledFeatures) || enabledFeatures.length === 0) {
-    throw new Error('enabledFeatures must be a non-empty array');
-  }
-
-  // Use client.ai_assistants.create() to create a new assistant
-  const response = await client.ai_assistants.create({
-    name: name,
-    instructions: instructions,
-    model: model,
-    enabled_features: enabledFeatures,
-  });
-
-  // Extract serializable data — SDK objects are NOT JSON-serializable
-  return {
-    id: response.data.id,
-    name: response.data.name,
-    model: response.data.model,
-    instructions: response.data.instructions,
-    enabled_features: response.data.enabled_features,
-    created_at: response.data.created_at,
-  };
+```json
+{
+  "id": "assistant-abc123",
+  "name": "Support Bot",
+  "model": "meta-llama/Meta-Llama-3.1-70B-Instruct",
+  "instructions": "You are a friendly customer support agent for Acme Corp.",
+  "enabled_features": ["telephony", "messaging"],
+  "created_at": "2026-06-18T12:00:00.000Z"
 }
 ```
 
-## Complete Code
+### `GET /health`
 
-See [`server.js`](./server.js) for the full implementation.
+Health check.
+
+```bash
+curl http://localhost:5000/health
+```
+
+**Response `200`:**
+
+```json
+{ "status": "ok" }
+```
 
 ## Troubleshooting
 
-| Issue | Problem | Solution |
-|-------|---------|----------|
-| Authentication Error (401) | The endpoint returns `{"error": "Invalid API key"}` with HTTP 401. | Verify your `TELNYX_API_KEY` in the `.env` file matches the key shown in the [Telnyx Portal](https://portal.telnyx.com). Ensure there are no trailing spaces or quotes. If the key was regenerated recently, update your environment file and restart the Express server. |
-| Missing Required Fields (400) | You receive a 400 error stating "Missing required fields: name, instructions, model, and enabled_features". | Ensure your POST request body includes all four required fields as JSON. The `enabled_features` field must be an array containing at least one of: `"telephony"` or `"messaging"`. Example: `{"name": "Bot", "instructions": "...", "model": "meta-llama/...", "enabled_features": ["telephony"]}`. |
-| Invalid Model ID | The API returns a 400 error about an unsupported or invalid model. | Verify the `model` field uses a valid Telnyx-supported LLM identifier. Common models include `"meta-llama/Meta-Llama-3.1-70B-Instruct"` and `"gpt-4"`. Check the [Telnyx AI Assistants documentation](https://developers.telnyx.com/docs/api/ai-assistants) for the current list of supported models. |
-| Network Error (503) | The endpoint returns `{"error": "Network error connecting to Telnyx"}` with HTTP 503. | Verify your internet connection and that the Telnyx API is accessible. Check if your firewall or proxy is blocking requests to `api.telnyx.com`. Ensure the `TELNYX_API_KEY` environment variable is set before the server starts. |
-| Rate Limit Exceeded (429) | The endpoint returns `{"error": "Rate limit exceeded. Please slow down."}` with HTTP 429. | You have exceeded the API rate limit. Implement exponential backoff in your client code and retry requests after a delay. Check the [Telnyx rate limiting documentation](https://developers.telnyx.com/docs/api/overview#rate-limiting) for current limits and best practices. |
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| `Invalid API key` (401) | `TELNYX_API_KEY` is missing, wrong, or has trailing whitespace. | Copy the key from [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) into `.env`, then restart `node server.js`. |
+| `Missing required fields...` (400) | The request body is missing `name`, `instructions`, `model`, or `enabled_features`. | Send all four fields as JSON; `enabled_features` must be a non-empty array such as `["telephony"]`. |
+| `Rate limit exceeded` (429) | Too many requests in a short window. | Back off and retry with exponential delay. |
+| `Network error connecting to Telnyx` (503) | The server cannot reach `api.telnyx.com`. | Check connectivity, firewall, and proxy settings. |
+| `Internal server error` (500) | Unhandled error, often an invalid `model` ID rejected by Telnyx. | Use a supported model ID and inspect server logs for detail. |
+| Connection refused on port 5000 | Server not running, or `PORT` differs from your request URL. | Start the server and match the URL to the `PORT` in `.env` (defaults to `3000` if unset). |
 
-## FAQ
+## Related Examples
 
-**Q: Do I need a Telnyx account to run this example?**
-
-Yes. Sign up at [portal.telnyx.com](https://portal.telnyx.com) to get an API key. Telnyx offers free trial credit for testing.
-
-**Q: Can I use this AI example in production?**
-
-Yes. This example includes error handling, environment-based configuration, and a Dockerfile for containerized deployment. Review the security and scaling sections before deploying to production.
-
-**Q: What Node.js version do I need?**
-
-Node.js 18 or higher. Node.js 20 LTS is recommended.
-
-**Q: How is Telnyx different from Twilio?**
-
-Telnyx is an AI Communications Infrastructure platform with a private global network, integrated voice + messaging + AI + SIP + IoT under one API, and significantly lower pricing. No need to stitch together multiple vendors.
-
-**Q: Where do I get a Telnyx phone number?**
-
-Log into the [Telnyx Portal](https://portal.telnyx.com), navigate to Numbers > Search & Buy, and purchase a number with the capabilities you need (SMS, voice, or both).
+- [list-ai-assistants-nodejs](../list-ai-assistants-nodejs/) - List your AI assistants
+- [chat-with-ai-assistant-nodejs](../chat-with-ai-assistant-nodejs/) - Send messages to an assistant
+- [create-ai-assistant-python](../create-ai-assistant-python/) - Same example in Python
 
 ## Resources
 
 - [AI Assistants Guide](https://developers.telnyx.com/docs/inference/ai-assistants/no-code-voice-assistant)
-- [Assistants API Reference](https://developers.telnyx.com/api-reference/assistants/create-an-assistant)
+- [Create an Assistant — API Reference](https://developers.telnyx.com/api-reference/assistants/create-an-assistant)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx AI Assistants](https://telnyx.com/ai-assistants)
-- [Voice AI Agents](https://telnyx.com/products/voice-ai-agents)
-
-## Related Examples
-
-- [List AI Assistants](/tutorials/ai/nodejs/list-ai-assistants).
-- [Chat with an AI Assistant](/tutorials/ai/nodejs/chat-with-ai-assistant).
-- [Update an AI Assistant](/tutorials/ai/nodejs/update-ai-assistant).
+- [Pricing](https://telnyx.com/pricing/inference)

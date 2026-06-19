@@ -32,7 +32,7 @@ Upload course content, AI structures into audio modules with pacing cues and qui
 
 - **AI Inference (course structure)**: `POST /v2/ai/chat/completions` -- [ref](https://developers.telnyx.com/api/inference/chat-completions)
 - **TTS Generate (narration)**: `POST /v2/ai/generate` -- [ref](https://developers.telnyx.com/api/inference/generate)
-- **Cloud Storage**: `PUT https://storage.telnyx.com/{bucket}/{key}` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
+- **Cloud Storage**: S3-compatible — accessed with the AWS SDK (boto3) against `https://{region}.telnyxcloudstorage.com` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
 
 ## Prerequisites
 
@@ -74,7 +74,7 @@ Everything lives in `app.py` (208 lines). Here's what each piece does.
 
 - **`inference()`** — Makes an API call and processes the response.
 - **`tts_generate()`** — Makes an API call and processes the response.
-- **`upload_to_storage()`** — Uploads file to Telnyx Cloud Storage with metadata tags.
+- **`upload_to_storage()`** — Uploads bytes to the S3-compatible Telnyx Cloud Storage bucket via boto3 (`s3.put_object`) and returns a presigned GET URL for playback/download.
 
 ### All Endpoints
 

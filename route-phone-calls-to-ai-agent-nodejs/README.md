@@ -1,154 +1,160 @@
-# Inbound Call Webhook with Node.js and Express
+---
+name: route-phone-calls-to-ai-agent
+title: "Route Phone Calls to AI Agent"
+description: "Receive inbound call webhooks from the Telnyx Voice API and answer calls programmatically with an Express server using Call Control."
+language: nodejs
+framework: express
+telnyx_products: [Voice]
+channel: [voice]
+---
 
-## What Does This Example Do?
+# Route Phone Calls to AI Agent
 
-Build a production-ready Express endpoint that receives and handles inbound call webhooks from the Telnyx Voice API. This tutorial demonstrates how to set up a webhook listener, validate incoming call events, answer calls programmatically, and manage call state using the Telnyx Node.js SDK with proper error handling and security practices.
+Receive inbound call webhooks from the Telnyx Voice API and answer calls programmatically with an Express server using Call Control.
 
-## Who Is This For?
+## Telnyx API Endpoints Used
 
-- **Node.js developers** building voice features with Express.
-- **Backend engineers** integrating telephony or messaging into existing applications.
-- **DevOps teams** looking for containerized, production-ready telecom examples.
-- **Startups and enterprises** replacing legacy telecom providers with a modern API-first platform.
+- **Answer Call**: `POST /v2/calls/{call_control_id}/actions/answer` -- [API reference](https://developers.telnyx.com/api-reference/call-commands/answer-call)
 
-## Why Telnyx?
+## Architecture
 
-Telnyx is an **AI Communications Infrastructure** platform that gives developers a single API for [voice](https://telnyx.com/products/voice-ai-agents), [messaging](https://telnyx.com/products/sms-api), [SIP](https://telnyx.com/products/sip-trunks), [AI](https://telnyx.com/ai-assistants), and [IoT](https://telnyx.com/products/iot-sim-card) — no Frankenstack required.
+```
+  Inbound PSTN call
+        │
+        ▼
+  ┌──────────────────────┐
+  │  Telnyx Voice API     │
+  │  (Call Control App)   │
+  └──────────┬───────────┘
+             │  call.initiated webhook
+             ▼
+  ┌──────────────────────┐
+  │  Express server       │
+  │  POST /webhooks/      │
+  │       inbound-call    │
+  └──────────┬───────────┘
+             │  answer(call_control_id)
+             ▼
+  ┌──────────────────────┐
+  │  Telnyx Voice API     │  ──► call answered
+  └──────────────────────┘
+```
 
-- **Integrated platform** — [Voice](https://telnyx.com/products/voice-ai-agents), [SMS](https://telnyx.com/products/sms-api), [SIP trunking](https://telnyx.com/products/sip-trunks), [AI assistants](https://telnyx.com/ai-assistants), and [IoT SIM management](https://telnyx.com/products/iot-sim-card) under one roof. No stitching together multiple vendors.
-- **Global private network** — Calls and messages traverse the Telnyx-owned IP network for lower latency and higher reliability than the public internet.
-- **Developer-first** — SDKs for Python, Node.js, Go, Ruby, Java, and PHP. Comprehensive webhook event model. Sandbox environment for testing.
-- **Competitive pricing** — Pay-as-you-go with no minimums, contracts, or per-seat fees.
+## Why Telnyx
 
-## Prerequisites
+Telnyx is an **AI Communications Infrastructure** platform that puts voice, messaging, SIP, AI, and IoT on one private, global network — so inbound calls reach your Call Control webhook with low latency and you answer them programmatically through a single API instead of stitching together multiple vendors.
 
-- Node.js 14 or higher.
-- A Telnyx account with an active API key from the [Telnyx Portal](https://portal.telnyx.com).
-- A Telnyx phone number configured with a Call Control Application.
-- A publicly accessible URL (ngrok, Heroku, or similar) to receive webhooks.
-- npm (Node package manager).
+## Environment Variables
 
-## Quick Start
+Copy `.env.example` to `.env` and fill in:
 
-### Option 1: Local (recommended)
+| Variable | Type | Example | Required | Description | Where to get it |
+|----------|------|---------|----------|-------------|-----------------|
+| `TELNYX_API_KEY` | `string` | `KEY_your_telnyx_api_key_here` | **yes** | Telnyx API v2 key used to authenticate Call Control actions | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | — |
+
+## Setup
 
 ```bash
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
 cd telnyx-code-examples/route-phone-calls-to-ai-agent-nodejs
-cp .env.example .env
-# Edit .env with your Telnyx API key and phone number
+cp .env.example .env    # ← fill in your TELNYX_API_KEY
 npm install
-node server.js
+node server.js          # starts on http://localhost:5000 (or $PORT)
 ```
 
-### Option 2: Manual
+### Webhook Configuration
 
-See the [Implementation Details](#implementation-details) section below for step-by-step instructions.
+1. Expose your local server:
 
-## Implementation Details
+   ```bash
+   ngrok http 5000
+   ```
 
-Create `app.js` and initialize the Telnyx client using the new pattern. Define a helper function to handle incoming call events with proper validation:
+2. Copy the HTTPS URL and configure it in the [Telnyx Portal](https://portal.telnyx.com):
 
-```javascript
-const express = require("express");
-const bodyParser = require("body-parser");
-const Telnyx = require("telnyx");
-require("dotenv").config();
+   - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/inbound-call`
+   - Assign your Telnyx phone number to that Call Control Application.
 
-const app = express();
-app.use(bodyParser.json());
+## API Reference
 
-// Initialize client with the new SDK pattern
-const client = new Telnyx({ apiKey: process.env.TELNYX_API_KEY });
+### `POST /webhooks/inbound-call`
 
-/**
- * Handle incoming call webhook event.
- * Validates the event type and answers the call.
- * @param {Object} event - Webhook event payload from Telnyx.
- * @returns {Object} JSON-serializable response data.
- */
-async function handleInboundCall(event) {
-  const callControlId = event.data.call_control_id;
-  const from = event.data.from;
-  const to = event.data.to;
-  const eventType = event.data.event_type;
+Receives inbound call webhooks from Telnyx. On a `call.initiated` event it answers the call via Call Control; for any other event type it acknowledges the event without taking action.
 
-  if (!callControlId) {
-    throw new Error("Missing call_control_id in webhook event");
-  }
+```bash
+curl -X POST http://localhost:5000/webhooks/inbound-call \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": {
+      "event_type": "call.initiated",
+      "call_control_id": "v3:abc123",
+      "from": "+12125551234",
+      "to": "+13105557890"
+    }
+  }'
+```
 
-  // Log the incoming call for debugging
-  console.log(`Incoming call from ${from} to ${to} (Event: ${eventType})`);
+**Response (call answered):**
 
-  // Only answer on the 'call.initiated' event
-  if (eventType === "call.initiated") {
-    // Answer the call using the call_control_id returned in the webhook
-    const response = await client.calls.actions.answer(callControlId);
-
-    return {
-      call_control_id: response.data.call_control_id,
-      status: "answered",
-      from: from,
-      to: to,
-    };
-  }
-
-  // For other events (call.answered, call.hangup, etc.), just acknowledge
-  return {
-    call_control_id: callControlId,
-    status: "acknowledged",
-    event_type: eventType,
-  };
+```json
+{
+  "call_control_id": "v3:abc123",
+  "status": "answered",
+  "from": "+12125551234",
+  "to": "+13105557890"
 }
 ```
 
-## Complete Code
+For any other `event_type` (e.g. `call.answered`, `call.hangup`) the event is acknowledged:
 
-See [`server.js`](./server.js) for the full implementation.
+```json
+{
+  "call_control_id": "v3:abc123",
+  "status": "acknowledged",
+  "event_type": "call.hangup"
+}
+```
+
+### `GET /health`
+
+Health check endpoint for monitoring.
+
+```bash
+curl http://localhost:5000/health
+```
+
+**Response:**
+
+```json
+{
+  "status": "ok"
+}
+```
 
 ## Troubleshooting
 
-| Issue | Problem | Solution |
-|-------|---------|----------|
-| Authentication Error (401) | The endpoint returns `{"error": "Invalid API key"}` with HTTP 401. | Verify your `TELNYX_API_KEY` in the `.env` file matches the key shown in the [Telnyx Portal](https://portal.telnyx.com). Ensure there are no trailing spaces or quotes. If the key was regenerated recently, update your environment file and restart the Node.js server. |
-| Webhook Not Triggering | Inbound calls are not reaching your webhook endpoint. | Confirm that your Call Control Application in the [Telnyx Portal](https://portal.telnyx.com) has the correct webhook URL configured (e.g., `https://your-ngrok-url.com/webhooks/inbound-call`). Ensure the URL is publicly accessible and uses HTTPS. Check your server logs for incoming requests. If using ngrok, verify the tunnel is active and the URL hasn't changed. |
-| Missing call_control_id | The webhook payload is received but `call_control_id` is undefined or null. | Verify that the webhook event structure matches Telnyx's format. The `call_control_id` is included in the `data` object of the webhook payload. Check the [Telnyx Voice API documentation](https://developers.telnyx.com/docs/voice/api/call-control) to confirm the event schema. Ensure your Call Control Application is properly linked to your phone number. |
-| Call Not Answering | The webhook is received and processed, but the call is not answered. | Verify that the `event_type` in the webhook is `call.initiated` before attempting to answer. Check that your API key has permissions to perform call control actions. Review the response from `client.calls.actions.answer()` for error details. Ensure the `call_control_id` is valid and the call hasn't already been terminated. |
-
-## FAQ
-
-**Q: Do I need a Telnyx account to run this example?**
-
-Yes. Sign up at [portal.telnyx.com](https://portal.telnyx.com) to get an API key. Telnyx offers free trial credit for testing.
-
-**Q: Can I use this Voice example in production?**
-
-Yes. This example includes error handling, environment-based configuration, and a Dockerfile for containerized deployment. Review the security and scaling sections before deploying to production.
-
-**Q: What Node.js version do I need?**
-
-Node.js 18 or higher. Node.js 20 LTS is recommended.
-
-**Q: How is Telnyx different from Twilio?**
-
-Telnyx is an AI Communications Infrastructure platform with a private global network, integrated voice + messaging + AI + SIP + IoT under one API, and significantly lower pricing. No need to stitch together multiple vendors.
-
-**Q: Where do I get a Telnyx phone number?**
-
-Log into the [Telnyx Portal](https://portal.telnyx.com), navigate to Numbers > Search & Buy, and purchase a number with the capabilities you need (SMS, voice, or both).
-
-## Resources
-
-- [Voice API Overview](https://developers.telnyx.com/docs/voice)
-- [Voice API Commands](https://developers.telnyx.com/docs/voice/programmable-voice/voice-api-commands-and-resources)
-- [AI Assistant Start](https://developers.telnyx.com/docs/voice/programmable-voice/ai-assistant-start)
-- [Call Control API Reference](https://developers.telnyx.com/api-reference/call-commands/dial)
-- [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
-- [Telnyx Voice API](https://telnyx.com/products/voice-api)
-- [Voice AI Agents](https://telnyx.com/products/voice-ai-agents)
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| `401 {"error": "Invalid API key"}` | `TELNYX_API_KEY` is missing, malformed, or revoked. | Copy a fresh key from [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) into `.env`, remove any quotes/spaces, and restart the server. |
+| `400 {"error": "Invalid webhook payload"}` | The request body has no `data` object. | Ensure the webhook is sent by Telnyx (or that test payloads include a top-level `data` object). |
+| `400 {"error": "Missing call_control_id in webhook event"}` | The `data` object has no `call_control_id`. | Confirm the Call Control Application is linked to your number so Telnyx includes `call_control_id` in the payload. |
+| Webhook never fires | Call Control Application webhook URL is wrong or not public. | Point the Call Control Application webhook URL at `https://<id>.ngrok.io/webhooks/inbound-call` over HTTPS and verify the ngrok tunnel is active. |
+| `429 {"error": "Rate limit exceeded..."}` | Too many Call Control actions in a short window. | Back off and retry; reduce concurrent answer requests. |
+| `503 {"error": "Network error connecting to Telnyx"}` | The server could not reach the Telnyx API. | Check outbound network connectivity and Telnyx status, then retry. |
 
 ## Related Examples
 
-- [Make an Outbound Call with Node.js](/tutorials/voice/nodejs/outbound-call).
-- [Record a Call with Node.js](/tutorials/voice/nodejs/call-recording).
-- [Transfer a Call with Node.js](/tutorials/voice/nodejs/call-transfer).
+- [build-voice-ai-agent-nodejs](../build-voice-ai-agent-nodejs/) - Connect answered calls to a Telnyx AI voice agent
+- [make-outbound-phone-call-nodejs](../make-outbound-phone-call-nodejs/) - Place outbound calls with Call Control
+- [record-phone-calls-nodejs](../record-phone-calls-nodejs/) - Record calls via Call Control actions
+- [build-ivr-phone-menu-nodejs](../build-ivr-phone-menu-nodejs/) - Build an IVR menu on inbound calls
+
+## Resources
+
+- [Voice API / Call Control Guide](https://developers.telnyx.com/docs/voice/programmable-voice)
+- [Answer Call API reference](https://developers.telnyx.com/api-reference/call-commands/answer-call)
+- [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
+- [Telnyx Voice AI Agents](https://telnyx.com/products/voice-ai-agents)
+- [Voice pricing](https://telnyx.com/pricing/call-control)
+- [Telnyx Portal](https://portal.telnyx.com)

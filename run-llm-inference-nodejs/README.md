@@ -1,66 +1,182 @@
-# Run LLM Inference with Node.js
+---
+name: run-llm-inference
+title: "Run LLM Inference"
+description: "Run large language model inference through the Telnyx Inference API using an OpenAI-compatible chat completions interface from Node.js. Works as both an HTTP server and a CLI tool."
+language: nodejs
+framework: express
+telnyx_products: [Inference]
+channel: [ai]
+---
 
-## What Does This Example Do?
+# Run LLM Inference
 
-Run large language model inference through the Telnyx Inference API using an OpenAI-compatible interface from Node.js. Send chat completion requests, maintain multi-turn conversations, and integrate LLM capabilities into any application. Works as both a CLI tool and an HTTP server.
+Run large language model inference through the Telnyx Inference API using an OpenAI-compatible chat completions interface from Node.js. Works as both an HTTP server and a CLI tool.
 
-## Who Is This For?
+## Why Telnyx
 
-- AI developers integrating LLM inference into Node.js applications.
-- Backend engineers building AI-powered APIs and services.
-- Teams evaluating inference providers looking for OpenAI-compatible alternatives.
+Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. Inference runs on Telnyx-owned hardware co-located with the telephony network, so you get an OpenAI-compatible API, low-latency responses, and a single API key that also reaches voice, SMS, and SIP.
 
-## Why Telnyx?
+## Telnyx API Endpoints Used
 
-Telnyx is an **AI Communications Infrastructure** platform that runs inference on its own global network.
+- **Chat Completions**: `POST /v2/ai/chat/completions` -- [API reference](https://developers.telnyx.com/api/inference/inference-embedding/post-chat-completions)
 
-- OpenAI-compatible API. Same request/response format. Swap your base URL and API key.
-- Infrastructure ownership. Inference runs on Telnyx-owned hardware co-located with telephony. Fewer hops, lower latency.
-- Multiple models. Llama 3.3 70B, Qwen, Kimi K2.5, and more. Switch models with one parameter.
-- Integrated stack. Add voice, SMS, or SIP to your AI app with the same platform and API key.
+## Architecture
 
-## Prerequisites
+```
+  HTTP request / CLI arg
+        │
+        ▼
+  ┌────────────────────┐
+  │  Express app        │
+  │  /inference/chat    │
+  │  /inference/ask     │
+  └─────────┬──────────┘
+            │  POST /v2/ai/chat/completions
+            ▼
+  ┌────────────────────┐
+  │  Telnyx Inference   │
+  └─────────┬──────────┘
+            │
+            └──► completion text
+```
 
-- Node.js 18 or higher.
-- A Telnyx account with an active API key from the [Telnyx Portal](https://portal.telnyx.com).
+## Environment Variables
 
-## Quick Start
+Copy `.env.example` to `.env` and fill in:
 
-## Implementation Details
+| Variable | Type | Example | Required | Description | Where to get it |
+|----------|------|---------|----------|-------------|-----------------|
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key (used as the Bearer token) | [Portal](https://portal.telnyx.com/api-keys) |
+| `AI_MODEL` | `string` | `meta-llama/Llama-3.3-70B-Instruct` | no | Default model slug. Falls back to `meta-llama/Llama-3.3-70B-Instruct` | [Inference docs](https://developers.telnyx.com/docs/inference) |
+| `PORT` | `number` | `5000` | no | HTTP port for server mode. Defaults to `5000` | — |
 
-### Core inference function
+## Setup
 
-## Complete Code
+```bash
+git clone https://github.com/team-telnyx/telnyx-code-examples.git
+cd telnyx-code-examples/run-llm-inference-nodejs
+cp .env.example .env    # ← fill in your credentials
+npm install
+node server.js          # starts on http://localhost:5000
+```
 
-See [server.js](./server.js) for the full implementation.
+### CLI mode
+
+Pass a question as command-line arguments to ask a single question and print the answer, without starting the server:
+
+```bash
+node server.js "What is the capital of France?"
+```
+
+To force server mode explicitly, pass `--serve`:
+
+```bash
+node server.js --serve
+```
+
+## API Reference
+
+### `GET /health`
+
+Liveness check. Returns the configured default model.
+
+```bash
+curl http://localhost:5000/health
+```
+
+**Response:**
+
+```json
+{
+  "status": "ok",
+  "model": "meta-llama/Llama-3.3-70B-Instruct"
+}
+```
+
+### `POST /inference/chat`
+
+Run a full chat completion. Pass a `messages` array (OpenAI-compatible) and optional generation parameters. Returns the raw Telnyx Inference response.
+
+```bash
+curl -X POST http://localhost:5000/inference/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "Write a haiku about the ocean."}
+    ],
+    "max_tokens": 200,
+    "temperature": 0.7
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "id": "chatcmpl-abc123",
+  "object": "chat.completion",
+  "model": "meta-llama/Llama-3.3-70B-Instruct",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Vast and endless blue\nWaves whisper to the shoreline\nMoonlight on the deep"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 23,
+    "completion_tokens": 18,
+    "total_tokens": 41
+  }
+}
+```
+
+### `POST /inference/ask`
+
+Ask a single question and get just the answer text back. An optional `system_prompt` steers the model.
+
+```bash
+curl -X POST http://localhost:5000/inference/ask \
+  -H "Content-Type: application/json" \
+  -d '{
+    "question": "What is the capital of France?",
+    "system_prompt": "Answer in one word."
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "answer": "Paris."
+}
+```
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| 401 Unauthorized | Check TELNYX_API_KEY in .env. Keys start with KEY. |
-| Model not available | Try meta-llama/Llama-3.3-70B-Instruct as default. |
-| Timeout | Reduce max_tokens or use a smaller model. |
-
-## FAQ
-
-**Q: Is this OpenAI-compatible?**
-Yes. Same request/response format. You can use the OpenAI Node.js SDK with the Telnyx base URL.
-
-**Q: Which models are available?**
-Llama 3.3 70B, Qwen 3, Kimi K2.5, GPT-5, and more. Check developers.telnyx.com for the current list.
-
-**Q: Can I use this for voice AI?**
-Yes. Telnyx inference runs on the same network as telephony for sub-200ms voice AI latency.
-
-## Resources
-
-- [Telnyx Inference Docs](https://developers.telnyx.com/docs/inference)
-- [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
-- [Inference Pricing](https://telnyx.com/pricing/inference)
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Connection refused on port 5000 | App isn't running, or `PORT` differs | Run `node server.js` and confirm the port from the startup log. Set `PORT` in `.env` if 5000 is taken. |
+| `401 Unauthorized` / `Inference API error: 401` | `TELNYX_API_KEY` is missing or invalid | Generate a new key at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys). Telnyx keys start with `KEY`. |
+| `Inference API error: 404` | The requested `model` slug is not available | Use `meta-llama/Llama-3.3-70B-Instruct` or check the model list in the [Inference docs](https://developers.telnyx.com/docs/inference). |
+| `Request body must include 'messages' array` | `POST /inference/chat` called without `messages` | Include a non-empty `messages` array in the JSON body. |
+| `Request body must include 'question'` | `POST /inference/ask` called without `question` | Include a `question` string in the JSON body. |
+| Slow or timed-out responses | Large `max_tokens` or a large model | Lower `max_tokens` or pick a smaller model. |
 
 ## Related Examples
 
-- [Build a Voice AI Agent with Node.js](../build-voice-ai-agent-nodejs/)
-- [Create an AI Assistant with Node.js](../create-ai-assistant-nodejs/)
-- [Run LLM Inference with Python](../run-llm-inference-python/)
+- [build-voice-ai-agent-nodejs](../build-voice-ai-agent-nodejs/) - Voice AI agent in Node.js
+- [create-ai-assistant-nodejs](../create-ai-assistant-nodejs/) - Create a managed AI Assistant
+- [run-llm-inference-python](../run-llm-inference-python/) - The same example in Python
+
+## Resources
+
+- [Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Chat Completions API reference](https://developers.telnyx.com/api/inference/inference-embedding/post-chat-completions)
+- [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
+- [Telnyx Inference product page](https://telnyx.com/products/inference)
+- [Inference pricing](https://telnyx.com/pricing/inference)

@@ -8,6 +8,9 @@ from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 import threading, time as _ttl_time
+import boto3
+from botocore.config import Config
+from botocore.exceptions import ClientError
 
 load_dotenv()
 app = Flask(__name__)
@@ -18,8 +21,21 @@ MESSAGING_PROFILE_ID = os.getenv("MESSAGING_PROFILE_ID", "")
 AI_MODEL = os.getenv("AI_MODEL", "moonshotai/Kimi-K2.6")
 TTS_MODEL = os.getenv("TTS_MODEL", "telnyx/tts")
 BUCKET_NAME = os.getenv("BUCKET_NAME", "voiceovers")
+# Region selects the S3 endpoint host, e.g. us-central-1 -> us-central-1.telnyxcloudstorage.com
+REGION = os.getenv("TELNYX_STORAGE_REGION", "us-central-1")
 API = "https://api.telnyx.com/v2"
 HEADERS = {"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"}
+
+# Telnyx Cloud Storage is S3-compatible. Point boto3 at the region-scoped Telnyx
+# endpoint and supply the Telnyx API key as BOTH the access key and the secret key.
+s3 = boto3.client(
+    "s3",
+    endpoint_url=f"https://{REGION}.telnyxcloudstorage.com",
+    aws_access_key_id=TELNYX_API_KEY,
+    aws_secret_access_key=TELNYX_API_KEY,
+    region_name=REGION,
+    config=Config(signature_version="s3v4"),
+)
 
 ALL_VOICES = [
     {"id": "nova", "name": "Nova", "traits": "warm, approachable, female"},
@@ -75,13 +91,16 @@ def send_sms(to, text):
 
 
 def upload_to_storage(key, data):
-    resp = requests.put(
-        f"https://storage.telnyx.com/{BUCKET_NAME}/{key}",
-        headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "audio/mpeg"},
-        data=data, timeout=60
-    )
-    resp.raise_for_status()
-    return f"https://storage.telnyx.com/{BUCKET_NAME}/{key}"
+    """Upload audio bytes to S3-compatible Telnyx Cloud Storage and return a
+    time-limited presigned GET URL (valid 1 hour) for playback/review."""
+    try:
+        s3.put_object(Bucket=BUCKET_NAME, Key=key, Body=data, ContentType="audio/mpeg")
+        return s3.generate_presigned_url(
+            "get_object", Params={"Bucket": BUCKET_NAME, "Key": key}, ExpiresIn=3600
+        )
+    except ClientError:
+        app.logger.exception("storage upload failed for key %s", key)
+        raise
 
 
 @app.route("/auditions/create", methods=["POST"])

@@ -36,20 +36,20 @@ Upload course content, AI structures into audio modules with pacing cues and qui
 
 - **AI Inference (course structure)**: `POST /v2/ai/chat/completions` -- [ref](https://developers.telnyx.com/api/inference/chat-completions)
 - **TTS Generate (narration)**: `POST /v2/ai/generate` -- [ref](https://developers.telnyx.com/api/inference/generate)
-- **Cloud Storage**: `PUT https://storage.telnyx.com/{bucket}/{key}` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
+- **Cloud Storage**: S3-compatible — accessed with the AWS SDK (boto3) against `https://{region}.telnyxcloudstorage.com` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
 
 ## How It Works
 
 1. Sends conversation to Telnyx AI Inference for processing
 2. Converts response to speech via Telnyx TTS
-3. Stores results in Telnyx Cloud Storage
+3. Stores results in Telnyx Cloud Storage (S3-compatible) via boto3 and returns a presigned GET URL for each asset
 
 ## Why Telnyx
 
 Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
 
 - **Co-located inference** — LLM runs on the same network as voice traffic. Sub-200ms round trips.
-- **Integrated storage** — S3-compatible storage co-located with voice and AI infrastructure.
+- **Integrated storage** — S3-compatible storage co-located with voice and AI infrastructure. Use any AWS SDK (here, boto3) against the region endpoint, authenticating with your Telnyx API key as both the access and secret key, and hand out presigned GET URLs for playback.
 
 ## Environment Variables
 
@@ -61,6 +61,7 @@ Copy `.env.example` to `.env` and fill in:
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | AI Inference model | [Docs](https://developers.telnyx.com/docs/inference/models) |
 | `TTS_MODEL` | `string` | `telnyx/tts` | no | TTS model | [Docs](https://developers.telnyx.com/docs/inference) |
 | `BUCKET_NAME` | `string` | `voiceovers` | no | Cloud Storage bucket | [Portal](https://portal.telnyx.com/storage) |
+| `TELNYX_STORAGE_REGION` | `string` | `us-central-1` | no | Cloud Storage region (selects the S3 endpoint host: `us-central-1`, `us-east-1`, `us-west-1`, `eu-central-1`) | [Docs](https://developers.telnyx.com/docs/cloud-storage) |
 | `DEFAULT_VOICE` | `string` | `alloy` | no | Default voice | [Docs](https://developers.telnyx.com/docs/inference) |
 
 ## Setup

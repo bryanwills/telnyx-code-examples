@@ -32,7 +32,7 @@ Submit a script in one language, AI translates to multiple targets preserving to
 
 - **AI Inference (translation)**: `POST /v2/ai/chat/completions` -- [ref](https://developers.telnyx.com/api/inference/chat-completions)
 - **TTS Generate (multilingual)**: `POST /v2/ai/generate` -- [ref](https://developers.telnyx.com/api/inference/generate)
-- **Cloud Storage**: `PUT https://storage.telnyx.com/{bucket}/{key}` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
+- **Cloud Storage (S3-compatible)**: `boto3.put_object(Bucket, Key, Body, ...)` against `https://{region}.telnyxcloudstorage.com` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
 
 ## Prerequisites
 
@@ -74,7 +74,7 @@ Everything lives in `app.py` (252 lines). Here's what each piece does.
 
 - **`inference()`** — Makes an API call and processes the response.
 - **`tts_generate()`** — Makes an API call and processes the response.
-- **`upload_to_storage()`** — Uploads file to Telnyx Cloud Storage with metadata tags.
+- **`upload_to_storage()`** — Uploads bytes to Telnyx Cloud Storage via the S3-compatible API (boto3 `put_object`) and returns a presigned GET URL for playback.
 
 ### All Endpoints
 

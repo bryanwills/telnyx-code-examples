@@ -17,7 +17,7 @@ Submit text, AI Inference chunks into chapters with pacing/emotion markup, TTS n
 
 - **AI Inference (chapter split)**: `POST /v2/ai/chat/completions` -- [ref](https://developers.telnyx.com/api/inference/chat-completions)
 - **TTS Generate (narration)**: `POST /v2/ai/generate` -- [ref](https://developers.telnyx.com/api/inference/generate)
-- **Cloud Storage Upload**: `PUT https://storage.telnyx.com/{bucket}/{key}` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
+- **Cloud Storage (S3-compatible)**: `PutObject` via the AWS SDK (boto3) against `https://{region}.telnyxcloudstorage.com` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
 
 ## Architecture
 
@@ -44,7 +44,7 @@ Submit text, AI Inference chunks into chapters with pacing/emotion markup, TTS n
 
 1. Sends conversation to Telnyx AI Inference for processing
 2. Converts response to speech via Telnyx TTS
-3. Stores results in Telnyx Cloud Storage
+3. Stores results in Telnyx Cloud Storage (S3-compatible, via boto3) and returns a presigned GET URL for each chapter
 
 ## Why Telnyx
 
@@ -63,6 +63,7 @@ Copy `.env.example` to `.env` and fill in:
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | AI Inference model | [Docs](https://developers.telnyx.com/docs/inference/models) |
 | `TTS_MODEL` | `string` | `telnyx/tts` | no | TTS model name | [Docs](https://developers.telnyx.com/docs/inference) |
 | `BUCKET_NAME` | `string` | `audiobooks` | no | Cloud Storage bucket | [Portal](https://portal.telnyx.com/storage) |
+| `TELNYX_STORAGE_REGION` | `string` | `us-central-1` | no | Cloud Storage region (selects the S3 endpoint host) | [Docs](https://developers.telnyx.com/docs/cloud-storage) |
 | `DEFAULT_VOICE` | `string` | `nova` | no | Default narrator voice | [Docs](https://developers.telnyx.com/docs/inference) |
 
 ## Setup
@@ -97,7 +98,7 @@ curl -X POST http://localhost:5000/books/narrate \
 **Response:**
 
 ```json
-{"book_id": "book-a1b2c3d4", "title": "The Future of Infrastructure", "chapters": 5, "total_audio_mb": 12.4, "storage_urls": ["https://storage.telnyx.com/audiobooks/book-a1b2c3d4/chapter-01.mp3"]}
+{"book_id": "book-a1b2c3d4", "title": "The Future of Infrastructure", "chapters": 5, "total_audio_mb": 12.4, "storage_urls": ["https://us-central-1.telnyxcloudstorage.com/audiobooks/book-a1b2c3d4/chapter-01.mp3?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Expires=3600&..."]}
 ```
 
 ### `GET /health`

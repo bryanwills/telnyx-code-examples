@@ -4,6 +4,9 @@ AI writes caller-friendly scripts from business descriptions, TTS renders
 in multiple voices, test via live Telnyx call playback."""
 
 import os, json, base64, uuid, requests, telnyx
+import boto3
+from botocore.config import Config
+from botocore.exceptions import ClientError
 from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
@@ -22,6 +25,19 @@ TTS_MODEL = os.getenv("TTS_MODEL", "telnyx/tts")
 BUCKET_NAME = os.getenv("BUCKET_NAME", "ivr-prompts")
 API = "https://api.telnyx.com/v2"
 HEADERS = {"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"}
+
+# Telnyx Cloud Storage is S3-compatible, so we talk to it with the AWS SDK (boto3)
+# pointed at the region-scoped Telnyx S3 endpoint — not a REST API. The Telnyx API key
+# is supplied as BOTH the access key and the secret key.
+REGION = os.getenv("TELNYX_STORAGE_REGION", "us-central-1")
+s3 = boto3.client(
+    "s3",
+    endpoint_url=f"https://{REGION}.telnyxcloudstorage.com",
+    aws_access_key_id=TELNYX_API_KEY,
+    aws_secret_access_key=TELNYX_API_KEY,
+    region_name=REGION,
+    config=Config(signature_version="s3v4"),
+)
 
 PROMPT_TYPES = {
     "greeting": "Main greeting when caller first connects",
@@ -74,14 +90,17 @@ def telnyx_post(path, payload):
     return resp.json()
 
 
-def upload_to_storage(key, data):
-    resp = requests.put(
-        f"https://storage.telnyx.com/{BUCKET_NAME}/{key}",
-        headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "audio/mpeg"},
-        data=data, timeout=60
-    )
-    resp.raise_for_status()
-    return f"https://storage.telnyx.com/{BUCKET_NAME}/{key}"
+def upload_to_storage(key, data, content_type="audio/mpeg"):
+    """Upload bytes to the S3-compatible Telnyx Cloud Storage bucket and return a
+    time-limited presigned GET URL the caller can hand to a call flow."""
+    try:
+        s3.put_object(Bucket=BUCKET_NAME, Key=key, Body=data, ContentType=content_type)
+        return s3.generate_presigned_url(
+            "get_object", Params={"Bucket": BUCKET_NAME, "Key": key}, ExpiresIn=3600
+        )
+    except ClientError:
+        app.logger.exception("Cloud Storage upload failed for key %s", key)
+        raise
 
 
 @app.route("/prompts/generate", methods=["POST"])

@@ -9,6 +9,10 @@ from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 import threading, time as _ttl_time
 
+import boto3
+from botocore.config import Config
+from botocore.exceptions import ClientError
+
 load_dotenv()
 app = Flask(__name__)
 
@@ -19,6 +23,19 @@ STT_MODEL = os.getenv("STT_MODEL", "telnyx/asr")
 BUCKET_NAME = os.getenv("BUCKET_NAME", "voiceovers")
 API = "https://api.telnyx.com/v2"
 HEADERS = {"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"}
+
+# Telnyx Cloud Storage is S3-compatible. Talk to it with the AWS SDK (boto3) pointed
+# at the region-scoped Telnyx S3 endpoint — not a storage.telnyx.com REST endpoint.
+# Auth uses the Telnyx API key as BOTH the access key and the secret key.
+REGION = os.getenv("TELNYX_STORAGE_REGION", "us-central-1")
+s3 = boto3.client(
+    "s3",
+    endpoint_url=f"https://{REGION}.telnyxcloudstorage.com",
+    aws_access_key_id=TELNYX_API_KEY,
+    aws_secret_access_key=TELNYX_API_KEY,
+    region_name=REGION,
+    config=Config(signature_version="s3v4"),
+)
 
 REWRITE_MODES = {
     "polish": "Clean up grammar and pacing, keep meaning identical",
@@ -72,14 +89,19 @@ def tts_generate(text, voice="nova"):
     return resp.content
 
 
-def upload_to_storage(key, data):
-    resp = requests.put(
-        f"https://storage.telnyx.com/{BUCKET_NAME}/{key}",
-        headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "audio/mpeg"},
-        data=data, timeout=60
-    )
-    resp.raise_for_status()
-    return f"https://storage.telnyx.com/{BUCKET_NAME}/{key}"
+def upload_to_storage(key, data, content_type="audio/mpeg"):
+    """Store bytes in Telnyx Cloud Storage (S3-compatible) and return a presigned
+    GET URL valid for 1 hour. Failures are logged, not leaked to callers."""
+    try:
+        s3.put_object(Bucket=BUCKET_NAME, Key=key, Body=data, ContentType=content_type)
+        return s3.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": BUCKET_NAME, "Key": key},
+            ExpiresIn=3600,
+        )
+    except ClientError:
+        app.logger.exception("Cloud Storage upload failed for key %s", key)
+        raise
 
 
 @app.route("/replace", methods=["POST"])

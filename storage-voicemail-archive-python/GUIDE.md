@@ -22,13 +22,29 @@ Storage Voicemail Archive — record voicemails to Telnyx Cloud Storage with sea
 ## Telnyx Products Used
 
 - **Cloud Storage** — S3-compatible object storage for recordings and media
-- **Migration**
-- **Number Porting** — phone number search, purchase, and configuration
 - **Voice** — programmatic call control with webhooks for every call state change
+- **Call Recording** — records the caller's message as an MP3
 
-## API Endpoints
+## Cloud Storage (S3-Compatible)
 
-- **Cloud Storage**: `PUT /v2/storage/buckets/{bucket}/{key}` — [API reference](https://developers.telnyx.com/api/cloud-storage/put-object)
+Telnyx Cloud Storage speaks the S3 protocol, so this app uses `boto3` rather than a REST endpoint. Point the client at the region endpoint and pass your Telnyx API key as **both** the access key and the secret key (see the [Cloud Storage quick start](https://developers.telnyx.com/docs/cloud-storage/quick-start)):
+
+```python
+s3 = boto3.client(
+    "s3",
+    endpoint_url=f"https://{REGION}.telnyxcloudstorage.com",
+    aws_access_key_id=TELNYX_API_KEY,
+    aws_secret_access_key=TELNYX_API_KEY,
+    region_name=REGION,
+    config=Config(signature_version="s3v4"),
+)
+```
+
+The region is read from `TELNYX_STORAGE_REGION` (default `us-central-1`; also `us-east-1`, `us-west-1`, `eu-central-1`). Uploading a recording is a single `put_object` call:
+
+```python
+s3.put_object(Bucket=STORAGE_BUCKET, Key=filename, Body=audio, ContentType="audio/mpeg")
+```
 
 ## Webhook Events
 
@@ -177,4 +193,5 @@ python app.py
 - [Source code and reference](./README.md)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Call Control quickstart](https://developers.telnyx.com/docs/voice/call-control)
+- [Cloud Storage Quick Start (S3-compatible)](https://developers.telnyx.com/docs/cloud-storage/quick-start)
 - [Telnyx Portal](https://portal.telnyx.com)

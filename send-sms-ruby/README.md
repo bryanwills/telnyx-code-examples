@@ -1,178 +1,117 @@
-# Send a Single SMS with Ruby on Rails
+---
+name: send-sms
+title: "Send SMS"
+description: "Send an SMS message using the Telnyx Messaging API and the Telnyx Ruby SDK, exposed through a Rails controller endpoint."
+language: ruby
+framework: rails
+telnyx_products: [Messaging]
+channel: [sms]
+---
 
-## What Does This Example Do?
+# Send SMS
 
-Build a production-ready Rails API endpoint that sends SMS messages using the Telnyx Ruby SDK. This tutorial demonstrates the new client-based initialization pattern, proper error handling for telecom APIs, and secure credential management via environment variables.
+Send an SMS message using the Telnyx Messaging API and the Telnyx Ruby SDK, exposed through a Rails controller endpoint.
 
-## Who Is This For?
+## Why Telnyx
 
-- **Ruby developers** building sms features with Rails.
-- **Backend engineers** integrating telephony or messaging into existing applications.
-- **DevOps teams** looking for containerized, production-ready telecom examples.
-- **Startups and enterprises** replacing legacy telecom providers with a modern API-first platform.
+Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
 
-## Why Telnyx?
+- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
 
-Telnyx is an **AI Communications Infrastructure** platform that gives developers a single API for voice, messaging, SIP, AI, and IoT — no Frankenstack required.
+## Telnyx API Endpoints Used
 
-- **Integrated platform** — Voice, SMS, SIP trunking, AI assistants, and IoT SIM management under one roof. No stitching together multiple vendors.
-- **Global private network** — Calls and messages traverse the Telnyx-owned IP network for lower latency and higher reliability than the public internet.
-- **Developer-first** — SDKs for Python, Node.js, Go, Ruby, Java, and PHP. Comprehensive webhook event model. Sandbox environment for testing.
-- **Competitive pricing** — Pay-as-you-go with no minimums, contracts, or per-seat fees.
+- **Send Message**: `POST /v2/messages` -- [API reference](https://developers.telnyx.com/api/messaging/send-message)
 
-## Prerequisites
+## Architecture
 
-- Ruby 3.0 or higher
-- Rails 7.0 or higher
-- A Telnyx account with an active API key from the [Telnyx Portal](https://portal.telnyx.com)
-- A Telnyx phone number enabled for outbound SMS
-- Bundler (Ruby package manager)
+```
+  POST /sms/send
+        │
+        ▼
+  ┌──────────────────┐
+  │  SmsController    │
+  │  (Telnyx::Client) │
+  └────────┬─────────┘
+           │  client.messages.create
+           ▼
+  ┌──────────────────┐
+  │ Telnyx Messaging  │
+  └────────┬─────────┘
+           │
+           └──► SMS delivered
+```
 
-## Quick Start
+## Environment Variables
 
-### Option 1: Local (recommended)
+Copy `.env.example` to `.env` and fill in:
+
+| Variable | Type | Example | Required | Description | Where to get it |
+|----------|------|---------|----------|-------------|-----------------|
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx sending number (E.164) | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
+
+## Setup
 
 ```bash
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
 cd telnyx-code-examples/send-sms-ruby
-cp .env.example .env
-# Edit .env with your Telnyx API key and phone number
+cp .env.example .env    # ← fill in your credentials
 bundle install
-ruby app.rb
+ruby app.rb             # starts the Rails app
 ```
 
-### Option 2: Manual
+`app.rb` defines an `SmsController` whose `send_sms` action is mapped to `POST /sms/send`.
 
-See the [Implementation Details](#implementation-details) section below for step-by-step instructions.
+## API Reference
 
-## Implementation Details
+### `POST /sms/send`
 
-Generate a controller to handle SMS operations:
+Sends a single SMS through the Telnyx Messaging API.
 
 ```bash
-rails generate controller Sms send_sms --skip-assets --skip-helper
+curl -X POST http://localhost:3000/sms/send \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+12125551234",
+    "message": "Hello from Telnyx!"
+  }'
 ```
 
-Open `app/controllers/sms_controller.rb` and implement the endpoint with proper validation and error handling:
+**Response:**
 
-```ruby
-class SmsController < ApplicationController
-  # Initialize client per request to ensure fresh connection
-  before_action :initialize_client
-
-  def send_sms
-    to_number = params[:to]
-    message = params[:message]
-
-    # Validate presence of required fields
-    unless to_number.present? && message.present?
-      return render json: { error: "Missing required fields: 'to' and 'message'" }, status: :bad_request
-    end
-
-    # Validate E.164 format to prevent API errors
-    unless to_number.start_with?("+")
-      return render json: { error: "Phone number must be in E.164 format (e.g., +15551234567)" }, status: :bad_request
-    end
-
-    from_number = ENV["TELNYX_PHONE_NUMBER"]
-    unless from_number
-      return render json: { error: "TELNYX_PHONE_NUMBER environment variable not set" }, status: :internal_server_error
-    end
-
-    begin
-      # Use client.messages.create() — NOT Telnyx::Message.create()
-      response = @client.messages.create(
-        from_: from_number,
-        to: to_number,
-        text: message
-      )
-
-      # Extract serializable data — do not return raw response object
-      render json: {
-        message_id: response.data.id,
-        status: response.data.to.first&.status || "unknown",
-        from: from_number,
-        to: to_number
-      }, status: :ok
-
-    rescue Telnyx::AuthenticationError
-      render json: { error: "Invalid API key" }, status: :unauthorized
-    rescue Telnyx::RateLimitError
-      render json: { error: "Rate limit exceeded. Please slow down." }, status: :too_many_requests
-    rescue Telnyx::APIStatusError => e
-      # e.status_code contains the HTTP status from Telnyx
-      render json: { error: e.message, status_code: e.status_code }, status: e.status_code
-    rescue Telnyx::APIConnectionError
-      render json: { error: "Network error connecting to Telnyx" }, status: :service_unavailable
-    end
-  end
-
-  private
-
-  def initialize_client
-    # Initialize client using new pattern — NOT Telnyx.api_key = ...
-    @client = Telnyx::Client.new(api_key: ENV["TELNYX_API_KEY"])
-  end
-end
+```json
+{
+  "message_id": "40385f64-5717-4562-b3fc-2c963f66afa6",
+  "status": "queued",
+  "from": "+15551234567",
+  "to": "+12125551234"
+}
 ```
-
-## Complete Code
-
-See [`app.rb`](./app.rb) for the full implementation.
 
 ## Troubleshooting
 
-### Issue 1: Authentication Error (401)
-
-**Problem:** The endpoint returns `{"error": "Invalid API key"}` with HTTP 401.
-
-**Solution:** Verify your `TELNYX_API_KEY` in the `.env` file matches the key shown in the [Telnyx Portal](https://portal.telnyx.com). Ensure there are no trailing spaces or quotes. Restart the Rails server after updating environment variables, as they are loaded at boot time.
-
-### Issue 2: Invalid Phone Number Format
-
-**Problem:** You receive a 400 error stating "Phone number must be in E.164 format" or a Telnyx API error about invalid destination.
-
-**Solution:** Ensure all phone numbers use E.164 format: start with `+`, followed by country code and number without spaces or dashes. Example: `+15551234567` (US) or `+447700900123` (UK). Update your test curl command to use properly formatted numbers.
-
-### Issue 3: uninitialized constant Telnyx::Client
-
-**Problem:** Rails raises `NameError: uninitialized constant Telnyx::Client` when processing a request.
-
-**Solution:** Ensure the `telnyx` gem is included in your `Gemfile` and you have run `bundle install`. If the error persists, verify the gem is not restricted to a specific group (like `:production`) that your current environment doesn't match. Restart the Rails server after modifying the Gemfile.
-
-## FAQ
-
-**Q: Do I need a Telnyx account to run this example?**
-
-Yes. Sign up at [portal.telnyx.com](https://portal.telnyx.com) to get an API key. Telnyx offers free trial credit for testing.
-
-**Q: Can I use this SMS example in production?**
-
-Yes. This example includes error handling, environment-based configuration, and a Dockerfile for containerized deployment. Review the security and scaling sections before deploying to production.
-
-**Q: What Ruby version do I need?**
-
-Ruby 3.1 or higher. Ruby 3.3 is recommended.
-
-**Q: How is Telnyx different from Twilio?**
-
-Telnyx is an AI Communications Infrastructure platform with a private global network, integrated voice + messaging + AI + SIP + IoT under one API, and significantly lower pricing. No need to stitch together multiple vendors.
-
-**Q: Where do I get a Telnyx phone number?**
-
-Log into the [Telnyx Portal](https://portal.telnyx.com), navigate to Numbers > Search & Buy, and purchase a number with the capabilities you need (SMS, voice, or both).
-
-## Resources
-
-- [Messaging Overview](https://developers.telnyx.com/docs/messaging)
-- [Send an SMS — Quickstart](https://developers.telnyx.com/docs/messaging/messages/send-message)
-- [Messaging API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
-- [Ruby SDK](https://developers.telnyx.com/development/sdk/ruby)
-- [Telnyx SMS API](https://telnyx.com/products/sms-api)
-- [Messaging Pricing](https://telnyx.com/pricing/messaging)
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| `{"error":"Invalid API key"}` (401) | `TELNYX_API_KEY` is missing, wrong, or has trailing whitespace | Copy a fresh key from [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) into `.env` and restart the app — env vars load at boot |
+| `{"error":"Phone number must be in E.164 format (e.g., +15551234567)"}` (400) | The `to` value does not start with `+` | Send the number in E.164 form, e.g. `+12125551234` |
+| `{"error":"Missing required fields: 'to' and 'message'"}` (400) | The request body omitted `to` or `message` | Include both fields in the JSON body |
+| `{"error":"TELNYX_PHONE_NUMBER environment variable not set"}` (500) | `TELNYX_PHONE_NUMBER` is not exported | Set it in `.env` and restart the app |
+| `{"error":"Rate limit exceeded. Please slow down."}` (429) | Too many requests in a short window | Back off and retry; batch sends with a queue |
+| `uninitialized constant Telnyx::Client` | The `telnyx` gem is not installed | Run `bundle install` and restart the app |
 
 ## Related Examples
 
-- [Receive SMS Webhooks with Ruby](/tutorials/sms/ruby/receive-sms-webhook)
-- [Send Bulk SMS with Ruby](/tutorials/sms/ruby/send-bulk-sms)
-- [Implement Two-Factor Authentication with Ruby](/tutorials/sms/ruby/otp-2fa)
+- [send-sms-python](../send-sms-python/) - Send SMS with Python / Flask
+- [send-sms-nodejs](../send-sms-nodejs/) - Send SMS with Node.js
+- [send-sms-go](../send-sms-go/) - Send SMS with Go
+- [send-bulk-sms-python](../send-bulk-sms-python/) - Send SMS to many recipients
+- [receive-sms-webhook-python](../receive-sms-webhook-python/) - Handle inbound SMS webhooks
+
+## Resources
+
+- [Messaging Guide](https://developers.telnyx.com/docs/messaging)
+- [Send a Message — API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Ruby SDK](https://developers.telnyx.com/development/sdk/ruby)
+- [Telnyx SMS API](https://telnyx.com/products/sms-api)
+- [Messaging Pricing](https://telnyx.com/pricing/messaging)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -55,7 +55,9 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 - **TTS Generate**: `POST /v2/ai/generate` -- [ref](https://developers.telnyx.com/api/inference/generate)
 - **Create Call (preview)**: `POST /v2/calls` -- [ref](https://developers.telnyx.com/api/call-control/create-call)
 - **Speak (playback)**: `POST /v2/calls/{id}/actions/speak` -- [ref](https://developers.telnyx.com/api/call-control/speak)
-- **Cloud Storage**: `PUT https://storage.telnyx.com/{bucket}/{key}` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
+- **Cloud Storage (S3-compatible)**: `s3.put_object(...)` via boto3 against `https://{region}.telnyxcloudstorage.com`, then a presigned GET URL -- [docs](https://developers.telnyx.com/docs/cloud-storage/quick-start)
+
+Telnyx Cloud Storage is S3-compatible, so rendered TTS audio is uploaded with the AWS SDK (boto3) pointed at the region-scoped Telnyx S3 endpoint — not a REST API. Auth uses your Telnyx API key as **both** the access key and the secret key. Each upload returns a time-limited presigned GET URL (valid 1 hour) you can drop straight into a Call Control `speak`/`playback_audio` command or a TeXML `<Play>` verb.
 
 ## Environment Variables
 
@@ -69,6 +71,7 @@ Copy `.env.example` to `.env` and fill in:
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | AI Inference model | [Docs](https://developers.telnyx.com/docs/inference/models) |
 | `TTS_MODEL` | `string` | `telnyx/tts` | no | TTS model | [Docs](https://developers.telnyx.com/docs/inference) |
 | `BUCKET_NAME` | `string` | `voiceovers` | no | Cloud Storage bucket | [Portal](https://portal.telnyx.com/storage) |
+| `TELNYX_STORAGE_REGION` | `string` | `us-central-1` | no | Cloud Storage region (selects the S3 endpoint host) | [Docs](https://developers.telnyx.com/docs/cloud-storage/quick-start) |
 
 ## Setup
 
@@ -144,7 +147,7 @@ Handles Telnyx Call Control webhook events. Called automatically by Telnyx — d
 ## Resources
 
 - [AI Inference Guide](https://developers.telnyx.com/docs/inference)
-- [Cloud Storage Docs](https://developers.telnyx.com/docs/cloud-storage)
+- [Cloud Storage Quick Start (S3-compatible)](https://developers.telnyx.com/docs/cloud-storage/quick-start)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Telnyx Portal](https://portal.telnyx.com)
 

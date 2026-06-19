@@ -1,150 +1,151 @@
-# SIM Activation with Node.js and Express
+---
+name: activate-sim-card
+title: "Activate SIM Card"
+description: "Retrieve and activate a Telnyx IoT SIM card by ID using the Telnyx Node.js SDK over an Express API."
+language: nodejs
+framework: express
+telnyx_products: [IoT]
+channel: [sim]
+---
 
-## What Does This Example Do?
+# Activate SIM Card
 
-Build a production-ready Express endpoint that activates SIM cards using the Telnyx Node.js SDK. This tutorial demonstrates the client-based initialization pattern, proper error handling for IoT APIs, and secure credential management via environment variables. You'll learn how to retrieve SIM card details, activate them, and handle common errors in a real-world application.
+Retrieve and activate a Telnyx IoT SIM card by ID using the Telnyx Node.js SDK over an Express API.
 
-## Who Is This For?
+## Why Telnyx
 
-- **Node.js developers** building iot features with Express.
-- **Backend engineers** integrating telephony or messaging into existing applications.
-- **DevOps teams** looking for containerized, production-ready telecom examples.
-- **Startups and enterprises** replacing legacy telecom providers with a modern API-first platform.
+Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT SIM management on one private, global network. The IoT SIM API lets you provision, activate, and manage cellular connectivity programmatically with the same key and SDK you use for everything else.
 
-## Why Telnyx?
+- **Programmable IoT SIMs** — activate, deactivate, and inspect SIM cards over a simple REST API.
+- **One platform** — IoT connectivity sits next to voice, messaging, and AI under a single API key.
 
-Telnyx is an **AI Communications Infrastructure** platform that gives developers a single API for [voice](https://telnyx.com/products/voice-ai-agents), [messaging](https://telnyx.com/products/sms-api), [SIP](https://telnyx.com/products/sip-trunks), [AI](https://telnyx.com/ai-assistants), and [IoT](https://telnyx.com/products/iot-sim-card) — no Frankenstack required.
+## Telnyx API Endpoints Used
 
-- **Integrated platform** — [Voice](https://telnyx.com/products/voice-ai-agents), [SMS](https://telnyx.com/products/sms-api), [SIP trunking](https://telnyx.com/products/sip-trunks), [AI assistants](https://telnyx.com/ai-assistants), and [IoT SIM management](https://telnyx.com/products/iot-sim-card) under one roof. No stitching together multiple vendors.
-- **Global private network** — Calls and messages traverse the Telnyx-owned IP network for lower latency and higher reliability than the public internet.
-- **Developer-first** — SDKs for Python, Node.js, Go, Ruby, Java, and PHP. Comprehensive webhook event model. Sandbox environment for testing.
-- **Competitive pricing** — Pay-as-you-go with no minimums, contracts, or per-seat fees.
+- **Get SIM Card**: `GET /v2/sim_cards/{id}` — via `client.simCards.retrieve()` — [API reference](https://developers.telnyx.com/api-reference/sim-cards/get-sim-card)
+- **Activate SIM Card**: `POST /v2/sim_cards/{id}/actions/enable` — via `client.simCards.activate()` — [API reference](https://developers.telnyx.com/api-reference/sim-cards/enable-sim-card)
 
-## Prerequisites
+## Architecture
 
-- Node.js 14 or higher.
-- npm (Node package manager).
-- A Telnyx account with an active API key from the [Telnyx Portal](https://portal.telnyx.com).
-- At least one SIM card in your Telnyx account (in `ready` or `standby` status).
-- A code editor and terminal.
+```
+  HTTP Request
+        │
+        ▼
+  ┌──────────────────┐
+  │  Express server   │
+  │  (server.js)      │
+  └────────┬─────────┘
+           │  Telnyx Node SDK
+           ▼
+  ┌──────────────────┐
+  │  Telnyx IoT SIM   │
+  │  API              │
+  └────────┬─────────┘
+           │
+           └──► SIM retrieved / activated
+```
 
-## Quick Start
+## Environment Variables
 
-### Option 1: Local (recommended)
+Copy `.env.example` to `.env` and fill in:
+
+| Variable | Type | Example | Required | Description | Where to get it |
+|----------|------|---------|----------|-------------|-----------------|
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | — |
+
+## Setup
 
 ```bash
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
 cd telnyx-code-examples/activate-sim-card-nodejs
-cp .env.example .env
-# Edit .env with your Telnyx API key and phone number
+cp .env.example .env    # ← fill in your TELNYX_API_KEY
 npm install
-node server.js
+node server.js          # starts on http://localhost:5000 (PORT from .env)
 ```
 
-### Option 2: Manual
+The server logs the routes it exposes on startup.
 
-See the [Implementation Details](#implementation-details) section below for step-by-step instructions.
+## API Reference
 
-## Implementation Details
+### `GET /sim/:id`
 
-Create `app.js` and initialize the Telnyx client using the Node.js SDK pattern. Define a helper function to handle SIM activation with proper validation:
+Retrieve details for a specific SIM card.
 
-```javascript
-const express = require('express');
-const Telnyx = require('telnyx');
-const config = require('./config');
+```bash
+curl http://localhost:5000/sim/6b14e151-8493-4fa1-8664-1cc4e6d14158
+```
 
-const app = express();
-app.use(express.json());
+**Response:**
 
-// Initialize client with the SDK pattern
-const client = new Telnyx({ apiKey: config.apiKey });
-
-/**
- * Retrieve SIM card details by ID.
- * Returns a plain object (not SDK object) for JSON serialization.
- */
-async function getSimCard(simCardId) {
-  const response = await client.simCards.retrieve(simCardId);
-  
-  return {
-    id: response.data.id,
-    iccid: response.data.iccid,
-    status: response.data.status,
-    simCardGroupId: response.data.sim_card_group_id,
-    phoneNumber: response.data.phone_number || null,
-  };
+```json
+{
+  "id": "6b14e151-8493-4fa1-8664-1cc4e6d14158",
+  "iccid": "89310410106543789301",
+  "status": "disabled",
+  "simCardGroupId": "47a9c0fa-1d3b-4f2a-9e22-2c4e9a1b7d10",
+  "phoneNumber": "+13125550123"
 }
+```
 
-/**
- * Activate a SIM card by ID.
- * Returns activation response data as a plain object.
- */
-async function activateSimCard(simCardId) {
-  // Validate that the SIM ID is provided
-  if (!simCardId || typeof simCardId !== 'string') {
-    throw new Error('SIM card ID must be a non-empty string');
+### `POST /sim/:id/activate`
+
+Activate a SIM card by ID.
+
+```bash
+curl -X POST http://localhost:5000/sim/6b14e151-8493-4fa1-8664-1cc4e6d14158/activate
+```
+
+**Response:**
+
+```json
+{
+  "message": "SIM card activated successfully",
+  "sim": {
+    "id": "6b14e151-8493-4fa1-8664-1cc4e6d14158",
+    "iccid": "89310410106543789301",
+    "status": "enabled",
+    "simCardGroupId": "47a9c0fa-1d3b-4f2a-9e22-2c4e9a1b7d10",
+    "activatedAt": "2026-06-18T12:00:00.000Z"
   }
-
-  const response = await client.simCards.activate(simCardId);
-
-  return {
-    id: response.data.id,
-    iccid: response.data.iccid,
-    status: response.data.status,
-    simCardGroupId: response.data.sim_card_group_id,
-    activatedAt: response.data.activated_at || null,
-  };
 }
-
-module.exports = { app, client, getSimCard, activateSimCard };
 ```
 
-## Complete Code
+### `GET /health`
 
-See [`server.js`](./server.js) for the full implementation.
+Liveness probe.
+
+```bash
+curl http://localhost:5000/health
+```
+
+**Response:**
+
+```json
+{ "status": "ok" }
+```
 
 ## Troubleshooting
 
-| Issue | Problem | Solution |
-|-------|---------|----------|
-| Authentication Error (401) | The endpoint returns `{"error": "Invalid API key"}` with HTTP 401. | Verify your `TELNYX_API_KEY` in the `.env` file matches the key shown in the [Telnyx Portal](https://portal.telnyx.com). Ensure there are no trailing spaces or quotes. Restart the Node.js server after updating the `.env` file. The SDK reads environment variables at startup, so changes require a restart. |
-| SIM Card Not Found (404) | The API returns a 404 error when retrieving or activating a SIM card. | Confirm the SIM card ID is correct and exists in your Telnyx account. Check the [Telnyx Portal](https://portal.telnyx.com) under IoT → SIM Cards to verify the ID. Ensure the SIM is in a state that allows activation (typically `ready` or `standby` status). |
-| Rate Limit Error (429) | The endpoint returns `{"error": "Rate limit exceeded. Please slow down."}` with HTTP 429. | The Telnyx API enforces rate limits. Implement exponential backoff in your client code: wait 1 second, then 2 seconds, then 4 seconds between retries. For bulk SIM activation, use the SIM Card Group API to activate multiple SIMs in a single request instead of looping through individual activations. |
-| Network Error (503) | The endpoint returns `{"error": "Network error connecting to Telnyx"}` with HTTP 503. | Verify your internet connection and that the Telnyx API is reachable. Check if your firewall or proxy blocks outbound HTTPS connections to `api.telnyx.com`. Temporarily disable VPN or proxy software to test connectivity. If the issue persists, check the [Telnyx Status Page](https://status.telnyx.com) for service incidents. |
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| `{"error": "Invalid API key"}` (401) | `TELNYX_API_KEY` is missing or wrong. | Set a valid key in `.env` and restart the server. The SDK reads the key at startup. |
+| `{"error": "..."}` with a 404 status | The SIM card ID does not exist in your account. | Confirm the ID under IoT → SIM Cards in the [Telnyx Portal](https://portal.telnyx.com). |
+| `{"error": "SIM card ID must be a non-empty string"}` (400) | The `:id` path segment was empty or non-string. | Include a valid SIM card ID in the URL path. |
+| `{"error": "Rate limit exceeded. Please slow down."}` (429) | Too many requests to the Telnyx API. | Add exponential backoff between calls; batch activations where possible. |
+| `{"error": "Network error connecting to Telnyx"}` (503) | The server cannot reach `api.telnyx.com`. | Check connectivity, firewall, and the [Telnyx Status Page](https://status.telnyx.com). |
+| Connection refused on port 5000 | Server not running, or another process owns the port. | Run `node server.js`; confirm `PORT` and that the port is free. |
 
-## FAQ
+## Related Examples
 
-**Q: Do I need a Telnyx account to run this example?**
-
-Yes. Sign up at [portal.telnyx.com](https://portal.telnyx.com) to get an API key. Telnyx offers free trial credit for testing.
-
-**Q: Can I use this IoT example in production?**
-
-Yes. This example includes error handling, environment-based configuration, and a Dockerfile for containerized deployment. Review the security and scaling sections before deploying to production.
-
-**Q: What Node.js version do I need?**
-
-Node.js 18 or higher. Node.js 20 LTS is recommended.
-
-**Q: How is Telnyx different from Twilio?**
-
-Telnyx is an AI Communications Infrastructure platform with a private global network, integrated voice + messaging + AI + SIP + IoT under one API, and significantly lower pricing. No need to stitch together multiple vendors.
-
-**Q: Where do I get a Telnyx phone number?**
-
-Log into the [Telnyx Portal](https://portal.telnyx.com), navigate to Numbers > Search & Buy, and purchase a number with the capabilities you need (SMS, voice, or both).
+- [activate-sim-card-python](../activate-sim-card-python/) - Same example in Python
+- [activate-sim-card-go](../activate-sim-card-go/) - Same example in Go
+- [monitor-iot-data-usage-nodejs](../monitor-iot-data-usage-nodejs/) - Track SIM data usage in Node.js
+- [provision-esim-python](../provision-esim-python/) - Provision an eSIM
 
 ## Resources
 
 - [IoT SIM Get Started](https://developers.telnyx.com/docs/iot-sim/get-started)
-- [SIM Card API Reference](https://developers.telnyx.com/api-reference/sim-cards/get-all-sim-cards)
+- [SIM Card API Reference](https://developers.telnyx.com/api-reference/sim-cards/get-sim-card)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx IoT SIM Cards](https://telnyx.com/products/iot-sim-card)
 - [IoT Data Plans Pricing](https://telnyx.com/pricing/iot-data-plans)
-
-## Related Examples
-
-- [Monitor SIM Data Usage](/tutorials/iot/nodejs/data-usage-monitoring).
-- [Configure Custom APN Settings](/tutorials/iot/nodejs/apn-configuration).
-- [Handle SIM Status Change Webhooks](/tutorials/iot/nodejs/sim-status-webhook).

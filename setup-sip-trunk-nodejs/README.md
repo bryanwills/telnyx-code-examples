@@ -1,196 +1,158 @@
-# SIP Trunking Setup with Node.js and Express
+---
+name: setup-sip-trunk
+title: "Set Up a SIP Trunk"
+description: "Create, retrieve, and list credential-authenticated SIP connections using the Telnyx SIP Trunking API."
+language: nodejs
+framework: express
+telnyx_products: [SIP Trunking]
+channel: [voice]
+---
 
-## What Does This Example Do?
+# Set Up a SIP Trunk
 
-Build a production-ready Express application that manages SIP trunk connections using the Telnyx Node.js SDK. This tutorial demonstrates how to create SIP connections, configure authentication credentials, and retrieve connection details for integrating your PBX or SBC with Telnyx's SIP infrastructure. You'll learn the new client-based initialization pattern, proper error handling for telecom APIs, and secure credential management via environment variables.
+Create, retrieve, and list credential-authenticated SIP connections using the Telnyx SIP Trunking API.
 
-## Who Is This For?
+## Why Telnyx
 
-- **Node.js developers** building sip features with Express.
-- **Backend engineers** integrating telephony or messaging into existing applications.
-- **DevOps teams** looking for containerized, production-ready telecom examples.
-- **Startups and enterprises** replacing legacy telecom providers with a modern API-first platform.
+Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. SIP connections traverse the Telnyx-owned IP backbone instead of the public internet, giving you lower latency, higher call quality, and credential-based authentication you provision entirely through the API.
 
-## Why Telnyx?
+## Telnyx API Endpoints Used
 
-Telnyx is an **AI Communications Infrastructure** platform that gives developers a single API for [voice](https://telnyx.com/products/voice-ai-agents), [messaging](https://telnyx.com/products/sms-api), [SIP](https://telnyx.com/products/sip-trunks), [AI](https://telnyx.com/ai-assistants), and [IoT](https://telnyx.com/products/iot-sim-card) — no Frankenstack required.
+- **Create SIP Connection**: `POST /v2/sip_connections` -- [API reference](https://developers.telnyx.com/api/sip-trunking/create-credential-connection)
+- **Retrieve SIP Connection**: `GET /v2/sip_connections/{id}` -- [API reference](https://developers.telnyx.com/api/sip-trunking/retrieve-credential-connection)
+- **List SIP Connections**: `GET /v2/sip_connections` -- [API reference](https://developers.telnyx.com/api/sip-trunking/list-credential-connections)
 
-- **Integrated platform** — [Voice](https://telnyx.com/products/voice-ai-agents), [SMS](https://telnyx.com/products/sms-api), [SIP trunking](https://telnyx.com/products/sip-trunks), [AI assistants](https://telnyx.com/ai-assistants), and [IoT SIM management](https://telnyx.com/products/iot-sim-card) under one roof. No stitching together multiple vendors.
-- **Global private network** — Calls and messages traverse the Telnyx-owned IP network for lower latency and higher reliability than the public internet.
-- **Developer-first** — SDKs for Python, Node.js, Go, Ruby, Java, and PHP. Comprehensive webhook event model. Sandbox environment for testing.
-- **Competitive pricing** — Pay-as-you-go with no minimums, contracts, or per-seat fees.
+## Architecture
 
-## Prerequisites
+```
+  API Request
+        │
+        ▼
+  ┌──────────────────────┐
+  │  Express server.js    │
+  │  /sip/connections      │
+  └──────────┬───────────┘
+             │ telnyx SDK
+             ▼
+  ┌──────────────────────┐
+  │  Telnyx SIP Trunking  │
+  │  sip_connections       │
+  └──────────────────────┘
+```
 
-- Node.js 14 or higher.
-- npm (Node package manager).
-- A Telnyx account with an active API key from the [Telnyx Portal](https://portal.telnyx.com).
-- A publicly accessible domain or IP address for your SIP endpoint (for production deployments).
-- Basic understanding of SIP concepts (SIP proxy, credentials, endpoints).
+## Environment Variables
 
-## Quick Start
+Copy `.env.example` to `.env` and fill in:
 
-### Option 1: Local (recommended)
+| Variable | Type | Example | Required | Description | Where to get it |
+|----------|------|---------|----------|-------------|-----------------|
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | — |
+
+## Setup
 
 ```bash
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
 cd telnyx-code-examples/setup-sip-trunk-nodejs
-cp .env.example .env
-# Edit .env with your Telnyx API key and phone number
+cp .env.example .env    # ← fill in your credentials
 npm install
-node server.js
+node server.js          # starts on http://localhost:5000
 ```
 
-### Option 2: Manual
+With the `PORT=5000` value from `.env.example`, the server listens on `http://localhost:5000`. If you remove `PORT`, it falls back to `3000`.
 
-See the [Implementation Details](#implementation-details) section below for step-by-step instructions.
+## API Reference
 
-## Implementation Details
+### `POST /sip/connections`
 
-Create `app.js` and initialize the Telnyx client using the new pattern. Define helper functions to manage SIP connections with proper validation and error handling:
+Create a new credential-authenticated SIP connection.
 
-```javascript
-const express = require("express");
-const Telnyx = require("telnyx");
-require("dotenv").config();
+```bash
+curl -X POST http://localhost:5000/sip/connections \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "office-pbx",
+    "username": "pbxuser01",
+    "password": "s3cretp4ss",
+    "endpoint": "sip.example.com:5060"
+  }'
+```
 
-const app = express();
-app.use(express.json());
+**Response (`201 Created`):**
 
-// Initialize client with the new SDK pattern
-const client = new Telnyx({ apiKey: process.env.TELNYX_API_KEY });
-
-/**
- * Create a new SIP connection with credential-based authentication.
- * Returns JSON-serializable connection data.
- */
-async function createSipConnection(name, username, password, endpoint) {
-  // Validate required fields
-  if (!name || !username || !password || !endpoint) {
-    throw new Error("Missing required fields: name, username, password, endpoint");
-  }
-
-  // Validate endpoint format (basic check for host:port or host)
-  if (!endpoint.includes(".") && !endpoint.includes(":")) {
-    throw new Error("Endpoint must be a valid hostname or IP address with optional port");
-  }
-
-  // Parse endpoint to extract host and port
-  const [host, port] = endpoint.split(":");
-  const sipPort = port ? parseInt(port, 10) : 5060;
-
-  // Create SIP connection via Telnyx API
-  const response = await client.sipConnections.create({
-    connection_name: name,
-    outbound_voice_profile_id: null, // Will be assigned separately if needed
-    inbound: {
-      sip_subdomain: null, // Use default Telnyx subdomain
-    },
-    outbound: {
-      outbound_voice_profile_id: null,
-    },
-    credentials: {
-      authentication: {
-        authentication_type: "credential",
-        username: username,
-        password: password,
-      },
-    },
-    active: true,
-  });
-
-  // Extract serializable data — SDK objects are NOT JSON-serializable
-  return {
-    id: response.data.id,
-    name: response.data.connection_name,
-    username: username,
-    status: response.data.active ? "active" : "inactive",
-    created_at: response.data.created_at,
-  };
-}
-
-/**
- * Retrieve a SIP connection by ID.
- * Returns JSON-serializable connection data.
- */
-async function getSipConnection(connectionId) {
-  if (!connectionId) {
-    throw new Error("Connection ID is required");
-  }
-
-  const response = await client.sipConnections.retrieve(connectionId);
-
-  return {
-    id: response.data.id,
-    name: response.data.connection_name,
-    status: response.data.active ? "active" : "inactive",
-    created_at: response.data.created_at,
-    updated_at: response.data.updated_at,
-  };
-}
-
-/**
- * List all SIP connections.
- * Returns JSON-serializable list of connections.
- */
-async function listSipConnections() {
-  const response = await client.sipConnections.list();
-
-  return response.data.map((conn) => ({
-    id: conn.id,
-    name: conn.connection_name,
-    status: conn.active ? "active" : "inactive",
-    created_at: conn.created_at,
-  }));
+```json
+{
+  "id": "1234567890",
+  "name": "office-pbx",
+  "username": "pbxuser01",
+  "status": "active",
+  "created_at": "2026-06-18T12:00:00.000Z"
 }
 ```
 
-## Complete Code
+### `GET /sip/connections/:id`
 
-See [`server.js`](./server.js) for the full implementation.
+Retrieve a single SIP connection by its ID.
+
+```bash
+curl http://localhost:5000/sip/connections/1234567890
+```
+
+**Response (`200 OK`):**
+
+```json
+{
+  "id": "1234567890",
+  "name": "office-pbx",
+  "status": "active",
+  "created_at": "2026-06-18T12:00:00.000Z",
+  "updated_at": "2026-06-18T12:05:00.000Z"
+}
+```
+
+### `GET /sip/connections`
+
+List all SIP connections on the account.
+
+```bash
+curl http://localhost:5000/sip/connections
+```
+
+**Response (`200 OK`):**
+
+```json
+[
+  {
+    "id": "1234567890",
+    "name": "office-pbx",
+    "status": "active",
+    "created_at": "2026-06-18T12:00:00.000Z"
+  }
+]
+```
 
 ## Troubleshooting
 
-| Issue | Problem | Solution |
-|-------|---------|----------|
-| Authentication Error (401) | The endpoint returns `{"error": "Invalid API key"}` with HTTP 401. | Verify your `TELNYX_API_KEY` in the `.env` file matches the key shown in the [Telnyx Portal](https://portal.telnyx.com). Ensure there are no trailing spaces or quotes. If the key was regenerated recently, update your environment file and restart the Express server. |
-| Invalid Endpoint Format | You receive a 400 error stating "Endpoint must be a valid hostname or IP address with optional port". | Ensure your SIP endpoint is formatted correctly: use a fully qualified domain name (e.g., `sip.example.com`) or IP address with optional port (e.g., `192.168.1.100:5060`). The endpoint must contain a dot (for domain) or colon (for port) to pass validation. |
-| Environment Variable Not Set | The application fails to initialize or returns `undefined` for API key. | Confirm your `.env` file exists in the same directory as `app.js` and contains `TELNYX_API_KEY=your_key_here`. Ensure the file is named exactly `.env` (not `.env.txt` or `env`). The `require("dotenv").config()` call must execute before any API calls—verify this import order at the top of your file. |
-| Connection Creation Fails with 400 | The API returns a 400 error with a message about invalid parameters. | Verify all required fields are present in your POST request: `name`, `username`, `password`, and `endpoint`. Ensure the `username` and `password` are valid SIP credentials (alphanumeric, no special characters). Check that your endpoint is reachable and supports SIP on the specified port (default 5060). |
-| Rate Limit Error (429) | The endpoint returns `{"error": "Rate limit exceeded. Please slow down."}` with HTTP 429. | You have exceeded the Telnyx API rate limit. Implement exponential backoff in your client code: wait 1 second, then 2 seconds, then 4 seconds between retries. Check the [Telnyx API documentation](https://developers.telnyx.com/docs/api) for current rate limits and contact support if you need higher limits. |
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| `Connection refused` on port 5000 | Server isn't running, or `PORT` differs from what you're curling. | Run `node server.js` and confirm the startup log shows the port; curl that same port. |
+| `401 {"error": "Invalid API key"}` | `TELNYX_API_KEY` is missing, wrong, or has trailing whitespace/quotes. | Generate a fresh key at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys), paste it into `.env`, and restart the server. |
+| `400 Missing required fields` | The POST body is missing `name`, `username`, `password`, or `endpoint`. | Send all four fields as JSON with a `Content-Type: application/json` header. |
+| `400 Endpoint must be a valid hostname or IP address` | The `endpoint` value contains no `.` or `:`. | Use a hostname (`sip.example.com`) or IP with optional port (`192.168.1.10:5060`). |
+| `429 Rate limit exceeded` | Too many API requests in a short window. | Back off and retry with exponential delays; see [API limits](https://developers.telnyx.com/docs/api). |
+| `503 Network error connecting to Telnyx` | The server cannot reach the Telnyx API. | Check outbound network/DNS and retry. |
 
-## FAQ
+## Related Examples
 
-**Q: Do I need a Telnyx account to run this example?**
-
-Yes. Sign up at [portal.telnyx.com](https://portal.telnyx.com) to get an API key. Telnyx offers free trial credit for testing.
-
-**Q: Can I use this SIP example in production?**
-
-Yes. This example includes error handling, environment-based configuration, and a Dockerfile for containerized deployment. Review the security and scaling sections before deploying to production.
-
-**Q: What Node.js version do I need?**
-
-Node.js 18 or higher. Node.js 20 LTS is recommended.
-
-**Q: How is Telnyx different from Twilio?**
-
-Telnyx is an AI Communications Infrastructure platform with a private global network, integrated voice + messaging + AI + SIP + IoT under one API, and significantly lower pricing. No need to stitch together multiple vendors.
-
-**Q: Where do I get a Telnyx phone number?**
-
-Log into the [Telnyx Portal](https://portal.telnyx.com), navigate to Numbers > Search & Buy, and purchase a number with the capabilities you need (SMS, voice, or both).
+- [setup-sip-trunk-python](../setup-sip-trunk-python/) - Same SIP trunk setup in Python
+- [setup-sip-trunk-go](../setup-sip-trunk-go/) - Same SIP trunk setup in Go
+- [inbound-sip-routing-nodejs](../inbound-sip-routing-nodejs/) - Route inbound SIP calls in Node.js
+- [configure-sip-codecs-python](../configure-sip-codecs-python/) - Configure codecs on a SIP connection
 
 ## Resources
 
 - [SIP Trunking Get Started](https://developers.telnyx.com/docs/voice/sip-trunking/get-started)
-- [SIP Configuration Guides](https://developers.telnyx.com/docs/voice/sip-trunking/configuration-guides)
+- [SIP Trunking API Reference](https://developers.telnyx.com/api/sip-trunking/create-credential-connection)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx SIP Trunks](https://telnyx.com/products/sip-trunks)
-- [SIP Trunking Pricing](https://telnyx.com/pricing/elastic-sip)
-
-## Related Examples
-
-- [Configure SIP Registration and Authentication](/tutorials/sip/nodejs/sip-authentication).
-- [Set Up Inbound SIP Call Routing](/tutorials/sip/nodejs/inbound-sip-routing).
-- [Implement SIP Failover and Load Balancing](/tutorials/sip/nodejs/failover-routing).
+- [Elastic SIP Trunking Pricing](https://telnyx.com/pricing/elastic-sip)

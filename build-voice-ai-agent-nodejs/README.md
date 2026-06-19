@@ -1,112 +1,164 @@
-# Build a Voice AI Agent with Node.js
+---
+name: build-voice-ai-agent
+title: "Build a Voice AI Agent"
+description: "Build a complete voice AI agent with Telnyx — answer inbound calls, transcribe speech, generate replies with Telnyx Inference, and speak them back via Call Control."
+language: nodejs
+framework: express
+telnyx_products: [Voice, Inference]
+channel: [voice]
+---
 
-## What Does This Example Do?
+# Build a Voice AI Agent
 
-Build a complete voice AI agent that answers phone calls, understands natural speech, generates intelligent responses using Telnyx Inference, and speaks them back to the caller. The agent maintains conversation context, handles silence gracefully, and can transfer callers to a human. All on a single platform.
+Build a complete voice AI agent with Telnyx — answer inbound calls, transcribe speech, generate replies with Telnyx Inference, and speak them back via Call Control.
 
-## Who Is This For?
+## Why Telnyx
 
-- AI developers building voice agents, virtual receptionists, or phone bots.
-- Backend engineers integrating real-time voice AI into production applications.
-- Startups replacing IVR trees with conversational AI agents.
+Telnyx is an **AI Communications Infrastructure** platform — voice, AI inference, speech processing, and telephony run on the same private, global network. Inference is co-located with the telephony switch, so the speech-to-LLM-to-speech loop avoids the 30-80ms vendor boundaries you hit when stitching together separate STT, LLM, and TTS providers, and you get one bill and one SLA for the whole stack.
 
-## Why Telnyx?
+## Telnyx API Endpoints Used
 
-Telnyx is an **AI Communications Infrastructure** platform. Voice, AI inference, speech processing, and telephony run on the same private network. No Frankenstack.
+- **Chat Completions (Inference)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/inference-embedding/post-chat-completions)
+- **Answer Call**: `POST /v2/calls/{call_control_id}/actions/answer` — [API reference](https://developers.telnyx.com/api/call-control/answer-call)
+- **Speak Text (TTS)**: `POST /v2/calls/{call_control_id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak-call)
+- **Gather Using Speech**: `POST /v2/calls/{call_control_id}/actions/gather` — [API reference](https://developers.telnyx.com/api/call-control/gather-call)
 
-- Single platform: Inference (LLM), telephony (call control), and speech processing (STT/TTS) in one API.
-- Sub-200ms voice AI: Inference co-located with the telephony switch. Every vendor boundary adds 30-80ms. Telnyx eliminates the boundaries.
-- Global private network: Calls traverse Telnyx-owned infrastructure in 60+ countries.
-- One bill, one SLA: When something breaks, one vendor owns the fix.
-
-## Prerequisites
-
-- Node.js 18 or higher.
-- A Telnyx account with an active API key from the [Telnyx Portal](https://portal.telnyx.com).
-- A Telnyx phone number enabled for inbound voice.
-- A Call Control Application configured with your webhook URL.
-- A publicly accessible URL for webhooks (use [ngrok](https://ngrok.com) for local development).
-
-## Quick Start
-
-```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/build-voice-ai-agent-nodejs
-cp .env.example .env
-# Edit .env with your Telnyx API key
-npm install
-node server.js
-```
-
-Expose with ngrok:
-
-```bash
-ngrok http 5000
-```
-
-Set the ngrok URL as your webhook, then call your Telnyx number.
-
-## Implementation Details
-
-### Architecture
+## Architecture
 
 ```
-Caller -> Telnyx Phone Number -> Call Control Webhook -> Your Express App
-                                                            |
-                                                    Speech-to-Text (gather)
-                                                            |
-                                                    Telnyx Inference API (LLM)
-                                                            |
-                                                    Text-to-Speech (speak)
-                                                            |
-                                                    Caller hears response
+  Caller
+    │
+    ▼
+  ┌──────────────────────┐
+  │ Telnyx Phone Number  │
+  └──────────┬───────────┘
+             │ Call Control webhooks
+             ▼
+  ┌──────────────────────┐
+  │  Express App         │
+  │  /webhooks/voice     │
+  └──────────┬───────────┘
+             │
+   ┌─────────┴───────────────────────────┐
+   │                                       │
+   ▼                                       ▼
+  speak (TTS) ──► gather (STT) ──► Telnyx Inference (LLM)
+   ▲                                       │
+   └───────────── reply spoken to caller ──┘
 ```
 
 ### Call lifecycle
 
-1. `call.initiated` - Answer the inbound call
-2. `call.answered` - Greet the caller with TTS
-3. `call.speak.ended` - Start listening for speech (gather)
-4. `call.gather.ended` - Process speech with LLM, respond with TTS, loop back to step 3
+1. `call.initiated` — answer the inbound call
+2. `call.answered` — greet the caller with TTS (`speak`)
+3. `call.speak.ended` — start listening for speech (`gather`)
+4. `call.gather.ended` — send transcript to Telnyx Inference, speak the reply, loop back to step 3
+5. `call.hangup` — clear the conversation history for that call
 
-## Complete Code
+## Environment Variables
 
-See [server.js](./server.js) for the full implementation with error handling, conversation management, and health checks.
+Copy `.env.example` to `.env` and fill in:
+
+| Variable | Type | Example | Required | Description | Where to get it |
+|----------|------|---------|----------|-------------|-----------------|
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key (needs Inference + Call Control access) | [Portal](https://portal.telnyx.com/api-keys) |
+| `AI_MODEL` | `string` | `meta-llama/Llama-3.3-70B-Instruct` | no | Inference model used for replies | [Inference docs](https://developers.telnyx.com/docs/inference) |
+| `SYSTEM_PROMPT` | `string` | `You are a helpful voice AI agent...` | no | System prompt that sets the agent's personality | — |
+| `TRANSFER_NUMBER` | `string` | `+12125551234` | no | Phone number for human transfer (E.164) | — |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on | — |
+
+## Setup
+
+```bash
+git clone https://github.com/team-telnyx/telnyx-code-examples.git
+cd telnyx-code-examples/build-voice-ai-agent-nodejs
+cp .env.example .env    # ← fill in your credentials
+npm install
+node server.js          # starts on http://localhost:5000
+```
+
+### Webhook Configuration
+
+1. Expose your local server:
+
+   ```bash
+   ngrok http 5000
+   ```
+
+2. Copy the HTTPS URL and configure in the [Telnyx Portal](https://portal.telnyx.com):
+
+   - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
+
+3. Assign your inbound voice number to that Call Control Application, then call the number.
+
+## API Reference
+
+### `POST /webhooks/voice`
+
+Receives Call Control webhook events from Telnyx and drives the call: answer, greet, listen, respond, and clean up. Telnyx calls this endpoint — you do not call it directly — but you can simulate an event to verify routing:
+
+```bash
+curl -X POST http://localhost:5000/webhooks/voice \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": {
+      "event_type": "call.gather.ended",
+      "call_control_id": "v3:abc123",
+      "speech": { "result": "What are your hours?" }
+    }
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "status": "responding",
+  "response": "We're open 9am to 5pm, Monday through Friday."
+}
+```
+
+The `status` field varies by `event_type`: `answering`, `greeting`, `listening`, `reprompting`, `responding`, `call_ended`, or `event_received`.
+
+### `GET /health`
+
+Liveness check that also reports the number of active calls being tracked.
+
+```bash
+curl http://localhost:5000/health
+```
+
+**Response:**
+
+```json
+{
+  "status": "ok",
+  "active_calls": 0
+}
+```
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| Agent does not answer | Verify webhook URL in Telnyx Portal. Check ngrok is active. |
-| No AI response | Check TELNYX_API_KEY has inference permissions. Verify model name. |
-| Long pauses | Normal on first turn. Ensure webhook server is near Telnyx infrastructure. |
-| Speech not recognized | Increase end_silence_timeout_secs. Check language_code. |
-
-## FAQ
-
-**Q: How much does it cost?**
-You pay for the call (per-minute), inference (per-token), and phone number (monthly). No per-seat fees or minimums. A typical 3-minute AI call costs under $0.10 total.
-
-**Q: Which AI models can I use?**
-Llama 3.3 70B, Qwen, Kimi K2.5, GPT-5, and more. Change the AI_MODEL environment variable.
-
-**Q: How is this different from Vapi or Retell?**
-Vapi and Retell stitch together third-party STT, LLM, and TTS providers. Every vendor boundary adds 30-80ms of latency. Telnyx runs inference, speech processing, and telephony on the same owned infrastructure.
-
-**Q: Can I use Telnyx AI Assistants instead?**
-Yes. AI Assistants provide a managed path where you configure the agent in the Portal. This example uses raw Call Control + Inference for full customization.
-
-## Resources
-
-- [Voice API Overview](https://developers.telnyx.com/docs/voice)
-- [Call Control Commands](https://developers.telnyx.com/docs/voice/programmable-voice/voice-api-commands-and-resources)
-- [Telnyx Inference API](https://developers.telnyx.com/docs/inference)
-- [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
-- [Voice AI Agents](https://telnyx.com/products/voice-ai-agents)
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Agent does not answer | Webhook URL not set or ngrok tunnel down | Set the Call Control Application webhook to `https://<id>.ngrok.io/webhooks/voice` and confirm ngrok is running |
+| `401 Unauthorized` | Invalid `TELNYX_API_KEY` | Generate a new key at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) |
+| No AI response / `Inference API error` | Key lacks Inference access or model name is wrong | Confirm the key has Inference permissions and `AI_MODEL` is a valid model id |
+| Speech not recognized | Caller silence shorter than the gather timeout, or wrong language | Increase `end_silence_timeout_secs` in the `gather` call or check `language_code` |
+| Connection refused on port 5000 | App isn't running or port in use | Run `node server.js` and ensure no other process uses port 5000 |
 
 ## Related Examples
 
-- [Route Phone Calls to AI Agent with Node.js](../route-phone-calls-to-ai-agent-nodejs/)
-- [Run LLM Inference with Node.js](../run-llm-inference-nodejs/)
-- [Create an AI Assistant with Node.js](../create-ai-assistant-nodejs/)
-- [Build a Voice AI Agent with Python](../build-voice-ai-agent-python/)
+- [build-voice-ai-agent-python](../build-voice-ai-agent-python/) — same agent in Python
+- [route-phone-calls-to-ai-agent-nodejs](../route-phone-calls-to-ai-agent-nodejs/) — route inbound calls to an AI agent
+- [run-llm-inference-nodejs](../run-llm-inference-nodejs/) — call Telnyx Inference directly
+- [create-ai-assistant-nodejs](../create-ai-assistant-nodejs/) — managed AI Assistant alternative
+
+## Resources
+
+- [Voice API Guide](https://developers.telnyx.com/docs/voice)
+- [Telnyx Inference Guide](https://developers.telnyx.com/docs/inference)
+- [Call Control API Reference](https://developers.telnyx.com/api/call-control/answer-call)
+- [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
+- [Voice AI Agents](https://telnyx.com/products/voice-ai-agents)
+- [Pricing](https://telnyx.com/pricing/call-control)

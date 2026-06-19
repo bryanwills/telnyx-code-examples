@@ -1,178 +1,188 @@
-# Text To Speech with Node.js and Express
+---
+name: text-to-speech-phone-call
+title: "Text-to-Speech Phone Call"
+description: "Initiate an outbound voice call and play a text-to-speech message on answer using the Telnyx Call Control API."
+language: nodejs
+framework: express
+telnyx_products: [Voice]
+channel: [voice]
+---
 
-## What Does This Example Do?
+# Text-to-Speech Phone Call
 
-Build a production-ready Express endpoint that plays text-to-speech (TTS) messages during active voice calls using the Telnyx Voice API. This tutorial demonstrates the new client-based initialization pattern, proper handling of call control commands, webhook event processing, and secure credential management via environment variables.
+Initiate an outbound voice call and play a text-to-speech (TTS) message on answer using the Telnyx Call Control API.
 
-## Who Is This For?
+## Why Telnyx
 
-- **Node.js developers** building voice features with Express.
-- **Backend engineers** integrating telephony or messaging into existing applications.
-- **DevOps teams** looking for containerized, production-ready telecom examples.
-- **Startups and enterprises** replacing legacy telecom providers with a modern API-first platform.
+Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. Voice calls traverse the Telnyx-owned IP backbone for lower latency and higher reliability, with Call Control commands like TTS playback exposed through a single REST API and webhook event model.
 
-## Why Telnyx?
+## Telnyx API Endpoints Used
 
-Telnyx is an **AI Communications Infrastructure** platform that gives developers a single API for [voice](https://telnyx.com/products/voice-ai-agents), [messaging](https://telnyx.com/products/sms-api), [SIP](https://telnyx.com/products/sip-trunks), [AI](https://telnyx.com/ai-assistants), and [IoT](https://telnyx.com/products/iot-sim-card) — no Frankenstack required.
+- **Dial (initiate call)**: `POST /v2/calls` — via `client.calls.dial()` — [API reference](https://developers.telnyx.com/api-reference/call-commands/dial)
+- **Speak text (TTS)**: `POST /v2/calls/{call_control_id}/actions/speak` — via `client.calls.actions.speak()` — [API reference](https://developers.telnyx.com/api-reference/call-commands/speak-text)
 
-- **Integrated platform** — [Voice](https://telnyx.com/products/voice-ai-agents), [SMS](https://telnyx.com/products/sms-api), [SIP trunking](https://telnyx.com/products/sip-trunks), [AI assistants](https://telnyx.com/ai-assistants), and [IoT SIM management](https://telnyx.com/products/iot-sim-card) under one roof. No stitching together multiple vendors.
-- **Global private network** — Calls and messages traverse the Telnyx-owned IP network for lower latency and higher reliability than the public internet.
-- **Developer-first** — SDKs for Python, Node.js, Go, Ruby, Java, and PHP. Comprehensive webhook event model. Sandbox environment for testing.
-- **Competitive pricing** — Pay-as-you-go with no minimums, contracts, or per-seat fees.
+## Architecture
 
-## Prerequisites
+```
+  API Request (POST /calls/initiate)
+        │
+        ▼
+  ┌──────────────────────┐
+  │ Express server.js     │
+  │  client.calls.dial()  │──────► Telnyx Voice (outbound call)
+  └──────────┬───────────┘
+             │
+  Telnyx ────┘  webhook: call.answered
+   POST /webhooks/call
+             │
+             ▼
+  client.calls.actions.speak() ──► TTS audio played on the call
+```
 
-- Node.js 14 or higher.
-- A Telnyx account with an active API key from the [Telnyx Portal](https://portal.telnyx.com).
-- A Telnyx phone number enabled for outbound calls.
-- A Call Control Application configured in the Telnyx Portal with a connection ID.
-- npm (Node package manager).
-- A publicly accessible URL for receiving webhooks (ngrok or similar for local development).
+## Environment Variables
 
-## Quick Start
+Copy `.env.example` to `.env` and fill in:
 
-### Option 1: Local (recommended)
+| Variable | Type | Example | Required | Description | Where to get it |
+|----------|------|---------|----------|-------------|-----------------|
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number used as caller ID (E.164) | [My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
+| `TELNYX_CONNECTION_ID` | `string` | `your_connection_id_here` | **yes** | Call Control App connection ID | [Call Control Apps](https://portal.telnyx.com/call-control/applications) |
+| `PORT` | `string` | `5000` | no | Port the server listens on (defaults to `3000`) | — |
+| `WEBHOOK_URL` | `string` | `https://your-domain.com/webhook` | no | Public webhook URL logged on startup | — |
+
+## Setup
 
 ```bash
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
 cd telnyx-code-examples/text-to-speech-phone-call-nodejs
-cp .env.example .env
-# Edit .env with your Telnyx API key and phone number
+cp .env.example .env    # ← fill in your credentials
 npm install
-node server.js
+node server.js          # starts on http://localhost:5000 (PORT) or :3000 by default
 ```
 
-### Option 2: Manual
+### Webhook Configuration
 
-See the [Implementation Details](#implementation-details) section below for step-by-step instructions.
+1. Expose your local server:
 
-## Implementation Details
+   ```bash
+   ngrok http 5000
+   ```
 
-Create `app.js` and initialize the Telnyx client using the new pattern. Define helper functions to handle call initiation and TTS playback with proper validation:
+2. Copy the HTTPS URL and configure it in the [Telnyx Portal](https://portal.telnyx.com):
 
-```javascript
-const express = require("express");
-const bodyParser = require("body-parser");
-const Telnyx = require("telnyx");
-require("dotenv").config();
+   - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/call`
 
-const app = express();
-app.use(bodyParser.json());
+When a `call.answered` event arrives at `/webhooks/call`, the server automatically plays a TTS greeting on the call.
 
-// Initialize client with the new SDK pattern
-const client = new Telnyx({ apiKey: process.env.TELNYX_API_KEY });
+## API Reference
 
-/**
- * Initiate an outbound call and prepare for TTS playback.
- * Returns call_control_id for subsequent control actions.
- */
-async function initiateCall(toNumber) {
-  const fromNumber = process.env.TELNYX_PHONE_NUMBER;
-  const connectionId = process.env.TELNYX_CONNECTION_ID;
+### `POST /calls/initiate`
 
-  if (!fromNumber) {
-    throw new Error("TELNYX_PHONE_NUMBER environment variable not set");
-  }
-  if (!connectionId) {
-    throw new Error("TELNYX_CONNECTION_ID environment variable not set");
-  }
+Initiates an outbound call from your Telnyx number and returns the `call_control_id`.
 
-  // Validate E.164 format to prevent API errors
-  if (!toNumber.startsWith("+")) {
-    throw new Error(
-      "Phone number must be in E.164 format (e.g., +15551234567)"
-    );
-  }
-
-  // Initiate the call using client.calls.dial()
-  const response = await client.calls.dial({
-    from_: fromNumber,
-    to: toNumber,
-    connection_id: connectionId,
-  });
-
-  // Extract serializable data — SDK objects are NOT JSON-serializable
-  return {
-    call_control_id: response.data.call_control_id,
-    from: fromNumber,
-    to: toNumber,
-  };
-}
-
-/**
- * Play text-to-speech message on an active call.
- * Requires call_control_id from an initiated or answered call.
- */
-async function playTTS(callControlId, message, language = "en-US") {
-  if (!callControlId) {
-    throw new Error("call_control_id is required to play TTS");
-  }
-
-  // Use client.calls.actions.speak() to play TTS
-  const response = await client.calls.actions.speak(callControlId, {
-    payload: message,
-    language: language,
-    voice: "female",
-  });
-
-  // Extract serializable data
-  return {
-    call_control_id: response.data.call_control_id,
-    status: response.data.status,
-  };
-}
-
-module.exports = { initiateCall, playTTS, client };
+```bash
+curl -X POST http://localhost:5000/calls/initiate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+12125551234",
+    "message": "Hello from Telnyx!"
+  }'
 ```
 
-## Complete Code
+**Response:**
 
-See [`server.js`](./server.js) for the full implementation.
+```json
+{
+  "call_control_id": "v2:abc123...",
+  "from": "+15551234567",
+  "to": "+12125551234"
+}
+```
+
+### `POST /calls/:callControlId/speak`
+
+Plays a text-to-speech message on an active call. Pass the `call_control_id` in the path.
+
+```bash
+curl -X POST http://localhost:5000/calls/v2:abc123.../speak \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Your appointment is confirmed.",
+    "language": "en-US"
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "call_control_id": "v2:abc123...",
+  "status": "ok"
+}
+```
+
+### `POST /webhooks/call`
+
+Receives Call Control events from Telnyx. On `call.answered` it auto-plays a TTS greeting; on `call.hangup` it logs the end of the call. Always returns `200` to acknowledge receipt.
+
+```bash
+curl -X POST http://localhost:5000/webhooks/call \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": {
+      "event_type": "call.answered",
+      "call_control_id": "v2:abc123..."
+    }
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "status": "received"
+}
+```
+
+### `GET /health`
+
+Health check for monitoring.
+
+```bash
+curl http://localhost:5000/health
+```
+
+**Response:**
+
+```json
+{
+  "status": "ok"
+}
+```
 
 ## Troubleshooting
 
-| Issue | Problem | Solution |
-|-------|---------|----------|
-| Authentication Error (401) | The endpoint returns `{"error": "Invalid API key"}` with HTTP 401. | Verify your `TELNYX_API_KEY` in the `.env` file matches the key shown in the [Telnyx Portal](https://portal.telnyx.com). Ensure there are no trailing spaces or quotes. If the key was regenerated recently, update your environment file and restart the Node.js server. |
-| Invalid Phone Number Format | You receive a 400 error stating "Phone number must be in E.164 format" or a Telnyx API error about invalid destination. | Ensure all phone numbers use E.164 format: start with `+`, followed by country code and number without spaces or dashes. Example: `+15551234567` (US) or `+447700900123` (UK). Update your test curl command to use properly formatted numbers. |
-| Connection ID Not Set | The application raises `Error: TELNYX_CONNECTION_ID environment variable not set` on the first call initiation. | Confirm your `.env` file exists in the same directory as `app.js` and contains the `TELNYX_CONNECTION_ID` variable. Retrieve your connection ID from the [Telnyx Portal](https://portal.telnyx.com) under Call Control Applications. Ensure the file is named exactly `.env` (not `.env.txt` or `env`). Restart the server after updating. |
-| Webhook Not Receiving Events | The `/webhooks/call` endpoint is not being triggered when calls are answered. | Verify that the `WEBHOOK_URL` in your `.env` file is publicly accessible and matches the webhook URL configured in your Call Control Application settings in the Telnyx Portal. Use ngrok (`ngrok http 3000`) for local development and update the webhook URL to the ngrok-provided domain. Ensure your firewall allows inbound HTTPS traffic on port 443. |
-| TTS Not Playing on Call | The call connects but no audio is heard, or the `/calls/:callControlId/speak` endpoint returns an error. | Confirm the `call_control_id` is correct and the call is in an active state (not on hold or already ended). Verify the `message` parameter is not empty and contains valid text. Check that your Telnyx account has TTS enabled. Review server logs for detailed error messages from the Telnyx API. |
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| `Invalid API key` (401) | `TELNYX_API_KEY` is wrong or revoked | Generate a new key at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) and update `.env`, then restart the server. |
+| `TELNYX_CONNECTION_ID environment variable not set` | No connection ID configured | Add `TELNYX_CONNECTION_ID` to `.env` from your [Call Control Application](https://portal.telnyx.com/call-control/applications). |
+| `Phone number must be in E.164 format` (400) | `to` or `from` number not in E.164 | Use the `+<countrycode><number>` format, e.g. `+15551234567`. |
+| Webhook never fires | Call Control App webhook URL not set or not public | Point the app's Webhook URL to `https://<id>.ngrok.io/webhooks/call`. |
+| Call connects but no audio | TTS not played / call not active | Confirm the `call_control_id` is current and the `message` is non-empty; check server logs for Telnyx API errors. |
 
-## FAQ
+## Related Examples
 
-**Q: Do I need a Telnyx account to run this example?**
-
-Yes. Sign up at [portal.telnyx.com](https://portal.telnyx.com) to get an API key. Telnyx offers free trial credit for testing.
-
-**Q: Can I use this Voice example in production?**
-
-Yes. This example includes error handling, environment-based configuration, and a Dockerfile for containerized deployment. Review the security and scaling sections before deploying to production.
-
-**Q: What Node.js version do I need?**
-
-Node.js 18 or higher. Node.js 20 LTS is recommended.
-
-**Q: How is Telnyx different from Twilio?**
-
-Telnyx is an AI Communications Infrastructure platform with a private global network, integrated voice + messaging + AI + SIP + IoT under one API, and significantly lower pricing. No need to stitch together multiple vendors.
-
-**Q: Where do I get a Telnyx phone number?**
-
-Log into the [Telnyx Portal](https://portal.telnyx.com), navigate to Numbers > Search & Buy, and purchase a number with the capabilities you need (SMS, voice, or both).
+- [text-to-speech-phone-call-python](../text-to-speech-phone-call-python/) — same example in Python
+- [make-outbound-phone-call-nodejs](../make-outbound-phone-call-nodejs/) — initiate outbound calls
+- [record-phone-calls-nodejs](../record-phone-calls-nodejs/) — record call audio
+- [build-ivr-phone-menu-nodejs](../build-ivr-phone-menu-nodejs/) — interactive voice menus
 
 ## Resources
 
 - [Voice API Overview](https://developers.telnyx.com/docs/voice)
-- [Voice API Commands](https://developers.telnyx.com/docs/voice/programmable-voice/voice-api-commands-and-resources)
-- [AI Assistant Start](https://developers.telnyx.com/docs/voice/programmable-voice/ai-assistant-start)
-- [Call Control API Reference](https://developers.telnyx.com/api-reference/call-commands/dial)
+- [Speak Text API reference](https://developers.telnyx.com/api-reference/call-commands/speak-text)
+- [Dial API reference](https://developers.telnyx.com/api-reference/call-commands/dial)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
-- [Telnyx Voice API](https://telnyx.com/products/voice-api)
-- [Voice AI Agents](https://telnyx.com/products/voice-ai-agents)
-
-## Related Examples
-
-- [Handle Inbound Call Webhooks](/tutorials/voice/nodejs/inbound-call-webhook).
-- [Record Voice Calls](/tutorials/voice/nodejs/call-recording).
-- [Transfer Calls Between Numbers](/tutorials/voice/nodejs/call-transfer).
+- [Telnyx Voice product](https://telnyx.com/products/voice-ai-agents)
+- [Telnyx pricing](https://telnyx.com/pricing/call-control)

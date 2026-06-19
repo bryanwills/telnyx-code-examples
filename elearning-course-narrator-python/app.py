@@ -4,6 +4,9 @@ AI structures into audio modules with pacing cues and quiz prompts,
 TTS narrates each module, stores in Cloud Storage with a manifest."""
 
 import os, json, uuid, requests
+import boto3
+from botocore.config import Config
+from botocore.exceptions import ClientError
 from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
@@ -19,6 +22,20 @@ BUCKET_NAME = os.getenv("BUCKET_NAME", "elearning")
 DEFAULT_VOICE = os.getenv("DEFAULT_VOICE", "alloy")
 API = "https://api.telnyx.com/v2"
 HEADERS = {"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"}
+
+# Telnyx Cloud Storage is S3-compatible. Talk to it with the AWS SDK (boto3)
+# pointed at the region-scoped Telnyx S3 endpoint — not a REST API.
+# Auth uses the Telnyx API key as BOTH the access key and the secret key.
+REGION = os.getenv("TELNYX_STORAGE_REGION", "us-central-1")
+ENDPOINT_URL = f"https://{REGION}.telnyxcloudstorage.com"
+s3 = boto3.client(
+    "s3",
+    endpoint_url=ENDPOINT_URL,
+    aws_access_key_id=TELNYX_API_KEY,
+    aws_secret_access_key=TELNYX_API_KEY,
+    region_name=REGION,
+    config=Config(signature_version="s3v4"),
+)
 
 courses = {}
 
@@ -56,13 +73,16 @@ def tts_generate(text, voice=None):
 
 
 def upload_to_storage(key, data, content_type="audio/mpeg"):
-    resp = requests.put(
-        f"https://storage.telnyx.com/{BUCKET_NAME}/{key}",
-        headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": content_type},
-        data=data, timeout=60
-    )
-    resp.raise_for_status()
-    return f"https://storage.telnyx.com/{BUCKET_NAME}/{key}"
+    """Store bytes in the S3-compatible Telnyx Cloud Storage bucket and return a
+    time-limited presigned GET URL (valid 1 hour) for playback/download."""
+    try:
+        s3.put_object(Bucket=BUCKET_NAME, Key=key, Body=data, ContentType=content_type)
+        return s3.generate_presigned_url(
+            "get_object", Params={"Bucket": BUCKET_NAME, "Key": key}, ExpiresIn=3600
+        )
+    except ClientError:
+        app.logger.exception("Cloud Storage upload failed for key %s", key)
+        raise
 
 
 @app.route("/courses/create", methods=["POST"])

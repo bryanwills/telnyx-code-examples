@@ -4,6 +4,9 @@ AI adds professional direction cues (pauses, emphasis, pacing), TTS renders
 the voice-over, stores output in Cloud Storage. Supports multiple takes."""
 
 import os, json, uuid, requests
+import boto3
+from botocore.config import Config
+from botocore.exceptions import ClientError
 from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
@@ -18,6 +21,22 @@ TTS_MODEL = os.getenv("TTS_MODEL", "telnyx/tts")
 BUCKET_NAME = os.getenv("BUCKET_NAME", "voiceovers")
 API = "https://api.telnyx.com/v2"
 HEADERS = {"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"}
+
+# Telnyx Cloud Storage is S3-compatible: talk to it with boto3 pointed at the
+# region-scoped Telnyx S3 endpoint. The Telnyx API key is used as BOTH the
+# access key and the secret key.
+REGION = os.getenv("TELNYX_STORAGE_REGION", "us-central-1")
+ENDPOINT_URL = f"https://{REGION}.telnyxcloudstorage.com"
+PRESIGN_TTL = int(os.getenv("PRESIGN_TTL_SECONDS", "3600"))
+
+s3 = boto3.client(
+    "s3",
+    endpoint_url=ENDPOINT_URL,
+    aws_access_key_id=TELNYX_API_KEY,
+    aws_secret_access_key=TELNYX_API_KEY,
+    region_name=REGION,
+    config=Config(signature_version="s3v4"),
+)
 
 VOICES = {
     "warm_narrator": {"id": "nova", "desc": "Warm, approachable female — explainers, brand stories"},
@@ -71,13 +90,16 @@ def tts_generate(text, voice="nova"):
 
 
 def upload_to_storage(key, data):
-    resp = requests.put(
-        f"https://storage.telnyx.com/{BUCKET_NAME}/{key}",
-        headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "audio/mpeg"},
-        data=data, timeout=60
-    )
-    resp.raise_for_status()
-    return f"https://storage.telnyx.com/{BUCKET_NAME}/{key}"
+    """Upload audio bytes to Telnyx Cloud Storage (S3-compatible) and return a
+    time-limited presigned GET URL for playback/download."""
+    try:
+        s3.put_object(Bucket=BUCKET_NAME, Key=key, Body=data, ContentType="audio/mpeg")
+        return s3.generate_presigned_url(
+            "get_object", Params={"Bucket": BUCKET_NAME, "Key": key}, ExpiresIn=PRESIGN_TTL
+        )
+    except ClientError as e:
+        app.logger.error("Cloud Storage upload failed for key %s: %s", key, e)
+        raise
 
 
 @app.route("/projects/create", methods=["POST"])

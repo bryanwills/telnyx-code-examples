@@ -33,7 +33,7 @@ Upload audio with existing voice-over. STT extracts the script, AI rewrites/impr
 - **STT Transcribe**: `POST /v2/ai/transcribe` -- [ref](https://developers.telnyx.com/api/inference/transcribe)
 - **AI Inference (rewrite)**: `POST /v2/ai/chat/completions` -- [ref](https://developers.telnyx.com/api/inference/chat-completions)
 - **TTS Generate**: `POST /v2/ai/generate` -- [ref](https://developers.telnyx.com/api/inference/generate)
-- **Cloud Storage**: `PUT https://storage.telnyx.com/{bucket}/{key}` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
+- **Cloud Storage (S3-compatible)**: `s3.put_object(...)` via boto3 against `https://{region}.telnyxcloudstorage.com` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
 
 ## Prerequisites
 
@@ -61,6 +61,7 @@ Everything lives in `app.py` (214 lines). Here's what each piece does.
 - **`inference()`** — Makes an API call and processes the response.
 - **`transcribe()`** — Makes an API call and processes the response.
 - **`tts_generate()`** — Makes an API call and processes the response.
+- **`upload_to_storage()`** — Stores the rendered audio in Telnyx Cloud Storage. Cloud Storage is S3-compatible, so this uses the AWS SDK (boto3) pointed at `https://{region}.telnyxcloudstorage.com` (the Telnyx API key is supplied as both the access key and the secret key), calls `s3.put_object(...)`, and returns a presigned GET URL valid for 1 hour — not a `storage.telnyx.com` REST URL.
 
 ### All Endpoints
 

@@ -1,193 +1,172 @@
-# Send Bulk SMS with Node.js and Express
+---
+name: send-bulk-sms
+title: "Send Bulk SMS"
+description: "Send bulk SMS messages to many recipients with rate limiting and per-message error tracking using the Telnyx Messaging API and Express."
+language: nodejs
+framework: express
+telnyx_products: [Messaging]
+channel: [sms]
+---
 
-## What Does This Example Do?
+# Send Bulk SMS
 
-Build a production-ready Express endpoint that sends bulk SMS messages using the Telnyx Node.js SDK. This tutorial demonstrates rate-limited batch processing, proper error handling for telecom APIs, and secure credential management via environment variables. You'll learn how to send hundreds of messages efficiently while respecting API rate limits and handling failures gracefully.
+Send bulk SMS messages to many recipients with rate limiting and per-message error tracking using the Telnyx Messaging API and Express.
 
-## Who Is This For?
+## Why Telnyx
 
-- **Node.js developers** building sms features with Express.
-- **Backend engineers** integrating telephony or messaging into existing applications.
-- **DevOps teams** looking for containerized, production-ready telecom examples.
-- **Startups and enterprises** replacing legacy telecom providers with a modern API-first platform.
+Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
 
-## Why Telnyx?
+- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
+- **Pay-as-you-go** — no minimums, contracts, or per-seat fees.
 
-Telnyx is an **AI Communications Infrastructure** platform that gives developers a single API for [voice](https://telnyx.com/products/voice-ai-agents), [messaging](https://telnyx.com/products/sms-api), [SIP](https://telnyx.com/products/sip-trunks), [AI](https://telnyx.com/ai-assistants), and [IoT](https://telnyx.com/products/iot-sim-card) — no Frankenstack required.
+## Telnyx API Endpoints Used
 
-- **Integrated platform** — [Voice](https://telnyx.com/products/voice-ai-agents), [SMS](https://telnyx.com/products/sms-api), [SIP trunking](https://telnyx.com/products/sip-trunks), [AI assistants](https://telnyx.com/ai-assistants), and [IoT SIM management](https://telnyx.com/products/iot-sim-card) under one roof. No stitching together multiple vendors.
-- **Global private network** — Calls and messages traverse the Telnyx-owned IP network for lower latency and higher reliability than the public internet.
-- **Developer-first** — SDKs for Python, Node.js, Go, Ruby, Java, and PHP. Comprehensive webhook event model. Sandbox environment for testing.
-- **Competitive pricing** — Pay-as-you-go with no minimums, contracts, or per-seat fees.
+- **Send Message**: `POST /v2/messages` -- [API reference](https://developers.telnyx.com/api/messaging/send-message)
 
-## Prerequisites
+## Architecture
 
-- Node.js 14 or higher.
-- A Telnyx account with an active API key from the [Telnyx Portal](https://portal.telnyx.com).
-- A Telnyx phone number enabled for outbound SMS.
-- npm (Node.js package manager).
-- Postman or curl for testing HTTP endpoints.
+```
+  POST /sms/send-bulk
+        │
+        ▼
+  ┌──────────────────┐
+  │ Express server    │
+  │ sendBulkSMS()     │──► loop over recipients
+  └────────┬─────────┘     (delay between each)
+           │
+           ▼
+  ┌──────────────────┐
+  │ Telnyx Messaging  │  POST /v2/messages (one per recipient)
+  └────────┬─────────┘
+           │
+           └──► { summary, successful[], failed[] }
+```
 
-## Quick Start
+## Environment Variables
 
-### Option 1: Local (recommended)
+Copy `.env.example` to `.env` and fill in:
+
+| Variable | Type | Example | Required | Description | Where to get it |
+|----------|------|---------|----------|-------------|-----------------|
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number to send from (E.164) | [My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000`) | — |
+| `RATE_LIMIT_DELAY_MS` | `number` | `100` | no | Delay in milliseconds between each send (defaults to `100`) | — |
+
+## Setup
 
 ```bash
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
 cd telnyx-code-examples/send-bulk-sms-nodejs
-cp .env.example .env
-# Edit .env with your Telnyx API key and phone number
+cp .env.example .env    # ← fill in your credentials
 npm install
-node server.js
+node server.js          # starts on http://localhost:3000 (or PORT)
 ```
 
-### Option 2: Manual
+## API Reference
 
-See the [Implementation Details](#implementation-details) section below for step-by-step instructions.
+### `POST /sms/send-bulk`
 
-## Implementation Details
+Send SMS to multiple recipients. Each recipient is sent individually with a delay between calls, and the response reports per-message success and failure.
 
-Create `app.js` and initialize the Telnyx client using the new pattern. Define helper functions to handle batch message creation with rate limiting and proper validation:
+```bash
+curl -X POST http://localhost:3000/sms/send-bulk \
+  -H "Content-Type: application/json" \
+  -d '{
+    "recipients": [
+      { "to": "+12125551234", "message": "Hello from Telnyx!" },
+      { "to": "+13105556789", "message": "Second message" }
+    ]
+  }'
+```
 
-```javascript
-const Telnyx = require("telnyx");
-const express = require("express");
-require("dotenv").config();
+**Response:**
 
-const app = express();
-app.use(express.json());
-
-// Initialize client with the new SDK pattern
-const client = new Telnyx({ apiKey: process.env.TELNYX_API_KEY });
-
-/**
- * Sleep utility for rate limiting between API calls.
- * @param {number} ms - Milliseconds to sleep.
- * @returns {Promise<void>}
- */
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-/**
- * Send a single SMS message via Telnyx.
- * @param {string} toNumber - Recipient phone number in E.164 format.
- * @param {string} message - Message text.
- * @returns {Promise<Object>} JSON-serializable response data.
- */
-async function sendSingleSMS(toNumber, message) {
-  const fromNumber = process.env.TELNYX_PHONE_NUMBER;
-  if (!fromNumber) {
-    throw new Error("TELNYX_PHONE_NUMBER environment variable not set");
-  }
-
-  // Validate E.164 format to prevent API errors
-  if (!toNumber.startsWith("+")) {
-    throw new Error(
-      "Phone number must be in E.164 format (e.g., +15551234567)"
-    );
-  }
-
-  // Use client.messages.create() with the new SDK pattern
-  const response = await client.messages.create({
-    from_: fromNumber,
-    to: toNumber,
-    text: message,
-  });
-
-  // Extract serializable data — SDK objects are NOT JSON-serializable
-  return {
-    message_id: response.data.id,
-    status: response.data.to && response.data.to[0] ? response.data.to[0].status : "unknown",
-    from: fromNumber,
-    to: toNumber,
-  };
-}
-
-/**
- * Send bulk SMS with rate limiting and error tracking.
- * @param {Array<Object>} recipients - Array of {to: string, message: string}.
- * @param {number} delayMs - Delay between API calls in milliseconds.
- * @returns {Promise<Object>} Summary with successful and failed sends.
- */
-async function sendBulkSMS(recipients, delayMs = 100) {
-  const results = {
-    successful: [],
-    failed: [],
-    total: recipients.length,
-  };
-
-  for (let i = 0; i < recipients.length; i++) {
-    const { to, message } = recipients[i];
-
-    try {
-      const result = await sendSingleSMS(to, message);
-      results.successful.push(result);
-    } catch (error) {
-      results.failed.push({
-        to,
-        error: error.message,
-        index: i,
-      });
+```json
+{
+  "summary": {
+    "total": 2,
+    "successful": 1,
+    "failed": 1
+  },
+  "successful": [
+    {
+      "message_id": "40385f64-5717-4562-b3fc-2c963f66afa6",
+      "status": "queued",
+      "from": "+15551234567",
+      "to": "+12125551234"
     }
-
-    // Rate limiting: sleep between requests (except after the last one)
-    if (i < recipients.length - 1) {
-      await sleep(delayMs);
+  ],
+  "failed": [
+    {
+      "to": "13105556789",
+      "error": "Phone number must be in E.164 format (e.g., +15551234567)",
+      "index": 1
     }
-  }
-
-  return results;
+  ]
 }
 ```
 
-## Complete Code
+### `POST /sms/send-single`
 
-See [`server.js`](./server.js) for the full implementation.
+Send a single SMS message. Useful for testing credentials before running a bulk batch.
+
+```bash
+curl -X POST http://localhost:3000/sms/send-single \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+12125551234",
+    "message": "Hello from Telnyx!"
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "message_id": "40385f64-5717-4562-b3fc-2c963f66afa6",
+  "status": "queued",
+  "from": "+15551234567",
+  "to": "+12125551234"
+}
+```
+
+### `GET /health`
+
+Health check.
+
+```bash
+curl http://localhost:3000/health
+```
+
+**Response:**
+
+```json
+{ "status": "ok" }
+```
 
 ## Troubleshooting
 
-| Issue | Problem | Solution |
-|-------|---------|----------|
-| Authentication Error (401) | The endpoint returns `{"error": "Invalid API key"}` with HTTP 401. | Verify your `TELNYX_API_KEY` in the `.env` file matches the key shown in the [Telnyx Portal](https://portal.telnyx.com). Ensure there are no trailing spaces or quotes. If the key was regenerated recently, update your environment file and restart the Express server. |
-| Invalid Phone Number Format | You receive a 400 error stating "Phone number must be in E.164 format" or a Telnyx API error about invalid destination. | Ensure all phone numbers use E.164 format: start with `+`, followed by country code and number without spaces or dashes. Example: `+15551234567` (US) or `+447700900123` (UK). Update your test curl command to use properly formatted numbers. |
-| Rate Limit Exceeded (429) | The endpoint returns `{"error": "Rate limit exceeded. Please slow down."}` with HTTP 429 after sending many messages. | Increase the `RATE_LIMIT_DELAY_MS` value in your `.env` file (try 200–500ms). This adds a delay between API calls to respect Telnyx rate limits. Restart the server after updating the environment variable. |
-| Environment Variable Not Set | The application raises an error about `TELNYX_PHONE_NUMBER` or `TELNYX_API_KEY` not being set. | Confirm your `.env` file exists in the same directory as `app.js` and contains all required variables. Ensure the file is named exactly `.env` (not `.env.txt` or `env`). The `require("dotenv").config()` call must execute before `process.env` is accessed—verify this import order in your code. |
-| Partial Bulk Send Failures | Some messages in a bulk request succeed while others fail, and you need to retry only the failed ones. | The response includes a `failed` array with the index and error message for each failed recipient. Implement retry logic by extracting the failed recipients and re-submitting them in a separate request with a longer delay. |
-
-## FAQ
-
-**Q: Do I need a Telnyx account to run this example?**
-
-Yes. Sign up at [portal.telnyx.com](https://portal.telnyx.com) to get an API key. Telnyx offers free trial credit for testing.
-
-**Q: Can I use this SMS example in production?**
-
-Yes. This example includes error handling, environment-based configuration, and a Dockerfile for containerized deployment. Review the security and scaling sections before deploying to production.
-
-**Q: What Node.js version do I need?**
-
-Node.js 18 or higher. Node.js 20 LTS is recommended.
-
-**Q: How is Telnyx different from Twilio?**
-
-Telnyx is an AI Communications Infrastructure platform with a private global network, integrated voice + messaging + AI + SIP + IoT under one API, and significantly lower pricing. No need to stitch together multiple vendors.
-
-**Q: Where do I get a Telnyx phone number?**
-
-Log into the [Telnyx Portal](https://portal.telnyx.com), navigate to Numbers > Search & Buy, and purchase a number with the capabilities you need (SMS, voice, or both).
-
-## Resources
-
-- [Messaging Overview](https://developers.telnyx.com/docs/messaging)
-- [Send an SMS — Quickstart](https://developers.telnyx.com/docs/messaging/messages/send-message)
-- [Messaging API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
-- [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
-- [Telnyx SMS API](https://telnyx.com/products/sms-api)
-- [Messaging Pricing](https://telnyx.com/pricing/messaging)
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| `401 {"error": "Invalid API key"}` | `TELNYX_API_KEY` is missing, wrong, or has trailing whitespace. | Generate a new key at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys), update `.env`, and restart the server. |
+| `400 Phone number must be in E.164 format` | A `to` value does not start with `+`. | Use E.164: `+` then country code and number, no spaces or dashes (e.g. `+15551234567`). |
+| `429 {"error": "Rate limit exceeded. Please slow down."}` | Messages are being sent faster than Telnyx allows. | Increase `RATE_LIMIT_DELAY_MS` in `.env` (try `200`–`500`) and restart. |
+| `TELNYX_PHONE_NUMBER environment variable not set` | `.env` missing or not loaded before `process.env` is read. | Confirm `.env` exists in this folder and is named exactly `.env`; restart `node server.js`. |
+| Some recipients fail while others succeed | One or more entries had an invalid number or were rejected by Telnyx. | Inspect the `failed` array — each entry has the `to`, `index`, and `error`. Re-submit just those recipients. |
 
 ## Related Examples
 
-- [Receive SMS Webhooks with Node.js](/tutorials/sms/nodejs/receive-sms-webhook).
-- [Implement Two-Factor Authentication with SMS](/tutorials/sms/nodejs/otp-2fa).
-- [Send Single SMS with Node.js](/tutorials/sms/nodejs/send-single-sms).
+- [send-sms-nodejs](../send-sms-nodejs/) - Send a single SMS with Node.js
+- [receive-sms-webhook-nodejs](../receive-sms-webhook-nodejs/) - Receive inbound SMS via webhook
+- [sms-two-factor-auth-nodejs](../sms-two-factor-auth-nodejs/) - SMS-based 2FA / OTP
+- [send-bulk-sms-python](../send-bulk-sms-python/) - The same bulk-send example in Python
+
+## Resources
+
+- [Messaging Guide](https://developers.telnyx.com/docs/messaging)
+- [Send a Message — API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
+- [Telnyx SMS API](https://telnyx.com/products/sms-api)
+- [Messaging Pricing](https://telnyx.com/pricing/messaging)
+- [Telnyx Portal](https://portal.telnyx.com)

@@ -26,13 +26,13 @@ Upload a script, select voice/style/pacing, AI adds professional direction cues 
 ## Telnyx Products Used
 
 - **AI Inference** — LLM inference with OpenAI-compatible API, runs on Telnyx infrastructure
-- **Cloud Storage** — S3-compatible object storage for recordings and media
+- **Cloud Storage** — S3-compatible object storage for recordings and media, accessed via boto3 against the Telnyx S3 endpoint with presigned URLs for playback
 
 ## API Endpoints
 
 - **AI Inference (direction)**: `POST /v2/ai/chat/completions` -- [ref](https://developers.telnyx.com/api/inference/chat-completions)
 - **TTS Generate**: `POST /v2/ai/generate` -- [ref](https://developers.telnyx.com/api/inference/generate)
-- **Cloud Storage**: `PUT https://storage.telnyx.com/{bucket}/{key}` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
+- **Cloud Storage**: S3-compatible — boto3 `put_object` against `https://{region}.telnyxcloudstorage.com`, served via presigned GET URLs -- [docs](https://developers.telnyx.com/docs/cloud-storage)
 
 ## Prerequisites
 
@@ -74,7 +74,7 @@ Everything lives in `app.py` (239 lines). Here's what each piece does.
 
 - **`inference()`** — Makes an API call and processes the response.
 - **`tts_generate()`** — Makes an API call and processes the response.
-- **`upload_to_storage()`** — Uploads file to Telnyx Cloud Storage with metadata tags.
+- **`upload_to_storage()`** — Uploads audio bytes to Telnyx Cloud Storage (S3-compatible) via boto3 `put_object` and returns a presigned GET URL for playback.
 
 ### All Endpoints
 

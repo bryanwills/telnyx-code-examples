@@ -12,9 +12,23 @@ channel: [voice]
 
 Storage Voicemail Archive — record voicemails to Telnyx Cloud Storage with search.
 
-## Telnyx API Endpoints Used
+## Telnyx Cloud Storage (S3-Compatible)
 
-- **Cloud Storage**: `PUT /v2/storage/buckets/{bucket}/{key}` — [API reference](https://developers.telnyx.com/api/cloud-storage/put-object)
+Telnyx Cloud Storage is S3-compatible, so this app uploads recordings with `boto3` instead of a REST call. The client points at the region endpoint `https://{region}.telnyxcloudstorage.com` and uses your Telnyx API key as **both** the access key and the secret key. See the [Cloud Storage quick start](https://developers.telnyx.com/docs/cloud-storage/quick-start).
+
+```python
+s3 = boto3.client(
+    "s3",
+    endpoint_url=f"https://{REGION}.telnyxcloudstorage.com",
+    aws_access_key_id=TELNYX_API_KEY,
+    aws_secret_access_key=TELNYX_API_KEY,
+    region_name=REGION,
+    config=Config(signature_version="s3v4"),
+)
+s3.put_object(Bucket=STORAGE_BUCKET, Key=filename, Body=audio, ContentType="audio/mpeg")
+```
+
+The region comes from `TELNYX_STORAGE_REGION` (default `us-central-1`). Available regions: `us-central-1`, `us-east-1`, `us-west-1`, `eu-central-1`.
 
 ## Telnyx Webhook Events
 
@@ -54,8 +68,10 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key — used for Call Control and as both the S3 access and secret key for Cloud Storage | [Portal](https://portal.telnyx.com/api-keys) |
+| `TELNYX_PUBLIC_KEY` | `string` | `your_public_key` | **yes** | Telnyx public key for webhook signature verification | [Portal](https://portal.telnyx.com/api-keys) |
 | `STORAGE_BUCKET` | `string` | `my-bucket` | no | Telnyx Cloud Storage bucket name | [Portal](https://portal.telnyx.com/storage) |
+| `TELNYX_STORAGE_REGION` | `string` | `us-central-1` | no | Cloud Storage region endpoint (`us-central-1`, `us-east-1`, `us-west-1`, `eu-central-1`); defaults to `us-central-1` | [Cloud Storage docs](https://developers.telnyx.com/docs/cloud-storage/quick-start) |
 | `VOICEMAIL_NUMBER` | `string` | `your_value` | **yes** | Voicemail number | — |
 | `PORT` | `integer` | `5000` | no | HTTP server port | — |
 
@@ -201,6 +217,7 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 ## Resources
 
 - [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [Cloud Storage Quick Start (S3-compatible)](https://developers.telnyx.com/docs/cloud-storage/quick-start)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Telnyx Portal](https://portal.telnyx.com)
 

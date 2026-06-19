@@ -4,6 +4,9 @@ to multiple target languages preserving tone and timing, TTS renders each
 language with native-sounding voices. Batch localization pipeline."""
 
 import os, json, uuid, requests
+import boto3
+from botocore.config import Config
+from botocore.exceptions import ClientError
 from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
@@ -18,6 +21,20 @@ TTS_MODEL = os.getenv("TTS_MODEL", "telnyx/tts")
 BUCKET_NAME = os.getenv("BUCKET_NAME", "voiceovers")
 API = "https://api.telnyx.com/v2"
 HEADERS = {"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"}
+
+# Telnyx Cloud Storage is S3-compatible. Talk to it with the AWS SDK (boto3) pointed
+# at the region-scoped Telnyx endpoint, using the Telnyx API key as BOTH access key
+# and secret key. Region selects the endpoint host, e.g. us-central-1.
+REGION = os.getenv("TELNYX_STORAGE_REGION", "us-central-1")
+PRESIGN_TTL = int(os.getenv("PRESIGN_TTL_SECONDS", "3600"))
+s3 = boto3.client(
+    "s3",
+    endpoint_url=f"https://{REGION}.telnyxcloudstorage.com",
+    aws_access_key_id=TELNYX_API_KEY,
+    aws_secret_access_key=TELNYX_API_KEY,
+    region_name=REGION,
+    config=Config(signature_version="s3v4"),
+)
 
 LANGUAGE_VOICES = {
     "en": {"name": "English", "voice": "nova"},
@@ -73,13 +90,18 @@ def tts_generate(text, voice="nova", language="en"):
 
 
 def upload_to_storage(key, data, content_type="audio/mpeg"):
-    resp = requests.put(
-        f"https://storage.telnyx.com/{BUCKET_NAME}/{key}",
-        headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": content_type},
-        data=data, timeout=60
-    )
-    resp.raise_for_status()
-    return f"https://storage.telnyx.com/{BUCKET_NAME}/{key}"
+    """Store bytes on Telnyx Cloud Storage (S3-compatible) and return a presigned
+    GET URL that stays valid for PRESIGN_TTL seconds."""
+    try:
+        s3.put_object(Bucket=BUCKET_NAME, Key=key, Body=data, ContentType=content_type)
+        return s3.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": BUCKET_NAME, "Key": key},
+            ExpiresIn=PRESIGN_TTL,
+        )
+    except ClientError:
+        app.logger.exception("Cloud Storage upload failed for key %s", key)
+        raise
 
 
 @app.route("/kits/create", methods=["POST"])

@@ -41,7 +41,22 @@ Generate professional IVR/phone system prompts. AI writes caller-friendly script
 - **TTS Generate**: `POST /v2/ai/generate` -- [ref](https://developers.telnyx.com/api/inference/generate)
 - **Create Call (preview)**: `POST /v2/calls` -- [ref](https://developers.telnyx.com/api/call-control/create-call)
 - **Speak (playback)**: `POST /v2/calls/{id}/actions/speak` -- [ref](https://developers.telnyx.com/api/call-control/speak)
-- **Cloud Storage**: `PUT https://storage.telnyx.com/{bucket}/{key}` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
+- **Cloud Storage (S3-compatible)**: `s3.put_object(...)` via boto3 against `https://{region}.telnyxcloudstorage.com`, then a presigned GET URL -- [docs](https://developers.telnyx.com/docs/cloud-storage/quick-start)
+
+Telnyx Cloud Storage is S3-compatible, so rendered TTS audio is uploaded with the AWS SDK (boto3) — not a REST API. The boto3 client is pointed at the region-scoped endpoint `https://{region}.telnyxcloudstorage.com`, and your Telnyx API key is used as **both** the access key and the secret key:
+
+```python
+s3 = boto3.client(
+    "s3",
+    endpoint_url=f"https://{REGION}.telnyxcloudstorage.com",
+    aws_access_key_id=TELNYX_API_KEY,
+    aws_secret_access_key=TELNYX_API_KEY,
+    region_name=REGION,
+    config=Config(signature_version="s3v4"),
+)
+```
+
+`upload_to_storage()` calls `s3.put_object(...)` to store the audio, then returns a time-limited presigned GET URL (valid 1 hour) via `s3.generate_presigned_url("get_object", ...)`. That URL drops straight into a Call Control `speak`/`playback_audio` command or a TeXML `<Play>` verb.
 
 ## Prerequisites
 

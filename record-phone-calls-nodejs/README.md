@@ -1,238 +1,201 @@
-# Call Recording with Node.js and Express
+---
+name: record-phone-calls
+title: "Record Phone Calls"
+description: "Initiate outbound calls and control call recording using the Telnyx Voice API with Express. Handles call lifecycle webhooks and recording start/stop."
+language: nodejs
+framework: express
+telnyx_products: [Voice]
+channel: [voice]
+---
 
-## What Does This Example Do?
+# Record Phone Calls
 
-Build a production-ready Express application that initiates outbound calls and records them using the Telnyx Voice API. This tutorial demonstrates the new client-based initialization pattern, webhook handling for call lifecycle events, recording control, and secure credential management via environment variables.
+Initiate outbound calls and control call recording using the Telnyx Voice API with Express. Handles call lifecycle webhooks and recording start/stop.
 
-## Who Is This For?
+## Telnyx API Endpoints Used
 
-- **Node.js developers** building voice features with Express.
-- **Backend engineers** integrating telephony or messaging into existing applications.
-- **DevOps teams** looking for containerized, production-ready telecom examples.
-- **Startups and enterprises** replacing legacy telecom providers with a modern API-first platform.
+- **Dial (initiate call)**: `POST /v2/calls` -- [API reference](https://developers.telnyx.com/api-reference/call-commands/dial)
+- **Start recording**: `POST /v2/calls/{call_control_id}/actions/record_start` -- [API reference](https://developers.telnyx.com/api-reference/call-commands/recording-start)
+- **Stop recording**: `POST /v2/calls/{call_control_id}/actions/record_stop` -- [API reference](https://developers.telnyx.com/api-reference/call-commands/recording-stop)
 
-## Why Telnyx?
+## Architecture
 
-Telnyx is an **AI Communications Infrastructure** platform that gives developers a single API for [voice](https://telnyx.com/products/voice-ai-agents), [messaging](https://telnyx.com/products/sms-api), [SIP](https://telnyx.com/products/sip-trunks), [AI](https://telnyx.com/ai-assistants), and [IoT](https://telnyx.com/products/iot-sim-card) — no Frankenstack required.
+```
+  API Request
+        │
+        ▼
+  ┌──────────────────────┐
+  │  Express (server.js)  │
+  │  activeCalls Map      │
+  └──────────┬───────────┘
+             │  dial / record_start / record_stop
+             ▼
+  ┌──────────────────────┐
+  │   Telnyx Voice API    │
+  └──────────┬───────────┘
+             │  call.answered / call.hangup
+             │  call.recording.saved
+             ▼
+   POST /webhooks/call
+```
 
-- **Integrated platform** — [Voice](https://telnyx.com/products/voice-ai-agents), [SMS](https://telnyx.com/products/sms-api), [SIP trunking](https://telnyx.com/products/sip-trunks), [AI assistants](https://telnyx.com/ai-assistants), and [IoT SIM management](https://telnyx.com/products/iot-sim-card) under one roof. No stitching together multiple vendors.
-- **Global private network** — Calls and messages traverse the Telnyx-owned IP network for lower latency and higher reliability than the public internet.
-- **Developer-first** — SDKs for Python, Node.js, Go, Ruby, Java, and PHP. Comprehensive webhook event model. Sandbox environment for testing.
-- **Competitive pricing** — Pay-as-you-go with no minimums, contracts, or per-seat fees.
+## Why Telnyx
 
-## Prerequisites
+Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT delivered over one private, global network. Programmable call control and recording run on Telnyx-owned infrastructure for lower latency and higher reliability than the public internet.
 
-- Node.js 14 or higher.
-- A Telnyx account with an active API key from the [Telnyx Portal](https://portal.telnyx.com).
-- A Telnyx phone number enabled for outbound calls.
-- A Call Control Application ID (connection_id) configured in the Telnyx Portal.
-- npm (Node package manager).
-- A publicly accessible URL for webhook callbacks (ngrok or similar for local development).
+- **Call Control** — initiate, answer, record, and tear down calls programmatically with a full webhook event model.
+- **Recording built in** — start and stop recordings on a live call and receive a download URL when the file is saved.
 
-## Quick Start
+## Environment Variables
 
-### Option 1: Local (recommended)
+Copy `.env.example` to `.env` and fill in:
+
+| Variable | Type | Example | Required | Description | Where to get it |
+|----------|------|---------|----------|-------------|-----------------|
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number used as the caller ID (E.164) | [My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
+| `TELNYX_CONNECTION_ID` | `string` | `1234567890` | **yes** | Call Control Application (connection) ID | [Call Control Apps](https://portal.telnyx.com/call-control/applications) |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000`) | — |
+| `WEBHOOK_URL` | `string` | `https://your-domain.com/webhook` | no | Public URL Telnyx posts call events to (logged on startup) | — |
+
+## Setup
 
 ```bash
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
 cd telnyx-code-examples/record-phone-calls-nodejs
-cp .env.example .env
-# Edit .env with your Telnyx API key and phone number
+cp .env.example .env    # ← fill in your credentials
 npm install
-node server.js
+node server.js          # starts on http://localhost:5000 (or $PORT)
 ```
 
-### Option 2: Manual
+### Webhook Configuration
 
-See the [Implementation Details](#implementation-details) section below for step-by-step instructions.
+1. Expose your local server:
 
-## Implementation Details
+   ```bash
+   ngrok http 5000
+   ```
 
-Create `app.js` and initialize the Telnyx client using the new pattern. Define helper functions to handle call initiation and recording control with proper validation:
+2. Copy the HTTPS URL and configure it on your [Call Control Application](https://portal.telnyx.com/call-control/applications):
 
-```javascript
-const express = require("express");
-const bodyParser = require("body-parser");
-const Telnyx = require("telnyx");
-require("dotenv").config();
+   - **Webhook URL** → `https://<id>.ngrok.io/webhooks/call`
 
-const app = express();
-app.use(bodyParser.json());
+## API Reference
 
-// Initialize client with the new SDK pattern
-const client = new Telnyx({ apiKey: process.env.TELNYX_API_KEY });
+### `POST /calls/initiate`
 
-// In-memory store for active calls (use a database in production)
-const activeCalls = new Map();
+Initiate an outbound call from your Telnyx number. The resulting `call_control_id` is tracked in memory and used by the recording endpoints.
 
-/**
- * Initiate an outbound call and prepare for recording.
- * Returns JSON-serializable call data.
- */
-async function initiateCall(toNumber) {
-  const fromNumber = process.env.TELNYX_PHONE_NUMBER;
-  const connectionId = process.env.TELNYX_CONNECTION_ID;
-
-  if (!fromNumber) {
-    throw new Error("TELNYX_PHONE_NUMBER environment variable not set");
-  }
-  if (!connectionId) {
-    throw new Error("TELNYX_CONNECTION_ID environment variable not set");
-  }
-
-  // Validate E.164 format to prevent API errors
-  if (!toNumber.startsWith("+")) {
-    throw new Error(
-      "Phone number must be in E.164 format (e.g., +15551234567)"
-    );
-  }
-
-  // Use client.calls.dial() to initiate the call
-  const response = await client.calls.dial({
-    from_: fromNumber,
-    to: toNumber,
-    connection_id: connectionId,
-  });
-
-  // Extract serializable data — SDK objects are NOT JSON-serializable
-  const callControlId = response.data.call_control_id;
-  activeCalls.set(callControlId, {
-    callControlId,
-    to: toNumber,
-    from: fromNumber,
-    status: "initiated",
-    recordingId: null,
-  });
-
-  return {
-    call_control_id: callControlId,
-    to: toNumber,
-    from: fromNumber,
-    status: "initiated",
-  };
-}
-
-/**
- * Start recording an active call.
- * Returns JSON-serializable recording data.
- */
-async function startRecording(callControlId) {
-  if (!activeCalls.has(callControlId)) {
-    throw new Error(`Call ${callControlId} not found`);
-  }
-
-  // Use client.calls.actions.start_recording() to begin recording
-  const response = await client.calls.actions.start_recording(callControlId, {
-    format: "wav",
-  });
-
-  // Update call state with recording ID
-  const callData = activeCalls.get(callControlId);
-  callData.recordingId = response.data.recording_id;
-  callData.recordingStatus = "recording";
-
-  return {
-    call_control_id: callControlId,
-    recording_id: response.data.recording_id,
-    format: "wav",
-    status: "recording",
-  };
-}
-
-/**
- * Stop recording an active call.
- * Returns JSON-serializable response data.
- */
-async function stopRecording(callControlId) {
-  if (!activeCalls.has(callControlId)) {
-    throw new Error(`Call ${callControlId} not found`);
-  }
-
-  // Use client.calls.actions.stop_recording() to end recording
-  const response = await client.calls.actions.stop_recording(callControlId);
-
-  // Update call state
-  const callData = activeCalls.get(callControlId);
-  callData.recordingStatus = "stopped";
-
-  return {
-    call_control_id: callControlId,
-    recording_id: callData.recordingId,
-    status: "stopped",
-  };
-}
-
-/**
- * Retrieve call status and recording information.
- * Returns JSON-serializable call data.
- */
-function getCallStatus(callControlId) {
-  if (!activeCalls.has(callControlId)) {
-    throw new Error(`Call ${callControlId} not found`);
-  }
-
-  const callData = activeCalls.get(callControlId);
-  return {
-    call_control_id: callControlId,
-    to: callData.to,
-    from: callData.from,
-    status: callData.status,
-    recording_id: callData.recordingId,
-    recording_status: callData.recordingStatus || "not_started",
-  };
-}
-
-module.exports = { initiateCall, startRecording, stopRecording, getCallStatus };
+```bash
+curl -X POST http://localhost:5000/calls/initiate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+12125551234"
+  }'
 ```
 
-## Complete Code
+**Response:**
 
-See [`server.js`](./server.js) for the full implementation.
+```json
+{
+  "call_control_id": "v3:abc123...",
+  "to": "+12125551234",
+  "from": "+15551234567",
+  "status": "initiated"
+}
+```
+
+### `POST /calls/:callControlId/recording/start`
+
+Start recording an active call. Records in WAV format.
+
+```bash
+curl -X POST http://localhost:5000/calls/v3:abc123.../recording/start
+```
+
+**Response:**
+
+```json
+{
+  "call_control_id": "v3:abc123...",
+  "recording_id": "rec-7f9c...",
+  "format": "wav",
+  "status": "recording"
+}
+```
+
+### `POST /calls/:callControlId/recording/stop`
+
+Stop recording an active call. Telnyx delivers the finished file via the `call.recording.saved` webhook.
+
+```bash
+curl -X POST http://localhost:5000/calls/v3:abc123.../recording/stop
+```
+
+**Response:**
+
+```json
+{
+  "call_control_id": "v3:abc123...",
+  "recording_id": "rec-7f9c...",
+  "status": "stopped"
+}
+```
+
+### `GET /calls/:callControlId/status`
+
+Retrieve the tracked status of a call and its recording.
+
+```bash
+curl http://localhost:5000/calls/v3:abc123.../status
+```
+
+**Response:**
+
+```json
+{
+  "call_control_id": "v3:abc123...",
+  "to": "+12125551234",
+  "from": "+15551234567",
+  "status": "answered",
+  "recording_id": "rec-7f9c...",
+  "recording_status": "recording"
+}
+```
+
+### `POST /webhooks/call`
+
+Receives Telnyx call lifecycle events (`call.answered`, `call.hangup`, `call.recording.saved`) and updates the in-memory call state. Always acknowledges with `200`.
+
+```json
+{
+  "received": true
+}
+```
 
 ## Troubleshooting
 
-| Issue | Problem | Solution |
-|-------|---------|----------|
-| Authentication Error (401) | The endpoint returns `{"error": "Invalid API key"}` with HTTP 401. | Verify your `TELNYX_API_KEY` in the `.env` file matches the key shown in the [Telnyx Portal](https://portal.telnyx.com). Ensure there are no trailing spaces or quotes. If the key was regenerated recently, update your environment file and restart the Express server. |
-| Invalid Phone Number Format | You receive a 400 error stating "Phone number must be in E.164 format" or a Telnyx API error about invalid destination. | Ensure all phone numbers use E.164 format: start with `+`, followed by country code and number without spaces or dashes. Example: `+15551234567` (US) or `+447700900123` (UK). Update your test curl command to use properly formatted numbers. |
-| Connection ID Not Set | The application raises `Error: TELNYX_CONNECTION_ID environment variable not set` on the first call initiation. | Confirm your `.env` file exists in the same directory as `app.js` and contains the `TELNYX_CONNECTION_ID` variable. Obtain your Connection ID from the [Telnyx Portal](https://portal.telnyx.com) under Call Control Applications. Ensure the file is named exactly `.env` (not `.env.txt` or `env`). Restart the Express server after updating. |
-| Webhooks Not Received | Recording status never updates; `call.recording.saved` events are not logged. | Verify that your `WEBHOOK_URL` in the `.env` file is publicly accessible and matches the webhook URL configured in your Call Control Application settings in the Telnyx Portal. Use ngrok (`ngrok http 3000`) for local development and update the Portal with the ngrok URL. Ensure your firewall allows inbound HTTPS traffic on port 443. |
-| Recording Not Starting | The `/recording/start` endpoint returns a 400 error or "Call not found". | Ensure the call has been answered before starting recording. Wait for the `call.answered` webhook event before calling the start recording endpoint. Verify the `call_control_id` from the initiate response is correct and matches the parameter in the URL. |
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| `401 {"error": "Invalid API key"}` | `TELNYX_API_KEY` is missing, wrong, or has trailing whitespace. | Regenerate the key at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys), update `.env`, and restart the server. |
+| `400 Phone number must be in E.164 format` | The `to` number does not start with `+`. | Use full E.164, e.g. `+15551234567`. |
+| `TELNYX_CONNECTION_ID environment variable not set` | The Call Control Application ID is missing from `.env`. | Copy the connection ID from your [Call Control Application](https://portal.telnyx.com/call-control/applications) into `.env`. |
+| `404 Call <id> not found` | The `call_control_id` is not in the in-memory `activeCalls` map (server restarted or call hung up). | Initiate a fresh call; in-memory state is cleared on `call.hangup` and on restart. |
+| Recording never starts / "Call not found" on start | Recording attempted before the call was answered. | Wait for the `call.answered` webhook, then call `/recording/start`. |
+| Webhooks not received | `WEBHOOK_URL` is not publicly reachable or not configured on the Call Control App. | Run `ngrok http 5000` and set the `https://<id>.ngrok.io/webhooks/call` URL on your Call Control Application. |
 
-## FAQ
+## Related Examples
 
-**Q: Do I need a Telnyx account to run this example?**
-
-Yes. Sign up at [portal.telnyx.com](https://portal.telnyx.com) to get an API key. Telnyx offers free trial credit for testing.
-
-**Q: Can I use this Voice example in production?**
-
-Yes. This example includes error handling, environment-based configuration, and a Dockerfile for containerized deployment. Review the security and scaling sections before deploying to production.
-
-**Q: What Node.js version do I need?**
-
-Node.js 18 or higher. Node.js 20 LTS is recommended.
-
-**Q: How is Telnyx different from Twilio?**
-
-Telnyx is an AI Communications Infrastructure platform with a private global network, integrated voice + messaging + AI + SIP + IoT under one API, and significantly lower pricing. No need to stitch together multiple vendors.
-
-**Q: Where do I get a Telnyx phone number?**
-
-Log into the [Telnyx Portal](https://portal.telnyx.com), navigate to Numbers > Search & Buy, and purchase a number with the capabilities you need (SMS, voice, or both).
+- [record-phone-calls-python](../record-phone-calls-python/) — same example in Python
+- [make-outbound-phone-call-nodejs](../make-outbound-phone-call-nodejs/) — initiate outbound calls
+- [text-to-speech-phone-call-nodejs](../text-to-speech-phone-call-nodejs/) — speak text on a call
+- [call-recording-ai-summarizer-python](../call-recording-ai-summarizer-python/) — summarize recordings with AI
 
 ## Resources
 
 - [Voice API Overview](https://developers.telnyx.com/docs/voice)
-- [Voice API Commands](https://developers.telnyx.com/docs/voice/programmable-voice/voice-api-commands-and-resources)
-- [AI Assistant Start](https://developers.telnyx.com/docs/voice/programmable-voice/ai-assistant-start)
-- [Call Control API Reference](https://developers.telnyx.com/api-reference/call-commands/dial)
+- [Call Control: Recording Start](https://developers.telnyx.com/api-reference/call-commands/recording-start)
+- [Call Control: Dial](https://developers.telnyx.com/api-reference/call-commands/dial)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx Voice API](https://telnyx.com/products/voice-api)
-- [Voice AI Agents](https://telnyx.com/products/voice-ai-agents)
-
-## Related Examples
-
-- [Handle Inbound Calls with Webhooks](/tutorials/voice/nodejs/inbound-call-webhook).
-- [Transfer Calls Between Numbers](/tutorials/voice/nodejs/call-transfer).
-- [Build an IVR Menu](/tutorials/voice/nodejs/ivr-menu).
+- [Voice pricing](https://telnyx.com/pricing/call-control)

@@ -1,167 +1,197 @@
-# Inbound SIP Routing with Node.js and Express
+---
+name: inbound-sip-routing
+title: "Inbound SIP Routing"
+description: "Create and manage Telnyx SIP connections for inbound call routing, and receive inbound call webhooks, using Node.js and Express."
+language: nodejs
+framework: express
+telnyx_products: [SIP Trunking, Voice]
+channel: [voice]
+---
 
-## What Does This Example Do?
+# Inbound SIP Routing
 
-Build a production-ready Express application that receives inbound SIP calls and routes them to your SIP endpoints using the Telnyx Node.js SDK. This tutorial demonstrates how to create a SIP connection, configure inbound routing, and handle call webhooks with proper error handling and secure credential management.
+Create and manage Telnyx SIP connections for inbound call routing, and receive inbound call webhooks, using Node.js and Express.
 
-## Who Is This For?
+## Why Telnyx
 
-- **Node.js developers** building sip features with Express.
-- **Backend engineers** integrating telephony or messaging into existing applications.
-- **DevOps teams** looking for containerized, production-ready telecom examples.
-- **Startups and enterprises** replacing legacy telecom providers with a modern API-first platform.
+Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
 
-## Why Telnyx?
+- **Owned network** — inbound calls traverse the Telnyx-owned IP backbone for lower latency and higher reliability than the public internet.
+- **Programmable SIP** — create and configure SIP connections entirely through the API, with authentication and webhook event delivery built in.
 
-Telnyx is an **AI Communications Infrastructure** platform that gives developers a single API for [voice](https://telnyx.com/products/voice-ai-agents), [messaging](https://telnyx.com/products/sms-api), [SIP](https://telnyx.com/products/sip-trunks), [AI](https://telnyx.com/ai-assistants), and [IoT](https://telnyx.com/products/iot-sim-card) — no Frankenstack required.
+## Telnyx API Endpoints Used
 
-- **Integrated platform** — [Voice](https://telnyx.com/products/voice-ai-agents), [SMS](https://telnyx.com/products/sms-api), [SIP trunking](https://telnyx.com/products/sip-trunks), [AI assistants](https://telnyx.com/ai-assistants), and [IoT SIM management](https://telnyx.com/products/iot-sim-card) under one roof. No stitching together multiple vendors.
-- **Global private network** — Calls and messages traverse the Telnyx-owned IP network for lower latency and higher reliability than the public internet.
-- **Developer-first** — SDKs for Python, Node.js, Go, Ruby, Java, and PHP. Comprehensive webhook event model. Sandbox environment for testing.
-- **Competitive pricing** — Pay-as-you-go with no minimums, contracts, or per-seat fees.
+- **Create SIP Connection**: `POST /v2/sip_connections` -- [API reference](https://developers.telnyx.com/api/sip-trunking/create-credential-connection)
+- **List SIP Connections**: `GET /v2/sip_connections` -- [API reference](https://developers.telnyx.com/api/sip-trunking/list-credential-connections)
+- **Retrieve SIP Connection**: `GET /v2/sip_connections/{id}` -- [API reference](https://developers.telnyx.com/api/sip-trunking/retrieve-credential-connection)
 
-## Prerequisites
+## Architecture
 
-- Node.js 14 or higher.
-- A Telnyx account with an active API key from the [Telnyx Portal](https://portal.telnyx.com).
-- A Telnyx phone number enabled for inbound calls.
-- npm (Node.js package manager).
-- A publicly accessible URL for webhook callbacks (ngrok or similar for local development).
+```
+  HTTP client                          Inbound PSTN call
+       │                                       │
+       ▼                                       ▼
+  ┌──────────────────────┐            ┌──────────────────┐
+  │ Express app          │            │ Telnyx Voice/SIP  │
+  │ /sip/connections     │            └────────┬─────────┘
+  │ /sip/connections/:id │                     │
+  └──────────┬───────────┘                     │ webhook
+             │                                  ▼
+             │ SDK call            ┌────────────────────────────┐
+             ▼                     │ POST /webhooks/inbound-call │
+  ┌──────────────────┐            └────────────────────────────┘
+  │ Telnyx SIP API    │
+  └──────────────────┘
+```
 
-## Quick Start
+## Environment Variables
 
-### Option 1: Local (recommended)
+Copy `.env.example` to `.env` and fill in:
+
+| Variable | Type | Example | Required | Description | Where to get it |
+|----------|------|---------|----------|-------------|-----------------|
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | — |
+| `SIP_ENDPOINT` | `string` | `sip:user@example.com` | **yes** | Inbound SIP URI that new connections route calls to | Your SIP server |
+| `SIP_USERNAME` | `string` | `your_sip_username` | **yes** | Inbound authentication username for the SIP connection | Your SIP server |
+| `SIP_PASSWORD` | `string` | `your_sip_password` | **yes** | Inbound authentication password for the SIP connection | Your SIP server |
+| `WEBHOOK_URL` | `string` | `https://your-domain.com/webhook` | no | Public base URL logged at startup for the inbound-call webhook | [ngrok](https://ngrok.com) / your host |
+
+## Setup
 
 ```bash
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
 cd telnyx-code-examples/inbound-sip-routing-nodejs
-cp .env.example .env
-# Edit .env with your Telnyx API key and phone number
+cp .env.example .env    # ← fill in your credentials
 npm install
-node server.js
+node server.js          # starts on http://localhost:5000
 ```
 
-### Option 2: Manual
+### Webhook Configuration
 
-See the [Implementation Details](#implementation-details) section below for step-by-step instructions.
+1. Expose your local server:
 
-## Implementation Details
+   ```bash
+   ngrok http 5000
+   ```
 
-Create `app.js` and initialize the Telnyx client using the Node.js SDK pattern. Define a helper function to create a SIP connection with proper validation:
+2. Copy the HTTPS URL and configure in the [Telnyx Portal](https://portal.telnyx.com):
 
-```javascript
-const express = require("express");
-const Telnyx = require("telnyx");
-require("dotenv").config();
+   - **Voice / SIP Connection** → Inbound Webhook URL → `https://<id>.ngrok.io/webhooks/inbound-call`
 
-const app = express();
-app.use(express.json());
+## API Reference
 
-// Initialize client with the SDK pattern
-const client = new Telnyx({ apiKey: process.env.TELNYX_API_KEY });
+### `POST /sip/connections`
 
-/**
- * Create a SIP connection for inbound call routing.
- * Returns JSON-serializable connection data.
- */
-async function createSipConnection(connectionName) {
-  const response = await client.sipConnections.create({
-    connection_name: connectionName,
-    inbound: {
-      uri: process.env.SIP_ENDPOINT,
-    },
-    inbound_authentication: {
-      username: process.env.SIP_USERNAME,
-      password: process.env.SIP_PASSWORD,
-    },
-  });
+Create a new SIP connection for inbound routing. Uses `SIP_ENDPOINT`, `SIP_USERNAME`, and `SIP_PASSWORD` from the environment for the inbound URI and authentication.
 
-  // Extract serializable data — SDK objects are NOT JSON-serializable
-  return {
-    id: response.data.id,
-    connection_name: response.data.connection_name,
-    inbound_uri: response.data.inbound?.uri,
-    created_at: response.data.created_at,
-  };
-}
+```bash
+curl -X POST http://localhost:5000/sip/connections \
+  -H "Content-Type: application/json" \
+  -d '{
+    "connection_name": "inbound-routing-prod"
+  }'
+```
 
-/**
- * List all SIP connections.
- * Returns array of JSON-serializable connection objects.
- */
-async function listSipConnections() {
-  const response = await client.sipConnections.list();
+**Response `201`:**
 
-  return response.data.map((conn) => ({
-    id: conn.id,
-    connection_name: conn.connection_name,
-    inbound_uri: conn.inbound?.uri,
-    created_at: conn.created_at,
-  }));
-}
-
-/**
- * Retrieve a specific SIP connection by ID.
- * Returns JSON-serializable connection data.
- */
-async function getSipConnection(connectionId) {
-  const response = await client.sipConnections.retrieve(connectionId);
-
-  return {
-    id: response.data.id,
-    connection_name: response.data.connection_name,
-    inbound_uri: response.data.inbound?.uri,
-    inbound_authentication_username: response.data.inbound_authentication?.username,
-    created_at: response.data.created_at,
-  };
+```json
+{
+  "id": "1234567890",
+  "connection_name": "inbound-routing-prod",
+  "inbound_uri": "sip:user@example.com",
+  "created_at": "2026-06-18T12:00:00Z"
 }
 ```
 
-## Complete Code
+### `GET /sip/connections`
 
-See [`server.js`](./server.js) for the full implementation.
+List all SIP connections on the account.
+
+```bash
+curl http://localhost:5000/sip/connections
+```
+
+**Response `200`:**
+
+```json
+[
+  {
+    "id": "1234567890",
+    "connection_name": "inbound-routing-prod",
+    "inbound_uri": "sip:user@example.com",
+    "created_at": "2026-06-18T12:00:00Z"
+  }
+]
+```
+
+### `GET /sip/connections/:id`
+
+Retrieve a single SIP connection by ID.
+
+```bash
+curl http://localhost:5000/sip/connections/1234567890
+```
+
+**Response `200`:**
+
+```json
+{
+  "id": "1234567890",
+  "connection_name": "inbound-routing-prod",
+  "inbound_uri": "sip:user@example.com",
+  "inbound_authentication_username": "your_sip_username",
+  "created_at": "2026-06-18T12:00:00Z"
+}
+```
+
+### `POST /webhooks/inbound-call`
+
+Receive inbound call webhooks from Telnyx. The app logs the event and acknowledges receipt. Extend this handler to route calls.
+
+```bash
+curl -X POST http://localhost:5000/webhooks/inbound-call \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": {
+      "event_type": "call.initiated",
+      "call_session_id": "abc-123",
+      "from": "+12125551234",
+      "to": "+13105550000",
+      "occurred_at": "2026-06-18T12:00:00Z"
+    }
+  }'
+```
+
+**Response `200`:**
+
+```json
+{
+  "status": "received"
+}
+```
 
 ## Troubleshooting
 
-| Issue | Problem | Solution |
-|-------|---------|----------|
-| Authentication Error (401) | The endpoint returns `{"error": "Invalid API key"}` with HTTP 401. | Verify your `TELNYX_API_KEY` in the `.env` file matches the key shown in the [Telnyx Portal](https://portal.telnyx.com). Ensure there are no trailing spaces or quotes. If the key was regenerated recently, update your environment file and restart the Express server. |
-| SIP Connection Creation Fails | You receive a 400 or 422 error when creating a SIP connection. | Verify that `SIP_ENDPOINT`, `SIP_USERNAME`, and `SIP_PASSWORD` are correctly set in your `.env` file. Ensure the SIP endpoint is reachable and supports the authentication method you configured. Test connectivity to your SIP server from the command line using a SIP client like `sipsak` or `sipgrep`. |
-| Webhook Not Receiving Events | Inbound calls are not triggering the `/webhooks/inbound-call` endpoint. | Confirm that your `WEBHOOK_URL` in the `.env` file is publicly accessible and correctly configured in the Telnyx Portal. If using ngrok, ensure the tunnel is active and the URL matches your ngrok public URL. Check your firewall and router settings to allow inbound traffic on port 3000 (or your configured port). Verify that the SIP connection is properly linked to your Telnyx phone number in the Portal. |
-| Environment Variables Not Loading | The application crashes with `Cannot read property 'apiKey' of undefined` or similar. | Confirm your `.env` file exists in the same directory as `app.js` and contains all required variables. Ensure the file is named exactly `.env` (not `.env.txt` or `env`). The `require("dotenv").config()` call must execute before any `process.env` access. Restart the Node.js process after updating the `.env` file. |
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| `{"error": "Invalid API key"}` with HTTP 401 | `TELNYX_API_KEY` is missing, wrong, or has trailing whitespace | Copy a fresh key from [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) into `.env` and restart `node server.js`. |
+| `{"error": "Missing required field: connection_name"}` (400) | `POST /sip/connections` was sent without a `connection_name` in the JSON body | Include `connection_name` and send `Content-Type: application/json`. |
+| SIP connection creation fails (400/422) | `SIP_ENDPOINT`, `SIP_USERNAME`, or `SIP_PASSWORD` is unset or invalid | Set all three in `.env`. Confirm the SIP URI is reachable and accepts the configured credentials. |
+| Inbound webhooks never hit `/webhooks/inbound-call` | `WEBHOOK_URL` is not public or the SIP connection isn't linked to your number | Expose the server with `ngrok http 5000`, set the public URL in the Portal, and attach the connection to your Telnyx number. |
+| `{"error": "Rate limit exceeded..."}` (429) | Too many SIP API requests in a short window | Add retry/backoff on the client side and reduce request frequency. |
+| Server starts on `:3000` instead of `:5000` | `PORT` was not loaded from `.env` | Confirm `.env` contains `PORT=5000` and that `require("dotenv").config()` runs before startup. |
 
-## FAQ
+## Related Examples
 
-**Q: Do I need a Telnyx account to run this example?**
-
-Yes. Sign up at [portal.telnyx.com](https://portal.telnyx.com) to get an API key. Telnyx offers free trial credit for testing.
-
-**Q: Can I use this SIP example in production?**
-
-Yes. This example includes error handling, environment-based configuration, and a Dockerfile for containerized deployment. Review the security and scaling sections before deploying to production.
-
-**Q: What Node.js version do I need?**
-
-Node.js 18 or higher. Node.js 20 LTS is recommended.
-
-**Q: How is Telnyx different from Twilio?**
-
-Telnyx is an AI Communications Infrastructure platform with a private global network, integrated voice + messaging + AI + SIP + IoT under one API, and significantly lower pricing. No need to stitch together multiple vendors.
-
-**Q: Where do I get a Telnyx phone number?**
-
-Log into the [Telnyx Portal](https://portal.telnyx.com), navigate to Numbers > Search & Buy, and purchase a number with the capabilities you need (SMS, voice, or both).
+- [inbound-sip-routing-python](../inbound-sip-routing-python/) - same example in Python
+- [setup-sip-trunk-nodejs](../setup-sip-trunk-nodejs/) - provision a SIP trunk in Node.js
+- [configure-sip-codecs-python](../configure-sip-codecs-python/) - tune SIP connection codecs
 
 ## Resources
 
 - [SIP Trunking Get Started](https://developers.telnyx.com/docs/voice/sip-trunking/get-started)
-- [SIP Configuration Guides](https://developers.telnyx.com/docs/voice/sip-trunking/configuration-guides)
+- [SIP Connections API reference](https://developers.telnyx.com/api/sip-trunking/create-credential-connection)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx SIP Trunks](https://telnyx.com/products/sip-trunks)
 - [SIP Trunking Pricing](https://telnyx.com/pricing/elastic-sip)
-
-## Related Examples
-
-- [Set Up SIP Trunking with Telnyx](/tutorials/sip/nodejs/sip-trunking-setup).
-- [Configure SIP Authentication](/tutorials/sip/nodejs/sip-authentication).
-- [Implement Failover Routing for SIP Connections](/tutorials/sip/nodejs/failover-routing).

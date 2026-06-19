@@ -33,11 +33,12 @@ Compliance Call Recorder + AI Auditor — auto-record, batch-process with AI, fl
 ## Telnyx Products Used
 
 - **AI Inference** — LLM inference with OpenAI-compatible API, runs on Telnyx infrastructure
+- **Cloud Storage** — S3-compatible object storage for archiving call recordings
 
-## API Endpoints
+## APIs Used
 
 - **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
-- **Cloud Storage**: `PUT /v2/storage/buckets/{bucket}/{key}` — [API reference](https://developers.telnyx.com/api/cloud-storage/put-object)
+- **Cloud Storage (S3-compatible)**: recordings are uploaded with the AWS S3 SDK (`boto3`) — `s3.put_object` against the regional endpoint `https://{region}.telnyxcloudstorage.com`. Authentication is S3 SigV4 with your Telnyx API key passed as **both** the access key and the secret key. See the [Cloud Storage quickstart](https://developers.telnyx.com/docs/cloud-storage/quick-start).
 
 ## Webhook Events
 
@@ -102,7 +103,7 @@ This is the core of the app — a state machine driven by Telnyx webhook events.
 ### Business Logic
 
 - **`audit_transcript()`** — Processes audit transcript request and returns result.
-- **`store_recording()`** — Makes an API call and processes the response.
+- **`store_recording()`** — Downloads the saved recording from Telnyx, then uploads it to Telnyx Cloud Storage with `boto3` (`s3.put_object`) against the regional `https://{region}.telnyxcloudstorage.com` endpoint. The S3 client authenticates with your Telnyx API key supplied as both the access key and the secret key. Skipped if `STORAGE_BUCKET` is unset.
 - **`get_audit_results()`** — Fetches audit results by ID with full details.
 
 ### All Endpoints
@@ -172,4 +173,5 @@ python app.py
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Call Control quickstart](https://developers.telnyx.com/docs/voice/call-control)
 - [AI Inference docs](https://developers.telnyx.com/docs/inference)
+- [Cloud Storage quickstart (S3-compatible)](https://developers.telnyx.com/docs/cloud-storage/quick-start)
 - [Telnyx Portal](https://portal.telnyx.com)

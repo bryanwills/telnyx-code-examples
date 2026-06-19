@@ -55,6 +55,16 @@ curl http://localhost:5000/health
 
 ---
 
+## Recording Storage (Telnyx Cloud Storage)
+
+When a `call.recording.saved` event arrives, the app downloads the recording from Telnyx and archives it in Telnyx Cloud Storage. Storage is **not** a REST call — it uses the S3-compatible API via the AWS S3 SDK (`boto3`):
+
+- **Endpoint**: `https://{region}.telnyxcloudstorage.com`, where `{region}` comes from the `TELNYX_STORAGE_REGION` env var (`us-central-1`, `us-east-1`, `us-west-1`, `eu-central-1`; defaults to `us-central-1`).
+- **Authentication**: S3 SigV4 with your Telnyx API key supplied as **both** the access key and the secret key.
+- **Operation**: `s3.put_object(Bucket=STORAGE_BUCKET, Key=..., Body=..., ContentType="audio/mpeg")`. Objects are keyed as `recordings/YYYY/MM/DD/{call_control_id}.mp3`.
+
+Uploads are skipped when `STORAGE_BUCKET` is unset. See the [Cloud Storage quickstart](https://developers.telnyx.com/docs/cloud-storage/quick-start).
+
 ## Status Values
 
 Records use these status values: `call_ended`, `event_received`, `ok`, `recording`, `recording_saved`, `tracking`, `transcribing`

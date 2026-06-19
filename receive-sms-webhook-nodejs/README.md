@@ -1,150 +1,179 @@
-# Receive SMS Webhook with Node.js and Express
+---
+name: receive-sms-webhook
+title: "Receive SMS Webhook"
+description: "Receive inbound SMS messages via Telnyx webhooks with an Express server. Validates payloads and acknowledges within 5 seconds."
+language: nodejs
+framework: express
+telnyx_products: [Messaging]
+channel: [sms]
+---
 
-## What Does This Example Do?
+# Receive SMS Webhook
 
-Build a production-ready Express endpoint that receives inbound SMS messages via Telnyx webhooks. This tutorial demonstrates webhook validation, proper error handling for telecom APIs, and secure credential management via environment variables. You'll learn how to configure a Messaging Profile, expose your local server to the internet, and process incoming SMS events in real time.
+Receive inbound SMS messages via Telnyx webhooks with an Express server. Validates payloads and acknowledges within 5 seconds.
 
-## Who Is This For?
+## Telnyx API Endpoints Used
 
-- **Node.js developers** building sms features with Express.
-- **Backend engineers** integrating telephony or messaging into existing applications.
-- **DevOps teams** looking for containerized, production-ready telecom examples.
-- **Startups and enterprises** replacing legacy telecom providers with a modern API-first platform.
+This example does not call the Telnyx REST API — it receives webhook events that Telnyx sends to your server when an SMS arrives.
 
-## Why Telnyx?
+- **Inbound Message webhook**: `POST /webhooks/sms` (your endpoint, called by Telnyx) -- [Webhook reference](https://developers.telnyx.com/docs/messaging/messages/receive-message)
 
-Telnyx is an **AI Communications Infrastructure** platform that gives developers a single API for [voice](https://telnyx.com/products/voice-ai-agents), [messaging](https://telnyx.com/products/sms-api), [SIP](https://telnyx.com/products/sip-trunks), [AI](https://telnyx.com/ai-assistants), and [IoT](https://telnyx.com/products/iot-sim-card) — no Frankenstack required.
+## Architecture
 
-- **Integrated platform** — [Voice](https://telnyx.com/products/voice-ai-agents), [SMS](https://telnyx.com/products/sms-api), [SIP trunking](https://telnyx.com/products/sip-trunks), [AI assistants](https://telnyx.com/ai-assistants), and [IoT SIM management](https://telnyx.com/products/iot-sim-card) under one roof. No stitching together multiple vendors.
-- **Global private network** — Calls and messages traverse the Telnyx-owned IP network for lower latency and higher reliability than the public internet.
-- **Developer-first** — SDKs for Python, Node.js, Go, Ruby, Java, and PHP. Comprehensive webhook event model. Sandbox environment for testing.
-- **Competitive pricing** — Pay-as-you-go with no minimums, contracts, or per-seat fees.
+```
+  Inbound SMS
+        │
+        ▼
+  ┌──────────────────┐
+  │ Telnyx Messaging  │
+  └────────┬─────────┘
+           │ POST webhook
+           ▼
+  ┌──────────────────┐
+  │ Express server    │
+  │ /webhooks/sms     │
+  └────────┬─────────┘
+           │
+           └──► validate → store → 200 OK
+```
 
-## Prerequisites
+## Why Telnyx
 
-- Node.js 14 or higher.
-- A Telnyx account with an active API key from the [Telnyx Portal](https://portal.telnyx.com).
-- A Telnyx phone number enabled for inbound SMS.
-- npm (Node.js package manager).
-- ngrok or similar tunneling tool to expose your local server publicly (for webhook testing).
+Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. Inbound SMS is delivered over the Telnyx-owned network with a webhook event model built for low-latency, reliable delivery.
 
-## Quick Start
+- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
 
-### Option 1: Local (recommended)
+## Environment Variables
+
+Copy `.env.example` to `.env` and fill in:
+
+| Variable | Type | Example | Required | Description | Where to get it |
+|----------|------|---------|----------|-------------|-----------------|
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key used to initialize the SDK client | [Portal](https://portal.telnyx.com/api-keys) |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000`) | — |
+
+## Setup
 
 ```bash
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
 cd telnyx-code-examples/receive-sms-webhook-nodejs
-cp .env.example .env
-# Edit .env with your Telnyx API key and phone number
+cp .env.example .env    # ← fill in your credentials
 npm install
-node server.js
+node server.js          # starts on http://localhost:5000
 ```
 
-### Option 2: Manual
+### Webhook Configuration
 
-See the [Implementation Details](#implementation-details) section below for step-by-step instructions.
+1. Expose your local server:
 
-## Implementation Details
+   ```bash
+   ngrok http 5000
+   ```
 
-Create `app.js` and initialize the Telnyx client using the new pattern. Define a helper function to handle inbound SMS events with proper validation:
+2. Copy the HTTPS URL and configure in [Telnyx Portal](https://portal.telnyx.com):
 
-```javascript
-require("dotenv").config();
-const express = require("express");
-const bodyParser = require("body-parser");
-const Telnyx = require("telnyx");
+   - **Messaging Profile** → Inbound Settings → Webhook URL → `https://<id>.ngrok.io/webhooks/sms`
 
-const app = express();
+3. Assign your inbound-enabled phone number to that Messaging Profile.
 
-// Middleware to parse JSON request bodies
-app.use(bodyParser.json());
+## API Reference
 
-// Initialize client with the new SDK pattern
-const client = new Telnyx({ apiKey: process.env.TELNYX_API_KEY });
+### `POST /webhooks/sms`
 
-// In-memory storage for received messages (replace with database in production)
-const receivedMessages = [];
+Receives inbound SMS webhook events from Telnyx. Validates the payload, extracts the message, stores it in memory, and returns `200 OK` so Telnyx stops retrying. This is normally called by Telnyx, but you can simulate it:
 
-/**
- * Process inbound SMS webhook event.
- * Validates webhook payload and extracts message details.
- * @param {Object} payload - Webhook event payload from Telnyx.
- * @returns {Object} Processed message data.
- */
-function processInboundSMS(payload) {
-  // Validate required fields in webhook payload
-  if (!payload.data || !payload.data.payload) {
-    throw new Error("Invalid webhook payload structure");
-  }
+```bash
+curl -X POST http://localhost:5000/webhooks/sms \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": {
+      "event_type": "message.received",
+      "payload": {
+        "id": "msg-f5d7a7e0-1234-5678",
+        "from": { "phone_number": "+12125551234" },
+        "to": [{ "phone_number": "+13125559876" }],
+        "text": "Hello from a real phone",
+        "received_at": "2026-06-18T12:00:00Z",
+        "direction": "inbound"
+      }
+    }
+  }'
+```
 
-  const messageData = payload.data.payload;
+**Response:**
 
-  // Extract message details — ensure fields exist before accessing
-  const processedMessage = {
-    message_id: messageData.id || null,
-    from: messageData.from?.phone_number || null,
-    to: messageData.to?.[0]?.phone_number || null,
-    text: messageData.text || "",
-    received_at: messageData.received_at || new Date().toISOString(),
-    direction: messageData.direction || "inbound",
-  };
-
-  // Validate critical fields
-  if (!processedMessage.from || !processedMessage.to) {
-    throw new Error("Missing sender or recipient phone number in webhook");
-  }
-
-  return processedMessage;
+```json
+{
+  "success": true,
+  "message_id": "msg-f5d7a7e0-1234-5678",
+  "status": "received"
 }
 ```
 
-## Complete Code
+### `GET /messages`
 
-See [`server.js`](./server.js) for the full implementation.
+Debug endpoint that returns every message received since the server started (in-memory; remove in production).
+
+```bash
+curl http://localhost:5000/messages
+```
+
+**Response:**
+
+```json
+{
+  "count": 1,
+  "messages": [
+    {
+      "message_id": "msg-f5d7a7e0-1234-5678",
+      "from": "+12125551234",
+      "to": "+13125559876",
+      "text": "Hello from a real phone",
+      "received_at": "2026-06-18T12:00:00Z",
+      "direction": "inbound"
+    }
+  ]
+}
+```
+
+### `GET /health`
+
+Health check.
+
+```bash
+curl http://localhost:5000/health
+```
+
+**Response:**
+
+```json
+{
+  "status": "ok",
+  "timestamp": "2026-06-18T12:00:00.000Z"
+}
+```
 
 ## Troubleshooting
 
-| Issue | Problem | Solution |
-|-------|---------|----------|
-| Webhook not receiving messages | Your endpoint is configured in the Telnyx Portal, but no POST requests arrive when SMS is sent to your number. | Verify the webhook URL is publicly accessible (use ngrok if testing locally). Check that the URL in your Messaging Profile settings matches exactly (including protocol `https://`). Ensure your Express server is running and listening on the correct port. Check Telnyx Portal webhook logs for delivery attempts and error messages. |
-| "Invalid webhook payload" error | The endpoint returns HTTP 400 with `{"error": "Invalid webhook payload structure"}`. | Verify the webhook payload structure matches Telnyx's format. Log `req.body` to inspect the incoming data. Ensure `body-parser` middleware is configured before the route handler. Check that your Messaging Profile is sending the `message.received` event type. |
-| Webhook timeout (no response within 5 seconds) | Telnyx retries the webhook delivery because your endpoint doesn't respond in time. | Ensure your webhook handler responds immediately with HTTP 200 before performing long-running operations (e.g., database writes, external API calls). Move heavy processing to a background job queue. Verify your server has sufficient resources and network connectivity. Check for synchronous blocking operations in your handler. |
-| "Missing sender or recipient phone number" error | The webhook processes but returns HTTP 400 with missing phone number error. | Inspect the webhook payload structure from Telnyx. The `from` field should be at `payload.data.payload.from.phone_number` and `to` at `payload.data.payload.to[0].phone_number`. Add logging to print the full payload and verify field paths match your Telnyx API version. Update field accessors if the structure differs. |
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Connection refused on port 5000 | Server isn't running, or another process holds the port. | Run `node server.js` and confirm no other process uses the port. Note the code defaults to `3000` if `PORT` is unset. |
+| `400 {"error":"Invalid webhook payload"}` | Request body is missing `data`. | Send a JSON body with a `data` object. Ensure `body-parser` runs before the route and `Content-Type: application/json` is set. |
+| `400 {"error":"Invalid webhook payload structure"}` | Body has `data` but no `data.payload`. | Confirm the Messaging Profile is sending the `message.received` event and the payload nests message fields under `data.payload`. |
+| `400 {"error":"Missing sender or recipient phone number in webhook"}` | `from.phone_number` or `to[0].phone_number` is absent. | Inspect the payload — `from` is at `data.payload.from.phone_number`, `to` at `data.payload.to[0].phone_number`. Update accessors if your API version differs. |
+| No webhook requests arrive | Webhook URL not reachable or not assigned. | Verify the HTTPS URL (use ngrok locally), confirm it ends in `/webhooks/sms`, and assign your number to the Messaging Profile. Check Portal webhook delivery logs. |
 
-## FAQ
+## Related Examples
 
-**Q: Do I need a Telnyx account to run this example?**
-
-Yes. Sign up at [portal.telnyx.com](https://portal.telnyx.com) to get an API key. Telnyx offers free trial credit for testing.
-
-**Q: Can I use this SMS example in production?**
-
-Yes. This example includes error handling, environment-based configuration, and a Dockerfile for containerized deployment. Review the security and scaling sections before deploying to production.
-
-**Q: What Node.js version do I need?**
-
-Node.js 18 or higher. Node.js 20 LTS is recommended.
-
-**Q: How is Telnyx different from Twilio?**
-
-Telnyx is an AI Communications Infrastructure platform with a private global network, integrated voice + messaging + AI + SIP + IoT under one API, and significantly lower pricing. No need to stitch together multiple vendors.
-
-**Q: Where do I get a Telnyx phone number?**
-
-Log into the [Telnyx Portal](https://portal.telnyx.com), navigate to Numbers > Search & Buy, and purchase a number with the capabilities you need (SMS, voice, or both).
+- [receive-sms-webhook-python](../receive-sms-webhook-python/) - Same webhook receiver in Python
+- [send-sms-nodejs](../send-sms-nodejs/) - Send an SMS with Node.js
+- [send-bulk-sms-nodejs](../send-bulk-sms-nodejs/) - Send bulk SMS with Node.js
+- [sms-two-factor-auth-nodejs](../sms-two-factor-auth-nodejs/) - SMS-based 2FA with Node.js
 
 ## Resources
 
-- [Messaging Overview](https://developers.telnyx.com/docs/messaging)
-- [Send an SMS — Quickstart](https://developers.telnyx.com/docs/messaging/messages/send-message)
+- [Receive a Message Guide](https://developers.telnyx.com/docs/messaging/messages/receive-message)
 - [Messaging API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)
 - [Messaging Pricing](https://telnyx.com/pricing/messaging)
-
-## Related Examples
-
-- [Send a Single SMS with Node.js](/tutorials/sms/nodejs/send-single-sms).
-- [Send Bulk SMS Messages with Node.js](/tutorials/sms/nodejs/send-bulk-sms).
-- [Implement Two-Factor Authentication with SMS](/tutorials/sms/nodejs/otp-2fa).

@@ -4,6 +4,9 @@ markup, TTS narrates each chapter with consistent voice, stores final audio
 in Telnyx Cloud Storage."""
 
 import os, json, uuid, requests
+import boto3
+from botocore.config import Config
+from botocore.exceptions import ClientError
 from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
@@ -17,8 +20,23 @@ AI_MODEL = os.getenv("AI_MODEL", "moonshotai/Kimi-K2.6")
 TTS_MODEL = os.getenv("TTS_MODEL", "telnyx/tts")
 BUCKET_NAME = os.getenv("BUCKET_NAME", "audiobooks")
 DEFAULT_VOICE = os.getenv("DEFAULT_VOICE", "nova")
+# Region selects the Telnyx Cloud Storage endpoint host,
+# e.g. us-central-1 -> us-central-1.telnyxcloudstorage.com
+REGION = os.getenv("TELNYX_STORAGE_REGION", "us-central-1")
 API = "https://api.telnyx.com/v2"
 HEADERS = {"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"}
+
+# Telnyx Cloud Storage is S3-compatible, so we talk to it with the AWS SDK (boto3)
+# pointed at the region-scoped Telnyx S3 endpoint — not a REST API. The Telnyx API
+# key is supplied as BOTH the access key and the secret key.
+s3 = boto3.client(
+    "s3",
+    endpoint_url=f"https://{REGION}.telnyxcloudstorage.com",
+    aws_access_key_id=TELNYX_API_KEY,
+    aws_secret_access_key=TELNYX_API_KEY,
+    region_name=REGION,
+    config=Config(signature_version="s3v4"),
+)
 
 NARRATOR_VOICES = {
     "warm_female": "nova",
@@ -64,14 +82,19 @@ def tts_generate(text, voice=None):
 
 
 def upload_to_storage(bucket, key, data, content_type="audio/mpeg"):
-    """Upload audio to Telnyx Cloud Storage."""
-    resp = requests.put(
-        f"https://storage.telnyx.com/{bucket}/{key}",
-        headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": content_type},
-        data=data, timeout=60
-    )
-    resp.raise_for_status()
-    return f"https://storage.telnyx.com/{bucket}/{key}"
+    """Upload audio to Telnyx Cloud Storage (S3-compatible) and return a presigned GET URL.
+
+    The object is stored via the S3 PutObject API and a time-limited presigned URL is
+    returned so callers can stream the audio without exposing long-lived credentials.
+    """
+    try:
+        s3.put_object(Bucket=bucket, Key=key, Body=data, ContentType=content_type)
+        return s3.generate_presigned_url(
+            "get_object", Params={"Bucket": bucket, "Key": key}, ExpiresIn=3600
+        )
+    except ClientError:
+        app.logger.exception("Failed to upload object to Cloud Storage")
+        raise
 
 
 @app.route("/books/narrate", methods=["POST"])
