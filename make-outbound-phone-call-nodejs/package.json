@@ -8,8 +8,8 @@
     "test": "node --check server.js"
   },
   "dependencies": {
-    "telnyx": "latest",
-    "express": "latest",
-    "dotenv": "latest"
+    "telnyx": "^6.83.0",
+    "express": "^5.2.1",
+    "dotenv": "^17.4.2"
   }
 }
