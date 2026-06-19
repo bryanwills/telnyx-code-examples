@@ -5,14 +5,40 @@
  */
 
 const express = require("express");
-const bodyParser = require("body-parser");
+const crypto = require("crypto");
 const Telnyx = require("telnyx");
 require("dotenv").config();
 
-const app = express();
-app.use(bodyParser.json());
+// Verify the Telnyx Ed25519 webhook signature (version-proof; stdlib only — no SDK dependency).
+function verifyTelnyxSignature(rawBody, headers, toleranceSec = 300) {
+  const sig = headers["telnyx-signature-ed25519"];
+  const ts = headers["telnyx-timestamp"];
+  const pub = process.env.TELNYX_PUBLIC_KEY;
+  if (!sig || !ts || !pub) return false;
+  if (Math.abs(Date.now() / 1000 - Number(ts)) > toleranceSec) return false;
+  try {
+    const der = Buffer.concat([
+      Buffer.from("302a300506032b6570032100", "hex"),
+      Buffer.from(pub, "base64"),
+    ]);
+    const key = crypto.createPublicKey({ key: der, format: "der", type: "spki" });
+    return crypto.verify(null, Buffer.from(`${ts}|${rawBody}`), key, Buffer.from(sig, "base64"));
+  } catch (e) {
+    return false;
+  }
+}
 
-// Initialize client with the new SDK pattern
+const app = express();
+
+// JSON body parser for application routes. NOTE: do NOT register this
+// globally (e.g. app.use(express.json())) — a global JSON parser consumes the
+// request stream before the webhook route's express.raw() middleware runs,
+// leaving req.body a parsed object. Signature verification would then run over
+// "[object Object]" and reject every legitimate Telnyx webhook. Apply it
+// per-route to everything EXCEPT the raw webhook endpoint.
+const jsonParser = express.json();
+
+// Initialize client with the new SDK pattern (used for Call Control actions).
 const client = new Telnyx({ apiKey: process.env.TELNYX_API_KEY });
 
 // In-memory store for active calls (use a database in production)
@@ -139,7 +165,7 @@ function getCallStatus(callControlId) {
  * POST /calls/initiate
  * Initiate an outbound call.
  */
-app.post("/calls/initiate", async (req, res) => {
+app.post("/calls/initiate", jsonParser, async (req, res) => {
   const { to } = req.body;
 
   if (!to) {
@@ -176,7 +202,7 @@ app.post("/calls/initiate", async (req, res) => {
  * POST /calls/:callControlId/recording/start
  * Start recording an active call.
  */
-app.post("/calls/:callControlId/recording/start", async (req, res) => {
+app.post("/calls/:callControlId/recording/start", jsonParser, async (req, res) => {
   const { callControlId } = req.params;
 
   try {
@@ -209,7 +235,7 @@ app.post("/calls/:callControlId/recording/start", async (req, res) => {
  * POST /calls/:callControlId/recording/stop
  * Stop recording an active call.
  */
-app.post("/calls/:callControlId/recording/stop", async (req, res) => {
+app.post("/calls/:callControlId/recording/stop", jsonParser, async (req, res) => {
   const { callControlId } = req.params;
 
   try {
@@ -257,25 +283,44 @@ app.get("/calls/:callControlId/status", (req, res) => {
  * POST /webhooks/call
  * Handle Telnyx call lifecycle webhooks.
  * Events: call.initiated, call.answered, call.hangup, call.recording.saved
+ *
+ * Uses express.raw() so the unmodified request body is available for
+ * signature verification — Telnyx signs the exact raw payload bytes.
  */
-app.post("/webhooks/call", (req, res) => {
-  const event = req.body.data;
+app.post("/webhooks/call", express.raw({ type: "*/*" }), async (req, res) => {
+  // express.raw() leaves req.body as a Buffer of the exact bytes Telnyx signed.
+  // Guard against any upstream parser having consumed the stream.
+  const rawBody = Buffer.isBuffer(req.body)
+    ? req.body
+    : Buffer.from(typeof req.body === "string" ? req.body : "");
+
+  // ENFORCE-ALWAYS: verify the Telnyx Ed25519 webhook signature BEFORE trusting
+  // the payload. verifyTelnyxSignature() checks the signature over the RAW body;
+  // it must run before the body is parsed or used.
+  if (!verifyTelnyxSignature(rawBody.toString(), req.headers)) {
+    return res.status(401).json({ error: "invalid signature" });
+  }
+
+  // Parse the verified raw body AFTER verifying; read fields from data.payload.
+  const data = JSON.parse(rawBody.toString()).data;
+  const event = data.payload;
+  const eventType = data.event_type;
   const callControlId = event.call_control_id;
 
-  console.log(`Webhook event: ${event.event_type} for call ${callControlId}`);
+  console.log(`Webhook event: ${eventType} for call ${callControlId}`);
 
-  if (event.event_type === "call.answered") {
+  if (eventType === "call.answered") {
     // Call was answered — safe to start recording
     if (activeCalls.has(callControlId)) {
       const callData = activeCalls.get(callControlId);
       callData.status = "answered";
     }
-  } else if (event.event_type === "call.hangup") {
+  } else if (eventType === "call.hangup") {
     // Call ended — clean up
     if (activeCalls.has(callControlId)) {
       activeCalls.delete(callControlId);
     }
-  } else if (event.event_type === "call.recording.saved") {
+  } else if (eventType === "call.recording.saved") {
     // Recording is ready for download
     console.log(`Recording saved: ${event.recording_id}`);
     if (activeCalls.has(callControlId)) {

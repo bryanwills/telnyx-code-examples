@@ -8,10 +8,10 @@
     "test": "node --check server.js"
   },
   "dependencies": {
-    "express": "latest",
-    "telnyx": "latest",
-    "dotenv": "latest",
-    "body-parser": "latest",
-    "nodemon": "latest"
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "nodemon": "latest",
+    "telnyx": "^6.83.0",
+    "ws": "^8.21.0"
   }
 }

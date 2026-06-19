@@ -1,29 +1,66 @@
 package main
 
 import (
+	"crypto/ed25519"
+	"encoding/base64"
+	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/telnyx/telnyx-go"
-	"github.com/telnyx/telnyx-go/v2"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
+// verifyTelnyxSignature verifies the Telnyx Ed25519 webhook signature (stdlib only).
+// Requires imports: crypto/ed25519, encoding/base64, net/http, os, strconv, time.
+func verifyTelnyxSignature(body []byte, header http.Header) bool {
+	sigB64 := header.Get("telnyx-signature-ed25519")
+	ts := header.Get("telnyx-timestamp")
+	pubB64 := os.Getenv("TELNYX_PUBLIC_KEY")
+	if sigB64 == "" || ts == "" || pubB64 == "" {
+		return false
+	}
+	t, err := strconv.ParseInt(ts, 10, 64)
+	if err != nil {
+		return false
+	}
+	if d := time.Now().Unix() - t; d > 300 || d < -300 {
+		return false
+	}
+	pub, err := base64.StdEncoding.DecodeString(pubB64)
+	if err != nil || len(pub) != ed25519.PublicKeySize {
+		return false
+	}
+	sig, err := base64.StdEncoding.DecodeString(sigB64)
+	if err != nil {
+		return false
+	}
+	return ed25519.Verify(ed25519.PublicKey(pub), []byte(ts+"|"+string(body)), sig)
+}
+
 // WebhookPayload represents the structure of a Telnyx webhook event.
+// For Call Control events the event-specific fields live under
+// data.payload, while data carries the envelope (event_type, id, etc.).
 type WebhookPayload struct {
 	Data struct {
-		EventType      string `json:"event_type"`
-		CallControlID  string `json:"call_control_id"`
-		From           string `json:"from"`
-		To             string `json:"to"`
-		State          string `json:"state"`
-		Direction      string `json:"direction"`
-		StartTime      string `json:"start_time"`
-		AnswerTime     string `json:"answer_time"`
-		EndTime        string `json:"end_time"`
-		DisconnectCode string `json:"disconnect_code"`
+		EventType string `json:"event_type"`
+		Payload   struct {
+			CallControlID  string `json:"call_control_id"`
+			From           string `json:"from"`
+			To             string `json:"to"`
+			State          string `json:"state"`
+			Direction      string `json:"direction"`
+			StartTime      string `json:"start_time"`
+			AnswerTime     string `json:"answer_time"`
+			EndTime        string `json:"end_time"`
+			DisconnectCode string `json:"disconnect_code"`
+		} `json:"payload"`
 	} `json:"data"`
 }
 
@@ -35,8 +72,14 @@ func init() {
 }
 
 func main() {
-	// Initialize Telnyx client with API key from environment
-	client := telnyx.NewClient(option.WithAPIKey(os.Getenv("TELNYX_API_KEY")))
+	// Initialize Telnyx client with the API key from the environment.
+	// NewClient returns a value, so we take its address to share a single
+	// client across handlers. Inbound webhook signatures are verified
+	// separately via verifyTelnyxSignature using TELNYX_PUBLIC_KEY.
+	clientValue := telnyx.NewClient(
+		option.WithAPIKey(os.Getenv("TELNYX_API_KEY")),
+	)
+	client := &clientValue
 
 	// Create Gin router
 	router := gin.Default()
@@ -68,19 +111,37 @@ func main() {
 
 // handleCallWebhook processes inbound call events from Telnyx.
 func handleCallWebhook(c *gin.Context, client *telnyx.Client) {
+	// Read the raw request body. The signature is computed over the exact
+	// bytes Telnyx sent, so we must verify before any JSON decoding.
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		log.Printf("Failed to read webhook body: %v\n", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	// ENFORCE-ALWAYS: verify the Telnyx Ed25519 webhook signature using the
+	// raw body and the request headers. Reject unverified requests with 401
+	// before processing any event.
+	if !verifyTelnyxSignature(body, c.Request.Header) {
+		log.Println("Webhook signature verification failed")
+		c.Writer.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	var payload WebhookPayload
 
-	// Parse JSON payload from webhook
-	if err := c.ShouldBindJSON(&payload); err != nil {
+	// Parse the verified JSON payload from the raw body.
+	if err := json.Unmarshal(body, &payload); err != nil {
 		log.Printf("Invalid webhook payload: %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON payload"})
 		return
 	}
 
 	eventType := payload.Data.EventType
-	callControlID := payload.Data.CallControlID
-	from := payload.Data.From
-	to := payload.Data.To
+	callControlID := payload.Data.Payload.CallControlID
+	from := payload.Data.Payload.From
+	to := payload.Data.Payload.To
 
 	log.Printf("Received webhook: event_type=%s, call_control_id=%s, from=%s, to=%s\n",
 		eventType, callControlID, from, to)
@@ -94,7 +155,7 @@ func handleCallWebhook(c *gin.Context, client *telnyx.Client) {
 		handleCallAnswered(c, callControlID, from, to)
 
 	case "call.hangup":
-		handleCallHangup(c, callControlID, payload.Data.DisconnectCode)
+		handleCallHangup(c, callControlID, payload.Data.Payload.DisconnectCode)
 
 	case "call.dtmf.received":
 		handleDTMFReceived(c, callControlID)
@@ -110,13 +171,14 @@ func handleCallWebhook(c *gin.Context, client *telnyx.Client) {
 func handleCallInitiated(c *gin.Context, callControlID, from, to string, client *telnyx.Client) {
 	log.Printf("Call initiated from %s to %s\n", from, to)
 
-	// Automatically answer the call
+	// Automatically answer the call. The call_control_id is a path parameter;
+	// the params struct carries optional answer settings.
 	// In production, you might add logic to screen calls, route to agents, etc.
-	answerParams := &telnyx.CallAnswerParams{
-		CallControlID: callControlID,
-	}
-
-	response, err := client.Calls.Answer(answerParams)
+	response, err := client.Calls.Actions.Answer(
+		c.Request.Context(),
+		callControlID,
+		telnyx.CallActionAnswerParams{},
+	)
 	if err != nil {
 		log.Printf("Failed to answer call: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to answer call"})

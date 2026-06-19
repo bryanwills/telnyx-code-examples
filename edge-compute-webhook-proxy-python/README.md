@@ -84,7 +84,8 @@ Telnyx is an **AI Communications Infrastructure** platform — voice, messaging,
 
 | Variable | Type | Required | Description | How to set |
 |----------|------|----------|-------------|------------|
-| `FORWARD_URL` | `string` | **yes** | Backend URL to forward events to | `func.toml` `[env_vars]` |
+| `TELNYX_PUBLIC_KEY` | `string` | **yes** | Verifies the inbound Telnyx Ed25519 webhook signature | Portal > Keys & Credentials > Public Key |
+| `FORWARD_URL` | `string` | **yes** | Backend URL (https) to forward events to | `func.toml` `[env_vars]` |
 | `FORWARD_SECRET` | `string` | no | HMAC-SHA256 signing secret | `telnyx-edge secrets add` |
 
 ## Webhook Endpoints

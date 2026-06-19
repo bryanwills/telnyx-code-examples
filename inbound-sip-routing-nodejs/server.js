@@ -6,13 +6,44 @@
 
 const express = require("express");
 const Telnyx = require("telnyx");
+const crypto = require("crypto");
 require("dotenv").config();
 
-const app = express();
-app.use(express.json());
+// Verify the Telnyx Ed25519 webhook signature (version-proof; stdlib only — no SDK dependency).
+function verifyTelnyxSignature(rawBody, headers, toleranceSec = 300) {
+  const sig = headers["telnyx-signature-ed25519"];
+  const ts = headers["telnyx-timestamp"];
+  const pub = process.env.TELNYX_PUBLIC_KEY;
+  if (!sig || !ts || !pub) return false;
+  if (Math.abs(Date.now() / 1000 - Number(ts)) > toleranceSec) return false;
+  try {
+    const der = Buffer.concat([Buffer.from("302a300506032b6570032100", "hex"), Buffer.from(pub, "base64")]);
+    const key = crypto.createPublicKey({ key: der, format: "der", type: "spki" });
+    return crypto.verify(null, Buffer.from(`${ts}|${rawBody}`), key, Buffer.from(sig, "base64"));
+  } catch (e) {
+    return false;
+  }
+}
 
-// Initialize client with the SDK pattern
-const client = new Telnyx({ apiKey: process.env.TELNYX_API_KEY });
+const app = express();
+
+// Initialize the Telnyx client. The factory form returns a client instance
+// while error classes (AuthenticationError, etc.) remain on the module export.
+const telnyx = require("telnyx")(process.env.TELNYX_API_KEY);
+const client = telnyx;
+
+// Mount the raw body parser on the webhook route so the exact bytes Telnyx
+// signed reach the handler for signature verification. JSON parsing is applied
+// to every other route. A global JSON parser must NOT run ahead of the webhook
+// route, otherwise it would consume the stream and leave req.body as a parsed
+// object instead of the raw Buffer.
+app.use("/webhooks/inbound-call", express.raw({ type: "*/*" }));
+app.use((req, res, next) => {
+  if (req.path === "/webhooks/inbound-call") {
+    return next();
+  }
+  return express.json()(req, res, next);
+});
 
 /**
  * Create a SIP connection for inbound call routing.
@@ -161,15 +192,31 @@ app.get("/sip/connections/:id", async (req, res) => {
  * POST /webhooks/inbound-call
  * Receive inbound call webhooks from Telnyx.
  * This endpoint logs call events and can be extended to route calls.
+ *
+ * The Telnyx signature is verified against the raw request body before the
+ * payload is trusted. The `express.raw` middleware captures the unparsed body
+ * so the signature check operates on the exact bytes Telnyx signed.
  */
-app.post("/webhooks/inbound-call", (req, res) => {
-  const event = req.body;
+app.post("/webhooks/inbound-call", async (req, res) => {
+  // The route-level express.raw middleware leaves the unparsed bytes on
+  // req.body as a Buffer. Capture them before any parsing happens.
+  const rawBody = Buffer.isBuffer(req.body) ? req.body : Buffer.from(req.body || "");
+
+  // ENFORCE-ALWAYS: verify the Telnyx webhook signature before processing.
+  // The native-crypto helper verifies the Ed25519 signature over the RAW
+  // request body, independent of any SDK version.
+  if (!verifyTelnyxSignature(rawBody.toString(), req.headers)) {
+    return res.status(401).json({ error: "invalid signature" });
+  }
+
+  // Parse the payload only AFTER the signature has been verified.
+  const event = JSON.parse(rawBody.toString());
 
   console.log("Inbound call event received:", {
     event_type: event.data?.event_type,
-    call_session_id: event.data?.call_session_id,
-    from: event.data?.from,
-    to: event.data?.to,
+    call_session_id: event.data?.payload?.call_session_id,
+    from: event.data?.payload?.from,
+    to: event.data?.payload?.to,
     timestamp: event.data?.occurred_at,
   });
 

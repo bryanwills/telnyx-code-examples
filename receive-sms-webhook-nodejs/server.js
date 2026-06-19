@@ -6,16 +6,33 @@
 
 require("dotenv").config();
 const express = require("express");
-const bodyParser = require("body-parser");
-const Telnyx = require("telnyx");
+const crypto = require("crypto");
 
 const app = express();
 
-// Middleware to parse JSON request bodies
-app.use(bodyParser.json());
+// Verify the Telnyx Ed25519 webhook signature (version-proof; stdlib only — no SDK dependency).
+function verifyTelnyxSignature(rawBody, headers, toleranceSec = 300) {
+  const sig = headers["telnyx-signature-ed25519"];
+  const ts = headers["telnyx-timestamp"];
+  const pub = process.env.TELNYX_PUBLIC_KEY;
+  if (!sig || !ts || !pub) return false;
+  if (Math.abs(Date.now() / 1000 - Number(ts)) > toleranceSec) return false;
+  try {
+    const der = Buffer.concat([Buffer.from("302a300506032b6570032100", "hex"), Buffer.from(pub, "base64")]);
+    const key = crypto.createPublicKey({ key: der, format: "der", type: "spki" });
+    return crypto.verify(null, Buffer.from(`${ts}|${rawBody}`), key, Buffer.from(sig, "base64"));
+  } catch (e) {
+    return false;
+  }
+}
 
-// Initialize client with the new SDK pattern
-const client = new Telnyx({ apiKey: process.env.TELNYX_API_KEY });
+// IMPORTANT: do NOT apply a global JSON body parser ahead of the webhook
+// route. A global express.json()/bodyParser.json() would consume the request
+// stream first, leaving req.body a parsed object so signature verification
+// would run over "[object Object]" and reject every real webhook.
+//
+// The webhook route mounts express.raw({ type: "*/*" }) so it receives the
+// raw bytes. JSON parsing is applied only to the non-webhook routes below.
 
 // In-memory storage for received messages (replace with database in production)
 const receivedMessages = [];
@@ -55,16 +72,37 @@ function processInboundSMS(payload) {
 /**
  * Webhook endpoint to receive inbound SMS messages.
  * Telnyx sends POST requests to this endpoint when SMS is received.
+ *
+ * The raw body is captured via express.raw so the Telnyx signature can be
+ * verified before the payload is processed. Signature verification is
+ * enforced on every request to this endpoint.
  */
-app.post("/webhooks/sms", (req, res) => {
+app.post("/webhooks/sms", express.raw({ type: "*/*" }), async (req, res) => {
+  // Enforce Telnyx webhook signature verification (ENFORCE-ALWAYS).
+  // express.raw gives us the raw request bytes as a Buffer in req.body.
+  const rawBody = Buffer.isBuffer(req.body) ? req.body : Buffer.from("");
+
+  // Verify the Ed25519 signature over the RAW body BEFORE parsing it.
+  if (!verifyTelnyxSignature(rawBody.toString(), req.headers)) {
+    return res.status(401).json({ error: "invalid signature" });
+  }
+
   try {
+    // Parse the verified raw body into JSON (only after the signature passed)
+    let body;
+    try {
+      body = JSON.parse(rawBody.toString());
+    } catch (parseError) {
+      return res.status(400).json({ error: "Invalid webhook payload" });
+    }
+
     // Validate webhook payload structure
-    if (!req.body || !req.body.data) {
+    if (!body || !body.data) {
       return res.status(400).json({ error: "Invalid webhook payload" });
     }
 
     // Process the inbound SMS
-    const message = processInboundSMS(req.body);
+    const message = processInboundSMS(body);
 
     // Store message in memory (use database in production)
     receivedMessages.push(message);
@@ -86,17 +124,21 @@ app.post("/webhooks/sms", (req, res) => {
   }
 });
 
+// JSON body parsing for the non-webhook routes only. Mounted AFTER the
+// webhook route so it never touches the raw webhook stream.
+const jsonParser = express.json();
+
 /**
  * Health check endpoint to verify server is running.
  */
-app.get("/health", (req, res) => {
+app.get("/health", jsonParser, (req, res) => {
   res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
 /**
  * Debug endpoint to view received messages (remove in production).
  */
-app.get("/messages", (req, res) => {
+app.get("/messages", jsonParser, (req, res) => {
   res.status(200).json({
     count: receivedMessages.length,
     messages: receivedMessages,

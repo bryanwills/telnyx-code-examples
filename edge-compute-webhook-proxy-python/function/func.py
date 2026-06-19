@@ -1,4 +1,5 @@
 """Edge Compute Webhook Proxy — receive Telnyx voice/SMS webhooks at the edge, validate, enrich, sign, and forward to your backend with minimal latency."""
+import base64
 import json
 import hashlib
 import hmac
@@ -8,8 +9,31 @@ import time
 from urllib.request import Request, urlopen
 from urllib.error import URLError
 
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+from cryptography.exceptions import InvalidSignature
+
 HTTP_SCOPE_TYPE = "http"
 logger = logging.getLogger("webhook-proxy")
+
+# Telnyx signs every webhook with Ed25519 (telnyx-signature-ed25519 / telnyx-timestamp
+# headers over "<timestamp>|<raw body>"). The edge runtime has no Telnyx SDK, so verify
+# directly with the public key (Portal > Keys & Credentials > Public Key).
+TELNYX_PUBLIC_KEY = os.environ.get("TELNYX_PUBLIC_KEY", "")
+
+
+def verify_telnyx_signature(body: bytes, headers: dict, tolerance: int = 300) -> bool:
+    sig_b64 = headers.get("telnyx-signature-ed25519", "")
+    timestamp = headers.get("telnyx-timestamp", "")
+    if not (sig_b64 and timestamp and TELNYX_PUBLIC_KEY):
+        return False
+    try:
+        if abs(time.time() - int(timestamp)) > tolerance:  # replay protection
+            return False
+        public_key = Ed25519PublicKey.from_public_bytes(base64.b64decode(TELNYX_PUBLIC_KEY))
+        public_key.verify(base64.b64decode(sig_b64), f"{timestamp}|".encode() + body)
+        return True
+    except (InvalidSignature, ValueError, Exception):
+        return False
 
 
 def new():
@@ -57,6 +81,13 @@ class WebhookProxy:
         if path in ("/webhooks/voice", "/webhooks/sms", "/webhooks/messaging") and method == "POST":
             body = await self._read_body(receive)
             self.stats["received"] += 1
+
+            # Verify the inbound Telnyx Ed25519 signature before trusting/forwarding.
+            headers = {k.decode().lower(): v.decode() for k, v in scope.get("headers", [])}
+            if not verify_telnyx_signature(body, headers):
+                self.stats["errors"] += 1
+                await self._respond(send, 401, {"error": "invalid signature"})
+                return
 
             try:
                 event = json.loads(body)

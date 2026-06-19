@@ -10,7 +10,6 @@
   "dependencies": {
     "telnyx": "latest",
     "express": "latest",
-    "dotenv": "latest",
-    "body-parser": "latest"
+    "dotenv": "latest"
   }
 }
