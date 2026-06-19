@@ -1,11 +1,14 @@
 ---
-name: provision-esim
-title: "Production-ready Flask application for eSIM provisioning via Telnyx."
-description: "Production-ready Flask application for eSIM provisioning via Telnyx."
-language: python
+description: Provision and activate eSIM profiles via the Telnyx API with QR code
+  generation and status webhooks.
 framework: flask
-telnyx_products: [IoT/SIM]
+language: python
+name: provision-esim
+telnyx_products:
+- IoT/SIM
+title: Production-ready Flask application for eSIM provisioning via Telnyx.
 ---
+
 
 # Production-ready Flask application for eSIM provisioning via Telnyx.
 

@@ -1,11 +1,14 @@
 ---
-name: text-to-speech-phone-call
-title: "Production-ready Flask application for text-to-speech calls via Telnyx."
-description: "Production-ready Flask application for text-to-speech calls via Telnyx."
-language: python
+description: Make outbound calls that play text-to-speech messages with language,
+  voice, and speed controls.
 framework: flask
-telnyx_products: [Voice]
+language: python
+name: text-to-speech-phone-call
+telnyx_products:
+- Voice
+title: Production-ready Flask application for text-to-speech calls via Telnyx.
 ---
+
 
 # Production-ready Flask application for text-to-speech calls via Telnyx.
 

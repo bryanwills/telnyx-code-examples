@@ -1,6 +1,6 @@
 # Build a Production-ready Flask application for cloning AI Assistants via Telnyx
 
-Application. Built with Telnyx AI Assistants, Migration, Number Porting.
+Clone an existing Telnyx AI Assistant with all its configuration, tools, and knowledge base.
 
 ## How It Works
 

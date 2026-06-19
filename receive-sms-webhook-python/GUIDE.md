@@ -1,6 +1,6 @@
 # Build a Production-ready Flask webhook endpoint for receiving inbound SMS via Telnyx
 
-SMS application. Built with Telnyx Migration, Number Porting.
+Receive inbound SMS messages via Telnyx webhooks with delivery confirmation and auto-reply.
 
 ## How It Works
 

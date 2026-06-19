@@ -1,6 +1,6 @@
 # Build a Production-ready Flask application for Whisper-based call prompts via Telnyx
 
-Voice application. Built with Telnyx AI Assistants, Migration, Number Porting, SMS/MMS.
+Monitor live calls with silent listen, whisper coaching to agents, and barge-in capability.
 
 ## How It Works
 

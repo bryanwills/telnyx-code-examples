@@ -1,6 +1,6 @@
 # Build a Production-ready Flask application for managing conference calls via Telnyx
 
-Application. Built with Telnyx Migration, Number Porting, Voice.
+Create and manage multi-party conference calls with dynamic participant control, mute/unmute, and recording.
 
 ## How It Works
 

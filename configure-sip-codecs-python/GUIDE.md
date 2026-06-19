@@ -1,6 +1,6 @@
 # Build a Production-ready Flask application for SIP codec configuration via Telnyx
 
-Voice application. Built with Telnyx Migration, Number Porting, SIP Trunking.
+Configure SIP trunk codec preferences, order, and negotiate settings for optimal voice quality.
 
 ## How It Works
 

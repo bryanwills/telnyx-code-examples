@@ -1,6 +1,6 @@
 # Build a Run LLM inference on Telnyx — OpenAI-compatible chat completions API
 
-Application powered by Telnyx AI Inference. Built with Telnyx AI Inference, Migration, Number Porting, SMS/MMS.
+Application powered by Telnyx AI Inference. Built with Telnyx AI Inference, AI Inference, SMS/MMS.
 
 ## How It Works
 

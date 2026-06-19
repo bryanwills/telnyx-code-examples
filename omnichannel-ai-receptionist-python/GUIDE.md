@@ -1,6 +1,6 @@
 # Build an Omnichannel AI Receptionist — one AI brain across voice, SMS, and WhatsApp
 
-Voice and SMS application powered by Telnyx AI Inference. Built with Telnyx AI Assistants, AI Inference, Migration, Number Porting.
+Voice and SMS application powered by Telnyx AI Inference. Built with Telnyx AI Assistants, AI Inference, Voice AI, SMS/MMS, AI Inference.
 
 ## How It Works
 

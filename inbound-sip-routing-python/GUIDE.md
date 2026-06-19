@@ -1,6 +1,6 @@
 # Build a Flask application for managing inbound SIP routing with Telnyx
 
-Application. Built with Telnyx Migration, Number Porting.
+Route inbound SIP calls to different destinations based on caller, DID, or time-of-day rules.
 
 ## How It Works
 

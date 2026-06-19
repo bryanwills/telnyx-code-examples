@@ -1,11 +1,14 @@
 ---
-name: build-ivr-phone-menu
-title: "Production-ready IVR system using Telnyx Voice API and Flask."
-description: "Production-ready IVR system using Telnyx Voice API and Flask."
-language: python
+description: Build a multi-level IVR phone menu with DTMF input, call routing, and
+  voicemail.
 framework: flask
-telnyx_products: [Voice]
+language: python
+name: build-ivr-phone-menu
+telnyx_products:
+- Voice
+title: Production-ready IVR system using Telnyx Voice API and Flask.
 ---
+
 
 # Production-ready IVR system using Telnyx Voice API and Flask.
 

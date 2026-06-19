@@ -1,11 +1,14 @@
 ---
-name: sip-load-balancer-health-check
-title: "SIP Load Balancer Health Check"
-description: "SIP Load Balancer Health Check — monitor SIP trunk health across multiple endpoints, auto-failover to healthy trunks, track uptime metrics."
-language: python
+description: "SIP Load Balancer Health Check \u2014 monitor SIP trunk health across\
+  \ multiple endpoints, auto-failover to healthy trunks, track uptime metrics."
 framework: flask
-telnyx_products: []
+language: python
+name: sip-load-balancer-health-check
+telnyx_products:
+- SIP Trunking
+title: SIP Load Balancer Health Check
 ---
+
 
 # SIP Load Balancer Health Check
 

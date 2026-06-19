@@ -1,6 +1,6 @@
 # Build an E911 Address Validator — validate and provision E911 addresses via API
 
-Application. Built with Telnyx E911, Migration, Number Porting.
+Validate and provision E911 emergency addresses via the Telnyx API.
 
 ## How It Works
 

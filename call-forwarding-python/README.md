@@ -1,11 +1,14 @@
 ---
-name: call-forwarding
-title: "Production-ready Flask application for call forwarding via Telnyx Voice API."
-description: "Production-ready Flask application for call forwarding via Telnyx Voice API."
-language: python
+description: Forward inbound calls to mobile, office, or on-call numbers with time-based
+  routing rules.
 framework: flask
-telnyx_products: [Voice]
+language: python
+name: call-forwarding
+telnyx_products:
+- Voice
+title: Production-ready Flask application for call forwarding via Telnyx Voice API.
 ---
+
 
 # Production-ready Flask application for call forwarding via Telnyx Voice API.
 

@@ -1,11 +1,14 @@
 ---
-name: wireless-fleet-activation-portal
-title: "Wireless Fleet Activation Portal — bulk activate SIMs with status tracking."
-description: "Wireless Fleet Activation Portal — bulk activate SIMs with status tracking."
-language: python
+description: Manage IoT SIM fleet activation, suspension, and monitoring through a
+  self-service portal API.
 framework: flask
-telnyx_products: [IoT/SIM]
+language: python
+name: wireless-fleet-activation-portal
+telnyx_products:
+- IoT/SIM
+title: Wireless Fleet Activation Portal — bulk activate SIMs with status tracking.
 ---
+
 
 # Wireless Fleet Activation Portal — bulk activate SIMs with status tracking.
 

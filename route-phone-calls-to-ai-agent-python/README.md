@@ -1,11 +1,15 @@
 ---
-name: route-phone-calls-to-ai-agent
-title: "Production-ready Flask webhook for handling inbound calls via Telnyx Voice API."
-description: "Production-ready Flask webhook for handling inbound calls via Telnyx Voice API."
-language: python
+description: Route inbound phone calls to a Telnyx AI Assistant with automatic speech
+  recognition and natural language responses.
 framework: flask
-telnyx_products: [Voice]
+language: python
+name: route-phone-calls-to-ai-agent
+telnyx_products:
+- Voice
+title: Production-ready Flask webhook for handling inbound calls via Telnyx Voice
+  API.
 ---
+
 
 # Production-ready Flask webhook for handling inbound calls via Telnyx Voice API.
 

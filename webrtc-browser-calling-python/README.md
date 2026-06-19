@@ -1,11 +1,15 @@
 ---
-name: webrtc-browser-calling
-title: "Production-ready WebRTC calling application with Telnyx Voice API and FastAPI."
-description: "Voice application. Built with Telnyx Migration, Number Porting, Voice, WebRTC."
-language: python
+description: Browser-to-PSTN calling with WebRTC, credential management, and call
+  control.
 framework: flask
-telnyx_products: [Voice, WebRTC]
+language: python
+name: webrtc-browser-calling
+telnyx_products:
+- Voice
+- WebRTC
+title: Production-ready WebRTC calling application with Telnyx Voice API and FastAPI.
 ---
+
 
 # Production-ready WebRTC calling application with Telnyx Voice API and FastAPI.
 

@@ -1,12 +1,16 @@
 ---
-name: sms-keyword-auto-responder
-title: "SMS Keyword Auto-Responder — keyword-triggered responses with match analytics."
-description: "SMS Keyword Auto-Responder — keyword-triggered responses with match analytics."
-language: python
+channel:
+- sms
+description: Auto-respond to inbound SMS based on keyword matching with configurable
+  reply templates and analytics.
 framework: flask
-telnyx_products: [SMS/MMS]
-channel: [sms]
+language: python
+name: sms-keyword-auto-responder
+telnyx_products:
+- SMS/MMS
+title: SMS Keyword Auto-Responder — keyword-triggered responses with match analytics.
 ---
+
 
 # SMS Keyword Auto-Responder — keyword-triggered responses with match analytics.
 

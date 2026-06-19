@@ -1,6 +1,6 @@
 # Build a Production-ready SIP failover routing system with Flask and Telnyx
 
-Voice application. Built with Telnyx Migration, Number Porting.
+Automatic SIP trunk failover between primary and backup endpoints with health monitoring.
 
 ## How It Works
 

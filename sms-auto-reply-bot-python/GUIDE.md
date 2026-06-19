@@ -1,6 +1,6 @@
 # Build a Production-ready SMS autoresponder using Telnyx webhooks
 
-Voice and SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS, Voice.
+Keyword-triggered SMS auto-responder with configurable reply templates and analytics.
 
 ## How It Works
 

@@ -1,11 +1,14 @@
 ---
-name: clone-ai-assistant
-title: "Production-ready Flask application for cloning AI Assistants via Telnyx."
-description: "Application. Built with Telnyx AI Assistants, Migration, Number Porting."
-language: python
+description: Clone an existing Telnyx AI Assistant with all its configuration, tools,
+  and knowledge base.
 framework: flask
-telnyx_products: [AI Assistants]
+language: python
+name: clone-ai-assistant
+telnyx_products:
+- AI Assistants
+title: Production-ready Flask application for cloning AI Assistants via Telnyx.
 ---
+
 
 # Production-ready Flask application for cloning AI Assistants via Telnyx.
 

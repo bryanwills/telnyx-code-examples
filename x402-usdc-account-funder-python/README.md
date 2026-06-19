@@ -1,11 +1,14 @@
 ---
-name: x402-usdc-account-funder
-title: "x402 USDC Account Funder"
-description: "X402 USDC Account Funder — fund your Telnyx account with USDC cryptocurrency on the Base blockchain."
-language: python
+description: "X402 USDC Account Funder \u2014 fund your Telnyx account with USDC cryptocurrency\
+  \ on the Base blockchain."
 framework: flask
-telnyx_products: []
+language: python
+name: x402-usdc-account-funder
+telnyx_products:
+- x402 Payments
+title: x402 USDC Account Funder
 ---
+
 
 # x402 USDC Account Funder
 

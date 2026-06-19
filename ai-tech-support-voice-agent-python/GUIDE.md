@@ -1,6 +1,6 @@
 # Build an AI Tech Support Voice Agent — IT helpdesk voice agent with knowledge base
 
-Voice application powered by Telnyx AI Inference. Built with Telnyx AI Assistants, AI Inference, Migration, Number Porting.
+Voice application powered by Telnyx AI Inference. Built with Telnyx AI Assistants, AI Inference, Voice AI, AI Inference.
 
 ## How It Works
 

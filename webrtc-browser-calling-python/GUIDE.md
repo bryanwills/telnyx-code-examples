@@ -1,6 +1,6 @@
 # Build a Production-ready WebRTC calling application with Telnyx Voice API and FastAPI
 
-Voice application. Built with Telnyx Migration, Number Porting, Voice, WebRTC.
+Browser-to-PSTN calling with WebRTC, credential management, and call control.
 
 ## How It Works
 

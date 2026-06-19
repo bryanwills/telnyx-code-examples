@@ -1,12 +1,17 @@
 ---
-name: sms-auto-reply-bot
-title: "Production-ready SMS autoresponder using Telnyx webhooks."
-description: "Voice and SMS application. Built with Telnyx Migration, Number Porting, SMS/MMS, Voice."
-language: python
+channel:
+- sms
+description: Keyword-triggered SMS auto-responder with configurable reply templates
+  and analytics.
 framework: flask
-telnyx_products: [SMS/MMS, Voice]
-channel: [sms]
+language: python
+name: sms-auto-reply-bot
+telnyx_products:
+- SMS/MMS
+- Voice
+title: Production-ready SMS autoresponder using Telnyx webhooks.
 ---
+
 
 # Production-ready SMS autoresponder using Telnyx webhooks.
 

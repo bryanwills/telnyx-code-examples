@@ -1,6 +1,6 @@
 # Build a Production-ready OTP 2FA system with Flask and Telnyx SMS
 
-SMS application. Built with Telnyx Cloud Storage, Migration, Number Porting, SMS/MMS.
+Send and verify OTP codes via SMS with rate limiting, expiration, and retry logic.
 
 ## How It Works
 

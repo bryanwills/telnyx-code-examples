@@ -1,6 +1,6 @@
 # Build a Call Analytics Dashboard API — pull CDRs and build usage analytics
 
-SMS application. Built with Telnyx CDR, Migration, Number Porting, SMS/MMS.
+Pull call detail records from Telnyx and build usage analytics with daily/weekly breakdowns.
 
 ## How It Works
 
