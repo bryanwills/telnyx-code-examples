@@ -1,0 +1,25 @@
+source "https://rubygems.org"
+
+# Requires Ruby 3.2.0+ (the Telnyx 5.x SDK is a Stainless rewrite that does not
+# support older Rubies).
+ruby ">= 3.2.0"
+
+# Telnyx Ruby SDK — pinned to the verified 5.x line (Telnyx::Client instance API,
+# client.ai.assistants.chat). Do NOT leave unpinned.
+gem "telnyx", "~> 5.131"
+
+# Lightweight web framework. Sinatra gives raw request-body access (request.body.read),
+# which is required for Ed25519 webhook signature verification, and has no CSRF machinery.
+gem "sinatra", "~> 4.1"
+
+# Loads .env into ENV at boot.
+gem "dotenv", "~> 3.1"
+
+# Native Ed25519 verification for Telnyx webhooks (client.webhooks.unwrap is the
+# Standard Webhooks HMAC scheme and is NOT compatible with Telnyx's Ed25519 signatures).
+gem "ed25519", "~> 1.3"
+
+# Transitive require of telnyx 5.x: lib/telnyx.rb requires "standardwebhooks" at load
+# time, but the gem does not declare it as a runtime dependency. Pin it here so
+# `require "telnyx"` loads without raising LoadError.
+gem "standardwebhooks", "~> 1.1"

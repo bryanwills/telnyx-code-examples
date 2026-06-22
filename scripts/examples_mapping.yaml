@@ -85,6 +85,30 @@ examples:
     folder: make-outbound-phone-call-nodejs
 
   - product: voice
+    use_case: outbound-call
+    language: php
+    framework: vanilla
+    folder: make-outbound-phone-call-php
+
+  - product: voice
+    use_case: outbound-call
+    language: java
+    framework: httpserver
+    folder: make-outbound-phone-call-java
+
+  - product: voice
+    use_case: outbound-call
+    language: csharp
+    framework: aspnet
+    folder: make-outbound-phone-call-csharp
+
+  - product: voice
+    use_case: outbound-call
+    language: ruby
+    framework: sinatra
+    folder: make-outbound-phone-call-ruby
+
+  - product: voice
     use_case: ivr-menu
     language: nodejs
     framework: express
@@ -107,6 +131,12 @@ examples:
     language: go
     framework: gin
     folder: route-phone-calls-to-ai-agent-go
+
+  - product: voice
+    use_case: inbound-call-webhook
+    language: ruby
+    framework: sinatra
+    folder: route-phone-calls-to-ai-agent-ruby
 
   # ─────────────────────────────────────────────────────────────────────
   # AI Assistants (8 examples)
@@ -154,13 +184,37 @@ examples:
     folder: chat-with-ai-assistant-nodejs
 
   - product: ai
+    use_case: chat-with-ai-assistant
+    language: php
+    framework: vanilla
+    folder: chat-with-ai-assistant-php
+
+  - product: ai
+    use_case: chat-with-ai-assistant
+    language: java
+    framework: httpserver
+    folder: chat-with-ai-assistant-java
+
+  - product: ai
+    use_case: chat-with-ai-assistant
+    language: go
+    framework: gin
+    folder: chat-with-ai-assistant-go
+
+  - product: ai
+    use_case: chat-with-ai-assistant
+    language: ruby
+    framework: sinatra
+    folder: chat-with-ai-assistant-ruby
+
+  - product: ai
     use_case: list-ai-assistants
     language: nodejs
     framework: express
     folder: list-ai-assistants-nodejs
 
   # ─────────────────────────────────────────────────────────────────────
-  # SIP Trunking (7 examples)
+  # SIP Trunking (8 examples)
   # ─────────────────────────────────────────────────────────────────────
   - product: sip
     use_case: sip-trunking-setup
@@ -203,6 +257,30 @@ examples:
     language: go
     framework: gin
     folder: setup-sip-trunk-go
+
+  - product: sip
+    use_case: sip-trunking-setup
+    language: java
+    framework: jdk-httpserver
+    folder: setup-sip-trunk-java
+
+  - product: sip
+    use_case: sip-trunking-setup
+    language: csharp
+    framework: aspnet
+    folder: setup-sip-trunk-csharp
+
+  - product: sip
+    use_case: sip-trunking-setup
+    language: php
+    framework: vanilla
+    folder: setup-sip-trunk-php
+
+  - product: sip
+    use_case: sip-trunking-setup
+    language: ruby
+    framework: sinatra
+    folder: setup-sip-trunk-ruby
 
   # ─────────────────────────────────────────────────────────────────────
   # SMS / MMS (30 examples)
@@ -256,6 +334,30 @@ examples:
     folder: receive-sms-webhook-nodejs
 
   - product: sms
+    use_case: receive-sms-webhook
+    language: csharp
+    framework: aspnet
+    folder: receive-sms-webhook-csharp
+
+  - product: sms
+    use_case: receive-sms-webhook
+    language: php
+    framework: vanilla
+    folder: receive-sms-webhook-php
+
+  - product: sms
+    use_case: receive-sms-webhook
+    language: java
+    framework: jdk-httpserver
+    folder: receive-sms-webhook-java
+
+  - product: sms
+    use_case: receive-sms-webhook
+    language: ruby
+    framework: sinatra
+    folder: receive-sms-webhook-ruby
+
+  - product: sms
     use_case: otp-2fa
     language: nodejs
     framework: express
@@ -278,6 +380,24 @@ examples:
     language: ruby
     framework: rails
     folder: send-sms-ruby
+
+  - product: sms
+    use_case: send-single-sms
+    language: csharp
+    framework: aspnet
+    folder: send-sms-csharp
+
+  - product: sms
+    use_case: send-single-sms
+    language: java
+    framework: jdk-httpserver
+    folder: send-sms-java
+
+  - product: sms
+    use_case: send-single-sms
+    language: php
+    framework: vanilla
+    folder: send-sms-php
 
   - product: sms
     use_case: two-way-sms
@@ -431,6 +551,30 @@ examples:
     language: go
     framework: gin
     folder: activate-sim-card-go
+
+  - product: iot
+    use_case: sim-activation
+    language: csharp
+    framework: aspnet
+    folder: activate-sim-card-csharp
+
+  - product: iot
+    use_case: sim-activation
+    language: java
+    framework: jdk-httpserver
+    folder: activate-sim-card-java
+
+  - product: iot
+    use_case: sim-activation
+    language: php
+    framework: vanilla
+    folder: activate-sim-card-php
+
+  - product: iot
+    use_case: sim-activation
+    language: ruby
+    framework: sinatra
+    folder: activate-sim-card-ruby
 
   # ─────────────────────────────────────────────────────────────────────
   # Full-corpus registration (180 examples)

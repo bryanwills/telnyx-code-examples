@@ -37,6 +37,9 @@ LANG_CODE_FILE = {
     "nodejs": "server.js",
     "go": "main.go",
     "ruby": "app.rb",
+    "php": "index.php",
+    "java": "Application.java",
+    "csharp": "Program.cs",
 }
 
 LANG_DEP_FILE = {
@@ -44,6 +47,9 @@ LANG_DEP_FILE = {
     "nodejs": "package.json",
     "go": "go.mod",
     "ruby": "Gemfile",
+    "php": "composer.json",
+    "java": "pom.xml",
+    "csharp": "*.csproj",  # name varies per project; matched as a glob
 }
 
 # Sections required on every example README. Kept to the set common to both the
@@ -87,6 +93,13 @@ def verify_folder(folder_path: Path, entry: dict, verbose: bool = False) -> list
     ]
 
     for filename in required_files:
+        if "*" in filename:  # glob pattern (e.g. *.csproj — name varies per project)
+            matches = list(folder_path.glob(filename))
+            if not matches:
+                errors.append(f"Missing file: {filename}")
+            elif all(m.stat().st_size == 0 for m in matches):
+                errors.append(f"Empty file: {filename}")
+            continue
         filepath = folder_path / filename
         if not filepath.exists():
             errors.append(f"Missing file: {filename}")

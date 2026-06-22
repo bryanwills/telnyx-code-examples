@@ -1,0 +1,28 @@
+source "https://rubygems.org"
+
+# Requires Ruby 3.2+ (the Telnyx 5.x SDK is a Stainless rewrite and OpenSSL/Ed25519
+# key parsing needs OpenSSL 3.x). Do NOT run on Ruby 2.x.
+ruby ">= 3.2.0"
+
+# Telnyx Ruby SDK — pinned to the verified 5.x line (instance Telnyx::Client API).
+gem "telnyx", "~> 5.131"
+
+# `require "telnyx"` loads `standardwebhooks` at startup, but the gem does not declare
+# it as a runtime dependency — add it explicitly so the SDK loads.
+gem "standardwebhooks", "~> 1.1"
+
+# Lightweight web framework. Sinatra exposes the raw request body via
+# request.body.read, which Ed25519 verification requires (no parser may consume it first).
+gem "sinatra", "~> 4.1"
+
+# Native Ed25519 verification of the real Telnyx webhook signature.
+gem "ed25519", "~> 1.3"
+
+# Load credentials from .env.
+gem "dotenv", "~> 3.1"
+
+# Sinatra 4.x no longer bundles a web server; pin one explicitly.
+gem "puma", "~> 6.4"
+
+# Sinatra 4.x requires an explicit Rack 3 dependency in some setups.
+gem "rackup", "~> 2.1"

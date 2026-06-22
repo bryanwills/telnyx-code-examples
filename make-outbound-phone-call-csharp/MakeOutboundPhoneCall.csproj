@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>MakeOutboundPhoneCall</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Official Telnyx .NET SDK. The NuGet package id is "Telnyx.net" (NOT "Telnyx"). -->
+    <PackageReference Include="Telnyx.net" Version="3.1.0" />
+    <!-- Loads the .env file into environment variables. -->
+    <PackageReference Include="DotNetEnv" Version="3.1.0" />
+  </ItemGroup>
+
+</Project>

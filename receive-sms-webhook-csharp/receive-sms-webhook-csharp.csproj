@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>ReceiveSmsWebhook</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Official Telnyx .NET SDK. NuGet package id is "Telnyx.net" (NOT "Telnyx").
+         3.1.0 is the closest published 3.x release (NuGet jumps 2.9.2 -> 3.1.0). -->
+    <PackageReference Include="Telnyx.net" Version="3.1.0" />
+    <!-- Loads variables from a local .env file into the process environment. -->
+    <PackageReference Include="DotNetEnv" Version="3.1.0" />
+  </ItemGroup>
+
+</Project>

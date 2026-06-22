@@ -42,10 +42,15 @@ Build voice applications with [Telnyx Voice AI](https://telnyx.com/products/voic
 | [webrtc-browser-calling-python](./webrtc-browser-calling-python/) | Python | Enable browser-based calling with WebRTC. |
 | [route-phone-calls-to-ai-agent-nodejs](./route-phone-calls-to-ai-agent-nodejs/) | Node.js | Handle inbound calls with webhook-driven AI routing. |
 | [make-outbound-phone-call-nodejs](./make-outbound-phone-call-nodejs/) | Node.js | Initiate outbound calls via the Call Control API. |
+| [make-outbound-phone-call-java](./make-outbound-phone-call-java/) | Java | Initiate outbound calls via the Call Control API. |
+| [make-outbound-phone-call-csharp](./make-outbound-phone-call-csharp/) | C# | Initiate outbound calls via the Call Control API. |
+| [make-outbound-phone-call-ruby](./make-outbound-phone-call-ruby/) | Ruby | Initiate outbound calls via the Call Control API. |
 | [build-ivr-phone-menu-nodejs](./build-ivr-phone-menu-nodejs/) | Node.js | Build an interactive voice response menu with DTMF input. |
 | [record-phone-calls-nodejs](./record-phone-calls-nodejs/) | Node.js | Record calls and receive recording webhooks. |
 | [text-to-speech-phone-call-nodejs](./text-to-speech-phone-call-nodejs/) | Node.js | Play text-to-speech audio during a phone call. |
 | [route-phone-calls-to-ai-agent-go](./route-phone-calls-to-ai-agent-go/) | Go | Handle inbound calls with webhook-driven AI routing. |
+| [route-phone-calls-to-ai-agent-ruby](./route-phone-calls-to-ai-agent-ruby/) | Ruby | Handle inbound calls with webhook-driven AI routing. |
+| [make-outbound-phone-call-php](./make-outbound-phone-call-php/) | PHP | Initiate outbound calls via the Call Control API. |
 | [branded-caller-id-manager-python](./branded-caller-id-manager-python/) | Python | Branded Caller ID Manager — register, manage, and verify branded calling profiles with STIR/SHAKEN attestation for higher answer rates. |
 | [bulk-number-validation-cleaner-python](./bulk-number-validation-cleaner-python/) | Python | Bulk Number Validation & Cleaner — validate and clean phone number lists via Telnyx Number Lookup API. |
 | [call-analytics-dashboard-api-python](./call-analytics-dashboard-api-python/) | Python | SMS application. Built with Telnyx CDR, Migration, Number Porting, SMS/MMS. |
@@ -94,10 +99,17 @@ Send and receive text messages with the [Telnyx SMS API](https://telnyx.com/prod
 | [sms-auto-reply-bot-python](./sms-auto-reply-bot-python/) | Python | Build an SMS autoresponder bot. |
 | [send-sms-nodejs](./send-sms-nodejs/) | Node.js | Send a single SMS message via the Telnyx API. |
 | [receive-sms-webhook-nodejs](./receive-sms-webhook-nodejs/) | Node.js | Receive inbound SMS via webhook. |
+| [receive-sms-webhook-csharp](./receive-sms-webhook-csharp/) | C# | Receive inbound SMS via webhook (Ed25519-verified). |
 | [sms-two-factor-auth-nodejs](./sms-two-factor-auth-nodejs/) | Node.js | Implement SMS-based two-factor authentication. |
 | [send-bulk-sms-nodejs](./send-bulk-sms-nodejs/) | Node.js | Send SMS messages to multiple recipients. |
+| [receive-sms-webhook-java](./receive-sms-webhook-java/) | Java | Receive inbound SMS via webhook with Ed25519 signature verification. |
+| [receive-sms-webhook-php](./receive-sms-webhook-php/) | PHP | Receive inbound SMS via webhook with Ed25519 signature verification. |
+| [receive-sms-webhook-ruby](./receive-sms-webhook-ruby/) | Ruby | Receive inbound SMS via webhook with Ed25519 signature verification. |
 | [send-sms-go](./send-sms-go/) | Go | Send a single SMS message via the Telnyx API. |
 | [send-sms-ruby](./send-sms-ruby/) | Ruby | Send a single SMS message via the Telnyx API. |
+| [send-sms-csharp](./send-sms-csharp/) | C# | Send a single SMS message via the Telnyx API. |
+| [send-sms-java](./send-sms-java/) | Java | Send a single SMS message via the Telnyx API. |
+| [send-sms-php](./send-sms-php/) | PHP | Send a single SMS message via the Telnyx API. |
 | [abandoned-cart-recovery-python](./abandoned-cart-recovery-python/) | Python | SMS 1h after abandon with incentive, AI voice call 24h later if no purchase. Integrates with Shopify webhooks and Stripe for discount codes. |
 | [accounting-tax-season-line-python](./accounting-tax-season-line-python/) | Python | Handles scheduling, document checklist reminders, status updates. AI texts clients with missing doc reminders. CPA reviews readiness before appointments. |
 | [after-hours-nurse-triage-python](./after-hours-nurse-triage-python/) | Python | AI screens symptoms using clinical decision tree, routes urgent to on-call nurse via PagerDuty, queues non-urgent for AM callback. Nurse reviews and overrides AI severity scores. |
@@ -193,7 +205,11 @@ Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assis
 | [update-ai-assistant-python](./update-ai-assistant-python/) | Python | Update an AI assistant's instructions and settings. |
 | [create-ai-assistant-nodejs](./create-ai-assistant-nodejs/) | Node.js | Create a new AI assistant with custom instructions. |
 | [chat-with-ai-assistant-nodejs](./chat-with-ai-assistant-nodejs/) | Node.js | Send messages to an AI assistant and receive responses. |
+| [chat-with-ai-assistant-php](./chat-with-ai-assistant-php/) | PHP | Send messages to an AI assistant and receive responses, keeping conversation context. |
 | [list-ai-assistants-nodejs](./list-ai-assistants-nodejs/) | Node.js | List and manage your AI assistants. |
+| [chat-with-ai-assistant-java](./chat-with-ai-assistant-java/) | Java | Send messages to an AI assistant and thread a multi-turn conversation. |
+| [chat-with-ai-assistant-ruby](./chat-with-ai-assistant-ruby/) | Ruby | Chat with an AI assistant and maintain conversation context via a Sinatra endpoint. |
+| [chat-with-ai-assistant-go](./chat-with-ai-assistant-go/) | Go | Send messages to an AI assistant and maintain multi-turn context with a conversation id via a Gin endpoint. |
 | [ai-after-hours-emergency-triage-python](./ai-after-hours-emergency-triage-python/) | Python | AI After-Hours Emergency Triage — after-hours calls screened by AI. True emergencies get forwarded to on-call; everything else gets a voicemail + next-day callback promise. |
 | [ai-assistant-knowledge-base-python](./ai-assistant-knowledge-base-python/) | Python | AI Assistant Knowledge Base — AI Assistant with document knowledge base for context-aware Q&A over uploaded documents. |
 | [ai-assistant-multi-tool-python](./ai-assistant-multi-tool-python/) | Python | AI Assistant Multi-Tool — AI Assistant with custom function-calling tools for CRM lookup, appointment booking, and order status. |
@@ -284,6 +300,10 @@ Connect your PBX or SBC to [Telnyx SIP Trunking](https://telnyx.com/products/sip
 | [setup-sip-trunk-nodejs](./setup-sip-trunk-nodejs/) | Node.js | Set up a SIP trunk connection with Telnyx. |
 | [inbound-sip-routing-nodejs](./inbound-sip-routing-nodejs/) | Node.js | Route inbound SIP calls to your endpoints. |
 | [setup-sip-trunk-go](./setup-sip-trunk-go/) | Go | Set up a SIP trunk connection with Telnyx. |
+| [setup-sip-trunk-java](./setup-sip-trunk-java/) | Java | Set up a SIP trunk connection with Telnyx. |
+| [setup-sip-trunk-csharp](./setup-sip-trunk-csharp/) | C# | Set up a SIP trunk connection with Telnyx. |
+| [setup-sip-trunk-php](./setup-sip-trunk-php/) | PHP | Create, list, and retrieve a Telnyx credential (SIP) connection. |
+| [setup-sip-trunk-ruby](./setup-sip-trunk-ruby/) | Ruby | Create, list, and retrieve a Telnyx credential (SIP) connection. |
 | [sip-load-balancer-health-check-python](./sip-load-balancer-health-check-python/) | Python | SIP Load Balancer Health Check — monitor SIP trunk health across multiple endpoints, auto-failover to healthy trunks, track uptime metrics. |
 | [sip-trunking-failover-monitor-python](./sip-trunking-failover-monitor-python/) | Python | SIP Trunking Failover Monitor — health-check SIP connections, auto-failover, SMS alerts. |
 
@@ -300,6 +320,10 @@ Activate SIM cards, monitor data usage, provision eSIMs, and track device locati
 | [activate-sim-card-nodejs](./activate-sim-card-nodejs/) | Node.js | Activate a SIM card on the Telnyx network. |
 | [monitor-iot-data-usage-nodejs](./monitor-iot-data-usage-nodejs/) | Node.js | Monitor data usage for IoT SIM cards. |
 | [activate-sim-card-go](./activate-sim-card-go/) | Go | Activate a SIM card on the Telnyx network. |
+| [activate-sim-card-csharp](./activate-sim-card-csharp/) | C# | Enable (activate) a SIM card on the Telnyx network. |
+| [activate-sim-card-php](./activate-sim-card-php/) | PHP | Activate a SIM card on the Telnyx network. |
+| [activate-sim-card-java](./activate-sim-card-java/) | Java | Activate a SIM card on the Telnyx network. |
+| [activate-sim-card-ruby](./activate-sim-card-ruby/) | Ruby | Enable (activate) a SIM card on the Telnyx network. |
 | [iot-fleet-alert-escalation-python](./iot-fleet-alert-escalation-python/) | Python | IoT Fleet Alert Escalation — severity-based routing from IoT sensors to SMS, calls, and multi-party conferences. |
 | [iot-panic-button-voice-alert-python](./iot-panic-button-voice-alert-python/) | Python | IoT Panic Button Voice Alert — IoT device triggers SIM-based alert, system calls emergency contacts with location and status. |
 | [iot-smart-building-voice-control-python](./iot-smart-building-voice-control-python/) | Python | IoT Smart Building Voice Control — call a number to control building systems via AI + IoT SIMs. |

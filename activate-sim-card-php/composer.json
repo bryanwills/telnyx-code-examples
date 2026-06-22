@@ -1,0 +1,18 @@
+{
+    "name": "telnyx/activate-sim-card-php",
+    "description": "Activate (enable) a Telnyx IoT SIM card with vanilla PHP and the Telnyx PHP SDK.",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.1",
+        "ext-sodium": "*",
+        "telnyx/telnyx-php": "^7.84",
+        "guzzlehttp/guzzle": "^7.8",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
+}

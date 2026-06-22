@@ -1,0 +1,25 @@
+source "https://rubygems.org"
+
+# Requires Ruby 3.2+ (the telnyx 5.x SDK is a Stainless rewrite that drops 2.x/3.0/3.1).
+ruby ">= 3.2.0"
+
+# Telnyx Ruby SDK (5.x instance API: Telnyx::Client.new). Pinned to the
+# verified 5.131 line — do NOT leave unpinned.
+gem "telnyx", "~> 5.131"
+
+# Lightweight web framework: app.rb entrypoint, no CSRF machinery, and raw
+# request-body access for webhook signature verification.
+gem "sinatra", "~> 4.1"
+gem "rackup", "~> 2.2"
+gem "puma", "~> 6.4"
+
+# Loads .env into ENV at boot.
+gem "dotenv", "~> 3.1"
+
+# Native Ed25519 verification for Telnyx webhook signatures.
+gem "ed25519", "~> 1.3"
+
+# telnyx 5.x's lib/telnyx.rb does `require "standardwebhooks"` at load time, but
+# the gem does NOT declare it as a runtime dependency — so `require "telnyx"`
+# raises LoadError without it. Pinned and listed explicitly to make the gem load.
+gem "standardwebhooks", "~> 1.1"

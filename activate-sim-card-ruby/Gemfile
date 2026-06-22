@@ -1,0 +1,26 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+ruby ">= 3.2.0"
+
+# Telnyx Ruby SDK (5.x Stainless rewrite: instance client + .sim_cards.actions.enable).
+gem "telnyx", "~> 5.131"
+
+# `require "telnyx"` loads "standardwebhooks" at startup, but the gem does NOT
+# declare it as a runtime dependency — so it must be listed explicitly here or
+# loading the SDK raises LoadError.
+gem "standardwebhooks", "~> 1.1"
+
+# Web framework.
+gem "sinatra", "~> 4.1"
+gem "rackup", "~> 2.2"
+gem "puma", "~> 6.4"
+
+# Load TELNYX_* credentials from a local .env file.
+gem "dotenv", "~> 3.1"
+
+# Native Ed25519 verification of Telnyx webhook signatures (the SDK's
+# webhooks.unwrap uses the Standard Webhooks HMAC scheme, which is NOT
+# compatible with Telnyx's Ed25519 signatures).
+gem "ed25519", "~> 1.3"
