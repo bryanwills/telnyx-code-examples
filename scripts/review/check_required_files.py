@@ -62,6 +62,11 @@ def check_example(folder: Path) -> list[tuple[str, str]]:
             out.append(("error", f"missing {f}"))
     # code + dependency files
     code_pats, dep = LANG[lang]
+    # Edge Compute examples ship func.toml + a function/ package instead of a
+    # single app.py — verify.py treats func.toml as the code file, so mirror that
+    # here to avoid false-positives on those folders.
+    if (folder / "func.toml").is_file():
+        code_pats = ["func.toml"]
     if not has(folder, code_pats):
         out.append(("error", f"missing code file ({'/'.join(code_pats)})"))
     if not has(folder, [dep]):
