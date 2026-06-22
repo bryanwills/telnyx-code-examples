@@ -76,16 +76,29 @@ def check_example(folder: Path) -> list[tuple[str, str]]:
 def main() -> int:
     ap = argparse.ArgumentParser(description="Per-example required/forbidden file gate.")
     ap.add_argument("--path", default=".", help="root containing example folders (default: cwd)")
+    ap.add_argument("--changed-against", metavar="REF",
+                    help="diff-aware: only check example folders changed vs this git ref (CI mode)")
     ap.add_argument("--verbose", action="store_true", help="list clean folders too")
     args = ap.parse_args()
 
     root = Path(args.path).resolve()
+    only = None
+    if args.changed_against:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from _changed import changed_example_dirs
+        only = set(changed_example_dirs(root, args.changed_against))
+        if not only:
+            print(f"Structural check (diff-aware): no example folders changed vs {args.changed_against}.\n\nPASS")
+            return 0
+        print(f"Structural check (diff-aware): {len(only)} changed folder(s) vs {args.changed_against}")
     bad = 0
     checked = 0
     langs_seen: dict[str, int] = {}
     for folder in sorted(p for p in root.iterdir() if p.is_dir()):
         lang = lang_of(folder.name)
         if lang is None:
+            continue
+        if only is not None and folder.name not in only:
             continue
         checked += 1
         langs_seen[lang] = langs_seen.get(lang, 0) + 1

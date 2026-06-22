@@ -209,32 +209,45 @@ HANDLERS = [
 SKIP_DIRS = {".git", "node_modules", "vendor", ".venv", "venv", "dist", "build", "bin", "obj"}
 
 
-def scan(root: Path) -> list:
+def scan(root: Path, subdirs=None) -> list:
     findings = []
-    for path in sorted(root.rglob("*")):
-        if any(part in SKIP_DIRS for part in path.parts):
-            continue
-        if not path.is_file():
-            continue
-        name = path.name
-        if name.endswith(".csproj"):
-            findings += check_csproj(path, root)
-            continue
-        for fname, handler in HANDLERS:
-            if name == fname:
-                findings += handler(path, root)
-                break
+    bases = [root / d for d in subdirs] if subdirs is not None else [root]
+    for base in bases:
+        for path in sorted(base.rglob("*")):
+            if any(part in SKIP_DIRS for part in path.parts):
+                continue
+            if not path.is_file():
+                continue
+            name = path.name
+            if name.endswith(".csproj"):
+                findings += check_csproj(path, root)
+                continue
+            for fname, handler in HANDLERS:
+                if name == fname:
+                    findings += handler(path, root)
+                    break
     return findings
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="Flag unpinned / 'latest' dependencies across ecosystems.")
     ap.add_argument("--path", default=".", help="root to scan (default: cwd)")
+    ap.add_argument("--changed-against", metavar="REF",
+                    help="diff-aware: only check example folders changed vs this git ref (CI mode)")
     ap.add_argument("--verbose", action="store_true", help="list every finding (default groups by ecosystem)")
     args = ap.parse_args()
 
     root = Path(args.path).resolve()
-    findings = scan(root)
+    subdirs = None
+    if args.changed_against:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from _changed import changed_example_dirs
+        subdirs = changed_example_dirs(root, args.changed_against)
+        if not subdirs:
+            print(f"Pinning check (diff-aware): no example folders changed vs {args.changed_against}.\n\nPASS")
+            return 0
+        print(f"Pinning check (diff-aware): {len(subdirs)} changed folder(s) vs {args.changed_against}")
+    findings = scan(root, subdirs)
     errors = [f for f in findings if f[0] == "error"]
     warns = [f for f in findings if f[0] == "warn"]
 
