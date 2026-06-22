@@ -1,0 +1,38 @@
+name: PR Review Gates
+
+# Automated contributor gate. verify.py runs over the whole repo; the review
+# gates run DIFF-AWARE (only example folders the PR changes) so they catch new
+# violations without failing on main's pre-existing backlog.
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history so diff-aware gates can diff against the base
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install pyyaml
+
+      - name: verify.py (full repo)
+        run: python scripts/verify.py
+
+      - name: Dependency pinning (changed example folders)
+        run: python scripts/review/check_pinning.py --changed-against "${{ github.event.pull_request.base.sha }}"
+
+      - name: Required files & no forbidden scaffolding (changed example folders)
+        run: python scripts/review/check_required_files.py --changed-against "${{ github.event.pull_request.base.sha }}"
+
+      - name: No legacy SDK references (changed example folders)
+        run: python scripts/review/check_legacy_sdk.py --changed-against "${{ github.event.pull_request.base.sha }}"
