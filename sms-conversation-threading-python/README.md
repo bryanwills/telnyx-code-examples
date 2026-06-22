@@ -226,9 +226,9 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [Send SMS (Python)](../send-sms-python)
-- [Receive SMS (Python)](../receive-sms-python)
-- [SMS Chatbot with Conversation Memory (Python)](../sms-chatbot-with-conversation-memory-python)
+- [Send SMS (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md)
+- [Receive SMS (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-python)
+- [SMS Chatbot with Conversation Memory (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-chatbot-with-conversation-memory-python/README.md)
 
 ## Resources
 

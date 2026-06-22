@@ -146,8 +146,8 @@ go run .
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-go/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-go/API.md)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Voice API Overview](https://developers.telnyx.com/docs/voice)
 - [Telnyx Go SDK](https://developers.telnyx.com/development/sdk/go)

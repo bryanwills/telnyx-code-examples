@@ -192,8 +192,8 @@ This example uses in-memory storage for simplicity. Before deploying:
 
 ## Resources
 
-- [Source code and API reference](./README.md)
-- [Endpoint reference](./API.md)
+- [Source code and API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-survey-bot-python/README.md)
+- [Endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-survey-bot-python/API.md)
 - [Messaging Overview](https://developers.telnyx.com/docs/messaging)
 - [Receive webhooks and verify signatures](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)

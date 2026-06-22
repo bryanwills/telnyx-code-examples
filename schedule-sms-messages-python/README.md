@@ -168,7 +168,7 @@ curl -X DELETE http://localhost:5000/sms/scheduled/sms_1718721000123
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) — send a single SMS immediately.
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send a single SMS immediately.
 
 ## Resources
 

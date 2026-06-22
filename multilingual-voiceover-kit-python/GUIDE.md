@@ -141,7 +141,7 @@ python app.py
 
 ## Resources
 
-- [Source code and reference](./README.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/multilingual-voiceover-kit-python/README.md)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [AI Inference docs](https://developers.telnyx.com/docs/inference)
 - [Telnyx Portal](https://portal.telnyx.com)

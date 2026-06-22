@@ -199,9 +199,9 @@ Inbound SMS webhook from Telnyx. The Ed25519 signature is verified before parsin
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) - Send a single SMS
-- [two-way-sms-chat-python](../two-way-sms-chat-python/) - Inbound + outbound SMS conversations
-- [sms-chatbot-with-conversation-memory-python](../sms-chatbot-with-conversation-memory-python/) - AI SMS chatbot
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - Send a single SMS
+- [two-way-sms-chat-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/two-way-sms-chat-python/README.md) - Inbound + outbound SMS conversations
+- [sms-chatbot-with-conversation-memory-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-chatbot-with-conversation-memory-python/README.md) - AI SMS chatbot
 
 ## Resources
 

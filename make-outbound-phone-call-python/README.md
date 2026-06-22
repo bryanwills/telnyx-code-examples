@@ -104,8 +104,8 @@ curl -X POST http://localhost:5000/calls/dial \
 
 ## Related Examples
 
-- [build-voice-ai-agent-python](../build-voice-ai-agent-python/) - Full voice AI agent
-- [record-phone-calls-python](../record-phone-calls-python/) - Call recording
+- [build-voice-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-voice-ai-agent-python/README.md) - Full voice AI agent
+- [record-phone-calls-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-python/README.md) - Call recording
 
 ## Resources
 

@@ -174,8 +174,8 @@ curl http://localhost:3000/health
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) — send a single SMS via the Messaging API
-- [sms-chatbot-with-conversation-memory-python](../sms-chatbot-with-conversation-memory-python/) — AI SMS chatbot with memory
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send a single SMS via the Messaging API
+- [sms-chatbot-with-conversation-memory-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-chatbot-with-conversation-memory-python/README.md) — AI SMS chatbot with memory
 
 ## Resources
 

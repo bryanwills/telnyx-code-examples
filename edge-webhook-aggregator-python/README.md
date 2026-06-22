@@ -164,10 +164,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [edge-compute-webhook-proxy-python](../edge-compute-webhook-proxy-python/) — single-tenant webhook proxy/transform at the edge
-- [edge-fraud-firewall-python](../edge-fraud-firewall-python/) — inspect and filter Telnyx events at the edge before they hit your backend
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) — handle the voice events this aggregator consolidates
-- [receive-sms-webhook-python](../receive-sms-webhook-python/) — receive and verify the messaging webhooks aggregated here
+- [edge-compute-webhook-proxy-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-compute-webhook-proxy-python/README.md) — single-tenant webhook proxy/transform at the edge
+- [edge-fraud-firewall-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-fraud-firewall-python/README.md) — inspect and filter Telnyx events at the edge before they hit your backend
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — handle the voice events this aggregator consolidates
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) — receive and verify the messaging webhooks aggregated here
 
 ## Resources
 

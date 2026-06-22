@@ -164,10 +164,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [merge-interview-pipeline-python](../merge-interview-pipeline-python/) — voice-driven interview pipeline updates against a Merge ATS.
-- [edge-merge-reference-checker-python](../edge-merge-reference-checker-python/) — automated reference checks over Merge for hiring workflows.
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) — route inbound Call Control calls into a Telnyx AI voice agent.
-- [ai-phone-story-hotline-python](../ai-phone-story-hotline-python/) — another inbound voice hotline using gather-using-speak and AI inference.
+- [merge-interview-pipeline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-interview-pipeline-python/README.md) — voice-driven interview pipeline updates against a Merge ATS.
+- [edge-merge-reference-checker-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-reference-checker-python/README.md) — automated reference checks over Merge for hiring workflows.
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — route inbound Call Control calls into a Telnyx AI voice agent.
+- [ai-phone-story-hotline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-phone-story-hotline-python/README.md) — another inbound voice hotline using gather-using-speak and AI inference.
 
 ## Resources
 

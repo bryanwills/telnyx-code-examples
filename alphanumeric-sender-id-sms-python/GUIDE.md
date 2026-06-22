@@ -145,8 +145,8 @@ The recipient sees the message from `ACME Corp` rather than a phone number.
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/alphanumeric-sender-id-sms-python/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/alphanumeric-sender-id-sms-python/API.md)
 - [Messaging Overview](https://developers.telnyx.com/docs/messaging)
 - [Send an SMS — Quickstart](https://developers.telnyx.com/docs/messaging/messages/send-message)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)

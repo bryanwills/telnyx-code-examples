@@ -191,10 +191,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [multi-number-identity-router-python](../multi-number-identity-router-python/) — route inbound calls across a pool of numbers by identity
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) — Call Control answer/transfer routing patterns
-- [record-phone-calls-python](../record-phone-calls-python/) — start recordings and handle `call.recording.saved`
-- [edge-geo-smart-router-python](../edge-geo-smart-router-python/) — edge-deployed Call Control routing sibling
+- [multi-number-identity-router-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/multi-number-identity-router-python/README.md) — route inbound calls across a pool of numbers by identity
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — Call Control answer/transfer routing patterns
+- [record-phone-calls-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-python/README.md) — start recordings and handle `call.recording.saved`
+- [edge-geo-smart-router-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-geo-smart-router-python/README.md) — edge-deployed Call Control routing sibling
 
 ## Resources
 

@@ -181,10 +181,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [edge-merge-ai-receptionist-python](../edge-merge-ai-receptionist-python/) — Edge voice + Merge ATS/CRM AI receptionist sibling
-- [edge-merge-shift-coverage-python](../edge-merge-shift-coverage-python/) — outbound voice + Merge integration for filling open shifts
-- [ai-hiring-phone-screen-python](../ai-hiring-phone-screen-python/) — AI-conducted structured phone screen for candidates
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) — Call Control patterns for connecting calls to an AI agent
+- [edge-merge-ai-receptionist-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-ai-receptionist-python/README.md) — Edge voice + Merge ATS/CRM AI receptionist sibling
+- [edge-merge-shift-coverage-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-shift-coverage-python/README.md) — outbound voice + Merge integration for filling open shifts
+- [ai-hiring-phone-screen-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-hiring-phone-screen-python/README.md) — AI-conducted structured phone screen for candidates
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — Call Control patterns for connecting calls to an AI agent
 
 ## Resources
 

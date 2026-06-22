@@ -163,8 +163,8 @@ node server.js "Your question here"
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/run-llm-inference-nodejs/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/run-llm-inference-nodejs/API.md)
 - [Telnyx Inference Docs](https://developers.telnyx.com/docs/inference)
 - [Chat Completions API reference](https://developers.telnyx.com/api/inference/inference-embedding/post-chat-completions)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)

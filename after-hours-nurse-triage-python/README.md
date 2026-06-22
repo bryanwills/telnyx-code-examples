@@ -208,11 +208,11 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Related Examples
 
-- [Abandoned Cart Recovery (Python)](../abandoned-cart-recovery-python)
-- [Accounting Tax Season Line (Python)](../accounting-tax-season-line-python)
-- [AI Appointment Booking SMS Flow (Python)](../ai-appointment-booking-sms-flow-python)
-- [AI Appointment Reminder SMS Voice (Python)](../ai-appointment-reminder-sms-voice-python)
-- [Autonomous Outbound Sales Agent (Python)](../autonomous-outbound-sales-agent-python)
+- [Abandoned Cart Recovery (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/abandoned-cart-recovery-python/README.md)
+- [Accounting Tax Season Line (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/accounting-tax-season-line-python/README.md)
+- [AI Appointment Booking SMS Flow (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-appointment-booking-sms-flow-python/README.md)
+- [AI Appointment Reminder SMS Voice (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-appointment-reminder-sms-voice-python/README.md)
+- [Autonomous Outbound Sales Agent (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/autonomous-outbound-sales-agent-python/README.md)
 
 ## Resources
 

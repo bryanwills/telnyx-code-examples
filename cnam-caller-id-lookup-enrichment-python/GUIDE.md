@@ -175,7 +175,7 @@ python app.py
 
 ## Resources
 
-- [Source code and reference](./README.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/cnam-caller-id-lookup-enrichment-python/README.md)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Call Control quickstart](https://developers.telnyx.com/docs/voice/call-control)
 - [Telnyx Portal](https://portal.telnyx.com)

@@ -165,7 +165,7 @@ def process_inbound_sms(event)
 end
 ```
 
-See [`app.rb`](./app.rb) for the complete implementation, including the `/messages`
+See [`app.rb`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-ruby/app.rb) for the complete implementation, including the `/messages`
 debug endpoint, `/health` check, and the generic 500 error handler that logs internally
 without leaking exception details.
 
@@ -220,7 +220,7 @@ This example uses in-memory storage for simplicity. For production:
 
 ## Resources
 
-- [Source code and reference](./README.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-ruby/README.md)
 - [Receive a Message guide](https://developers.telnyx.com/docs/messaging/messages/receive-message)
 - [Ruby SDK](https://developers.telnyx.com/development/sdk/ruby)
 - [Telnyx Portal](https://portal.telnyx.com)

@@ -192,11 +192,11 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [build-ivr-phone-menu-python](../build-ivr-phone-menu-python/) — the same IVR in Python/Flask
-- [make-outbound-phone-call-nodejs](../make-outbound-phone-call-nodejs/) — place outbound calls with Call Control
-- [text-to-speech-phone-call-nodejs](../text-to-speech-phone-call-nodejs/) — speak text on a call
-- [record-phone-calls-nodejs](../record-phone-calls-nodejs/) — record call audio
-- [route-phone-calls-to-ai-agent-nodejs](../route-phone-calls-to-ai-agent-nodejs/) — hand calls to an AI voice agent
+- [build-ivr-phone-menu-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-ivr-phone-menu-python/README.md) — the same IVR in Python/Flask
+- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) — place outbound calls with Call Control
+- [text-to-speech-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/text-to-speech-phone-call-nodejs/README.md) — speak text on a call
+- [record-phone-calls-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-nodejs/README.md) — record call audio
+- [route-phone-calls-to-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-nodejs/README.md) — hand calls to an AI voice agent
 
 ## Resources
 

@@ -176,8 +176,8 @@ node server.js
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-two-factor-auth-nodejs/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-two-factor-auth-nodejs/API.md)
 - [Messaging Overview](https://developers.telnyx.com/docs/messaging)
 - [Send a Message — API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)

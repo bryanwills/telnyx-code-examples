@@ -173,10 +173,10 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [text-to-speech-phone-call-python](../text-to-speech-phone-call-python/) — same example in Python
-- [make-outbound-phone-call-nodejs](../make-outbound-phone-call-nodejs/) — initiate outbound calls
-- [record-phone-calls-nodejs](../record-phone-calls-nodejs/) — record call audio
-- [build-ivr-phone-menu-nodejs](../build-ivr-phone-menu-nodejs/) — interactive voice menus
+- [text-to-speech-phone-call-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/text-to-speech-phone-call-python/README.md) — same example in Python
+- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) — initiate outbound calls
+- [record-phone-calls-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-nodejs/README.md) — record call audio
+- [build-ivr-phone-menu-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-ivr-phone-menu-nodejs/README.md) — interactive voice menus
 
 ## Resources
 

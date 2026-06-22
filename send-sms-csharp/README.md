@@ -100,7 +100,7 @@ curl -X POST http://localhost:5000/sms/send \
 
 ### `POST /webhooks/sms`
 
-Receives inbound message webhooks from Telnyx. The raw body is read before parsing and verified with the account public key (Ed25519 over `"{telnyx-timestamp}|{body}"`). Returns `200` when verified, `401` when the signature is missing/invalid or the timestamp is stale. See [API.md](./API.md) for the full typed reference.
+Receives inbound message webhooks from Telnyx. The raw body is read before parsing and verified with the account public key (Ed25519 over `"{telnyx-timestamp}|{body}"`). Returns `200` when verified, `401` when the signature is missing/invalid or the timestamp is stale. See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-csharp/API.md) for the full typed reference.
 
 ## Troubleshooting
 
@@ -116,12 +116,12 @@ Receives inbound message webhooks from Telnyx. The raw body is read before parsi
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) - Same example in Python
-- [send-sms-nodejs](../send-sms-nodejs/) - Same example in Node.js
-- [send-sms-go](../send-sms-go/) - Same example in Go
-- [send-sms-ruby](../send-sms-ruby/) - Same example in Ruby
-- [send-bulk-sms-nodejs](../send-bulk-sms-nodejs/) - Send many messages in a batch
-- [receive-sms-webhook-nodejs](../receive-sms-webhook-nodejs/) - Receive inbound SMS via webhook
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - Same example in Python
+- [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md) - Same example in Node.js
+- [send-sms-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-go/README.md) - Same example in Go
+- [send-sms-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-ruby/README.md) - Same example in Ruby
+- [send-bulk-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-nodejs/README.md) - Send many messages in a batch
+- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) - Receive inbound SMS via webhook
 
 ## Resources
 

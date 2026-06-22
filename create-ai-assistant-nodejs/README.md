@@ -118,9 +118,9 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [list-ai-assistants-nodejs](../list-ai-assistants-nodejs/) - List your AI assistants
-- [chat-with-ai-assistant-nodejs](../chat-with-ai-assistant-nodejs/) - Send messages to an assistant
-- [create-ai-assistant-python](../create-ai-assistant-python/) - Same example in Python
+- [list-ai-assistants-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/list-ai-assistants-nodejs/README.md) - List your AI assistants
+- [chat-with-ai-assistant-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-nodejs/README.md) - Send messages to an assistant
+- [create-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/create-ai-assistant-python/README.md) - Same example in Python
 
 ## Resources
 

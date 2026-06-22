@@ -128,11 +128,11 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [send-sms-nodejs](../send-sms-nodejs/) - Send a plain text SMS (no media)
-- [send-bulk-sms-nodejs](../send-bulk-sms-nodejs/) - Send many messages in a batch
-- [send-mms-picture-message-python](../send-mms-picture-message-python/) - Same example in Python
-- [receive-sms-webhook-nodejs](../receive-sms-webhook-nodejs/) - Receive inbound SMS/MMS via webhook
-- [sms-delivery-receipts-nodejs](../sms-delivery-receipts-nodejs/) - Track final delivery status
+- [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md) - Send a plain text SMS (no media)
+- [send-bulk-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-nodejs/README.md) - Send many messages in a batch
+- [send-mms-picture-message-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-mms-picture-message-python/README.md) - Same example in Python
+- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) - Receive inbound SMS/MMS via webhook
+- [sms-delivery-receipts-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-delivery-receipts-nodejs/README.md) - Track final delivery status
 
 ## Resources
 

@@ -183,4 +183,4 @@ curl -X POST http://localhost:5000/sim-cards/<your-sim-id>/enable
 - Disable a SIM with `sim.DisableAsync(id)` — the mirror of enable.
 - Register freshly purchased SIMs with
   `sim.Register(new SimCardRegisterOptions { RegistrationCodes = [...], SimCardGroupId = ... })`.
-- See [`API.md`](./API.md) for the full route/response reference.
+- See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-csharp/API.md) for the full route/response reference.

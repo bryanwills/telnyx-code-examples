@@ -185,8 +185,8 @@ This example uses an in-memory dict for simplicity. For production:
 
 ## Resources
 
-- [Source code and endpoint reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/toll-free-sms-python/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/toll-free-sms-python/API.md)
 - [Messaging quickstart](https://developers.telnyx.com/docs/messaging)
 - [Webhook signing](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)

@@ -131,10 +131,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) -- route inbound calls into a conversational AI agent
-- [merge-recruitment-hotline-python](../merge-recruitment-hotline-python/) -- caller-ID auth against Merge ATS for a recruiting line
-- [merge-employee-onboarding-python](../merge-employee-onboarding-python/) -- automate onboarding workflows backed by Merge HRIS
-- [edge-merge-ai-receptionist-python](../edge-merge-ai-receptionist-python/) -- AI receptionist combining Telnyx voice with Merge data
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) -- route inbound calls into a conversational AI agent
+- [merge-recruitment-hotline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-recruitment-hotline-python/README.md) -- caller-ID auth against Merge ATS for a recruiting line
+- [merge-employee-onboarding-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-employee-onboarding-python/README.md) -- automate onboarding workflows backed by Merge HRIS
+- [edge-merge-ai-receptionist-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-ai-receptionist-python/README.md) -- AI receptionist combining Telnyx voice with Merge data
 
 ## Resources
 

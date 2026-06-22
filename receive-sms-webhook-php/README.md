@@ -114,7 +114,7 @@ curl http://localhost:8080/health
 
 **Response `200`:** `{ "status": "ok" }`
 
-See [API.md](./API.md) for the full typed endpoint reference.
+See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-php/API.md) for the full typed endpoint reference.
 
 ## Troubleshooting
 
@@ -128,10 +128,10 @@ See [API.md](./API.md) for the full typed endpoint reference.
 
 ## Related Examples
 
-- [receive-sms-webhook-python](../receive-sms-webhook-python/) - Same example in Python
-- [receive-sms-webhook-nodejs](../receive-sms-webhook-nodejs/) - Same example in Node.js
-- [receive-sms-webhook-java](../receive-sms-webhook-java/) - Same example in Java
-- [receive-sms-webhook-csharp](../receive-sms-webhook-csharp/) - Same example in C#
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) - Same example in Python
+- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) - Same example in Node.js
+- [receive-sms-webhook-java](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-java/README.md) - Same example in Java
+- [receive-sms-webhook-csharp](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-csharp/README.md) - Same example in C#
 
 ## Resources
 

@@ -126,9 +126,9 @@ curl -X POST http://localhost:5000/sms/validate-sender-id \
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) — send a single SMS from a phone number
-- [send-bulk-sms-python](../send-bulk-sms-python/) — send messages to many recipients
-- [receive-sms-webhook-python](../receive-sms-webhook-python/) — receive inbound SMS via webhooks
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send a single SMS from a phone number
+- [send-bulk-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-python/README.md) — send messages to many recipients
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) — receive inbound SMS via webhooks
 
 ## Resources
 

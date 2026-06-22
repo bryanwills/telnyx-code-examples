@@ -11,7 +11,7 @@ Telnyx is an **AI Communications Infrastructure** platform — voice, messaging,
 - **Call Control: Answer** — `POST /v2/calls/{call_control_id}/actions/answer` — SDK: `client.calls.actions.answer(call_control_id)`
 - **Call Control: Start AI Assistant** — `POST /v2/calls/{call_control_id}/actions/start_ai_assistant` — SDK: `client.calls.actions.start_ai_assistant(call_control_id, assistant: { id: ... })`
 
-See [API.md](./API.md) for the typed request/response reference.
+See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-ruby/API.md) for the typed request/response reference.
 
 ## Telnyx Webhook Events
 
@@ -104,7 +104,7 @@ Receives Telnyx Call Control webhook events. The handler verifies the Ed25519 si
 
 Liveness probe. Returns `200` with `{"status":"ok"}`.
 
-Full typed reference: [API.md](./API.md).
+Full typed reference: [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-ruby/API.md).
 
 ## Troubleshooting
 
@@ -119,11 +119,11 @@ Full typed reference: [API.md](./API.md).
 
 ## Related Examples
 
-- [Make an Outbound Phone Call (Ruby)](../make-outbound-phone-call-ruby)
-- [Send SMS (Ruby)](../send-sms-ruby)
-- [Route Phone Calls to an AI Agent (Node.js)](../route-phone-calls-to-ai-agent-nodejs)
-- [Route Phone Calls to an AI Agent (Go)](../route-phone-calls-to-ai-agent-go)
-- [Route Phone Calls to an AI Agent (Python)](../route-phone-calls-to-ai-agent-python)
+- [Make an Outbound Phone Call (Ruby)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-ruby/README.md)
+- [Send SMS (Ruby)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-ruby/README.md)
+- [Route Phone Calls to an AI Agent (Node.js)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-nodejs/README.md)
+- [Route Phone Calls to an AI Agent (Go)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-go/README.md)
+- [Route Phone Calls to an AI Agent (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md)
 
 ## Resources
 

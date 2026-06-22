@@ -174,10 +174,10 @@ curl http://localhost:8080/health
 
 ## Related Examples
 
-- [setup-sip-trunk-python](../setup-sip-trunk-python/) - Same example in Python
-- [setup-sip-trunk-nodejs](../setup-sip-trunk-nodejs/) - Same example in Node.js
-- [setup-sip-trunk-go](../setup-sip-trunk-go/) - Same example in Go
-- [activate-sim-card-php](../activate-sim-card-php/) - Telnyx PHP SDK with IoT SIM cards
+- [setup-sip-trunk-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-python/README.md) - Same example in Python
+- [setup-sip-trunk-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/README.md) - Same example in Node.js
+- [setup-sip-trunk-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-go/README.md) - Same example in Go
+- [activate-sim-card-php](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-php/README.md) - Telnyx PHP SDK with IoT SIM cards
 
 ## Resources
 

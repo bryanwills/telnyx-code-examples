@@ -186,8 +186,8 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) — send a single SMS, the building block this campaign sender batches.
-- [sms-chatbot-with-conversation-memory-python](../sms-chatbot-with-conversation-memory-python/) — handle inbound SMS replies with an AI chatbot.
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send a single SMS, the building block this campaign sender batches.
+- [sms-chatbot-with-conversation-memory-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-chatbot-with-conversation-memory-python/README.md) — handle inbound SMS replies with an AI chatbot.
 
 ## Resources
 

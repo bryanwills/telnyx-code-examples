@@ -150,11 +150,11 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [Branded Caller Id Manager (Python)](../branded-caller-id-manager-python)
-- [Build Conference Calling (Python)](../build-conference-calling-python)
-- [Build IVR Phone Menu (Python)](../build-ivr-phone-menu-python)
-- [Call Analytics Dashboard Api (Python)](../call-analytics-dashboard-api-python)
-- [Call Forwarding (Python)](../call-forwarding-python)
+- [Branded Caller Id Manager (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/branded-caller-id-manager-python/README.md)
+- [Build Conference Calling (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-conference-calling-python/README.md)
+- [Build IVR Phone Menu (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-ivr-phone-menu-python/README.md)
+- [Call Analytics Dashboard Api (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/call-analytics-dashboard-api-python/README.md)
+- [Call Forwarding (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/call-forwarding-python/README.md)
 
 ## Resources
 

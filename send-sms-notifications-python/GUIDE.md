@@ -183,8 +183,8 @@ This example uses in-memory storage for simplicity. For production:
 
 ## Resources
 
-- [Source code and API reference](./README.md)
-- [Endpoint reference](./API.md)
+- [Source code and API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-notifications-python/README.md)
+- [Endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-notifications-python/API.md)
 - [Messaging quickstart](https://developers.telnyx.com/docs/messaging)
 - [Receive webhooks](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)

@@ -68,7 +68,7 @@ bundle exec ruby app.rb    # starts on http://localhost:4567
 
 ## API Reference
 
-See [`API.md`](./API.md) for the full typed reference.
+See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-ruby/API.md) for the full typed reference.
 
 ### `POST /sim/activate`
 
@@ -112,10 +112,10 @@ Receives SIM status-change webhooks from Telnyx. The handler verifies the Ed2551
 
 ## Related Examples
 
-- [activate-sim-card-python](../activate-sim-card-python/) — Same flow in Python
-- [activate-sim-card-nodejs](../activate-sim-card-nodejs/) — Same flow in Node.js
-- [activate-sim-card-go](../activate-sim-card-go/) — Same flow in Go
-- [send-sms-ruby](../send-sms-ruby/) — Send SMS with the Telnyx Ruby SDK
+- [activate-sim-card-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-python/README.md) — Same flow in Python
+- [activate-sim-card-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-nodejs/README.md) — Same flow in Node.js
+- [activate-sim-card-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-go/README.md) — Same flow in Go
+- [send-sms-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-ruby/README.md) — Send SMS with the Telnyx Ruby SDK
 
 ## Resources
 

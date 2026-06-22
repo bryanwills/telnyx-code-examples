@@ -88,7 +88,7 @@ bundle exec ruby app.rb # starts on http://localhost:5000
 
 ## API Reference
 
-See [`API.md`](./API.md) for the full typed endpoint reference.
+See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-ruby/API.md) for the full typed endpoint reference.
 
 ### `POST /webhooks/sms`
 
@@ -154,10 +154,10 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [receive-sms-webhook-nodejs](../receive-sms-webhook-nodejs/) - Same webhook receiver in Node.js
-- [receive-sms-webhook-python](../receive-sms-webhook-python/) - Same webhook receiver in Python
-- [receive-sms-webhook-java](../receive-sms-webhook-java/) - Same webhook receiver in Java (Ed25519-verified)
-- [send-sms-ruby](../send-sms-ruby/) - Send an SMS with Ruby
+- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) - Same webhook receiver in Node.js
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) - Same webhook receiver in Python
+- [receive-sms-webhook-java](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-java/README.md) - Same webhook receiver in Java (Ed25519-verified)
+- [send-sms-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-ruby/README.md) - Send an SMS with Ruby
 
 ## Resources
 

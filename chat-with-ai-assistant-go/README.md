@@ -135,10 +135,10 @@ curl -X POST http://localhost:8080/chat \
 
 ## Related Examples
 
-- [chat-with-ai-assistant-python](../chat-with-ai-assistant-python/) - Same example in Python
-- [chat-with-ai-assistant-nodejs](../chat-with-ai-assistant-nodejs/) - Same example in Node.js
-- [create-ai-assistant-python](../create-ai-assistant-python/) - Create an AI assistant before chatting with it
-- [route-phone-calls-to-ai-agent-go](../route-phone-calls-to-ai-agent-go/) - Connect calls to an AI agent with the Telnyx Go SDK and Gin
+- [chat-with-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-python/README.md) - Same example in Python
+- [chat-with-ai-assistant-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-nodejs/README.md) - Same example in Node.js
+- [create-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/create-ai-assistant-python/README.md) - Create an AI assistant before chatting with it
+- [route-phone-calls-to-ai-agent-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-go/README.md) - Connect calls to an AI agent with the Telnyx Go SDK and Gin
 
 ## Resources
 

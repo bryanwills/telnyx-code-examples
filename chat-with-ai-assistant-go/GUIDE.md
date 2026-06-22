@@ -153,4 +153,4 @@ The assistant's second reply should reflect the context of the first turn.
 
 - Persist the `conversation_id` per user so chats survive across sessions.
 - Add the optional `name` field to `AIAssistantChatParams` to label who is speaking.
-- Move the same assistant to phone or SMS — see [route-phone-calls-to-ai-agent-go](../route-phone-calls-to-ai-agent-go/).
+- Move the same assistant to phone or SMS — see [route-phone-calls-to-ai-agent-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-go/README.md).

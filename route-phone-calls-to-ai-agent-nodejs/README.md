@@ -145,10 +145,10 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [build-voice-ai-agent-nodejs](../build-voice-ai-agent-nodejs/) - Connect answered calls to a Telnyx AI voice agent
-- [make-outbound-phone-call-nodejs](../make-outbound-phone-call-nodejs/) - Place outbound calls with Call Control
-- [record-phone-calls-nodejs](../record-phone-calls-nodejs/) - Record calls via Call Control actions
-- [build-ivr-phone-menu-nodejs](../build-ivr-phone-menu-nodejs/) - Build an IVR menu on inbound calls
+- [build-voice-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-voice-ai-agent-nodejs/README.md) - Connect answered calls to a Telnyx AI voice agent
+- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) - Place outbound calls with Call Control
+- [record-phone-calls-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-nodejs/README.md) - Record calls via Call Control actions
+- [build-ivr-phone-menu-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-ivr-phone-menu-nodejs/README.md) - Build an IVR menu on inbound calls
 
 ## Resources
 

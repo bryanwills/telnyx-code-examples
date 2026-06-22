@@ -172,8 +172,8 @@ node server.js
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/text-to-speech-phone-call-nodejs/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/text-to-speech-phone-call-nodejs/API.md)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Voice API Overview](https://developers.telnyx.com/docs/voice)
 - [Speak Text API reference](https://developers.telnyx.com/api-reference/call-commands/speak-text)

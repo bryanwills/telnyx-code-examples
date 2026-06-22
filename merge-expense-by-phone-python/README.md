@@ -151,10 +151,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) — Call Control voice flow that routes callers to an AI agent.
-- [ai-sales-call-with-live-crm-updates-python](../ai-sales-call-with-live-crm-updates-python/) — voice call that writes structured data back to CRM via Merge.
-- [merge-invoice-collector-python](../merge-invoice-collector-python/) — sibling Merge accounting integration over voice.
-- [mms-receipt-scanner-expense-tracker-python](../mms-receipt-scanner-expense-tracker-python/) — expense capture from MMS receipt images.
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — Call Control voice flow that routes callers to an AI agent.
+- [ai-sales-call-with-live-crm-updates-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-sales-call-with-live-crm-updates-python/README.md) — voice call that writes structured data back to CRM via Merge.
+- [merge-invoice-collector-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-invoice-collector-python/README.md) — sibling Merge accounting integration over voice.
+- [mms-receipt-scanner-expense-tracker-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/mms-receipt-scanner-expense-tracker-python/README.md) — expense capture from MMS receipt images.
 
 ## Resources
 

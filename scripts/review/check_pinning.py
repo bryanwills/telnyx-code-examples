@@ -251,16 +251,33 @@ def main() -> int:
     args = ap.parse_args()
 
     root = Path(args.path).resolve()
-    subdirs = None
     if args.changed_against:
         sys.path.insert(0, str(Path(__file__).resolve().parent))
-        from _changed import changed_example_dirs
-        subdirs = changed_example_dirs(root, args.changed_against)
-        if not subdirs:
-            print(f"Pinning check (diff-aware): no example folders changed vs {args.changed_against}.\n\nPASS")
+        from _changed import changed_files, is_example_dir
+        # Content-aware: a pinning violation can only be INTRODUCED by editing a
+        # dependency file, so scope to the dep files the PR actually changed —
+        # not every folder it touches (a mass doc edit changes no dep files).
+        handlers = dict(HANDLERS)
+        targets = []
+        for f in changed_files(root, args.changed_against):
+            if not is_example_dir(f.split("/", 1)[0]):
+                continue
+            p = root / f
+            if not p.is_file():
+                continue
+            if p.name.endswith(".csproj"):
+                targets.append((p, check_csproj))
+            elif p.name in handlers:
+                targets.append((p, handlers[p.name]))
+        if not targets:
+            print(f"Pinning check (diff-aware): no changed dependency files vs {args.changed_against}.\n\nPASS")
             return 0
-        print(f"Pinning check (diff-aware): {len(subdirs)} changed folder(s) vs {args.changed_against}")
-    findings = scan(root, subdirs)
+        print(f"Pinning check (diff-aware): {len(targets)} changed dependency file(s) vs {args.changed_against}")
+        findings = []
+        for p, handler in targets:
+            findings += handler(p, root)
+    else:
+        findings = scan(root, None)
     errors = [f for f in findings if f[0] == "error"]
     warns = [f for f in findings if f[0] == "warn"]
 

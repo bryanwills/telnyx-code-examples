@@ -143,8 +143,8 @@ The `status` should now be `delivered` (or `failed`, with an `error_code`), and 
 
 ## Resources
 
-- [Source code and route reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and route reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-delivery-receipts-python/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-delivery-receipts-python/API.md)
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
 - [Receiving Webhooks](https://developers.telnyx.com/docs/messaging/messages/receiving-webhooks)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)

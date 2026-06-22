@@ -130,8 +130,8 @@ node server.js
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/API.md)
 - [SIP Trunking Get Started](https://developers.telnyx.com/docs/voice/sip-trunking/get-started)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx Portal](https://portal.telnyx.com)

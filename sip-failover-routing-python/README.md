@@ -261,11 +261,11 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Related Examples
 
-- [Configure SIP Codecs (Python)](../configure-sip-codecs-python)
-- [Inbound SIP Routing (Python)](../inbound-sip-routing-python)
-- [Setup SIP Trunk (Python)](../setup-sip-trunk-python)
-- [SIP Load Balancer Health Check (Python)](../sip-load-balancer-health-check-python)
-- [SIP Trunking Failover Monitor (Python)](../sip-trunking-failover-monitor-python)
+- [Configure SIP Codecs (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/configure-sip-codecs-python/README.md)
+- [Inbound SIP Routing (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/inbound-sip-routing-python/README.md)
+- [Setup SIP Trunk (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-python/README.md)
+- [SIP Load Balancer Health Check (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sip-load-balancer-health-check-python/README.md)
+- [SIP Trunking Failover Monitor (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sip-trunking-failover-monitor-python/README.md)
 
 ## Resources
 

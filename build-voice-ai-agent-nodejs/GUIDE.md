@@ -151,8 +151,8 @@ node server.js
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-voice-ai-agent-nodejs/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-voice-ai-agent-nodejs/API.md)
 - [Telnyx Voice Guide](https://developers.telnyx.com/docs/voice)
 - [Telnyx Inference Guide](https://developers.telnyx.com/docs/inference)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)

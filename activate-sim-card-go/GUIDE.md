@@ -133,8 +133,8 @@ go run .
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-go/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-go/API.md)
 - [IoT SIM Get Started](https://developers.telnyx.com/docs/iot-sim/get-started)
 - [Go SDK](https://developers.telnyx.com/development/sdk/go)
 - [Telnyx Portal](https://portal.telnyx.com)

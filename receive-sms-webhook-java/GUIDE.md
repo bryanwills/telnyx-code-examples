@@ -153,8 +153,8 @@ curl http://localhost:8080/health
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-java/README.md)
+- [API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-java/API.md)
 - [Receive a Message guide](https://developers.telnyx.com/docs/messaging/messages/receive-message)
 - [Webhook signing reference](https://developers.telnyx.com/api-reference/webhooks/verify-webhook-signatures)
 - [Java SDK](https://developers.telnyx.com/development/sdk/java)

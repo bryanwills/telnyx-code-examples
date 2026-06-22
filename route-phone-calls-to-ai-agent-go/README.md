@@ -137,9 +137,9 @@ curl -X POST http://localhost:5000/webhooks/call \
 
 ## Related Examples
 
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) - Same example in Python
-- [route-phone-calls-to-ai-agent-nodejs](../route-phone-calls-to-ai-agent-nodejs/) - Same example in Node.js
-- [send-sms-go](../send-sms-go/) - Send an SMS with the Telnyx Go SDK and Gin
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) - Same example in Python
+- [route-phone-calls-to-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-nodejs/README.md) - Same example in Node.js
+- [send-sms-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-go/README.md) - Send an SMS with the Telnyx Go SDK and Gin
 
 ## Resources
 

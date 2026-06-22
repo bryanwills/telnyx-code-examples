@@ -90,11 +90,11 @@ curl -X POST http://localhost:5000/sip/setup \
 
 ## Related Examples
 
-- [Configure SIP Codecs (Python)](../configure-sip-codecs-python)
-- [Inbound SIP Routing (Python)](../inbound-sip-routing-python)
-- [SIP Failover Routing (Python)](../sip-failover-routing-python)
-- [SIP Load Balancer Health Check (Python)](../sip-load-balancer-health-check-python)
-- [SIP Trunking Failover Monitor (Python)](../sip-trunking-failover-monitor-python)
+- [Configure SIP Codecs (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/configure-sip-codecs-python/README.md)
+- [Inbound SIP Routing (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/inbound-sip-routing-python/README.md)
+- [SIP Failover Routing (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sip-failover-routing-python/README.md)
+- [SIP Load Balancer Health Check (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sip-load-balancer-health-check-python/README.md)
+- [SIP Trunking Failover Monitor (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sip-trunking-failover-monitor-python/README.md)
 
 ## Resources
 

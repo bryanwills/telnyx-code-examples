@@ -165,10 +165,10 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [receive-sms-webhook-python](../receive-sms-webhook-python/) - Same webhook receiver in Python
-- [send-sms-nodejs](../send-sms-nodejs/) - Send an SMS with Node.js
-- [send-bulk-sms-nodejs](../send-bulk-sms-nodejs/) - Send bulk SMS with Node.js
-- [sms-two-factor-auth-nodejs](../sms-two-factor-auth-nodejs/) - SMS-based 2FA with Node.js
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) - Same webhook receiver in Python
+- [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md) - Send an SMS with Node.js
+- [send-bulk-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-nodejs/README.md) - Send bulk SMS with Node.js
+- [sms-two-factor-auth-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-two-factor-auth-nodejs/README.md) - SMS-based 2FA with Node.js
 
 ## Resources
 

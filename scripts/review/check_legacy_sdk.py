@@ -97,22 +97,35 @@ def main() -> int:
     root = Path(args.path).resolve()
     if args.changed_against:
         sys.path.insert(0, str(Path(__file__).resolve().parent))
-        from _changed import changed_example_dirs
-        names = changed_example_dirs(root, args.changed_against)
-        if not names:
-            print(f"Legacy-SDK check (diff-aware): no example folders changed vs {args.changed_against}.\n\nPASS")
+        from _changed import added_lines
+        # Content-aware: a legacy ref is only INTRODUCED on a line the PR adds, so
+        # scan only added lines. This keeps a repo-wide change (e.g. a mass doc
+        # edit) from re-flagging pre-existing backlog in files it merely touches.
+        added = added_lines(root, args.changed_against)
+        if not added:
+            print(f"Legacy-SDK check (diff-aware): no added lines vs {args.changed_against}.\n\nPASS")
             return 0
-        print(f"Legacy-SDK check (diff-aware): {len(names)} changed folder(s) vs {args.changed_against}")
-        folders = [root / n for n in names]
+        print(f"Legacy-SDK check (diff-aware): {len(added)} added line(s) vs {args.changed_against}")
+        hits = []
+        for relpath, line in added:
+            top = relpath.split("/", 1)[0]
+            lang = lang_of(top)
+            if not lang:
+                continue
+            name = Path(relpath).name
+            if name not in SCAN_NAMES and Path(relpath).suffix not in SCAN_SUFFIX:
+                continue
+            for rx, msg in DENY_BY_LANG.get(lang, []):
+                if rx.search(line):
+                    hits.append(f"{relpath} (added) — {msg}")
     else:
         folders = [p for p in sorted(root.iterdir()) if p.is_dir() and lang_of(p.name)]
-
-    hits = []
-    for folder in folders:
-        lang = lang_of(folder.name)
-        if not lang:
-            continue
-        hits += scan_folder(folder, root, DENY_BY_LANG.get(lang, []))
+        hits = []
+        for folder in folders:
+            lang = lang_of(folder.name)
+            if not lang:
+                continue
+            hits += scan_folder(folder, root, DENY_BY_LANG.get(lang, []))
 
     for h in hits:
         print(f"  ✗ {h}")

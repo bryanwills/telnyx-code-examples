@@ -175,10 +175,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [number-lookup-fraud-screener-python](../number-lookup-fraud-screener-python/) -- Score and screen callers with Number Lookup reputation data
-- [fraud-alert-verification-python](../fraud-alert-verification-python/) -- Verify suspicious activity with an outbound confirmation call
-- [edge-geo-smart-router-python](../edge-geo-smart-router-python/) -- Route inbound calls at the edge based on caller geography
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) -- Forward screened, verified calls to an AI voice agent
+- [number-lookup-fraud-screener-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/number-lookup-fraud-screener-python/README.md) -- Score and screen callers with Number Lookup reputation data
+- [fraud-alert-verification-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/fraud-alert-verification-python/README.md) -- Verify suspicious activity with an outbound confirmation call
+- [edge-geo-smart-router-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-geo-smart-router-python/README.md) -- Route inbound calls at the edge based on caller geography
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) -- Forward screened, verified calls to an AI voice agent
 
 ## Resources
 

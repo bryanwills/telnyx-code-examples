@@ -164,8 +164,8 @@ This example uses in-memory storage for simplicity. For production:
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/shortcode-sms-python/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/shortcode-sms-python/API.md)
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
 - [Webhook signature verification](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)

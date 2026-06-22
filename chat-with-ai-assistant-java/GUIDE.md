@@ -192,8 +192,8 @@ curl -X POST http://localhost:8080/chat \
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-java/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-java/API.md)
 - [AI Assistants Guide](https://developers.telnyx.com/docs/inference/ai-assistants/no-code-voice-assistant)
 - [Java SDK](https://developers.telnyx.com/development/sdk/java)
 - [Telnyx Portal](https://portal.telnyx.com)

@@ -98,10 +98,10 @@ curl -X POST http://localhost:8080/sim/activate \
 
 ## Related Examples
 
-- [activate-sim-card-python](../activate-sim-card-python/) - Same flow in Python
-- [activate-sim-card-nodejs](../activate-sim-card-nodejs/) - Same flow in Node.js
-- [monitor-iot-data-usage-python](../monitor-iot-data-usage-python/) - Track SIM data usage
-- [send-sms-go](../send-sms-go/) - Send SMS with the Telnyx Go SDK
+- [activate-sim-card-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-python/README.md) - Same flow in Python
+- [activate-sim-card-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-nodejs/README.md) - Same flow in Node.js
+- [monitor-iot-data-usage-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/monitor-iot-data-usage-python/README.md) - Track SIM data usage
+- [send-sms-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-go/README.md) - Send SMS with the Telnyx Go SDK
 
 ## Resources
 

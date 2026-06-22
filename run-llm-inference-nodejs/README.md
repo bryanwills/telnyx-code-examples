@@ -169,9 +169,9 @@ curl -X POST http://localhost:5000/inference/ask \
 
 ## Related Examples
 
-- [build-voice-ai-agent-nodejs](../build-voice-ai-agent-nodejs/) - Voice AI agent in Node.js
-- [create-ai-assistant-nodejs](../create-ai-assistant-nodejs/) - Create a managed AI Assistant
-- [run-llm-inference-python](../run-llm-inference-python/) - The same example in Python
+- [build-voice-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-voice-ai-agent-nodejs/README.md) - Voice AI agent in Node.js
+- [create-ai-assistant-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/create-ai-assistant-nodejs/README.md) - Create a managed AI Assistant
+- [run-llm-inference-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/run-llm-inference-python/README.md) - The same example in Python
 
 ## Resources
 

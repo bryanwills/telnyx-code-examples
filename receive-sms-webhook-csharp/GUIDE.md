@@ -209,8 +209,8 @@ curl http://localhost:5000/messages
 
 ## Resources
 
-- [Source and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-csharp/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-csharp/API.md)
 - [Receive a Message guide](https://developers.telnyx.com/docs/messaging/messages/receive-message)
 - [Webhook signing overview](https://developers.telnyx.com/docs/messaging/webhooks)
 - [.NET SDK](https://developers.telnyx.com/development/sdk/dotnet)

@@ -158,8 +158,8 @@ You should get back the enable action `id`, the submitted `sim_card_id`, and the
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-java/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-java/API.md)
 - [IoT SIM Get Started](https://developers.telnyx.com/docs/iot-sim/get-started)
 - [Java SDK](https://developers.telnyx.com/development/sdk/java)
 - [Telnyx Portal](https://portal.telnyx.com)

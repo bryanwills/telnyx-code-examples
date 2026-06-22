@@ -198,8 +198,8 @@ curl http://localhost:5000/survey/participant/%2B12125551234
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) — send a single SMS message.
-- [ai-compliance-quiz-phone-python](../ai-compliance-quiz-phone-python/) — interactive quiz over voice with signed webhooks.
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send a single SMS message.
+- [ai-compliance-quiz-phone-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-compliance-quiz-phone-python/README.md) — interactive quiz over voice with signed webhooks.
 
 ## Resources
 

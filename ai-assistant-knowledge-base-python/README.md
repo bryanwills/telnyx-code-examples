@@ -144,11 +144,11 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [AI After Hours Emergency Triage (Python)](../ai-after-hours-emergency-triage-python)
-- [AI Assistant Multi Tool (Python)](../ai-assistant-multi-tool-python)
-- [AI Assistant Phone Setup (Python)](../ai-assistant-phone-setup-python)
-- [AI Audiobook Narrator (Python)](../ai-audiobook-narrator-python)
-- [AI Billing Dispute Resolution Agent (Python)](../ai-billing-dispute-resolution-agent-python)
+- [AI After Hours Emergency Triage (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-after-hours-emergency-triage-python/README.md)
+- [AI Assistant Multi Tool (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-assistant-multi-tool-python/README.md)
+- [AI Assistant Phone Setup (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-assistant-phone-setup-python/README.md)
+- [AI Audiobook Narrator (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-audiobook-narrator-python/README.md)
+- [AI Billing Dispute Resolution Agent (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-billing-dispute-resolution-agent-python/README.md)
 
 ## Resources
 

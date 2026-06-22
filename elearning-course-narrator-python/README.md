@@ -108,8 +108,8 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [run-llm-inference-python](../run-llm-inference-python/) - Standalone inference
-- [build-voice-ai-agent-python](../build-voice-ai-agent-python/) - Voice AI agent
+- [run-llm-inference-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/run-llm-inference-python/README.md) - Standalone inference
+- [build-voice-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-voice-ai-agent-python/README.md) - Voice AI agent
 
 ## Resources
 

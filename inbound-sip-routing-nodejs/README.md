@@ -184,9 +184,9 @@ curl -X POST http://localhost:5000/webhooks/inbound-call \
 
 ## Related Examples
 
-- [inbound-sip-routing-python](../inbound-sip-routing-python/) - same example in Python
-- [setup-sip-trunk-nodejs](../setup-sip-trunk-nodejs/) - provision a SIP trunk in Node.js
-- [configure-sip-codecs-python](../configure-sip-codecs-python/) - tune SIP connection codecs
+- [inbound-sip-routing-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/inbound-sip-routing-python/README.md) - same example in Python
+- [setup-sip-trunk-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/README.md) - provision a SIP trunk in Node.js
+- [configure-sip-codecs-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/configure-sip-codecs-python/README.md) - tune SIP connection codecs
 
 ## Resources
 

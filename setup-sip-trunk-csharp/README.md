@@ -68,7 +68,7 @@ The app reads `.env` via `DotNetEnv` at startup. Kestrel binds to the default AS
 
 ## API Reference
 
-See [API.md](./API.md) for the full typed endpoint reference. Summary:
+See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-csharp/API.md) for the full typed endpoint reference. Summary:
 
 ### `POST /sip/connections`
 
@@ -132,10 +132,10 @@ Receives inbound Telnyx webhooks, verifies the Ed25519 signature, and reads `dat
 
 ## Related Examples
 
-- [setup-sip-trunk-python](../setup-sip-trunk-python/) — Same SIP trunk setup in Python
-- [setup-sip-trunk-nodejs](../setup-sip-trunk-nodejs/) — Same SIP trunk setup in Node.js
-- [setup-sip-trunk-go](../setup-sip-trunk-go/) — Same SIP trunk setup in Go
-- [inbound-sip-routing-nodejs](../inbound-sip-routing-nodejs/) — Route inbound SIP calls in Node.js
+- [setup-sip-trunk-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-python/README.md) — Same SIP trunk setup in Python
+- [setup-sip-trunk-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/README.md) — Same SIP trunk setup in Node.js
+- [setup-sip-trunk-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-go/README.md) — Same SIP trunk setup in Go
+- [inbound-sip-routing-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/inbound-sip-routing-nodejs/README.md) — Route inbound SIP calls in Node.js
 
 ## Resources
 

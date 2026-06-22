@@ -170,8 +170,8 @@ This example uses in-memory storage for simplicity. For production:
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/two-way-sms-chat-python/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/two-way-sms-chat-python/API.md)
 - [Messaging Overview](https://developers.telnyx.com/docs/messaging)
 - [Receive SMS Webhooks](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Webhook Signing & Verification](https://developers.telnyx.com/docs/messaging/messages/webhook-signing)

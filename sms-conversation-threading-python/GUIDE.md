@@ -197,7 +197,7 @@ python app.py
 
 ## Resources
 
-- [Source code and reference](./README.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-conversation-threading-python/README.md)
 - [Receiving Messages Guide](https://developers.telnyx.com/docs/messaging/messages/receiving-messages)
 - [Webhook Signing](https://developers.telnyx.com/docs/messaging/messages/webhooks)
 - [Messaging API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)

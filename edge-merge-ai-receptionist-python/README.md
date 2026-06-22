@@ -148,10 +148,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) -- core Call Control answer/gather/transfer flow for an AI agent
-- [omnichannel-ai-receptionist-python](../omnichannel-ai-receptionist-python/) -- AI receptionist across voice and messaging channels
-- [edge-merge-reference-checker-python](../edge-merge-reference-checker-python/) -- edge worker driving calls against Merge data
-- [merge-employee-hotline-python](../merge-employee-hotline-python/) -- routes callers to employees pulled from Merge HRIS
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) -- core Call Control answer/gather/transfer flow for an AI agent
+- [omnichannel-ai-receptionist-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/omnichannel-ai-receptionist-python/README.md) -- AI receptionist across voice and messaging channels
+- [edge-merge-reference-checker-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-reference-checker-python/README.md) -- edge worker driving calls against Merge data
+- [merge-employee-hotline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-employee-hotline-python/README.md) -- routes callers to employees pulled from Merge HRIS
 
 ## Resources
 

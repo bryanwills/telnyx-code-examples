@@ -197,8 +197,8 @@ curl "http://localhost:5000/messages?status=delivered"
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) — send a single SMS with delivery status webhooks.
-- [ai-compliance-quiz-phone-python](../ai-compliance-quiz-phone-python/) — another example using signed Telnyx webhooks.
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send a single SMS with delivery status webhooks.
+- [ai-compliance-quiz-phone-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-compliance-quiz-phone-python/README.md) — another example using signed Telnyx webhooks.
 
 ## Resources
 

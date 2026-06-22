@@ -173,8 +173,8 @@ return `401` — this is expected.
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-auto-reply-bot-nodejs/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-auto-reply-bot-nodejs/API.md)
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
 - [Receive Webhooks](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)

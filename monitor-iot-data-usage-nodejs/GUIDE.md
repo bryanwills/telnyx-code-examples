@@ -145,8 +145,8 @@ node server.js
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/monitor-iot-data-usage-nodejs/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/monitor-iot-data-usage-nodejs/API.md)
 - [IoT SIM Get Started](https://developers.telnyx.com/docs/iot-sim/get-started)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx Portal](https://portal.telnyx.com)

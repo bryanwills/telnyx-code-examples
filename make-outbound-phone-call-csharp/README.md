@@ -95,7 +95,7 @@ curl -X POST http://localhost:5000/calls/dial \
 
 Receives call lifecycle events. The handler reads the raw body, verifies the Telnyx Ed25519 signature with `Webhook.ConstructEvent`, and reads event fields from `data.payload`. Returns `200` on success or `401` when the signature is missing, invalid, or the timestamp is stale.
 
-See [`API.md`](./API.md) for the full typed endpoint reference.
+See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-csharp/API.md) for the full typed endpoint reference.
 
 ## Troubleshooting
 
@@ -110,10 +110,10 @@ See [`API.md`](./API.md) for the full typed endpoint reference.
 
 ## Related Examples
 
-- [make-outbound-phone-call-nodejs](../make-outbound-phone-call-nodejs/) — Same outbound call flow in Node.js
-- [make-outbound-phone-call-python](../make-outbound-phone-call-python/) — Same outbound call flow in Python
-- [route-phone-calls-to-ai-agent-nodejs](../route-phone-calls-to-ai-agent-nodejs/) — Handle inbound calls with webhook-driven routing
-- [record-phone-calls-nodejs](../record-phone-calls-nodejs/) — Record outbound calls
+- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) — Same outbound call flow in Node.js
+- [make-outbound-phone-call-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-python/README.md) — Same outbound call flow in Python
+- [route-phone-calls-to-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-nodejs/README.md) — Handle inbound calls with webhook-driven routing
+- [record-phone-calls-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-nodejs/README.md) — Record outbound calls
 
 ## Resources
 

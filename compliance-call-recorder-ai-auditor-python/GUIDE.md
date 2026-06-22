@@ -169,7 +169,7 @@ python app.py
 
 ## Resources
 
-- [Source code and reference](./README.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/compliance-call-recorder-ai-auditor-python/README.md)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Call Control quickstart](https://developers.telnyx.com/docs/voice/call-control)
 - [AI Inference docs](https://developers.telnyx.com/docs/inference)

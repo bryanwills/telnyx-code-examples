@@ -184,8 +184,8 @@ curl "http://localhost:5000/sip/connections?page=1&pageSize=20"
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-csharp/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-csharp/API.md)
 - [SIP Trunking Get Started](https://developers.telnyx.com/docs/voice/sip-trunking/get-started)
 - [.NET SDK](https://developers.telnyx.com/development/sdk/dotnet)
 - [Telnyx Portal](https://portal.telnyx.com)

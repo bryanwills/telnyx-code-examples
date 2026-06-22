@@ -187,8 +187,8 @@ Only genuine, correctly signed Telnyx webhooks are processed.
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-delivery-receipts-nodejs/README.md)
+- [Endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-delivery-receipts-nodejs/API.md)
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
 - [Webhook signing & verification](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)

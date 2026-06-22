@@ -130,11 +130,11 @@ curl http://localhost:3000/health
 
 ## Related Examples
 
-- [chat-with-ai-assistant-python](../chat-with-ai-assistant-python/) — the Python / Flask version of this example
-- [chat-with-ai-assistant-nodejs](../chat-with-ai-assistant-nodejs/) — the Node.js / Express version
-- [create-ai-assistant-python](../create-ai-assistant-python/) — create an AI Assistant to chat with
-- [list-ai-assistants-python](../list-ai-assistants-python/) — list assistants to find an `AI_ASSISTANT_ID`
-- [send-sms-ruby](../send-sms-ruby/) — send SMS with the Telnyx Ruby SDK
+- [chat-with-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-python/README.md) — the Python / Flask version of this example
+- [chat-with-ai-assistant-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-nodejs/README.md) — the Node.js / Express version
+- [create-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/create-ai-assistant-python/README.md) — create an AI Assistant to chat with
+- [list-ai-assistants-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/list-ai-assistants-python/README.md) — list assistants to find an `AI_ASSISTANT_ID`
+- [send-sms-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-ruby/README.md) — send SMS with the Telnyx Ruby SDK
 
 ## Resources
 

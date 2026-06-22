@@ -100,7 +100,7 @@ curl -X POST http://localhost:8080/calls/dial \
 
 ### `POST /webhooks/voice`
 
-Receives Call Control events. The Ed25519 signature is verified before any field is read; an invalid signature returns `401`. See [`API.md`](./API.md) for the full typed reference.
+Receives Call Control events. The Ed25519 signature is verified before any field is read; an invalid signature returns `401`. See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-java/API.md) for the full typed reference.
 
 ### `GET /health`
 
@@ -116,9 +116,9 @@ Returns `{"status":"ok"}`.
 
 ## Related Examples
 
-- [make-outbound-phone-call-python](../make-outbound-phone-call-python/) — same use case in Python.
-- [make-outbound-phone-call-nodejs](../make-outbound-phone-call-nodejs/) — same use case in Node.js.
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) — inbound call routing with webhooks.
+- [make-outbound-phone-call-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-python/README.md) — same use case in Python.
+- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) — same use case in Node.js.
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — inbound call routing with webhooks.
 
 ## Resources
 

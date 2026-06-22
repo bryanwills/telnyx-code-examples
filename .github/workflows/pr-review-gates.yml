@@ -28,6 +28,9 @@ jobs:
       - name: verify.py (full repo)
         run: python scripts/verify.py
 
+      - name: In-repo doc links are absolute raw URLs (full repo)
+        run: python scripts/rewrite_repo_links.py --check
+
       - name: Dependency pinning (changed example folders)
         run: python scripts/review/check_pinning.py --changed-against "${{ github.event.pull_request.base.sha }}"
 

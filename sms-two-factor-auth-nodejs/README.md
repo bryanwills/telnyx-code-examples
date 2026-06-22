@@ -149,10 +149,10 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [sms-two-factor-auth-python](../sms-two-factor-auth-python/) — same OTP 2FA flow in Python
-- [verify-phone-number-otp-flow-python](../verify-phone-number-otp-flow-python/) — OTP using the Telnyx Verify API
-- [send-sms-nodejs](../send-sms-nodejs/) — minimal outbound SMS in Node.js
-- [receive-sms-webhook-nodejs](../receive-sms-webhook-nodejs/) — handle inbound SMS webhooks
+- [sms-two-factor-auth-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-two-factor-auth-python/README.md) — same OTP 2FA flow in Python
+- [verify-phone-number-otp-flow-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/verify-phone-number-otp-flow-python/README.md) — OTP using the Telnyx Verify API
+- [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md) — minimal outbound SMS in Node.js
+- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) — handle inbound SMS webhooks
 
 ## Resources
 

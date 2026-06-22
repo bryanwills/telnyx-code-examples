@@ -132,10 +132,10 @@ curl http://localhost:5000/cache/stats
 
 ## Related Examples
 
-- [number-lookup-fraud-screener-python](../number-lookup-fraud-screener-python/) - screen inbound numbers for fraud before connecting
-- [number-lookup-lead-enrichment-python](../number-lookup-lead-enrichment-python/) - enrich sales leads with carrier and CNAM data
-- [cnam-caller-id-lookup-enrichment-python](../cnam-caller-id-lookup-enrichment-python/) - CNAM caller ID enrichment
-- [bulk-number-validation-cleaner-python](../bulk-number-validation-cleaner-python/) - validate and clean lists of numbers
+- [number-lookup-fraud-screener-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/number-lookup-fraud-screener-python/README.md) - screen inbound numbers for fraud before connecting
+- [number-lookup-lead-enrichment-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/number-lookup-lead-enrichment-python/README.md) - enrich sales leads with carrier and CNAM data
+- [cnam-caller-id-lookup-enrichment-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/cnam-caller-id-lookup-enrichment-python/README.md) - CNAM caller ID enrichment
+- [bulk-number-validation-cleaner-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/bulk-number-validation-cleaner-python/README.md) - validate and clean lists of numbers
 
 ## Resources
 

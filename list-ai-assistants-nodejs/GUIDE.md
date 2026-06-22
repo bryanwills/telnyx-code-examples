@@ -168,8 +168,8 @@ node server.js
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/list-ai-assistants-nodejs/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/list-ai-assistants-nodejs/API.md)
 - [AI Assistants Guide](https://developers.telnyx.com/docs/inference/ai-assistants/no-code-voice-assistant)
 - [List Assistants API Reference](https://developers.telnyx.com/api-reference/assistants/get-assistants)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)

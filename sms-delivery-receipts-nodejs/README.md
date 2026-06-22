@@ -46,7 +46,7 @@ Telnyx is an **AI Communications Infrastructure** platform — voice, messaging,
 - **Signed webhooks** — every inbound event is Ed25519-signed so you can reject spoofed requests.
 - **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
 
-See [API.md](./API.md) for the typed endpoint reference and [GUIDE.md](./GUIDE.md) for a step-by-step tutorial.
+See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-delivery-receipts-nodejs/API.md) for the typed endpoint reference and [GUIDE.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-delivery-receipts-nodejs/GUIDE.md) for a step-by-step tutorial.
 
 ## Environment Variables
 
@@ -173,9 +173,9 @@ curl http://localhost:3000/receipts
 
 ## Related Examples
 
-- [send-sms-nodejs](../send-sms-nodejs/) — send a single SMS.
-- [receive-sms-webhook-nodejs](../receive-sms-webhook-nodejs/) — receive inbound SMS via webhooks.
-- [send-bulk-sms-nodejs](../send-bulk-sms-nodejs/) — send SMS to many recipients.
+- [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md) — send a single SMS.
+- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) — receive inbound SMS via webhooks.
+- [send-bulk-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-nodejs/README.md) — send SMS to many recipients.
 
 ## Resources
 

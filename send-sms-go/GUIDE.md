@@ -152,8 +152,8 @@ go run .
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-go/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-go/API.md)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Messaging quickstart](https://developers.telnyx.com/docs/messaging)
 - [Go SDK](https://developers.telnyx.com/development/sdk/go)

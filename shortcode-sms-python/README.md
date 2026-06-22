@@ -178,8 +178,8 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) — send a single SMS from a long-code number.
-- [receive-sms-python](../receive-sms-python/) — inbound SMS webhook handling.
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send a single SMS from a long-code number.
+- [receive-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-python/README.md) — inbound SMS webhook handling.
 
 ## Resources
 

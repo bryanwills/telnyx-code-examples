@@ -47,7 +47,7 @@ Telnyx is an **AI Communications Infrastructure** platform — voice, messaging,
   └────────────────────┘
 ```
 
-Conversation state is held in an in-memory dict keyed by the sender's phone number. Replace it with a database for production (see [GUIDE.md](./GUIDE.md)).
+Conversation state is held in an in-memory dict keyed by the sender's phone number. Replace it with a database for production (see [GUIDE.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/two-way-sms-chat-python/GUIDE.md)).
 
 ## Environment Variables
 
@@ -165,7 +165,7 @@ curl http://localhost:5000/conversations
 ]
 ```
 
-See [API.md](./API.md) for the full typed endpoint reference.
+See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/two-way-sms-chat-python/API.md) for the full typed endpoint reference.
 
 ## Troubleshooting
 
@@ -176,8 +176,8 @@ See [API.md](./API.md) for the full typed endpoint reference.
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) — send a single outbound SMS
-- [sms-chatbot-with-conversation-memory-python](../sms-chatbot-with-conversation-memory-python/) — AI-powered SMS chatbot with memory
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send a single outbound SMS
+- [sms-chatbot-with-conversation-memory-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-chatbot-with-conversation-memory-python/README.md) — AI-powered SMS chatbot with memory
 
 ## Resources
 

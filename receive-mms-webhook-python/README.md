@@ -157,9 +157,9 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [receive-sms-webhook-python](../receive-sms-webhook-python/) — receive inbound SMS webhooks.
-- [mms-photo-inventory-tracker-python](../mms-photo-inventory-tracker-python/) — act on inbound MMS images.
-- [send-sms-python](../send-sms-python/) — send an outbound message.
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) — receive inbound SMS webhooks.
+- [mms-photo-inventory-tracker-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/mms-photo-inventory-tracker-python/README.md) — act on inbound MMS images.
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send an outbound message.
 
 ## Resources
 

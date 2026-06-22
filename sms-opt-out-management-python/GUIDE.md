@@ -169,8 +169,8 @@ You should see your number with `source: "webhook"`.
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-opt-out-management-python/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-opt-out-management-python/API.md)
 - [Messaging quickstart](https://developers.telnyx.com/docs/messaging)
 - [Webhook signature verification](https://developers.telnyx.com/docs/messaging/messages/webhooks)
 - [Telnyx Portal](https://portal.telnyx.com)

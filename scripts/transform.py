@@ -80,6 +80,12 @@ PRODUCT_LABELS = {
     "iot": "IoT",
 }
 
+# Back-in-repo links are absolute raw URLs (marketing requirement) so answer
+# engines/aggregators following them get clean raw markdown, not GitHub chrome.
+# Folder targets resolve to that folder's README.md (raw cannot serve a directory).
+# Enforced repo-wide by scripts/rewrite_repo_links.py --check (CI gate).
+RAW_BASE = "https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main"
+
 PRODUCT_LINKS = {
     "sms": {
         "docs": [
@@ -760,7 +766,7 @@ def restructure_readme(
         "",
         "## Complete Code",
         "",
-        f"See [`{code_file}`](./{code_file}) for the full implementation.",
+        f"See [`{code_file}`]({RAW_BASE}/{folder_name}/{code_file}) for the full implementation.",
         "",
         "## Troubleshooting",
         "",

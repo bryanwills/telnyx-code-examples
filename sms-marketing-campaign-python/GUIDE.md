@@ -175,8 +175,8 @@ curl http://localhost:5000/campaigns/<campaign_id>
 
 ## Resources
 
-- [Source code and API reference](./README.md)
-- [Endpoint reference](./API.md)
+- [Source code and API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-marketing-campaign-python/README.md)
+- [Endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-marketing-campaign-python/API.md)
 - [Messaging Overview](https://developers.telnyx.com/docs/messaging)
 - [Receive Webhooks](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)

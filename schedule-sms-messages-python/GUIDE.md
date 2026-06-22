@@ -142,8 +142,8 @@ This example uses in-memory storage for simplicity. For production:
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/schedule-sms-messages-python/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/schedule-sms-messages-python/API.md)
 - [Messaging Overview](https://developers.telnyx.com/docs/messaging)
 - [Send a Message — API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)

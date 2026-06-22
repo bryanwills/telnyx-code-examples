@@ -186,10 +186,10 @@ Receives Telnyx call lifecycle events (`call.answered`, `call.hangup`, `call.rec
 
 ## Related Examples
 
-- [record-phone-calls-python](../record-phone-calls-python/) — same example in Python
-- [make-outbound-phone-call-nodejs](../make-outbound-phone-call-nodejs/) — initiate outbound calls
-- [text-to-speech-phone-call-nodejs](../text-to-speech-phone-call-nodejs/) — speak text on a call
-- [call-recording-ai-summarizer-python](../call-recording-ai-summarizer-python/) — summarize recordings with AI
+- [record-phone-calls-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-python/README.md) — same example in Python
+- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) — initiate outbound calls
+- [text-to-speech-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/text-to-speech-phone-call-nodejs/README.md) — speak text on a call
+- [call-recording-ai-summarizer-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/call-recording-ai-summarizer-python/README.md) — summarize recordings with AI
 
 ## Resources
 

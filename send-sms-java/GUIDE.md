@@ -189,8 +189,8 @@ A successful call returns the message ID, status, and the from/to numbers.
 
 ## Resources
 
-- [Source overview](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source overview](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-java/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-java/API.md)
 - [Messaging quickstart](https://developers.telnyx.com/docs/messaging)
 - [Send a Message — API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Java SDK](https://developers.telnyx.com/development/sdk/java)

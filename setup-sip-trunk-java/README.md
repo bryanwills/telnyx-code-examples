@@ -160,7 +160,7 @@ curl http://localhost:8080/health
 { "status": "ok" }
 ```
 
-See [`API.md`](./API.md) for the full typed endpoint reference.
+See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-java/API.md) for the full typed endpoint reference.
 
 ## Troubleshooting
 
@@ -175,10 +175,10 @@ See [`API.md`](./API.md) for the full typed endpoint reference.
 
 ## Related Examples
 
-- [setup-sip-trunk-python](../setup-sip-trunk-python/) — same SIP trunk setup in Python/Flask
-- [setup-sip-trunk-nodejs](../setup-sip-trunk-nodejs/) — same SIP trunk setup in Node.js/Express
-- [setup-sip-trunk-go](../setup-sip-trunk-go/) — same SIP trunk setup in Go/Gin
-- [inbound-sip-routing-nodejs](../inbound-sip-routing-nodejs/) — route inbound SIP calls
+- [setup-sip-trunk-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-python/README.md) — same SIP trunk setup in Python/Flask
+- [setup-sip-trunk-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/README.md) — same SIP trunk setup in Node.js/Express
+- [setup-sip-trunk-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-go/README.md) — same SIP trunk setup in Go/Gin
+- [inbound-sip-routing-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/inbound-sip-routing-nodejs/README.md) — route inbound SIP calls
 
 ## Resources
 

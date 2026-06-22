@@ -114,7 +114,7 @@ curl http://localhost:8080/health
 { "status": "ok" }
 ```
 
-See [`API.md`](./API.md) for the full typed endpoint reference.
+See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-java/API.md) for the full typed endpoint reference.
 
 ## Troubleshooting
 
@@ -129,10 +129,10 @@ See [`API.md`](./API.md) for the full typed endpoint reference.
 
 ## Related Examples
 
-- [chat-with-ai-assistant-python](../chat-with-ai-assistant-python/) - Same example in Python
-- [chat-with-ai-assistant-nodejs](../chat-with-ai-assistant-nodejs/) - Same example in Node.js
-- [create-ai-assistant-python](../create-ai-assistant-python/) - Create an AI Assistant via API
-- [list-ai-assistants-python](../list-ai-assistants-python/) - List the AI Assistants in your account
+- [chat-with-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-python/README.md) - Same example in Python
+- [chat-with-ai-assistant-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-nodejs/README.md) - Same example in Node.js
+- [create-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/create-ai-assistant-python/README.md) - Create an AI Assistant via API
+- [list-ai-assistants-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/list-ai-assistants-python/README.md) - List the AI Assistants in your account
 
 ## Resources
 

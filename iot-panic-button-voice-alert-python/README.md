@@ -215,11 +215,11 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Related Examples
 
-- [Activate Sim Card (Python)](../activate-sim-card-python)
-- [IoT Fleet Alert Escalation (Python)](../iot-fleet-alert-escalation-python)
-- [IoT Smart Building Voice Control (Python)](../iot-smart-building-voice-control-python)
-- [Monitor IoT Data Usage (Python)](../monitor-iot-data-usage-python)
-- [Provision Esim (Python)](../provision-esim-python)
+- [Activate Sim Card (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-python/README.md)
+- [IoT Fleet Alert Escalation (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/iot-fleet-alert-escalation-python/README.md)
+- [IoT Smart Building Voice Control (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/iot-smart-building-voice-control-python/README.md)
+- [Monitor IoT Data Usage (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/monitor-iot-data-usage-python/README.md)
+- [Provision Esim (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/provision-esim-python/README.md)
 
 ## Resources
 

@@ -198,8 +198,8 @@ A successful activation returns `202 Accepted`:
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-php/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-php/API.md)
 - [IoT SIM Get Started](https://developers.telnyx.com/docs/iot-sim/get-started)
 - [PHP SDK](https://developers.telnyx.com/development/sdk/php)
 - [Telnyx Portal](https://portal.telnyx.com)

@@ -187,8 +187,8 @@ This example uses in-memory storage for the queue and status tracking. For produ
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/long-code-sms-python/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/long-code-sms-python/API.md)
 - [Messaging quickstart](https://developers.telnyx.com/docs/messaging)
 - [Webhook signing & verification](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Telnyx Portal](https://portal.telnyx.com)

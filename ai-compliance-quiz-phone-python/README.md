@@ -178,11 +178,11 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Related Examples
 
-- [AI After Hours Emergency Triage (Python)](../ai-after-hours-emergency-triage-python)
-- [AI Assistant Knowledge Base (Python)](../ai-assistant-knowledge-base-python)
-- [AI Assistant Multi Tool (Python)](../ai-assistant-multi-tool-python)
-- [AI Assistant Phone Setup (Python)](../ai-assistant-phone-setup-python)
-- [AI Audiobook Narrator (Python)](../ai-audiobook-narrator-python)
+- [AI After Hours Emergency Triage (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-after-hours-emergency-triage-python/README.md)
+- [AI Assistant Knowledge Base (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-assistant-knowledge-base-python/README.md)
+- [AI Assistant Multi Tool (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-assistant-multi-tool-python/README.md)
+- [AI Assistant Phone Setup (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-assistant-phone-setup-python/README.md)
+- [AI Audiobook Narrator (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-audiobook-narrator-python/README.md)
 
 ## Resources
 

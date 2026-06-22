@@ -167,10 +167,10 @@ curl http://localhost:8080/health
 
 ## Related Examples
 
-- [setup-sip-trunk-python](../setup-sip-trunk-python/) — same SIP trunk setup in Python/Flask
-- [setup-sip-trunk-nodejs](../setup-sip-trunk-nodejs/) — same SIP trunk setup in Node.js/Express
-- [inbound-sip-routing-python](../inbound-sip-routing-python/) — route inbound SIP calls
-- [sip-failover-routing-python](../sip-failover-routing-python/) — failover routing for high availability
+- [setup-sip-trunk-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-python/README.md) — same SIP trunk setup in Python/Flask
+- [setup-sip-trunk-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/README.md) — same SIP trunk setup in Node.js/Express
+- [inbound-sip-routing-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/inbound-sip-routing-python/README.md) — route inbound SIP calls
+- [sip-failover-routing-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sip-failover-routing-python/README.md) — failover routing for high availability
 
 ## Resources
 

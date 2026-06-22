@@ -148,8 +148,8 @@ go run .
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-go/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-go/API.md)
 - [SIP Trunking Get Started](https://developers.telnyx.com/docs/voice/sip-trunking/get-started)
 - [Go SDK](https://developers.telnyx.com/development/sdk/go)
 - [Telnyx Portal](https://portal.telnyx.com)

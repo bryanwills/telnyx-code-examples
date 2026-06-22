@@ -90,7 +90,7 @@ curl -X POST http://localhost:5000/ai/assistants \
 
 ## Related Examples
 
-- [ai-assistant-phone-setup-python](../ai-assistant-phone-setup-python/) - Phone setup
+- [ai-assistant-phone-setup-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-assistant-phone-setup-python/README.md) - Phone setup
 
 ## Resources
 

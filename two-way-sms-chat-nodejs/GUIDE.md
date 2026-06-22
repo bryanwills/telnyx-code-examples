@@ -169,8 +169,8 @@ curl -X POST http://localhost:5000/sms/send \
 
 ## Resources
 
-- [Source code and API reference](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source code and API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/two-way-sms-chat-nodejs/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/two-way-sms-chat-nodejs/API.md)
 - [Messaging Overview](https://developers.telnyx.com/docs/messaging)
 - [Receive inbound message webhooks](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Webhook signature verification](https://developers.telnyx.com/docs/messaging/messages/signature-verification)

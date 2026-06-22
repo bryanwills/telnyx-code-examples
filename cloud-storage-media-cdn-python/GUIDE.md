@@ -195,7 +195,7 @@ python app.py
 
 ## Resources
 
-- [Source code and reference](./README.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/cloud-storage-media-cdn-python/README.md)
 - [Cloud Storage quick start](https://developers.telnyx.com/docs/cloud-storage/quick-start)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Telnyx Portal](https://portal.telnyx.com)

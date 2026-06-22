@@ -78,7 +78,7 @@ dotnet run                 # starts on http://localhost:5000
 
 ## API Reference
 
-Full typed reference in [API.md](./API.md).
+Full typed reference in [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-csharp/API.md).
 
 ### `POST /webhooks/sms`
 
@@ -125,10 +125,10 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [receive-sms-webhook-nodejs](../receive-sms-webhook-nodejs/) — Same webhook receiver in Node.js
-- [receive-sms-webhook-python](../receive-sms-webhook-python/) — Same webhook receiver in Python
-- [send-sms-nodejs](../send-sms-nodejs/) — Send an SMS with Node.js
-- [send-sms-python](../send-sms-python/) — Send an SMS with Python
+- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) — Same webhook receiver in Node.js
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) — Same webhook receiver in Python
+- [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md) — Send an SMS with Node.js
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — Send an SMS with Python
 
 ## Resources
 

@@ -10,6 +10,7 @@ worktree) plus `--changed-against <ref>` for **diff-aware** mode.
 | `check_pinning.py` | unpinned / `latest` dependencies across npm · pip · Go · Ruby · PHP · .NET · Maven |
 | `check_required_files.py` | per-example required files (README/API.md/GUIDE.md/.env.example + code + dep) and no forbidden `Dockerfile`/`Makefile` |
 | `check_legacy_sdk.py` | references to dead/old Telnyx SDK APIs in code **and docs** (e.g. `messages.create`, `Telnyx.APIStatusError`, `ai_assistants`, the wrong Go module) |
+| `../rewrite_repo_links.py --check` | in-repo doc links must be absolute `raw.githubusercontent.com` URLs, not relative `./`/`../` (full-repo hard gate; run without `--check` to auto-fix in place) |
 | `review_pr.sh` | runs all gates + `verify.py` against a base ref |
 
 ## Diff-aware gating

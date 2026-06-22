@@ -141,7 +141,7 @@ python app.py
 
 ## Resources
 
-- [Source code and reference](./README.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/number-warmup-reputation-builder-python/README.md)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Messaging quickstart](https://developers.telnyx.com/docs/messaging)
 - [Telnyx Portal](https://portal.telnyx.com)

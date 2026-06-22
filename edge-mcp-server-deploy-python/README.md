@@ -124,9 +124,9 @@ pip install -r requirements.txt
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) - Basic SMS
-- [sms-chatbot-with-conversation-memory-python](../sms-chatbot-with-conversation-memory-python/) - AI SMS chatbot
-- [run-llm-inference-python](../run-llm-inference-python/) - Standalone inference
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - Basic SMS
+- [sms-chatbot-with-conversation-memory-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-chatbot-with-conversation-memory-python/README.md) - AI SMS chatbot
+- [run-llm-inference-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/run-llm-inference-python/README.md) - Standalone inference
 
 ## Resources
 

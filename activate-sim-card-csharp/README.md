@@ -103,7 +103,7 @@ curl http://localhost:5000/health
 # {"status":"ok"}
 ```
 
-See [`API.md`](./API.md) for the full typed endpoint reference.
+See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-csharp/API.md) for the full typed endpoint reference.
 
 ## Troubleshooting
 
@@ -117,11 +117,11 @@ See [`API.md`](./API.md) for the full typed endpoint reference.
 
 ## Related Examples
 
-- [Activate a SIM Card (Python)](../activate-sim-card-python)
-- [Activate a SIM Card (Node.js)](../activate-sim-card-nodejs)
-- [Activate a SIM Card (Go)](../activate-sim-card-go)
-- [Monitor IoT Data Usage (Python)](../monitor-iot-data-usage-python)
-- [Provision eSIM (Python)](../provision-esim-python)
+- [Activate a SIM Card (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-python/README.md)
+- [Activate a SIM Card (Node.js)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-nodejs/README.md)
+- [Activate a SIM Card (Go)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-go/README.md)
+- [Monitor IoT Data Usage (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/monitor-iot-data-usage-python/README.md)
+- [Provision eSIM (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/provision-esim-python/README.md)
 
 ## Resources
 

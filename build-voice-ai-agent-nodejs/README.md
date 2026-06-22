@@ -149,10 +149,10 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [build-voice-ai-agent-python](../build-voice-ai-agent-python/) — same agent in Python
-- [route-phone-calls-to-ai-agent-nodejs](../route-phone-calls-to-ai-agent-nodejs/) — route inbound calls to an AI agent
-- [run-llm-inference-nodejs](../run-llm-inference-nodejs/) — call Telnyx Inference directly
-- [create-ai-assistant-nodejs](../create-ai-assistant-nodejs/) — managed AI Assistant alternative
+- [build-voice-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-voice-ai-agent-python/README.md) — same agent in Python
+- [route-phone-calls-to-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-nodejs/README.md) — route inbound calls to an AI agent
+- [run-llm-inference-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/run-llm-inference-nodejs/README.md) — call Telnyx Inference directly
+- [create-ai-assistant-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/create-ai-assistant-nodejs/README.md) — managed AI Assistant alternative
 
 ## Resources
 

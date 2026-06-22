@@ -178,7 +178,7 @@ node server.js
 
 ## Resources
 
-- [Source code and reference](./README.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Receive a Message guide](https://developers.telnyx.com/docs/messaging/messages/receive-message)
 - [Telnyx Portal](https://portal.telnyx.com)

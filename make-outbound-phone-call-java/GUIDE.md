@@ -156,7 +156,7 @@ You should receive a JSON body with a `call_control_id`, and your destination nu
 
 ## Resources
 
-- [Source code and reference](./README.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-java/README.md)
 - [Call Control guide](https://developers.telnyx.com/docs/voice/call-control)
 - [Dial API reference](https://developers.telnyx.com/api-reference/call-commands/dial)
 - [Telnyx Java SDK](https://developers.telnyx.com/development/sdk/java)

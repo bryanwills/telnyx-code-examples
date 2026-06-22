@@ -96,7 +96,7 @@ curl -X POST http://localhost:8080/calls/dial \
 Receives Telnyx call control webhooks, verifies the Ed25519 signature with
 `TELNYX_PUBLIC_KEY`, and acknowledges with `200`. Invalid signatures return `401`.
 
-See [API.md](./API.md) for the full typed reference.
+See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-php/API.md) for the full typed reference.
 
 ## Troubleshooting
 
@@ -113,10 +113,10 @@ See [API.md](./API.md) for the full typed reference.
 
 ## Related Examples
 
-- [make-outbound-phone-call-nodejs](../make-outbound-phone-call-nodejs/) — Same outbound call flow in Node.js
-- [make-outbound-phone-call-python](../make-outbound-phone-call-python/) — Same outbound call flow in Python
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) — Handle inbound call webhooks
-- [build-ivr-phone-menu-python](../build-ivr-phone-menu-python/) — Build an IVR menu with Call Control
+- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) — Same outbound call flow in Node.js
+- [make-outbound-phone-call-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-python/README.md) — Same outbound call flow in Python
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — Handle inbound call webhooks
+- [build-ivr-phone-menu-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-ivr-phone-menu-python/README.md) — Build an IVR menu with Call Control
 
 ## Resources
 

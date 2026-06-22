@@ -168,7 +168,7 @@ python app.py
 
 ## Resources
 
-- [Source code and reference](./README.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sip-trunking-failover-monitor-python/README.md)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Messaging quickstart](https://developers.telnyx.com/docs/messaging)
 - [AI Inference docs](https://developers.telnyx.com/docs/inference)

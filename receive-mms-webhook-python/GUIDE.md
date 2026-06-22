@@ -162,8 +162,8 @@ This example stores downloaded files on local disk. For production:
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-mms-webhook-python/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-mms-webhook-python/API.md)
 - [Receive a message — API reference](https://developers.telnyx.com/api-reference/messages/receive-a-message)
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
 - [Webhook signing & verification](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)

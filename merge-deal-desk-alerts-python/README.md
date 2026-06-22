@@ -181,10 +181,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [merge-pipeline-briefing-python](../merge-pipeline-briefing-python/) — pull a CRM pipeline summary and deliver it as a spoken briefing.
-- [warm-transfer-ai-briefing-python](../warm-transfer-ai-briefing-python/) — AI-generated briefing on a live warm transfer between agents.
-- [transfer-live-phone-calls-python](../transfer-live-phone-calls-python/) — Call Control transfer mechanics used to connect the VP to the rep.
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) — route inbound calls into an AI voice agent with gather/speak.
+- [merge-pipeline-briefing-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-pipeline-briefing-python/README.md) — pull a CRM pipeline summary and deliver it as a spoken briefing.
+- [warm-transfer-ai-briefing-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/warm-transfer-ai-briefing-python/README.md) — AI-generated briefing on a live warm transfer between agents.
+- [transfer-live-phone-calls-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/transfer-live-phone-calls-python/README.md) — Call Control transfer mechanics used to connect the VP to the rep.
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — route inbound calls into an AI voice agent with gather/speak.
 
 ## Resources
 

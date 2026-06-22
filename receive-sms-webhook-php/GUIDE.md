@@ -179,8 +179,8 @@ Set `https://<your-ngrok-subdomain>/webhooks/sms` as the webhook URL on your [Me
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-php/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-php/API.md)
 - [Receive an SMS (Messaging docs)](https://developers.telnyx.com/docs/messaging/messages/receive-message)
 - [PHP SDK](https://developers.telnyx.com/development/sdk/php)
 - [Telnyx Portal](https://portal.telnyx.com)

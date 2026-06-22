@@ -157,7 +157,7 @@ end
 ```
 
 The `GET /sip/connections/:id` and `GET /sip/connections` routes follow the same
-pattern (see [`app.rb`](./app.rb)).
+pattern (see [`app.rb`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-ruby/app.rb)).
 
 > The HTTP status accessor on `APIStatusError` is `e.status` (an Integer) in the
 > 5.x SDK — there is no `e.status_code`.

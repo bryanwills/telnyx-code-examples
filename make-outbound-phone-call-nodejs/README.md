@@ -108,10 +108,10 @@ curl -X POST http://localhost:5000/calls/dial \
 
 ## Related Examples
 
-- [make-outbound-phone-call-python](../make-outbound-phone-call-python/) - Same outbound call flow in Python
-- [text-to-speech-phone-call-nodejs](../text-to-speech-phone-call-nodejs/) - Play TTS audio on a call
-- [record-phone-calls-nodejs](../record-phone-calls-nodejs/) - Record outbound calls
-- [build-ivr-phone-menu-nodejs](../build-ivr-phone-menu-nodejs/) - Build an IVR menu with Call Control
+- [make-outbound-phone-call-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-python/README.md) - Same outbound call flow in Python
+- [text-to-speech-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/text-to-speech-phone-call-nodejs/README.md) - Play TTS audio on a call
+- [record-phone-calls-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-nodejs/README.md) - Record outbound calls
+- [build-ivr-phone-menu-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-ivr-phone-menu-nodejs/README.md) - Build an IVR menu with Call Control
 
 ## Resources
 

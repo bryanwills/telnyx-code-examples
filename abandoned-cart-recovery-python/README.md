@@ -236,11 +236,11 @@ Receives Telnyx webhook events for `/webhooks/shopify/order-created`.
 
 ## Related Examples
 
-- [Accounting Tax Season Line (Python)](../accounting-tax-season-line-python)
-- [After Hours Nurse Triage (Python)](../after-hours-nurse-triage-python)
-- [AI Appointment Booking SMS Flow (Python)](../ai-appointment-booking-sms-flow-python)
-- [AI Appointment Reminder SMS Voice (Python)](../ai-appointment-reminder-sms-voice-python)
-- [Autonomous Outbound Sales Agent (Python)](../autonomous-outbound-sales-agent-python)
+- [Accounting Tax Season Line (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/accounting-tax-season-line-python/README.md)
+- [After Hours Nurse Triage (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/after-hours-nurse-triage-python/README.md)
+- [AI Appointment Booking SMS Flow (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-appointment-booking-sms-flow-python/README.md)
+- [AI Appointment Reminder SMS Voice (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-appointment-reminder-sms-voice-python/README.md)
+- [Autonomous Outbound Sales Agent (Python)](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/autonomous-outbound-sales-agent-python/README.md)
 
 ## Resources
 

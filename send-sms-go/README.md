@@ -101,15 +101,15 @@ curl -X POST http://localhost:5000/sms/send \
 | `401 {"error": "Invalid API key"}` | `TELNYX_API_KEY` is missing or invalid. | Generate a new key at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) and update `.env` (no quotes or trailing spaces). |
 | `400 phone number must be in E.164 format` | The `to` value does not start with `+`. | Use E.164: `+` + country code + number, e.g. `+15551234567`. |
 | `TELNYX_PHONE_NUMBER environment variable not set` | `.env` not loaded or variable missing. | Ensure `.env` sits next to `main.go`, is named exactly `.env`, and defines `TELNYX_PHONE_NUMBER`. |
-| `429 Rate limit exceeded` | Too many requests in a short window. | Slow down request rate or batch sends; see [bulk SMS example](../send-bulk-sms-python/). |
+| `429 Rate limit exceeded` | Too many requests in a short window. | Slow down request rate or batch sends; see [bulk SMS example](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-python/README.md). |
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) - Same example in Python (Flask)
-- [send-sms-nodejs](../send-sms-nodejs/) - Same example in Node.js
-- [send-sms-ruby](../send-sms-ruby/) - Same example in Ruby
-- [send-bulk-sms-python](../send-bulk-sms-python/) - Send SMS to many recipients
-- [receive-sms-webhook-python](../receive-sms-webhook-python/) - Receive inbound SMS via webhooks
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - Same example in Python (Flask)
+- [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md) - Same example in Node.js
+- [send-sms-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-ruby/README.md) - Same example in Ruby
+- [send-bulk-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-python/README.md) - Send SMS to many recipients
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) - Receive inbound SMS via webhooks
 
 ## Resources
 

@@ -34,7 +34,7 @@ Build a production-ready Express endpoint that sends a user message to a Telnyx 
 - Node.js 16+
 - [Telnyx account](https://portal.telnyx.com/sign-up)
 - [API key](https://portal.telnyx.com/api-keys)
-- An existing [AI Assistant](https://portal.telnyx.com/ai/assistants) and its ID (create one with the [create-ai-assistant-nodejs](../create-ai-assistant-nodejs/) example)
+- An existing [AI Assistant](https://portal.telnyx.com/ai/assistants) and its ID (create one with the [create-ai-assistant-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/create-ai-assistant-nodejs/README.md) example)
 
 ## Step 1: Set Up the Project
 
@@ -167,8 +167,8 @@ node server.js
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-nodejs/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-nodejs/API.md)
 - [AI Assistants Guide](https://developers.telnyx.com/docs/inference/ai-assistants/no-code-voice-assistant)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx Portal](https://portal.telnyx.com)

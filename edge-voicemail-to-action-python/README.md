@@ -151,10 +151,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) — route inbound calls into a Telnyx AI agent
-- [ai-voicemail-transcription-forwarding-python](../ai-voicemail-transcription-forwarding-python/) — transcribe voicemails and forward them
-- [record-phone-calls-python](../record-phone-calls-python/) — record calls with Call Control
-- [edge-merge-ai-receptionist-python](../edge-merge-ai-receptionist-python/) — edge AI receptionist that triages callers
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — route inbound calls into a Telnyx AI agent
+- [ai-voicemail-transcription-forwarding-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-voicemail-transcription-forwarding-python/README.md) — transcribe voicemails and forward them
+- [record-phone-calls-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-python/README.md) — record calls with Call Control
+- [edge-merge-ai-receptionist-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-ai-receptionist-python/README.md) — edge AI receptionist that triages callers
 
 ## Resources
 

@@ -183,8 +183,8 @@ node server.js
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-nodejs/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-nodejs/API.md)
 - [Telnyx Voice / Call Control Guide](https://developers.telnyx.com/docs/voice/programmable-voice)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx Portal](https://portal.telnyx.com)

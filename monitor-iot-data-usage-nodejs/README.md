@@ -171,10 +171,10 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [monitor-iot-data-usage-python](../monitor-iot-data-usage-python/) - same example in Python
-- [sim-fleet-data-usage-anomaly-detector-python](../sim-fleet-data-usage-anomaly-detector-python/) - detect anomalous SIM data usage across a fleet
-- [activate-sim-card-nodejs](../activate-sim-card-nodejs/) - activate a Telnyx SIM card
-- [track-iot-device-location-python](../track-iot-device-location-python/) - locate IoT devices by SIM
+- [monitor-iot-data-usage-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/monitor-iot-data-usage-python/README.md) - same example in Python
+- [sim-fleet-data-usage-anomaly-detector-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sim-fleet-data-usage-anomaly-detector-python/README.md) - detect anomalous SIM data usage across a fleet
+- [activate-sim-card-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-nodejs/README.md) - activate a Telnyx SIM card
+- [track-iot-device-location-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/track-iot-device-location-python/README.md) - locate IoT devices by SIM
 
 ## Resources
 

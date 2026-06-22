@@ -102,7 +102,7 @@ curl -X POST http://localhost:5000/sms/send \
 }
 ```
 
-See [`API.md`](./API.md) for the full typed endpoint reference.
+See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-java/API.md) for the full typed endpoint reference.
 
 ## Troubleshooting
 
@@ -112,15 +112,15 @@ See [`API.md`](./API.md) for the full typed endpoint reference.
 | `401 {"error": "Invalid API key"}` | `TELNYX_API_KEY` is missing or invalid. | Generate a new key at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) and re-export `.env` (no quotes or trailing spaces). |
 | `400 Phone number must be in E.164 format` | The `to` value does not start with `+`. | Use E.164: `+` + country code + number, e.g. `+15551234567`. |
 | `IllegalStateException: TELNYX_PHONE_NUMBER environment variable not set` | `.env` not loaded into the shell or variable missing. | Run `set -a && . ./.env && set +a` before `mvn exec:java`; confirm `TELNYX_PHONE_NUMBER` is defined. |
-| `429 Rate limit exceeded` | Too many requests in a short window. | Slow down the request rate or batch sends; see the [bulk SMS example](../send-bulk-sms-python/). |
+| `429 Rate limit exceeded` | Too many requests in a short window. | Slow down the request rate or batch sends; see the [bulk SMS example](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-python/README.md). |
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) - Same example in Python (Flask)
-- [send-sms-nodejs](../send-sms-nodejs/) - Same example in Node.js (Express)
-- [send-sms-go](../send-sms-go/) - Same example in Go (Gin)
-- [send-sms-ruby](../send-sms-ruby/) - Same example in Ruby
-- [receive-sms-webhook-nodejs](../receive-sms-webhook-nodejs/) - Receive inbound SMS via webhooks
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - Same example in Python (Flask)
+- [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md) - Same example in Node.js (Express)
+- [send-sms-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-go/README.md) - Same example in Go (Gin)
+- [send-sms-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-ruby/README.md) - Same example in Ruby
+- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) - Receive inbound SMS via webhooks
 
 ## Resources
 

@@ -184,8 +184,8 @@ Successful response:
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-csharp/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-csharp/API.md)
 - [Voice / Call Control Guide](https://developers.telnyx.com/docs/voice/programmable-voice/voice-api-commands-and-resources)
 - [Dial API Reference](https://developers.telnyx.com/api-reference/call-commands/dial)
 - [.NET SDK](https://developers.telnyx.com/development/sdk/dotnet)

@@ -188,8 +188,8 @@ node server.js
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-nodejs/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-nodejs/API.md)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Messaging quickstart](https://developers.telnyx.com/docs/messaging)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)

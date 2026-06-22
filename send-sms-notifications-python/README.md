@@ -193,9 +193,9 @@ is read from `data.event_type`; message fields are read from `data.payload`.
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) — minimal single-message send.
-- [sms-delivery-receipts-python](../sms-delivery-receipts-python/) — focused on delivery-receipt webhooks.
-- [receive-sms-webhook-python](../receive-sms-webhook-python/) — handling inbound messages.
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — minimal single-message send.
+- [sms-delivery-receipts-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-delivery-receipts-python/README.md) — focused on delivery-receipt webhooks.
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) — handling inbound messages.
 
 ## Resources
 

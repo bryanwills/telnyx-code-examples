@@ -91,7 +91,7 @@ receive Ed25519-verified call lifecycle events.
 
 ### `POST /calls/dial`
 
-Initiate an outbound call. See [`API.md`](./API.md) for the typed reference.
+Initiate an outbound call. See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-ruby/API.md) for the typed reference.
 
 ```bash
 curl -X POST http://localhost:4567/calls/dial \
@@ -135,11 +135,11 @@ Verifies the Telnyx Ed25519 signature before reading any fields from
 
 ## Related Examples
 
-- [make-outbound-phone-call-python](../make-outbound-phone-call-python/) - Outbound calls with Python / Flask
-- [make-outbound-phone-call-nodejs](../make-outbound-phone-call-nodejs/) - Outbound calls with Node.js
-- [send-sms-ruby](../send-sms-ruby/) - Send an SMS with Ruby
-- [activate-sim-card-ruby](../activate-sim-card-ruby/) - Activate an IoT SIM with Ruby
-- [route-phone-calls-to-ai-agent-nodejs](../route-phone-calls-to-ai-agent-nodejs/) - Route inbound calls to an AI agent
+- [make-outbound-phone-call-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-python/README.md) - Outbound calls with Python / Flask
+- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) - Outbound calls with Node.js
+- [send-sms-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-ruby/README.md) - Send an SMS with Ruby
+- [activate-sim-card-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-ruby/README.md) - Activate an IoT SIM with Ruby
+- [route-phone-calls-to-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-nodejs/README.md) - Route inbound calls to an AI agent
 
 ## Resources
 

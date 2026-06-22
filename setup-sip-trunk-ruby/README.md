@@ -145,7 +145,7 @@ curl "http://localhost:4567/sip/connections?page_number=1&page_size=20"
 
 Inbound webhook receiver for SIP/voice events. Verifies the Telnyx Ed25519
 signature before reading `data.payload`. Returns `200` once handled, `401` on an
-invalid signature, `408` on a stale timestamp. See [API.md](./API.md) for the full
+invalid signature, `408` on a stale timestamp. See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-ruby/API.md) for the full
 typed reference.
 
 ## Troubleshooting
@@ -163,11 +163,11 @@ typed reference.
 
 ## Related Examples
 
-- [setup-sip-trunk-python](../setup-sip-trunk-python/) — Same SIP trunk setup in Python
-- [setup-sip-trunk-nodejs](../setup-sip-trunk-nodejs/) — Same SIP trunk setup in Node.js
-- [setup-sip-trunk-go](../setup-sip-trunk-go/) — Same SIP trunk setup in Go
-- [inbound-sip-routing-nodejs](../inbound-sip-routing-nodejs/) — Route inbound SIP calls with webhooks
-- [send-sms-ruby](../send-sms-ruby/) — Send SMS with the Telnyx Ruby SDK
+- [setup-sip-trunk-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-python/README.md) — Same SIP trunk setup in Python
+- [setup-sip-trunk-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/README.md) — Same SIP trunk setup in Node.js
+- [setup-sip-trunk-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-go/README.md) — Same SIP trunk setup in Go
+- [inbound-sip-routing-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/inbound-sip-routing-nodejs/README.md) — Route inbound SIP calls with webhooks
+- [send-sms-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-ruby/README.md) — Send SMS with the Telnyx Ruby SDK
 
 ## Resources
 

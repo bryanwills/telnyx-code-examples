@@ -28,7 +28,7 @@ that coordinate is the old, deprecated SDK with a completely different API).
 </dependency>
 ```
 
-See [`pom.xml`](./pom.xml) for the full build configuration, including the
+See [`pom.xml`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-java/pom.xml) for the full build configuration, including the
 `exec-maven-plugin` used to run the app.
 
 ## 2. Configure credentials
@@ -134,7 +134,7 @@ Errors are mapped carefully so internal detail never leaks to the client:
 }
 ```
 
-See [`Application.java`](./Application.java) for the full implementation,
+See [`Application.java`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-java/Application.java) for the full implementation,
 including the dependency-free JSON request/response helpers.
 
 ## 8. Run it
@@ -185,4 +185,4 @@ UnwrapWebhookEvent event = client.webhooks().unwrap(params); // throws on bad/st
 ## Next steps
 
 - Add an outbound voice profile and SIP endpoints to route real calls.
-- See [setup-sip-trunk-go](../setup-sip-trunk-go/), [setup-sip-trunk-nodejs](../setup-sip-trunk-nodejs/), and [setup-sip-trunk-python](../setup-sip-trunk-python/) for the same flow in other languages.
+- See [setup-sip-trunk-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-go/README.md), [setup-sip-trunk-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/README.md), and [setup-sip-trunk-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-python/README.md) for the same flow in other languages.

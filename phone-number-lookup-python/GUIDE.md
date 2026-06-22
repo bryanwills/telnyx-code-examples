@@ -137,8 +137,8 @@ This example uses an in-memory cache for simplicity. For production:
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/phone-number-lookup-python/README.md)
+- [Endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/phone-number-lookup-python/API.md)
 - [Number Lookup Guide](https://developers.telnyx.com/docs/identity/number-lookup)
 - [Number Lookup API Reference](https://developers.telnyx.com/api-reference/number-lookup/retrieve-lookup)
 - [Telnyx Portal](https://portal.telnyx.com)

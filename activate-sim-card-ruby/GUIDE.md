@@ -174,8 +174,8 @@ You should get back the enable action's `id`, `status`, `action_type`, and the `
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed API reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-ruby/README.md)
+- [Typed API reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-ruby/API.md)
 - [IoT SIM Get Started](https://developers.telnyx.com/docs/iot-sim/get-started)
 - [Ruby SDK](https://developers.telnyx.com/development/sdk/ruby)
 - [Telnyx Portal](https://portal.telnyx.com)

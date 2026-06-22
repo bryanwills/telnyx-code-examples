@@ -108,9 +108,9 @@ curl -X POST http://localhost:5000/chat \
 
 ## Related Examples
 
-- [create-ai-assistant-python](../create-ai-assistant-python/) - Create assistant
-- [ai-assistant-phone-setup-python](../ai-assistant-phone-setup-python/) - Phone setup
-- [run-llm-inference-python](../run-llm-inference-python/) - Standalone inference
+- [create-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/create-ai-assistant-python/README.md) - Create assistant
+- [ai-assistant-phone-setup-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-assistant-phone-setup-python/README.md) - Phone setup
+- [run-llm-inference-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/run-llm-inference-python/README.md) - Standalone inference
 
 ## Resources
 

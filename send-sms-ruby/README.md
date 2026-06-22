@@ -101,11 +101,11 @@ curl -X POST http://localhost:3000/sms/send \
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) - Send SMS with Python / Flask
-- [send-sms-nodejs](../send-sms-nodejs/) - Send SMS with Node.js
-- [send-sms-go](../send-sms-go/) - Send SMS with Go
-- [send-bulk-sms-python](../send-bulk-sms-python/) - Send SMS to many recipients
-- [receive-sms-webhook-python](../receive-sms-webhook-python/) - Handle inbound SMS webhooks
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - Send SMS with Python / Flask
+- [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md) - Send SMS with Node.js
+- [send-sms-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-go/README.md) - Send SMS with Go
+- [send-bulk-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-python/README.md) - Send SMS to many recipients
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) - Handle inbound SMS webhooks
 
 ## Resources
 

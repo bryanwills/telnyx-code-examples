@@ -101,7 +101,7 @@ curl -X POST http://localhost:5000/sms/send \
 
 ## Related Examples
 
-- [sms-chatbot-with-conversation-memory-python](../sms-chatbot-with-conversation-memory-python/) - AI SMS chatbot
+- [sms-chatbot-with-conversation-memory-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-chatbot-with-conversation-memory-python/README.md) - AI SMS chatbot
 
 ## Resources
 

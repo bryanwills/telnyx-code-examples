@@ -190,8 +190,8 @@ A successful call returns:
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-csharp/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-csharp/API.md)
 - [Messaging quickstart](https://developers.telnyx.com/docs/messaging)
 - [.NET / C# SDK](https://developers.telnyx.com/development/sdk/dotnet)
 - [Telnyx Portal](https://portal.telnyx.com)

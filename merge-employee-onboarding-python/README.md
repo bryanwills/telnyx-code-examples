@@ -158,10 +158,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [merge-employee-hotline-python](../merge-employee-hotline-python/) -- AI phone line backed by Merge HRIS employee data
-- [merge-ticket-escalation-python](../merge-ticket-escalation-python/) -- create and escalate tickets via Merge Ticketing
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) -- route the newly provisioned number to an AI agent
-- [send-sms-notifications-python](../send-sms-notifications-python/) -- standalone outbound SMS notification patterns
+- [merge-employee-hotline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-employee-hotline-python/README.md) -- AI phone line backed by Merge HRIS employee data
+- [merge-ticket-escalation-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-ticket-escalation-python/README.md) -- create and escalate tickets via Merge Ticketing
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) -- route the newly provisioned number to an AI agent
+- [send-sms-notifications-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-notifications-python/README.md) -- standalone outbound SMS notification patterns
 
 ## Resources
 

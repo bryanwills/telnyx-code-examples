@@ -148,10 +148,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [shift-fill-engine-python](../shift-fill-engine-python/) -- standalone shift-fill workflow without the Edge/Merge layer
-- [edge-merge-ai-receptionist-python](../edge-merge-ai-receptionist-python/) -- sibling Edge + Merge HRIS example using voice and AI
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) -- Call Control routing and AI-driven voice interaction
-- [merge-employee-hotline-python](../merge-employee-hotline-python/) -- employee-facing voice line backed by Merge HRIS data
+- [shift-fill-engine-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/shift-fill-engine-python/README.md) -- standalone shift-fill workflow without the Edge/Merge layer
+- [edge-merge-ai-receptionist-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-ai-receptionist-python/README.md) -- sibling Edge + Merge HRIS example using voice and AI
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) -- Call Control routing and AI-driven voice interaction
+- [merge-employee-hotline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-employee-hotline-python/README.md) -- employee-facing voice line backed by Merge HRIS data
 
 ## Resources
 

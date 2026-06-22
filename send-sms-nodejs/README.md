@@ -108,12 +108,12 @@ curl -X POST http://localhost:5000/sms/send \
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) - Same example in Python
-- [send-sms-go](../send-sms-go/) - Same example in Go
-- [send-sms-ruby](../send-sms-ruby/) - Same example in Ruby
-- [send-bulk-sms-nodejs](../send-bulk-sms-nodejs/) - Send many messages in a batch
-- [receive-sms-webhook-nodejs](../receive-sms-webhook-nodejs/) - Receive inbound SMS via webhook
-- [sms-two-factor-auth-nodejs](../sms-two-factor-auth-nodejs/) - SMS-based 2FA / OTP
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - Same example in Python
+- [send-sms-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-go/README.md) - Same example in Go
+- [send-sms-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-ruby/README.md) - Same example in Ruby
+- [send-bulk-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-nodejs/README.md) - Send many messages in a batch
+- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) - Receive inbound SMS via webhook
+- [sms-two-factor-auth-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-two-factor-auth-nodejs/README.md) - SMS-based 2FA / OTP
 
 ## Resources
 

@@ -182,10 +182,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [call-sentiment-live-escalation-python](../call-sentiment-live-escalation-python/) -- escalate a live call based on detected sentiment
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) -- route inbound calls to an AI voice agent with Call Control
-- [iot-fleet-alert-escalation-python](../iot-fleet-alert-escalation-python/) -- on-call phone escalation triggered by fleet alerts
-- [merge-employee-hotline-python](../merge-employee-hotline-python/) -- another Merge-integrated voice workflow
+- [call-sentiment-live-escalation-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/call-sentiment-live-escalation-python/README.md) -- escalate a live call based on detected sentiment
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) -- route inbound calls to an AI voice agent with Call Control
+- [iot-fleet-alert-escalation-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/iot-fleet-alert-escalation-python/README.md) -- on-call phone escalation triggered by fleet alerts
+- [merge-employee-hotline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-employee-hotline-python/README.md) -- another Merge-integrated voice workflow
 
 ## Resources
 

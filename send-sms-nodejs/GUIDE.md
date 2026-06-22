@@ -139,7 +139,7 @@ A successful call returns:
 - **Input validation** — validate and normalize destination numbers beyond the `+` check
 - **Retries** — handle `429` and `503` with backoff
 - **Monitoring** — add structured logging and health checks
-- **Delivery receipts** — configure a webhook to track final delivery status (see [receive-sms-webhook-nodejs](../receive-sms-webhook-nodejs/))
+- **Delivery receipts** — configure a webhook to track final delivery status (see [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md))
 
 ## Run
 
@@ -150,8 +150,8 @@ node server.js
 
 ## Resources
 
-- [Source code and reference](./README.md)
-- [Typed endpoint reference](./API.md)
+- [Source code and reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md)
+- [Typed endpoint reference](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/API.md)
 - [Messaging quickstart](https://developers.telnyx.com/docs/messaging)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx Portal](https://portal.telnyx.com)

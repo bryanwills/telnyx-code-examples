@@ -183,8 +183,8 @@ call this endpoint yourself — Telnyx posts to it.
 
 ## Related Examples
 
-- [send-sms-python](../send-sms-python/) - Send a single SMS from any Telnyx number
-- [ai-compliance-quiz-phone-python](../ai-compliance-quiz-phone-python/) - Signed Telnyx voice webhooks with per-call state
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - Send a single SMS from any Telnyx number
+- [ai-compliance-quiz-phone-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-compliance-quiz-phone-python/README.md) - Signed Telnyx voice webhooks with per-call state
 
 ## Resources
 

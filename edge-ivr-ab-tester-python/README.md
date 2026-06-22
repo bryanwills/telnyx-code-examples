@@ -172,10 +172,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [smart-ivr-ab-tester-python](../smart-ivr-ab-tester-python/) -- IVR A/B testing without the edge layer
-- [ai-powered-ivr-replacement-python](../ai-powered-ivr-replacement-python/) -- replace a menu-driven IVR with an AI voice agent
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) -- route inbound calls into an AI agent flow
-- [edge-geo-smart-router-python](../edge-geo-smart-router-python/) -- edge sibling that routes calls by geography
+- [smart-ivr-ab-tester-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/smart-ivr-ab-tester-python/README.md) -- IVR A/B testing without the edge layer
+- [ai-powered-ivr-replacement-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-powered-ivr-replacement-python/README.md) -- replace a menu-driven IVR with an AI voice agent
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) -- route inbound calls into an AI agent flow
+- [edge-geo-smart-router-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-geo-smart-router-python/README.md) -- edge sibling that routes calls by geography
 
 ## Resources
 

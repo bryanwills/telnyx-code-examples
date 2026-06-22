@@ -157,10 +157,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) -- route inbound calls to an AI voice agent with Call Control
-- [call-whisper-monitoring-python](../call-whisper-monitoring-python/) -- whisper coaching to agents during live calls
-- [edge-fraud-firewall-python](../edge-fraud-firewall-python/) -- real-time fraud screening at the edge
-- [compliance-call-recorder-ai-auditor-python](../compliance-call-recorder-ai-auditor-python/) -- record calls and AI-audit them for compliance
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) -- route inbound calls to an AI voice agent with Call Control
+- [call-whisper-monitoring-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/call-whisper-monitoring-python/README.md) -- whisper coaching to agents during live calls
+- [edge-fraud-firewall-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-fraud-firewall-python/README.md) -- real-time fraud screening at the edge
+- [compliance-call-recorder-ai-auditor-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/compliance-call-recorder-ai-auditor-python/README.md) -- record calls and AI-audit them for compliance
 
 ## Resources
 

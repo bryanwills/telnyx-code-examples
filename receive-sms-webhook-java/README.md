@@ -90,7 +90,7 @@ Requires JDK 17+ (native Ed25519) and Maven 3.8+.
 
 ## API Reference
 
-See [API.md](./API.md) for the full typed endpoint reference.
+See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-java/API.md) for the full typed endpoint reference.
 
 ### `POST /webhooks/sms`
 
@@ -131,10 +131,10 @@ curl http://localhost:8080/health
 
 ## Related Examples
 
-- [receive-sms-webhook-nodejs](../receive-sms-webhook-nodejs/) - Same webhook receiver in Node.js
-- [receive-sms-webhook-python](../receive-sms-webhook-python/) - Same webhook receiver in Python
-- [send-sms-python](../send-sms-python/) - Send a single SMS message
-- [send-bulk-sms-nodejs](../send-bulk-sms-nodejs/) - Send bulk SMS
+- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) - Same webhook receiver in Node.js
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) - Same webhook receiver in Python
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - Send a single SMS message
+- [send-bulk-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-nodejs/README.md) - Send bulk SMS
 
 ## Resources
 

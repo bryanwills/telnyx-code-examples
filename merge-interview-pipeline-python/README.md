@@ -180,10 +180,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [ai-hiring-phone-screen-python](../ai-hiring-phone-screen-python/) — AI-conducted phone screen without the ATS integration
-- [interview-screen-scheduler-python](../interview-screen-scheduler-python/) — schedule candidate screens over voice/SMS
-- [merge-recruitment-hotline-python](../merge-recruitment-hotline-python/) — Merge ATS-backed recruiting hotline
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) — route inbound calls to an AI voice agent
+- [ai-hiring-phone-screen-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-hiring-phone-screen-python/README.md) — AI-conducted phone screen without the ATS integration
+- [interview-screen-scheduler-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/interview-screen-scheduler-python/README.md) — schedule candidate screens over voice/SMS
+- [merge-recruitment-hotline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-recruitment-hotline-python/README.md) — Merge ATS-backed recruiting hotline
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — route inbound calls to an AI voice agent
 
 ## Resources
 

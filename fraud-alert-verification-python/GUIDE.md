@@ -165,7 +165,7 @@ Or send an SMS to your Telnyx number to trigger the messaging workflow.
 
 ## Resources
 
-- [Full source code and README](./README.md)
+- [Full source code and README](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/fraud-alert-verification-python/README.md)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)

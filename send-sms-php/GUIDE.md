@@ -171,6 +171,6 @@ $text = $event->data->payload->text;
 
 ## Next steps
 
-- [send-bulk-sms-python](../send-bulk-sms-python/) — fan out to many recipients.
-- [receive-sms-webhook-python](../receive-sms-webhook-python/) — handle inbound SMS.
+- [send-bulk-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-python/README.md) — fan out to many recipients.
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) — handle inbound SMS.
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging) — concepts and deliverability.

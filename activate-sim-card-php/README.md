@@ -142,10 +142,10 @@ curl http://localhost:8080/health
 
 ## Related Examples
 
-- [activate-sim-card-python](../activate-sim-card-python/) - Same example in Python
-- [activate-sim-card-nodejs](../activate-sim-card-nodejs/) - Same example in Node.js
-- [activate-sim-card-go](../activate-sim-card-go/) - Same example in Go
-- [monitor-iot-data-usage-nodejs](../monitor-iot-data-usage-nodejs/) - Track SIM data usage
+- [activate-sim-card-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-python/README.md) - Same example in Python
+- [activate-sim-card-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-nodejs/README.md) - Same example in Node.js
+- [activate-sim-card-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-go/README.md) - Same example in Go
+- [monitor-iot-data-usage-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/monitor-iot-data-usage-nodejs/README.md) - Track SIM data usage
 
 ## Resources
 

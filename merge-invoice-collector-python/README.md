@@ -180,10 +180,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [merge-expense-by-phone-python](../merge-expense-by-phone-python/) — voice + Merge accounting workflow over the phone
-- [merge-deal-desk-alerts-python](../merge-deal-desk-alerts-python/) — Merge-driven alerts routed through Telnyx
-- [merge-employee-hotline-python](../merge-employee-hotline-python/) — Merge data backing an AI voice hotline
-- [edge-merge-ai-receptionist-python](../edge-merge-ai-receptionist-python/) — AI receptionist combining Merge data with Telnyx voice
+- [merge-expense-by-phone-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-expense-by-phone-python/README.md) — voice + Merge accounting workflow over the phone
+- [merge-deal-desk-alerts-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-deal-desk-alerts-python/README.md) — Merge-driven alerts routed through Telnyx
+- [merge-employee-hotline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-employee-hotline-python/README.md) — Merge data backing an AI voice hotline
+- [edge-merge-ai-receptionist-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-ai-receptionist-python/README.md) — AI receptionist combining Merge data with Telnyx voice
 
 ## Resources
 

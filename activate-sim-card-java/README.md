@@ -107,7 +107,7 @@ curl -X POST http://localhost:8080/sim/activate \
 }
 ```
 
-`id` is the SIM-card *action* id (the enable operation is asynchronous); `status` is the action status. See [`API.md`](./API.md) for the full typed reference.
+`id` is the SIM-card *action* id (the enable operation is asynchronous); `status` is the action status. See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-java/API.md) for the full typed reference.
 
 ## Troubleshooting
 
@@ -123,10 +123,10 @@ curl -X POST http://localhost:8080/sim/activate \
 
 ## Related Examples
 
-- [activate-sim-card-go](../activate-sim-card-go/) — Same flow in Go
-- [activate-sim-card-python](../activate-sim-card-python/) — Same flow in Python
-- [activate-sim-card-nodejs](../activate-sim-card-nodejs/) — Same flow in Node.js
-- [monitor-iot-data-usage-python](../monitor-iot-data-usage-python/) — Track SIM data usage
+- [activate-sim-card-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-go/README.md) — Same flow in Go
+- [activate-sim-card-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-python/README.md) — Same flow in Python
+- [activate-sim-card-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-nodejs/README.md) — Same flow in Node.js
+- [monitor-iot-data-usage-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/monitor-iot-data-usage-python/README.md) — Track SIM data usage
 
 ## Resources
 

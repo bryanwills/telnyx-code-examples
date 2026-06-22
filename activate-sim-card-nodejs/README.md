@@ -137,10 +137,10 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [activate-sim-card-python](../activate-sim-card-python/) - Same example in Python
-- [activate-sim-card-go](../activate-sim-card-go/) - Same example in Go
-- [monitor-iot-data-usage-nodejs](../monitor-iot-data-usage-nodejs/) - Track SIM data usage in Node.js
-- [provision-esim-python](../provision-esim-python/) - Provision an eSIM
+- [activate-sim-card-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-python/README.md) - Same example in Python
+- [activate-sim-card-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-go/README.md) - Same example in Go
+- [monitor-iot-data-usage-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/monitor-iot-data-usage-nodejs/README.md) - Track SIM data usage in Node.js
+- [provision-esim-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/provision-esim-python/README.md) - Provision an eSIM
 
 ## Resources
 

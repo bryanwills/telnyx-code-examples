@@ -115,7 +115,21 @@ Maps product / use_case / language / framework to folder names. Used by both `ve
 
 ## SEO & linking conventions
 
-Two conventions established after SEO review of PR #1:
+Conventions established after SEO review of PR #1 (and the marketing raw-link review):
+
+### Back-in-repo links → absolute raw URLs
+
+Every link that points **back into this repo** (Related Examples, root README example
+links, sibling-doc and code-file links) must be an absolute
+`https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/...` URL — never
+a relative `./` or `../` path. Answer engines and aggregators that follow these links then
+get clean raw markdown instead of GitHub's HTML chrome. A link to a folder resolves to that
+folder's `README.md` (raw cannot serve a directory listing). External links
+(telnyx.com / developers.telnyx.com / `git clone` URLs) are left as-is.
+
+- Enforced repo-wide by `python scripts/rewrite_repo_links.py --check` (a hard CI gate).
+- Run `python scripts/rewrite_repo_links.py` to auto-convert any relative links in place.
+- `transform.py` emits raw URLs for generated examples (`RAW_BASE`).
 
 ### Root README product links
 

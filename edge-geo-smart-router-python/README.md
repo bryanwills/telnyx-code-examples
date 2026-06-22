@@ -143,10 +143,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [ai-powered-ivr-replacement-python](../ai-powered-ivr-replacement-python/) -- AI-driven IVR that replaces menu trees with natural language.
-- [route-phone-calls-to-ai-agent-python](../route-phone-calls-to-ai-agent-python/) -- Connect inbound calls to a Telnyx AI voice agent.
-- [record-phone-calls-python](../record-phone-calls-python/) -- Start and retrieve Call Control recordings.
-- [edge-compliance-monitor-python](../edge-compliance-monitor-python/) -- Edge-based compliance and consent monitoring for calls.
+- [ai-powered-ivr-replacement-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-powered-ivr-replacement-python/README.md) -- AI-driven IVR that replaces menu trees with natural language.
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) -- Connect inbound calls to a Telnyx AI voice agent.
+- [record-phone-calls-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-python/README.md) -- Start and retrieve Call Control recordings.
+- [edge-compliance-monitor-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-compliance-monitor-python/README.md) -- Edge-based compliance and consent monitoring for calls.
 
 ## Resources
 
