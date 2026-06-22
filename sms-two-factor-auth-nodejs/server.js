@@ -5,12 +5,11 @@
  */
 
 const express = require("express");
-const bodyParser = require("body-parser");
 const Telnyx = require("telnyx");
 require("dotenv").config();
 
 const app = express();
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Initialize Telnyx client with the SDK pattern
 const client = new Telnyx({ apiKey: process.env.TELNYX_API_KEY });
