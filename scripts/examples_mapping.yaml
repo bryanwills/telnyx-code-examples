@@ -1659,3 +1659,98 @@ examples:
     framework: flask
     folder: wireguard-private-voice-network-python
 
+  - product: voice
+    use_case: edge-compliance-monitor
+    language: python
+    framework: flask
+    folder: edge-compliance-monitor-python
+  - product: voice
+    use_case: edge-fraud-firewall
+    language: python
+    framework: flask
+    folder: edge-fraud-firewall-python
+  - product: voice
+    use_case: edge-geo-smart-router
+    language: python
+    framework: flask
+    folder: edge-geo-smart-router-python
+  - product: voice
+    use_case: edge-ivr-ab-tester
+    language: python
+    framework: flask
+    folder: edge-ivr-ab-tester-python
+  - product: voice
+    use_case: edge-merge-ai-receptionist
+    language: python
+    framework: flask
+    folder: edge-merge-ai-receptionist-python
+  - product: voice
+    use_case: edge-merge-reference-checker
+    language: python
+    framework: flask
+    folder: edge-merge-reference-checker-python
+  - product: voice
+    use_case: edge-merge-shift-coverage
+    language: python
+    framework: flask
+    folder: edge-merge-shift-coverage-python
+  - product: voice
+    use_case: edge-number-masking
+    language: python
+    framework: flask
+    folder: edge-number-masking-python
+  - product: voice
+    use_case: edge-voicemail-to-action
+    language: python
+    framework: flask
+    folder: edge-voicemail-to-action-python
+  - product: voice
+    use_case: edge-webhook-aggregator
+    language: python
+    framework: flask
+    folder: edge-webhook-aggregator-python
+  - product: voice
+    use_case: merge-deal-desk-alerts
+    language: python
+    framework: flask
+    folder: merge-deal-desk-alerts-python
+  - product: voice
+    use_case: merge-employee-hotline
+    language: python
+    framework: flask
+    folder: merge-employee-hotline-python
+  - product: sms
+    use_case: merge-employee-onboarding
+    language: python
+    framework: flask
+    folder: merge-employee-onboarding-python
+  - product: voice
+    use_case: merge-expense-by-phone
+    language: python
+    framework: flask
+    folder: merge-expense-by-phone-python
+  - product: voice
+    use_case: merge-interview-pipeline
+    language: python
+    framework: flask
+    folder: merge-interview-pipeline-python
+  - product: voice
+    use_case: merge-invoice-collector
+    language: python
+    framework: flask
+    folder: merge-invoice-collector-python
+  - product: voice
+    use_case: merge-pipeline-briefing
+    language: python
+    framework: flask
+    folder: merge-pipeline-briefing-python
+  - product: voice
+    use_case: merge-recruitment-hotline
+    language: python
+    framework: flask
+    folder: merge-recruitment-hotline-python
+  - product: voice
+    use_case: merge-ticket-escalation
+    language: python
+    framework: flask
+    folder: merge-ticket-escalation-python

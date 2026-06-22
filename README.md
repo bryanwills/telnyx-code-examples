@@ -40,6 +40,24 @@ Build voice applications with [Telnyx Voice AI](https://telnyx.com/products/voic
 | [call-whisper-monitoring-python](./call-whisper-monitoring-python/) | Python | Monitor calls with whisper prompts for agents. |
 | [call-forwarding-python](./call-forwarding-python/) | Python | Forward incoming calls to another destination. |
 | [webrtc-browser-calling-python](./webrtc-browser-calling-python/) | Python | Enable browser-based calling with WebRTC. |
+| [edge-compliance-monitor-python](./edge-compliance-monitor-python/) | Python | ---. |
+| [edge-fraud-firewall-python](./edge-fraud-firewall-python/) | Python | ---. |
+| [edge-geo-smart-router-python](./edge-geo-smart-router-python/) | Python | ---. |
+| [edge-ivr-ab-tester-python](./edge-ivr-ab-tester-python/) | Python | ---. |
+| [edge-merge-ai-receptionist-python](./edge-merge-ai-receptionist-python/) | Python | ---. |
+| [edge-merge-reference-checker-python](./edge-merge-reference-checker-python/) | Python | ---. |
+| [edge-merge-shift-coverage-python](./edge-merge-shift-coverage-python/) | Python | ---. |
+| [edge-number-masking-python](./edge-number-masking-python/) | Python | ---. |
+| [edge-voicemail-to-action-python](./edge-voicemail-to-action-python/) | Python | ---. |
+| [edge-webhook-aggregator-python](./edge-webhook-aggregator-python/) | Python | ---. |
+| [merge-deal-desk-alerts-python](./merge-deal-desk-alerts-python/) | Python | ---. |
+| [merge-employee-hotline-python](./merge-employee-hotline-python/) | Python | ---. |
+| [merge-expense-by-phone-python](./merge-expense-by-phone-python/) | Python | ---. |
+| [merge-interview-pipeline-python](./merge-interview-pipeline-python/) | Python | ---. |
+| [merge-invoice-collector-python](./merge-invoice-collector-python/) | Python | ---. |
+| [merge-pipeline-briefing-python](./merge-pipeline-briefing-python/) | Python | ---. |
+| [merge-recruitment-hotline-python](./merge-recruitment-hotline-python/) | Python | ---. |
+| [merge-ticket-escalation-python](./merge-ticket-escalation-python/) | Python | ---. |
 | [route-phone-calls-to-ai-agent-nodejs](./route-phone-calls-to-ai-agent-nodejs/) | Node.js | Handle inbound calls with webhook-driven AI routing. |
 | [make-outbound-phone-call-nodejs](./make-outbound-phone-call-nodejs/) | Node.js | Initiate outbound calls via the Call Control API. |
 | [make-outbound-phone-call-java](./make-outbound-phone-call-java/) | Java | Initiate outbound calls via the Call Control API. |
@@ -97,6 +115,7 @@ Send and receive text messages with the [Telnyx SMS API](https://telnyx.com/prod
 | [sms-two-factor-auth-python](./sms-two-factor-auth-python/) | Python | Implement SMS-based two-factor authentication. |
 | [send-mms-picture-message-python](./send-mms-picture-message-python/) | Python | Send MMS messages with media attachments. |
 | [sms-auto-reply-bot-python](./sms-auto-reply-bot-python/) | Python | Build an SMS autoresponder bot. |
+| [merge-employee-onboarding-python](./merge-employee-onboarding-python/) | Python | ---. |
 | [send-sms-nodejs](./send-sms-nodejs/) | Node.js | Send a single SMS message via the Telnyx API. |
 | [receive-sms-webhook-nodejs](./receive-sms-webhook-nodejs/) | Node.js | Receive inbound SMS via webhook. |
 | [receive-sms-webhook-csharp](./receive-sms-webhook-csharp/) | C# | Receive inbound SMS via webhook (Ed25519-verified). |
