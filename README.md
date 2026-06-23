@@ -22,6 +22,14 @@ pip install -r requirements.txt && python app.py
 
 Each example's README has a Quick Start with the exact install/run commands for its language, an `API.md` typed endpoint reference, and a `GUIDE.md` walkthrough.
 
+## Cookbooks
+
+Notebook-based walkthroughs for Telnyx AI workflows.
+
+| Cookbook collection | Language | Description |
+|---------------------|----------|-------------|
+| [Telnyx Inference Cookbooks](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/cookbooks/inference/README.md) | Python / Colab | Chat completions, structured JSON extraction, RAG, transcription, and translation with Telnyx AI. |
+
 ---
 
 <details open>
