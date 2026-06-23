@@ -24,10 +24,10 @@ Deploy a [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server 
 
 ## Telnyx API Endpoints Used
 
-- **Messages**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **Available Phone Numbers**: `GET /v2/available_phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-available-phone-numbers)
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
-- **Phone Numbers**: `GET /v2/phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-phone-numbers)
+- **Messages**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **Available Phone Numbers**: `GET /v2/available_phone_numbers` - [API reference](https://developers.telnyx.com/api/numbers/list-available-phone-numbers)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Phone Numbers**: `GET /v2/phone_numbers` - [API reference](https://developers.telnyx.com/api/numbers/list-phone-numbers)
 
 ## Architecture
 
@@ -81,10 +81,10 @@ edge-mcp-server-deploy-python/
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
-- **Co-located inference** — LLM runs on the same network as voice traffic. Sub-200ms round trips.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
+- **Co-located inference** - LLM runs on the same network as voice traffic. Sub-200ms round trips.
 
 ## Environment Variables
 
@@ -94,9 +94,9 @@ Telnyx is an **AI Communications Infrastructure** platform — voice, messaging,
 
 ## API Reference
 
-### `GET /mcp/tools/list` — list tools
-### `POST /mcp/tools/call` — execute a tool
-### `GET /health` — health check
+### `GET /mcp/tools/list` - list tools
+### `POST /mcp/tools/call` - execute a tool
+### `GET /health` - health check
 
 ## Testing
 

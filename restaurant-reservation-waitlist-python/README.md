@@ -15,24 +15,24 @@ AI answers calls, checks table availability, books or adds to waitlist, texts wh
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` — [API reference](https://developers.telnyx.com/api/call-control/answer-call)
-- **Call Control: Gather (STT/DTMF)**: `POST /v2/calls/{id}/actions/gather_using_speak` — [API reference](https://developers.telnyx.com/api/call-control/gather)
-- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` - [API reference](https://developers.telnyx.com/api/call-control/answer-call)
+- **Call Control: Gather (STT/DTMF)**: `POST /v2/calls/{id}/actions/gather_using_speak` - [API reference](https://developers.telnyx.com/api/call-control/gather)
+- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` - [API reference](https://developers.telnyx.com/api/call-control/speak)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.answered` — Call connected — app begins interaction
-- `call.gather.ended` — Caller input received (speech transcription or DTMF digits)
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.initiated` — New inbound or outbound call detected
-- `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
+- `call.answered` - Call connected - app begins interaction
+- `call.gather.ended` - Caller input received (speech transcription or DTMF digits)
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.initiated` - New inbound or outbound call detected
+- `call.speak.ended` - TTS playback finished - app transitions to next action (gather, transfer, etc.)
 
 ## External Service Integrations
 
-- **Slack** — Team notifications via incoming webhooks ([docs](https://api.slack.com/messaging/webhooks))
+- **Slack** - Team notifications via incoming webhooks ([docs](https://api.slack.com/messaging/webhooks))
 
 ## Architecture
 
@@ -74,8 +74,8 @@ Copy `.env.example` to `.env` and fill in:
 | `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
 | `CONNECTION_ID` | `string` | `1494404757140276705` | **yes** | Call Control connection/app ID | [Portal](https://portal.telnyx.com/call-control/applications) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `HOST_SLACK_WEBHOOK` | `string` | `your_value` | **yes** | Host slack webhook | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `HOST_SLACK_WEBHOOK` | `string` | `your_value` | **yes** | Host slack webhook | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -279,4 +279,4 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

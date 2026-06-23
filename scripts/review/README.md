@@ -17,7 +17,7 @@ worktree) plus `--changed-against <ref>` for **diff-aware** mode.
 
 `main` carries pre-existing backlog (unpinned deps, some folders missing docs).
 A hard repo-wide gate would block every PR on that debt, so CI runs the gates in
-**diff-aware** mode — they only check the example folders a PR actually changes.
+**diff-aware** mode - they only check the example folders a PR actually changes.
 `verify.py` (which already passes on `main`) runs full as the authoritative gate.
 
 ```bash

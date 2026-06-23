@@ -43,10 +43,10 @@ Send messages to a Telnyx AI assistant and maintain multi-turn context with a co
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Assistants with built-in memory** — the Conversations API gives each thread a stable `conversation_id`, so the assistant keeps context across turns without you managing message history yourself.
-- **One API key, one SDK** — the same credential that powers voice and messaging also drives AI assistants, so you can move an assistant from chat to phone or SMS without re-plumbing auth.
+- **Assistants with built-in memory** - the Conversations API gives each thread a stable `conversation_id`, so the assistant keeps context across turns without you managing message history yourself.
+- **One API key, one SDK** - the same credential that powers voice and messaging also drives AI assistants, so you can move an assistant from chat to phone or SMS without re-plumbing auth.
 
 ## Environment Variables
 
@@ -56,7 +56,7 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY_your_telnyx_api_key_here` | **yes** | Telnyx API v2 key used to authenticate AI assistant requests | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_ASSISTANT_ID` | `string` | `assistant-abc123` | **yes** | ID of the AI assistant to chat with | [AI Assistants](https://portal.telnyx.com/#/ai/assistants) |
-| `PORT` | `string` | `8080` | no | Port the Gin server listens on. Defaults to `8080` when unset | — |
+| `PORT` | `string` | `8080` | no | Port the Gin server listens on. Defaults to `8080` when unset | - |
 
 ## Setup
 

@@ -14,12 +14,12 @@ Send a message to a Telnyx AI Assistant from a vanilla PHP front controller and 
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. AI Assistants run on that same network, so you can pair conversational AI with telephony and messaging through a single API and SDK instead of stitching together multiple vendors.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. AI Assistants run on that same network, so you can pair conversational AI with telephony and messaging through a single API and SDK instead of stitching together multiple vendors.
 
 ## Telnyx API Endpoints Used
 
-- **Create a Conversation**: `POST /v2/ai/conversations` — [API reference](https://developers.telnyx.com/api-reference/assistants/create-a-conversation)
-- **Chat with an Assistant**: `POST /v2/ai/assistants/{assistant_id}/chat` — [API reference](https://developers.telnyx.com/api-reference/assistants/chat-with-an-assistant)
+- **Create a Conversation**: `POST /v2/ai/conversations` - [API reference](https://developers.telnyx.com/api-reference/assistants/create-a-conversation)
+- **Chat with an Assistant**: `POST /v2/ai/assistants/{assistant_id}/chat` - [API reference](https://developers.telnyx.com/api-reference/assistants/chat-with-an-assistant)
 
 ## Architecture
 
@@ -51,8 +51,8 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_ASSISTANT_ID` | `string` | `assistant-1234abcd` | **yes** | ID of the AI Assistant to chat with | [Portal](https://portal.telnyx.com/ai/assistants) |
-| `TELNYX_PUBLIC_KEY` | `string` | `o0Yf...base64...` | only for `/webhooks` | Base64 Ed25519 public key used to verify webhook signatures | [Portal](https://portal.telnyx.com) — Account > Keys & Credentials |
-| `PORT` | `number` | `8080` | no | Port the PHP built-in server listens on | — |
+| `TELNYX_PUBLIC_KEY` | `string` | `o0Yf...base64...` | only for `/webhooks` | Base64 Ed25519 public key used to verify webhook signatures | [Portal](https://portal.telnyx.com) - Account > Keys & Credentials |
+| `PORT` | `number` | `8080` | no | Port the PHP built-in server listens on | - |
 
 ## Setup
 
@@ -119,10 +119,10 @@ See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/
 
 ## Related Examples
 
-- [create-ai-assistant-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/create-ai-assistant-nodejs/README.md) — Create an AI Assistant to chat with
-- [list-ai-assistants-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/list-ai-assistants-nodejs/README.md) — List assistants to find a `TELNYX_ASSISTANT_ID`
-- [chat-with-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-python/README.md) — The Python version of this example
-- [chat-with-ai-assistant-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-nodejs/README.md) — The Node.js version of this example
+- [create-ai-assistant-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/create-ai-assistant-nodejs/README.md) - Create an AI Assistant to chat with
+- [list-ai-assistants-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/list-ai-assistants-nodejs/README.md) - List assistants to find a `TELNYX_ASSISTANT_ID`
+- [chat-with-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-python/README.md) - The Python version of this example
+- [chat-with-ai-assistant-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-nodejs/README.md) - The Node.js version of this example
 
 ## Resources
 

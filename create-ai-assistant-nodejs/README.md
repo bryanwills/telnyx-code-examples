@@ -37,10 +37,10 @@ Create a Telnyx AI Assistant over an HTTP endpoint using the Telnyx Node.js SDK 
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. AI Assistants run natively on that network, so the same assistant can answer telephony calls and reply to messages without stitching together separate vendors.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. AI Assistants run natively on that network, so the same assistant can answer telephony calls and reply to messages without stitching together separate vendors.
 
-- **Native AI** — assistants ship with built-in LLM hosting, telephony, and messaging.
-- **Single SDK** — `telnyx` for Node.js wraps every endpoint, including `ai.assistants`.
+- **Native AI** - assistants ship with built-in LLM hosting, telephony, and messaging.
+- **Single SDK** - `telnyx` for Node.js wraps every endpoint, including `ai.assistants`.
 
 ## Environment Variables
 
@@ -49,7 +49,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | — |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | - |
 
 ## Setup
 
@@ -125,7 +125,7 @@ curl http://localhost:5000/health
 ## Resources
 
 - [AI Assistants Guide](https://developers.telnyx.com/docs/inference/ai-assistants/no-code-voice-assistant)
-- [Create an Assistant — API Reference](https://developers.telnyx.com/api-reference/assistants/create-an-assistant)
+- [Create an Assistant - API Reference](https://developers.telnyx.com/api-reference/assistants/create-an-assistant)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx AI Assistants](https://telnyx.com/ai-assistants)
 - [Pricing](https://telnyx.com/pricing/inference)

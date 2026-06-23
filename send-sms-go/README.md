@@ -14,7 +14,7 @@ Send an SMS message using the Telnyx Messaging API and Go SDK, exposed over a Gi
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. Number reputation, 10DLC registration, and deliverability monitoring are built in, so a single Go SDK call reaches carriers worldwide without stitching together multiple vendors.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. Number reputation, 10DLC registration, and deliverability monitoring are built in, so a single Go SDK call reaches carriers worldwide without stitching together multiple vendors.
 
 ## Telnyx API Endpoints Used
 
@@ -114,7 +114,7 @@ curl -X POST http://localhost:5000/sms/send \
 ## Resources
 
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
-- [Send a Message — API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Send a Message - API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Go SDK](https://developers.telnyx.com/development/sdk/go)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)
 - [Messaging Pricing](https://telnyx.com/pricing/messaging)

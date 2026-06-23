@@ -1,7 +1,7 @@
 ---
 name: programmable-hold-experience
 title: "Programmable Hold Experience"
-description: "Programmable Hold Experience — custom hold experiences: tips, trivia, estimated wait time, callback offers."
+description: "Programmable Hold Experience - custom hold experiences: tips, trivia, estimated wait time, callback offers."
 language: python
 framework: flask
 telnyx_products: [Cloud Storage, Voice]
@@ -10,23 +10,23 @@ channel: [voice]
 
 # Programmable Hold Experience
 
-Programmable Hold Experience — custom hold experiences: tips, trivia, estimated wait time, callback offers.
+Programmable Hold Experience - custom hold experiences: tips, trivia, estimated wait time, callback offers.
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` — [API reference](https://developers.telnyx.com/api/call-control/answer-call)
-- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
+- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` - [API reference](https://developers.telnyx.com/api/call-control/answer-call)
+- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` - [API reference](https://developers.telnyx.com/api/call-control/speak)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.answered` — Call connected — app begins interaction
-- `call.dtmf.received` — DTMF tone detected during call
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.initiated` — New inbound or outbound call detected
-- `call.playback.ended` — Audio file playback completed
-- `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
+- `call.answered` - Call connected - app begins interaction
+- `call.dtmf.received` - DTMF tone detected during call
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.initiated` - New inbound or outbound call detected
+- `call.playback.ended` - Audio file playback completed
+- `call.speak.ended` - TTS playback finished - app transitions to next action (gather, transfer, etc.)
 
 ## Architecture
 
@@ -51,9 +51,9 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `HOLD_NUMBER` | `string` | `your_value` | **yes** | Hold number | — |
-| `HOLD_MUSIC_URL` | `string` | `https://file-examples.com/storage/fe1e2c9e0c6765da67ac0ed/2017/11/file_example_MP3_700KB.mp3` | no | Hold music url | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `HOLD_NUMBER` | `string` | `your_value` | **yes** | Hold number | - |
+| `HOLD_MUSIC_URL` | `string` | `https://file-examples.com/storage/fe1e2c9e0c6765da67ac0ed/2017/11/file_example_MP3_700KB.mp3` | no | Hold music url | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -158,4 +158,4 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

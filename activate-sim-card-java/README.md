@@ -14,15 +14,15 @@ Activate a Telnyx IoT SIM card over HTTP using the Telnyx Java SDK and the JDK `
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT SIM management on one private, global network — so you provision and activate connectivity through the same API you use for the rest of your stack.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT SIM management on one private, global network - so you provision and activate connectivity through the same API you use for the rest of your stack.
 
-- **Global IoT SIMs** — a single SKU with multi-carrier coverage, managed entirely over the API.
-- **Developer-first** — a maintained Java SDK with a fluent, typed surface, plus SDKs for Python, Node.js, Go, and Ruby.
-- **Predictable pricing** — pay-as-you-go data plans with no minimums or per-seat fees.
+- **Global IoT SIMs** - a single SKU with multi-carrier coverage, managed entirely over the API.
+- **Developer-first** - a maintained Java SDK with a fluent, typed surface, plus SDKs for Python, Node.js, Go, and Ruby.
+- **Predictable pricing** - pay-as-you-go data plans with no minimums or per-seat fees.
 
 ## Telnyx API Endpoints Used
 
-- **Enable (activate) SIM Card**: `POST /v2/sim_cards/{id}/actions/enable` — [API reference](https://developers.telnyx.com/api-reference/sim-cards/enable-sim-card)
+- **Enable (activate) SIM Card**: `POST /v2/sim_cards/{id}/actions/enable` - [API reference](https://developers.telnyx.com/api-reference/sim-cards/enable-sim-card)
 
 The application calls the Telnyx Java SDK method `client.simCards().actions().enable(simCardId)`, which maps to the endpoint above.
 
@@ -46,7 +46,7 @@ The application calls the Telnyx Java SDK method `client.simCards().actions().en
              └──► SIM card transitions toward "enabled"
 ```
 
-A single shared `TelnyxClient` is created once at startup via `TelnyxOkHttpClient.fromEnv()`. Each request is handled by one `HttpHandler`. There is no web framework — only `com.sun.net.httpserver.HttpServer` from the JDK.
+A single shared `TelnyxClient` is created once at startup via `TelnyxOkHttpClient.fromEnv()`. Each request is handled by one `HttpHandler`. There is no web framework - only `com.sun.net.httpserver.HttpServer` from the JDK.
 
 ## Environment Variables
 
@@ -55,7 +55,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal → API Keys](https://portal.telnyx.com/app/api-keys) |
-| `PORT` | `integer` | `8080` | no | HTTP port the example listens on (defaults to `8080`) | — |
+| `PORT` | `integer` | `8080` | no | HTTP port the example listens on (defaults to `8080`) | - |
 
 The SDK reads `TELNYX_API_KEY` directly from the environment via `TelnyxOkHttpClient.fromEnv()`. The credential is never hardcoded.
 
@@ -123,15 +123,15 @@ curl -X POST http://localhost:8080/sim/activate \
 
 ## Related Examples
 
-- [activate-sim-card-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-go/README.md) — Same flow in Go
-- [activate-sim-card-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-python/README.md) — Same flow in Python
-- [activate-sim-card-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-nodejs/README.md) — Same flow in Node.js
-- [monitor-iot-data-usage-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/monitor-iot-data-usage-python/README.md) — Track SIM data usage
+- [activate-sim-card-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-go/README.md) - Same flow in Go
+- [activate-sim-card-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-python/README.md) - Same flow in Python
+- [activate-sim-card-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-nodejs/README.md) - Same flow in Node.js
+- [monitor-iot-data-usage-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/monitor-iot-data-usage-python/README.md) - Track SIM data usage
 
 ## Resources
 
 - [IoT SIM Get Started](https://developers.telnyx.com/docs/iot-sim/get-started)
-- [Enable SIM Card — API Reference](https://developers.telnyx.com/api-reference/sim-cards/enable-sim-card)
+- [Enable SIM Card - API Reference](https://developers.telnyx.com/api-reference/sim-cards/enable-sim-card)
 - [Java SDK](https://developers.telnyx.com/development/sdk/java)
 - [Telnyx IoT SIM Cards](https://telnyx.com/products/iot-sim-card)
 - [IoT Data Plans Pricing](https://telnyx.com/pricing/iot-data-plans)

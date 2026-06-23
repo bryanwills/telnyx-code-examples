@@ -1,7 +1,7 @@
 ---
 name: verify-phone-number-otp-flow
 title: "Verify Phone Number OTP Flow"
-description: "Verify Phone Number OTP Flow — Telnyx Verify API with SMS primary and voice call fallback."
+description: "Verify Phone Number OTP Flow - Telnyx Verify API with SMS primary and voice call fallback."
 language: python
 framework: flask
 telnyx_products: [Verify]
@@ -10,11 +10,11 @@ channel: [voice]
 
 # Verify Phone Number OTP Flow
 
-Verify Phone Number OTP Flow — Telnyx Verify API with SMS primary and voice call fallback.
+Verify Phone Number OTP Flow - Telnyx Verify API with SMS primary and voice call fallback.
 
 ## Telnyx API Endpoints Used
 
-- **Create Verification**: `POST /v2/verifications` — [API reference](https://developers.telnyx.com/api/verify/create-verification)
+- **Create Verification**: `POST /v2/verifications` - [API reference](https://developers.telnyx.com/api/verify/create-verification)
 
 ## Architecture
 
@@ -44,8 +44,8 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `VERIFY_PROFILE_ID` | `string` | `your_value` | **yes** | Verify profile id | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `VERIFY_PROFILE_ID` | `string` | `your_value` | **yes** | Verify profile id | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -186,4 +186,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

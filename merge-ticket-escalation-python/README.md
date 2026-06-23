@@ -1,7 +1,7 @@
 ---
 name: merge-ticket-escalation
 title: "Merge Ticket Escalation"
-description: "Critical ticket fires a webhook from Merge Ticketing."
+description: "Critical ticket fires a webhook from Merge Ticketing, escalating via Telnyx Voice and AI Inference."
 language: python
 framework: flask
 telnyx_products: [Voice, AI Inference]

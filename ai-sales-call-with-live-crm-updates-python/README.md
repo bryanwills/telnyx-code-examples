@@ -1,7 +1,7 @@
 ---
 name: ai-sales-call-with-live-crm-updates
 title: "AI Sales Call with Live CRM Updates"
-description: "AI Sales Call with Live CRM Updates — multi-participant call with real-time deal intelligence."
+description: "AI Sales Call with Live CRM Updates - multi-participant call with real-time deal intelligence."
 language: python
 framework: flask
 telnyx_products: [Voice AI, SMS/MMS, AI Inference]
@@ -10,22 +10,22 @@ channel: [voice]
 
 # AI Sales Call with Live CRM Updates
 
-AI Sales Call with Live CRM Updates — multi-participant call with real-time deal intelligence.
+AI Sales Call with Live CRM Updates - multi-participant call with real-time deal intelligence.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)) ([Messaging docs](https://developers.telnyx.com/docs/api/v2/messaging)):
 
-- `call.answered` — Call connected — app begins interaction
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.initiated` — New inbound or outbound call detected
-- `call.transcription` — Real-time transcription chunk received
-- `message.received` — Inbound SMS/MMS received
+- `call.answered` - Call connected - app begins interaction
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.initiated` - New inbound or outbound call detected
+- `call.transcription` - Real-time transcription chunk received
+- `message.received` - Inbound SMS/MMS received
 
 ## Architecture
 
@@ -64,11 +64,11 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
 | `ASSISTANT_ID` | `string` | `asst_abc123` | no | Telnyx AI Assistant ID | [Portal](https://portal.telnyx.com/ai/assistants) |
-| `CRM_WEBHOOK_URL` | `string` | `your_value` | **yes** | Crm webhook url | — |
-| `FOLLOW_UP_NUMBER` | `string` | `your_value` | **yes** | Follow up number | — |
+| `CRM_WEBHOOK_URL` | `string` | `your_value` | **yes** | Crm webhook url | - |
+| `FOLLOW_UP_NUMBER` | `string` | `your_value` | **yes** | Follow up number | - |
 | `MESSAGING_PROFILE_ID` | `string` | `40017b7e-b3c0-4ac3-8740-9c3c5a0a0e0c` | no | Messaging profile ID | [Portal](https://portal.telnyx.com/messaging/profiles) |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -174,4 +174,4 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

@@ -13,18 +13,18 @@ Production-ready IVR system using Telnyx Voice API and Flask.
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` — [API reference](https://developers.telnyx.com/api/call-control/answer-call)
-- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
-- **Call Control: Gather (STT/DTMF)**: `POST /v2/calls/{id}/actions/gather_using_speak` — [API reference](https://developers.telnyx.com/api/call-control/gather)
+- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` - [API reference](https://developers.telnyx.com/api/call-control/answer-call)
+- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` - [API reference](https://developers.telnyx.com/api/call-control/speak)
+- **Call Control: Gather (STT/DTMF)**: `POST /v2/calls/{id}/actions/gather_using_speak` - [API reference](https://developers.telnyx.com/api/call-control/gather)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.dtmf.received` — DTMF tone detected during call
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.initiated` — New inbound or outbound call detected
-- `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
+- `call.dtmf.received` - DTMF tone detected during call
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.initiated` - New inbound or outbound call detected
+- `call.speak.ended` - TTS playback finished - app transitions to next action (gather, transfer, etc.)
 
 ## Architecture
 
@@ -50,7 +50,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | - |
 
 ## Setup
 
@@ -198,4 +198,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

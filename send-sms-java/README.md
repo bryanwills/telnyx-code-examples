@@ -14,7 +14,7 @@ Send an SMS message using the Telnyx Messaging API and Java SDK, exposed over a 
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. Number reputation, 10DLC registration, and deliverability monitoring are built in, so a single Java SDK call reaches carriers worldwide without stitching together multiple vendors.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. Number reputation, 10DLC registration, and deliverability monitoring are built in, so a single Java SDK call reaches carriers worldwide without stitching together multiple vendors.
 
 ## Telnyx API Endpoints Used
 
@@ -50,7 +50,7 @@ The JDK `HttpServer` reads configuration from process environment variables. Cop
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `your_telnyx_api_key_here` | **yes** | Telnyx API v2 key, read by `TelnyxOkHttpClient.fromEnv()` | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number to send from (E.164) | [My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
-| `PORT` | `integer` | `5000` | no | Port the local server binds to (defaults to `5000`) | — |
+| `PORT` | `integer` | `5000` | no | Port the local server binds to (defaults to `5000`) | - |
 
 ## Setup
 
@@ -125,7 +125,7 @@ See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-example
 ## Resources
 
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
-- [Send a Message — API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Send a Message - API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Java SDK](https://developers.telnyx.com/development/sdk/java)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)
 - [Messaging Pricing](https://telnyx.com/pricing/messaging)

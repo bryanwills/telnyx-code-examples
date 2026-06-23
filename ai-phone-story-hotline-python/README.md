@@ -1,7 +1,7 @@
 ---
 name: ai-phone-story-hotline
 title: "AI Phone Story Hotline"
-description: "AI Phone Story Hotline — call a number, choose a genre, and listen to an AI-generated interactive story where your choices shape the narrative."
+description: "AI Phone Story Hotline - call a number, choose a genre, and listen to an AI-generated interactive story where your choices shape the narrative."
 language: python
 framework: flask
 telnyx_products: [Voice AI, AI Inference]
@@ -10,22 +10,22 @@ channel: [voice]
 
 # AI Phone Story Hotline
 
-AI Phone Story Hotline — call a number, choose a genre, and listen to an AI-generated interactive story where your choices shape the narrative.
+AI Phone Story Hotline - call a number, choose a genre, and listen to an AI-generated interactive story where your choices shape the narrative.
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)) ([Messaging docs](https://developers.telnyx.com/docs/api/v2/messaging)):
 
-- `call.answered` — Call connected — app begins interaction
-- `call.gather.ended` — Caller input received (speech transcription or DTMF digits)
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.initiated` — New inbound or outbound call detected
-- `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
-- `message.received` — Inbound SMS/MMS received
+- `call.answered` - Call connected - app begins interaction
+- `call.gather.ended` - Caller input received (speech transcription or DTMF digits)
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.initiated` - New inbound or outbound call detected
+- `call.speak.ended` - TTS playback finished - app transitions to next action (gather, transfer, etc.)
+- `message.received` - Inbound SMS/MMS received
 
 ## Architecture
 
@@ -61,8 +61,8 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `STORY_NUMBER` | `string` | `your_value` | **yes** | Story number | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `STORY_NUMBER` | `string` | `your_value` | **yes** | Story number | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -166,4 +166,4 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

@@ -1,7 +1,7 @@
 ---
 name: missions-ai-task-runner
 title: "Missions AI Task Runner"
-description: "Missions AI Task Runner — AI-driven task execution within the Telnyx Missions framework. AI decides next steps based on task results."
+description: "Missions AI Task Runner - AI-driven task execution within the Telnyx Missions framework. AI decides next steps based on task results."
 language: python
 framework: flask
 telnyx_products: [AI Inference, Number Lookup, Messaging]
@@ -9,11 +9,11 @@ telnyx_products: [AI Inference, Number Lookup, Messaging]
 
 # Missions AI Task Runner
 
-Missions AI Task Runner — AI-driven task execution within the Telnyx Missions framework. AI decides next steps based on task results.
+Missions AI Task Runner - AI-driven task execution within the Telnyx Missions framework. AI decides next steps based on task results.
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
@@ -49,7 +49,7 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -170,4 +170,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

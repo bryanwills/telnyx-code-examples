@@ -36,7 +36,7 @@ Upload course content, AI structures into audio modules with pacing cues and qui
 
 - **AI Inference (course structure)**: `POST /v2/ai/chat/completions` -- [ref](https://developers.telnyx.com/api/inference/chat-completions)
 - **TTS Generate (narration)**: `POST /v2/ai/generate` -- [ref](https://developers.telnyx.com/api/inference/generate)
-- **Cloud Storage**: S3-compatible — accessed with the AWS SDK (boto3) against `https://{region}.telnyxcloudstorage.com` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
+- **Cloud Storage**: S3-compatible - accessed with the AWS SDK (boto3) against `https://{region}.telnyxcloudstorage.com` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
 
 ## How It Works
 
@@ -46,10 +46,10 @@ Upload course content, AI structures into audio modules with pacing cues and qui
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Co-located inference** — LLM runs on the same network as voice traffic. Sub-200ms round trips.
-- **Integrated storage** — S3-compatible storage co-located with voice and AI infrastructure. Use any AWS SDK (here, boto3) against the region endpoint, authenticating with your Telnyx API key as both the access and secret key, and hand out presigned GET URLs for playback.
+- **Co-located inference** - LLM runs on the same network as voice traffic. Sub-200ms round trips.
+- **Integrated storage** - S3-compatible storage co-located with voice and AI infrastructure. Use any AWS SDK (here, boto3) against the region endpoint, authenticating with your Telnyx API key as both the access and secret key, and hand out presigned GET URLs for playback.
 
 ## Environment Variables
 

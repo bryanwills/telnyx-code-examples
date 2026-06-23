@@ -1,7 +1,7 @@
 ---
 name: conference-call-with-ai-summary
 title: "Conference Call with AI Summary"
-description: "Conference Call with AI Summary — multi-party conference with transcription and AI post-call summary."
+description: "Conference Call with AI Summary - multi-party conference with transcription and AI post-call summary."
 language: python
 framework: flask
 telnyx_products: [Voice AI, AI Inference, Conferencing]
@@ -10,22 +10,22 @@ channel: [voice]
 
 # Conference Call with AI Summary
 
-Conference Call with AI Summary — multi-party conference with transcription and AI post-call summary.
+Conference Call with AI Summary - multi-party conference with transcription and AI post-call summary.
 
 ## Telnyx API Endpoints Used
 
-- **Conference Commands**: `POST /v2/conferences` — [API reference](https://developers.telnyx.com/api/call-control/create-conference)
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Conference Commands**: `POST /v2/conferences` - [API reference](https://developers.telnyx.com/api/call-control/create-conference)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)) ([Messaging docs](https://developers.telnyx.com/docs/api/v2/messaging)):
 
-- `call.answered` — Call connected — app begins interaction
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.initiated` — New inbound or outbound call detected
-- `call.transcription` — Real-time transcription chunk received
-- `message.received` — Inbound SMS/MMS received
+- `call.answered` - Call connected - app begins interaction
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.initiated` - New inbound or outbound call detected
+- `call.transcription` - Real-time transcription chunk received
+- `message.received` - Inbound SMS/MMS received
 
 ## Architecture
 
@@ -55,9 +55,9 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `CONFERENCE_NUMBER` | `string` | `your_value` | **yes** | Conference number | — |
+| `CONFERENCE_NUMBER` | `string` | `your_value` | **yes** | Conference number | - |
 | `CONNECTION_ID` | `string` | `1494404757140276705` | **yes** | Call Control connection/app ID | [Portal](https://portal.telnyx.com/call-control/applications) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -233,4 +233,4 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

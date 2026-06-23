@@ -14,16 +14,16 @@ Receive and Ed25519-verify inbound Telnyx SMS webhooks using the Telnyx PHP SDK 
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT SIM management on one private, global network. The Messaging API delivers inbound SMS to your webhook with the same API key and SDK you use for everything else, and the SDK verifies every event for you.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT SIM management on one private, global network. The Messaging API delivers inbound SMS to your webhook with the same API key and SDK you use for everything else, and the SDK verifies every event for you.
 
-- **Signed webhooks** — every inbound message is signed with Ed25519; the PHP SDK verifies the signature and timestamp before you read a single field.
-- **One platform** — SMS sits next to voice, SIP, AI assistants, and IoT under a single API key.
-- **Developer-first SDKs** — the Telnyx PHP SDK ships typed services, native webhook verification, and pluggable PSR-18 transport.
+- **Signed webhooks** - every inbound message is signed with Ed25519; the PHP SDK verifies the signature and timestamp before you read a single field.
+- **One platform** - SMS sits next to voice, SIP, AI assistants, and IoT under a single API key.
+- **Developer-first SDKs** - the Telnyx PHP SDK ships typed services, native webhook verification, and pluggable PSR-18 transport.
 
 ## Telnyx API Endpoints Used
 
-- **Inbound SMS webhook**: Telnyx delivers a `message.received` event to your configured webhook URL — [Receive an SMS](https://developers.telnyx.com/docs/messaging/messages/receive-message)
-- **Webhook verification**: `$client->webhooks->unwrap($body, $headers)` verifies the Telnyx Ed25519 signature over `"<telnyx-timestamp>|<raw body>"` and parses the event — [Webhook signing](https://developers.telnyx.com/docs/messaging/messages/receive-message)
+- **Inbound SMS webhook**: Telnyx delivers a `message.received` event to your configured webhook URL - [Receive an SMS](https://developers.telnyx.com/docs/messaging/messages/receive-message)
+- **Webhook verification**: `$client->webhooks->unwrap($body, $headers)` verifies the Telnyx Ed25519 signature over `"<telnyx-timestamp>|<raw body>"` and parses the event - [Webhook signing](https://developers.telnyx.com/docs/messaging/messages/receive-message)
 
 This example only *receives* webhooks; it does not call an outbound Telnyx REST endpoint.
 

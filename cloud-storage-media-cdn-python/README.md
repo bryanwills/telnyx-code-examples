@@ -1,7 +1,7 @@
 ---
 name: cloud-storage-media-cdn
 title: "Cloud Storage Media CDN"
-description: "Cloud Storage Media CDN — use Telnyx Cloud Storage (S3-compatible) as a CDN for IVR prompts, hold music, and voice assets."
+description: "Cloud Storage Media CDN - use Telnyx Cloud Storage (S3-compatible) as a CDN for IVR prompts, hold music, and voice assets."
 language: python
 framework: flask
 telnyx_products: [Cloud Storage, Voice]
@@ -9,16 +9,16 @@ telnyx_products: [Cloud Storage, Voice]
 
 # Cloud Storage Media CDN
 
-Cloud Storage Media CDN — use Telnyx Cloud Storage as a CDN for IVR prompts, hold music, announcements, and voicemail greetings. Telnyx Cloud Storage is **S3-compatible**, so this example talks to it with the AWS SDK (boto3) rather than a REST API. Media is served with presigned GET URLs you can drop straight into a TeXML `<Play>` verb or a Call Control `playback_audio` command.
+Cloud Storage Media CDN - use Telnyx Cloud Storage as a CDN for IVR prompts, hold music, announcements, and voicemail greetings. Telnyx Cloud Storage is **S3-compatible**, so this example talks to it with the AWS SDK (boto3) rather than a REST API. Media is served with presigned GET URLs you can drop straight into a TeXML `<Play>` verb or a Call Control `playback_audio` command.
 
 ## How It Works
 
 Telnyx Cloud Storage speaks the S3 protocol, so the app uses `boto3` with two Telnyx-specific details:
 
-1. **Region-scoped endpoint** — `https://{region}.telnyxcloudstorage.com`
-2. **Auth** — your Telnyx API key is used as **both** the access key and the secret key.
+1. **Region-scoped endpoint** - `https://{region}.telnyxcloudstorage.com`
+2. **Auth** - your Telnyx API key is used as **both** the access key and the secret key.
 
-Objects are organized by category prefix (`ivr_prompts/`, `hold_music/`, `announcements/`, `voicemail_greetings/`). The bucket itself is the source of truth — there is no server-side catalog to keep in sync.
+Objects are organized by category prefix (`ivr_prompts/`, `hold_music/`, `announcements/`, `voicemail_greetings/`). The bucket itself is the source of truth - there is no server-side catalog to keep in sync.
 
 ```
   Client (multipart upload)
@@ -38,10 +38,10 @@ Objects are organized by category prefix (`ivr_prompts/`, `hold_music/`, `announ
 
 This example uses the S3 protocol via boto3, not the Telnyx REST API:
 
-- **Create bucket**: `CreateBucket` — [Cloud Storage quick start](https://developers.telnyx.com/docs/cloud-storage/quick-start)
-- **Upload object**: `PutObject` (`upload_fileobj`) — [Cloud Storage docs](https://developers.telnyx.com/docs/cloud-storage/quick-start)
-- **List objects**: `ListObjectsV2` — [Cloud Storage docs](https://developers.telnyx.com/docs/cloud-storage/quick-start)
-- **Presigned playback URL**: `generate_presigned_url("get_object", ...)` — time-limited GET URL
+- **Create bucket**: `CreateBucket` - [Cloud Storage quick start](https://developers.telnyx.com/docs/cloud-storage/quick-start)
+- **Upload object**: `PutObject` (`upload_fileobj`) - [Cloud Storage docs](https://developers.telnyx.com/docs/cloud-storage/quick-start)
+- **List objects**: `ListObjectsV2` - [Cloud Storage docs](https://developers.telnyx.com/docs/cloud-storage/quick-start)
+- **Presigned playback URL**: `generate_presigned_url("get_object", ...)` - time-limited GET URL
 
 ## Environment Variables
 
@@ -49,12 +49,12 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key — used as both the S3 access key and secret key | [Portal](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key - used as both the S3 access key and secret key | [Portal](https://portal.telnyx.com/api-keys) |
 | `BUCKET_NAME` | `string` | `media-cdn` | no | Cloud Storage bucket name (default `media-cdn`) | [Portal](https://portal.telnyx.com/storage) |
 | `TELNYX_STORAGE_REGION` | `string` | `us-central-1` | no | Storage region: `us-central-1`, `us-east-1`, `us-west-1`, or `eu-central-1` (default `us-central-1`) | [Portal](https://portal.telnyx.com/storage) |
-| `PRESIGN_TTL_SECONDS` | `integer` | `3600` | no | Lifetime of presigned playback URLs in seconds (default `3600`) | — |
-| `HOST` | `string` | `127.0.0.1` | no | HTTP bind host (default `127.0.0.1`) | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port (default `5000`) | — |
+| `PRESIGN_TTL_SECONDS` | `integer` | `3600` | no | Lifetime of presigned playback URLs in seconds (default `3600`) | - |
+| `HOST` | `string` | `127.0.0.1` | no | HTTP bind host (default `127.0.0.1`) | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port (default `5000`) | - |
 
 ## Setup
 
@@ -76,7 +76,7 @@ curl -X POST http://localhost:5000/setup
 
 ### `POST /setup`
 
-Creates the media bucket (idempotent — safe to re-run).
+Creates the media bucket (idempotent - safe to re-run).
 
 ```bash
 curl -X POST http://localhost:5000/setup
@@ -94,7 +94,7 @@ curl -X POST http://localhost:5000/setup
 
 ### `POST /upload`
 
-Uploads a media file. The client sends the bytes directly as `multipart/form-data` — the server never fetches an arbitrary URL.
+Uploads a media file. The client sends the bytes directly as `multipart/form-data` - the server never fetches an arbitrary URL.
 
 Form fields:
 
@@ -225,4 +225,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

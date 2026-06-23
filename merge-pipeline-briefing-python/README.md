@@ -1,7 +1,7 @@
 ---
 name: merge-pipeline-briefing
 title: "Merge Pipeline Briefing"
-description: "Morning pipeline briefing."
+description: "Morning pipeline briefing delivered by Telnyx Voice and AI Inference with Merge CRM."
 language: python
 framework: flask
 telnyx_products: [Voice, AI Inference]
@@ -180,10 +180,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [merge-deal-desk-alerts-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-deal-desk-alerts-python/README.md) — CRM-driven deal alerts over voice via Merge.
-- [merge-invoice-collector-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-invoice-collector-python/README.md) — another Merge + voice automation sibling.
-- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — Call Control + AI inference routing patterns.
-- [record-phone-calls-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-python/README.md) — capturing audio on Call Control calls.
+- [merge-deal-desk-alerts-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-deal-desk-alerts-python/README.md) - CRM-driven deal alerts over voice via Merge.
+- [merge-invoice-collector-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-invoice-collector-python/README.md) - another Merge + voice automation sibling.
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) - Call Control + AI inference routing patterns.
+- [record-phone-calls-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-python/README.md) - capturing audio on Call Control calls.
 
 ## Resources
 

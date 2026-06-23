@@ -40,9 +40,9 @@ Receive inbound call webhooks from the Telnyx Voice API and answer calls program
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Call Control built in** — receive structured webhook events for every stage of a call and issue commands like answer, hangup, and DTMF gather over a single API.
+- **Call Control built in** - receive structured webhook events for every stage of a call and issue commands like answer, hangup, and DTMF gather over a single API.
 
 ## Environment Variables
 
@@ -51,7 +51,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY_your_telnyx_api_key_here` | **yes** | Telnyx API v2 key used to authenticate Call Control commands | [Portal](https://portal.telnyx.com/api-keys) |
-| `PORT` | `string` | `5000` | no | Port the Gin server listens on. Defaults to `8080` when unset | — |
+| `PORT` | `string` | `5000` | no | Port the Gin server listens on. Defaults to `8080` when unset | - |
 
 ## Setup
 
@@ -98,11 +98,11 @@ curl http://localhost:5000/health
 
 Receives Telnyx Call Control webhook events. The handler inspects `data.event_type` and acts on it:
 
-- `call.initiated` — answers the call via the Telnyx Voice API.
-- `call.answered` — acknowledges the connected call.
-- `call.hangup` — acknowledges call teardown.
-- `call.dtmf.received` — acknowledges a pressed digit.
-- Any other event type — acknowledged with a generic message.
+- `call.initiated` - answers the call via the Telnyx Voice API.
+- `call.answered` - acknowledges the connected call.
+- `call.hangup` - acknowledges call teardown.
+- `call.dtmf.received` - acknowledges a pressed digit.
+- Any other event type - acknowledged with a generic message.
 
 ```bash
 curl -X POST http://localhost:5000/webhooks/call \

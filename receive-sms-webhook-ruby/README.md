@@ -14,14 +14,14 @@ Receive inbound SMS messages via Telnyx webhooks with a Sinatra server, verifyin
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. Inbound SMS is delivered over the Telnyx-owned network with a webhook event model built for low-latency, reliable delivery.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. Inbound SMS is delivered over the Telnyx-owned network with a webhook event model built for low-latency, reliable delivery.
 
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
-- **Signed webhooks** — every event is signed with Ed25519 so you can cryptographically verify it came from Telnyx before acting on it.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
+- **Signed webhooks** - every event is signed with Ed25519 so you can cryptographically verify it came from Telnyx before acting on it.
 
 ## Telnyx API Endpoints Used
 
-This example does not call the Telnyx REST API — it receives webhook events that Telnyx sends to your server when an SMS arrives.
+This example does not call the Telnyx REST API - it receives webhook events that Telnyx sends to your server when an SMS arrives.
 
 - **Inbound Message webhook**: `POST /webhooks/sms` (your endpoint, called by Telnyx) -- [Webhook reference](https://developers.telnyx.com/docs/messaging/messages/receive-message)
 
@@ -57,12 +57,12 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key used to initialize the SDK client | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `o5j8...base64...=` | **yes** | Base64 Ed25519 public key used to verify webhook signatures | Portal → Account Settings → Keys & Credentials → Public Key |
-| `PORT` | `number` | `5000` | no | Port the Sinatra server listens on (defaults to `5000`) | — |
+| `PORT` | `number` | `5000` | no | Port the Sinatra server listens on (defaults to `5000`) | - |
 
 ## Setup
 
 > Requires **Ruby 3.2+**. The Telnyx 5.x SDK is a Stainless rewrite and Ed25519 key
-> parsing needs OpenSSL 3.x — it will not run on Ruby 2.x.
+> parsing needs OpenSSL 3.x - it will not run on Ruby 2.x.
 
 ```bash
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
@@ -146,7 +146,7 @@ curl http://localhost:5000/health
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | `401 {"error":"invalid signature"}` on every request | `TELNYX_PUBLIC_KEY` is missing/wrong, or you are testing with `curl` (which sends no Telnyx signature). | Set `TELNYX_PUBLIC_KEY` to the base64 Ed25519 public key from Portal → Keys & Credentials. Real Telnyx webhooks are signed; plain `curl` requests are correctly rejected. |
-| `401 {"error":"invalid signature"}` for real Telnyx events | The raw body was altered before verification, or the timestamp drifted >5 min. | Do not put a body-parsing middleware in front of the route — Sinatra's `request.body.read` must see the unmodified bytes. Check the server clock (NTP). |
+| `401 {"error":"invalid signature"}` for real Telnyx events | The raw body was altered before verification, or the timestamp drifted >5 min. | Do not put a body-parsing middleware in front of the route - Sinatra's `request.body.read` must see the unmodified bytes. Check the server clock (NTP). |
 | `LoadError: cannot load such file -- standardwebhooks` | `require "telnyx"` loads `standardwebhooks`, but the SDK does not declare it as a dependency. | It is pinned in the `Gemfile` (`gem "standardwebhooks"`). Run `bundle install`. |
 | `bundle install` fails / SDK errors on load | Running on Ruby < 3.2 (e.g. system Ruby 2.6). | Install Ruby 3.2+ (`rbenv install 3.2.x` or similar) and re-run `bundle install`. |
 | No webhook requests arrive | Webhook URL not reachable or not assigned. | Verify the HTTPS URL (use ngrok locally), confirm it ends in `/webhooks/sms`, and assign your number to the Messaging Profile. Check Portal webhook delivery logs. |

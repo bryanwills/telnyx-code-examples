@@ -1,7 +1,7 @@
 ---
 name: migrate-from-vapi
 title: "Migrate from Vapi"
-description: "Migrate from Vapi — import Vapi voice agents to Telnyx AI Assistants with voice, prompt, and tool configuration mapping."
+description: "Migrate from Vapi - import Vapi voice agents to Telnyx AI Assistants with voice, prompt, and tool configuration mapping."
 language: python
 framework: flask
 telnyx_products: [Migration]
@@ -10,13 +10,13 @@ channel: [voice]
 
 # Migrate from Vapi
 
-Migrate from Vapi — import Vapi voice agents to Telnyx AI Assistants with voice, prompt, and tool configuration mapping.
+Migrate from Vapi - import Vapi voice agents to Telnyx AI Assistants with voice, prompt, and tool configuration mapping.
 
 ## Telnyx API Endpoints Used
 
-- **Create AI Assistant**: `POST /v2/ai/assistants` — [API reference](https://developers.telnyx.com/api/ai-assistants/create-assistant)
-- **Chat Completions**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
-- **Create Call**: `POST /v2/calls` — [API reference](https://developers.telnyx.com/api/call-control/create-call)
+- **Create AI Assistant**: `POST /v2/ai/assistants` - [API reference](https://developers.telnyx.com/api/ai-assistants/create-assistant)
+- **Chat Completions**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Create Call**: `POST /v2/calls` - [API reference](https://developers.telnyx.com/api/call-control/create-call)
 
 ## Architecture
 
@@ -56,8 +56,8 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `VAPI_API_KEY` | `string` | `your_value` | **yes** | Vapi api key | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `VAPI_API_KEY` | `string` | `your_value` | **yes** | Vapi api key | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -243,4 +243,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

@@ -14,10 +14,10 @@ Create and manage Telnyx SIP connections for inbound call routing, and receive i
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Owned network** — inbound calls traverse the Telnyx-owned IP backbone for lower latency and higher reliability than the public internet.
-- **Programmable SIP** — create and configure SIP connections entirely through the API, with authentication and webhook event delivery built in.
+- **Owned network** - inbound calls traverse the Telnyx-owned IP backbone for lower latency and higher reliability than the public internet.
+- **Programmable SIP** - create and configure SIP connections entirely through the API, with authentication and webhook event delivery built in.
 
 ## Telnyx API Endpoints Used
 
@@ -51,7 +51,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | — |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | - |
 | `SIP_ENDPOINT` | `string` | `sip:user@example.com` | **yes** | Inbound SIP URI that new connections route calls to | Your SIP server |
 | `SIP_USERNAME` | `string` | `your_sip_username` | **yes** | Inbound authentication username for the SIP connection | Your SIP server |
 | `SIP_PASSWORD` | `string` | `your_sip_password` | **yes** | Inbound authentication password for the SIP connection | Your SIP server |

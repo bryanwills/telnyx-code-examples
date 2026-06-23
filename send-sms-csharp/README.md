@@ -14,7 +14,7 @@ Send an SMS message using the Telnyx Messaging API with a C# minimal ASP.NET end
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network — with deliverability built in (number reputation, 10DLC registration, and deliverability monitoring) and SDKs for every major language, including the official `Telnyx.net` NuGet package for .NET.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network - with deliverability built in (number reputation, 10DLC registration, and deliverability monitoring) and SDKs for every major language, including the official `Telnyx.net` NuGet package for .NET.
 
 ## Telnyx API Endpoints Used
 
@@ -126,7 +126,7 @@ Receives inbound message webhooks from Telnyx. The raw body is read before parsi
 ## Resources
 
 - [Messaging Overview](https://developers.telnyx.com/docs/messaging)
-- [Send a Message — API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Send a Message - API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [.NET / C# SDK](https://developers.telnyx.com/development/sdk/dotnet)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)
 - [Messaging Pricing](https://telnyx.com/pricing/messaging)

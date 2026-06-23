@@ -1,7 +1,7 @@
 ---
 name: ai-receptionist-with-booking-tools
 title: "AI Receptionist with Booking Tools"
-description: "AI Receptionist with Booking Tools — AI Assistant with tool_use for real calendar booking actions."
+description: "AI Receptionist with Booking Tools - AI Assistant with tool_use for real calendar booking actions."
 language: python
 framework: flask
 telnyx_products: [AI Inference]
@@ -9,11 +9,11 @@ telnyx_products: [AI Inference]
 
 # AI Receptionist with Booking Tools
 
-AI Receptionist with Booking Tools — AI Assistant with tool_use for real calendar booking actions.
+AI Receptionist with Booking Tools - AI Assistant with tool_use for real calendar booking actions.
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
@@ -42,7 +42,7 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `ASSISTANT_ID` | `string` | `asst_abc123` | no | Telnyx AI Assistant ID | [Portal](https://portal.telnyx.com/ai/assistants) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -146,4 +146,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

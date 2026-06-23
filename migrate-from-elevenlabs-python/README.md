@@ -1,7 +1,7 @@
 ---
 name: migrate-from-elevenlabs
 title: "Migrate from ElevenLabs"
-description: "Migrate from ElevenLabs — import ElevenLabs voice configurations to Telnyx TTS with voice mapping and cost comparison."
+description: "Migrate from ElevenLabs - import ElevenLabs voice configurations to Telnyx TTS with voice mapping and cost comparison."
 language: python
 framework: flask
 telnyx_products: [AI Assistants, Migration]
@@ -10,13 +10,13 @@ channel: [voice]
 
 # Migrate from ElevenLabs
 
-Migrate from ElevenLabs — import ElevenLabs voice configurations to Telnyx TTS with voice mapping and cost comparison.
+Migrate from ElevenLabs - import ElevenLabs voice configurations to Telnyx TTS with voice mapping and cost comparison.
 
 ## Telnyx API Endpoints Used
 
-- **TTS Generate**: `POST /v2/ai/generate` — [API reference](https://developers.telnyx.com/api/inference/generate)
-- **Chat Completions**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
-- **List Models**: `GET /v2/ai/models` — [API reference](https://developers.telnyx.com/api/inference/list-models)
+- **TTS Generate**: `POST /v2/ai/generate` - [API reference](https://developers.telnyx.com/api/inference/generate)
+- **Chat Completions**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **List Models**: `GET /v2/ai/models` - [API reference](https://developers.telnyx.com/api/inference/list-models)
 
 ## Architecture
 
@@ -56,8 +56,8 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `ELEVENLABS_API_KEY` | `string` | `your_value` | **yes** | Elevenlabs api key | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `ELEVENLABS_API_KEY` | `string` | `your_value` | **yes** | Elevenlabs api key | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -263,4 +263,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

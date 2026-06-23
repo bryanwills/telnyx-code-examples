@@ -14,15 +14,15 @@ Send SMS from a toll-free number with the Telnyx Messaging API and track deliver
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Toll-free messaging built in** — verified toll-free numbers carry higher throughput and better deliverability for A2P traffic than long codes.
-- **Delivery receipts** — every message emits signed status webhooks (`queued` → `sent` → `delivered`/`failed`) so you always know what happened.
-- **Single API** — provision the number, attach a Messaging Profile, and send, all from the same platform.
+- **Toll-free messaging built in** - verified toll-free numbers carry higher throughput and better deliverability for A2P traffic than long codes.
+- **Delivery receipts** - every message emits signed status webhooks (`queued` → `sent` → `delivered`/`failed`) so you always know what happened.
+- **Single API** - provision the number, attach a Messaging Profile, and send, all from the same platform.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 
 Inbound delivery status updates arrive on `POST /webhooks/message-status` (defined by this app, configured on your Messaging Profile).
 
@@ -57,7 +57,7 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_PUBLIC_KEY` | `string` | `o5x...base64...` | **yes** | Public key used to verify inbound webhook signatures | [Portal](https://portal.telnyx.com/api-keys) (Public Key) |
 | `TOLLFREE_NUMBER` | `string` | `+18885551234` | **yes** | Your toll-free sending number (E.164) | [Portal Numbers](https://portal.telnyx.com/numbers/my-numbers) |
 | `MESSAGING_PROFILE_ID` | `string` | `40000000-0000-0000-0000-000000000000` | no | Messaging Profile to route through | [Portal Profiles](https://portal.telnyx.com/messaging/profiles) |
-| `FLASK_ENV` | `string` | `development` | no | Set to `development` to enable Flask debug | — |
+| `FLASK_ENV` | `string` | `development` | no | Set to `development` to enable Flask debug | - |
 
 ## Setup
 
@@ -158,7 +158,7 @@ curl http://localhost:5000/sms/messages
 
 Telnyx-only. Receives delivery receipts. The signature is verified against
 `TELNYX_PUBLIC_KEY` before the body is parsed; invalid signatures get `401`. You do not
-call this endpoint yourself — Telnyx posts to it.
+call this endpoint yourself - Telnyx posts to it.
 
 ```json
 {
@@ -189,7 +189,7 @@ call this endpoint yourself — Telnyx posts to it.
 ## Resources
 
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
-- [Send a Message — API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Send a Message - API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Webhook signing](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)

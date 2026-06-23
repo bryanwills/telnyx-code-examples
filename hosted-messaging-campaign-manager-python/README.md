@@ -1,7 +1,7 @@
 ---
 name: hosted-messaging-campaign-manager
 title: "Hosted Messaging Campaign Manager"
-description: "Hosted Messaging Campaign Manager — manage hosted messaging campaigns with subscriber opt-in/out tracking and delivery analytics."
+description: "Hosted Messaging Campaign Manager - manage hosted messaging campaigns with subscriber opt-in/out tracking and delivery analytics."
 language: python
 framework: flask
 telnyx_products: [SMS/MMS]
@@ -10,19 +10,19 @@ channel: [sms]
 
 # Hosted Messaging Campaign Manager
 
-Hosted Messaging Campaign Manager — manage hosted messaging campaigns with subscriber opt-in/out tracking and delivery analytics.
+Hosted Messaging Campaign Manager - manage hosted messaging campaigns with subscriber opt-in/out tracking and delivery analytics.
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Messaging docs](https://developers.telnyx.com/docs/api/v2/messaging)):
 
-- `message.finalized` — Final delivery status for outbound message
-- `message.received` — Inbound SMS/MMS received
+- `message.finalized` - Final delivery status for outbound message
+- `message.received` - Inbound SMS/MMS received
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **List Messaging Profiles**: `GET /v2/messaging_profiles` — [API reference](https://developers.telnyx.com/api/messaging-profiles/list-messaging-profiles)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **List Messaging Profiles**: `GET /v2/messaging_profiles` - [API reference](https://developers.telnyx.com/api/messaging-profiles/list-messaging-profiles)
 
 ## Architecture
 
@@ -47,7 +47,7 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `FROM_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
 | `MESSAGING_PROFILE_ID` | `string` | `40017b7e-b3c0-4ac3-8740-9c3c5a0a0e0c` | no | Messaging profile ID | [Portal](https://portal.telnyx.com/messaging/profiles) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -289,4 +289,4 @@ Receives [Telnyx Messaging](https://developers.telnyx.com/docs/messaging) webhoo
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

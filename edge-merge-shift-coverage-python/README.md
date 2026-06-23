@@ -1,7 +1,7 @@
 ---
 name: edge-merge-shift-coverage
 title: "Edge Merge Shift Coverage"
-description: "Manager texts need a closer tonight."
+description: "Manager texts need a closer tonight using Telnyx Messaging and Edge Compute with Merge HRIS."
 language: python
 framework: flask
 telnyx_products: [Edge Compute, Voice, Messaging]

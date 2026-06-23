@@ -1,7 +1,7 @@
 ---
 name: ai-restaurant-reservation-voice-agent
 title: "AI Restaurant Reservation Voice Agent"
-description: "AI Restaurant Reservation Voice Agent — handles calls, checks availability, books tables, sends SMS confirmation."
+description: "AI Restaurant Reservation Voice Agent - handles calls, checks availability, books tables, sends SMS confirmation."
 language: python
 framework: flask
 telnyx_products: [Voice AI, SMS/MMS, AI Inference]
@@ -10,23 +10,23 @@ channel: [voice]
 
 # AI Restaurant Reservation Voice Agent
 
-AI Restaurant Reservation Voice Agent — handles calls, checks availability, books tables, sends SMS confirmation.
+AI Restaurant Reservation Voice Agent - handles calls, checks availability, books tables, sends SMS confirmation.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)) ([Messaging docs](https://developers.telnyx.com/docs/api/v2/messaging)):
 
-- `call.answered` — Call connected — app begins interaction
-- `call.gather.ended` — Caller input received (speech transcription or DTMF digits)
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.initiated` — New inbound or outbound call detected
-- `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
-- `message.received` — Inbound SMS/MMS received
+- `call.answered` - Call connected - app begins interaction
+- `call.gather.ended` - Caller input received (speech transcription or DTMF digits)
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.initiated` - New inbound or outbound call detected
+- `call.speak.ended` - TTS playback finished - app transitions to next action (gather, transfer, etc.)
+- `message.received` - Inbound SMS/MMS received
 
 ## Architecture
 
@@ -62,9 +62,9 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `RESTAURANT_NUMBER` | `string` | `your_value` | **yes** | Restaurant number | — |
+| `RESTAURANT_NUMBER` | `string` | `your_value` | **yes** | Restaurant number | - |
 | `MESSAGING_PROFILE_ID` | `string` | `40017b7e-b3c0-4ac3-8740-9c3c5a0a0e0c` | no | Messaging profile ID | [Portal](https://portal.telnyx.com/messaging/profiles) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -192,4 +192,4 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

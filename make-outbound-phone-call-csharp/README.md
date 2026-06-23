@@ -13,11 +13,11 @@ Place an outbound phone call with the Telnyx Call Control API. A minimal ASP.NET
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT delivered over one private, global network. The Call Control API used here links each outbound call to your Call Control Application via a connection ID, giving you programmatic control over the call lifecycle with low latency and predictable, pay-as-you-go pricing.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT delivered over one private, global network. The Call Control API used here links each outbound call to your Call Control Application via a connection ID, giving you programmatic control over the call lifecycle with low latency and predictable, pay-as-you-go pricing.
 
 ## Telnyx API Endpoints Used
 
-- **Dial (Call Control)**: `POST /v2/calls` — placed via the SDK's `CallControlService.DialAsync(...)`. [API reference](https://developers.telnyx.com/api-reference/call-commands/dial)
+- **Dial (Call Control)**: `POST /v2/calls` - placed via the SDK's `CallControlService.DialAsync(...)`. [API reference](https://developers.telnyx.com/api-reference/call-commands/dial)
 
 ## Architecture
 
@@ -119,10 +119,10 @@ See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-example
 
 ## Related Examples
 
-- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) — Same outbound call flow in Node.js
-- [make-outbound-phone-call-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-python/README.md) — Same outbound call flow in Python
-- [route-phone-calls-to-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-nodejs/README.md) — Handle inbound calls with webhook-driven routing
-- [record-phone-calls-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-nodejs/README.md) — Record outbound calls
+- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) - Same outbound call flow in Node.js
+- [make-outbound-phone-call-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-python/README.md) - Same outbound call flow in Python
+- [route-phone-calls-to-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-nodejs/README.md) - Handle inbound calls with webhook-driven routing
+- [record-phone-calls-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-nodejs/README.md) - Record outbound calls
 
 ## Resources
 

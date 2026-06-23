@@ -37,9 +37,9 @@ Activate a Telnyx IoT SIM card over HTTP using the Telnyx Go SDK and Gin.
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT SIM management on one private, global network — so you provision and activate connectivity through the same API you use for the rest of your stack.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT SIM management on one private, global network - so you provision and activate connectivity through the same API you use for the rest of your stack.
 
-- **Global IoT SIMs** — a single SKU with multi-carrier coverage, managed entirely over the API.
+- **Global IoT SIMs** - a single SKU with multi-carrier coverage, managed entirely over the API.
 
 ## Environment Variables
 

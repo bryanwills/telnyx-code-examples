@@ -1,7 +1,7 @@
 ---
 name: fax-to-structured-data-pipeline
 title: "Fax-to-Structured-Data Pipeline"
-description: "Fax-to-Structured-Data Pipeline — receive faxes, AI extracts structured data (invoices, orders, prescriptions) into JSON."
+description: "Fax-to-Structured-Data Pipeline - receive faxes, AI extracts structured data (invoices, orders, prescriptions) into JSON."
 language: python
 framework: flask
 telnyx_products: [AI Inference]
@@ -9,17 +9,17 @@ telnyx_products: [AI Inference]
 
 # Fax-to-Structured-Data Pipeline
 
-Fax-to-Structured-Data Pipeline — receive faxes, AI extracts structured data (invoices, orders, prescriptions) into JSON.
+Fax-to-Structured-Data Pipeline - receive faxes, AI extracts structured data (invoices, orders, prescriptions) into JSON.
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events:
 
-- `fax.received` — Inbound fax received — media URL available
+- `fax.received` - Inbound fax received - media URL available
 
 ## Architecture
 
@@ -48,7 +48,7 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -211,4 +211,4 @@ Receives [Telnyx Fax](https://developers.telnyx.com/docs/fax) webhook events.
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

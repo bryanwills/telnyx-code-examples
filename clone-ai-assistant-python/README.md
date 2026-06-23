@@ -13,8 +13,8 @@ Application. Built with Telnyx AI Assistants, Migration, Number Porting.
 
 ## Telnyx API Endpoints Used
 
-- **Retrieve AI Assistant**: `GET /v2/ai/assistants/{id}` — [API reference](https://developers.telnyx.com/api/ai-assistants/get-assistant)
-- **Create AI Assistant**: `POST /v2/ai/assistants` — [API reference](https://developers.telnyx.com/api/ai-assistants/create-assistant)
+- **Retrieve AI Assistant**: `GET /v2/ai/assistants/{id}` - [API reference](https://developers.telnyx.com/api/ai-assistants/get-assistant)
+- **Create AI Assistant**: `POST /v2/ai/assistants` - [API reference](https://developers.telnyx.com/api/ai-assistants/create-assistant)
 
 ## Architecture
 
@@ -38,9 +38,9 @@ Application. Built with Telnyx AI Assistants, Migration, Number Porting.
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Managed AI agents** — Telnyx handles conversation state, tool calling, and telephony integration.
+- **Managed AI agents** - Telnyx handles conversation state, tool calling, and telephony integration.
 
 ## Environment Variables
 
@@ -49,7 +49,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | - |
 
 ## Setup
 

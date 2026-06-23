@@ -1,7 +1,7 @@
 ---
 name: merge-employee-hotline
 title: "Merge Employee Hotline"
-description: "Employees call and authenticate via caller ID matched against Merge HRIS."
+description: "Employees call and authenticate via caller ID using Telnyx Voice and AI Inference with Merge HRIS."
 language: python
 framework: flask
 telnyx_products: [Voice, AI Inference]

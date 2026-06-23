@@ -14,16 +14,16 @@ Production-ready IVR system using the Telnyx Voice API and Express.js. Answers i
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. Programmable Call Control lets you answer, speak, gather DTMF, and transfer calls over webhooks, so your IVR logic lives in your own code instead of a rigid hosted menu builder.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. Programmable Call Control lets you answer, speak, gather DTMF, and transfer calls over webhooks, so your IVR logic lives in your own code instead of a rigid hosted menu builder.
 
-- **Call Control built in** — answer, TTS, DTMF gather, and transfer are all single API calls driven by webhook events.
+- **Call Control built in** - answer, TTS, DTMF gather, and transfer are all single API calls driven by webhook events.
 
 ## Telnyx API Endpoints Used
 
-- **Answer Call**: `POST /v2/calls/{call_control_id}/actions/answer` — [API reference](https://developers.telnyx.com/api/call-control/answer-call)
-- **Speak Text (TTS)**: `POST /v2/calls/{call_control_id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
-- **Gather Using Speak**: `POST /v2/calls/{call_control_id}/actions/gather_using_speak` — [API reference](https://developers.telnyx.com/api/call-control/gather-using-speak)
-- **Transfer Call**: `POST /v2/calls/{call_control_id}/actions/transfer` — [API reference](https://developers.telnyx.com/api/call-control/transfer-call)
+- **Answer Call**: `POST /v2/calls/{call_control_id}/actions/answer` - [API reference](https://developers.telnyx.com/api/call-control/answer-call)
+- **Speak Text (TTS)**: `POST /v2/calls/{call_control_id}/actions/speak` - [API reference](https://developers.telnyx.com/api/call-control/speak)
+- **Gather Using Speak**: `POST /v2/calls/{call_control_id}/actions/gather_using_speak` - [API reference](https://developers.telnyx.com/api/call-control/gather-using-speak)
+- **Transfer Call**: `POST /v2/calls/{call_control_id}/actions/transfer` - [API reference](https://developers.telnyx.com/api/call-control/transfer-call)
 
 ## Architecture
 
@@ -58,8 +58,8 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000`) | — |
-| `WEBHOOK_URL` | `string` | `https://your-domain.com/webhook` | no | Public webhook base URL, logged on startup for reference | — |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000`) | - |
+| `WEBHOOK_URL` | `string` | `https://your-domain.com/webhook` | no | Public webhook base URL, logged on startup for reference | - |
 
 ## Setup
 
@@ -192,11 +192,11 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [build-ivr-phone-menu-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-ivr-phone-menu-python/README.md) — the same IVR in Python/Flask
-- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) — place outbound calls with Call Control
-- [text-to-speech-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/text-to-speech-phone-call-nodejs/README.md) — speak text on a call
-- [record-phone-calls-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-nodejs/README.md) — record call audio
-- [route-phone-calls-to-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-nodejs/README.md) — hand calls to an AI voice agent
+- [build-ivr-phone-menu-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-ivr-phone-menu-python/README.md) - the same IVR in Python/Flask
+- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) - place outbound calls with Call Control
+- [text-to-speech-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/text-to-speech-phone-call-nodejs/README.md) - speak text on a call
+- [record-phone-calls-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-nodejs/README.md) - record call audio
+- [route-phone-calls-to-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-nodejs/README.md) - hand calls to an AI voice agent
 
 ## Resources
 

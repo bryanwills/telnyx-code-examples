@@ -14,15 +14,15 @@ Chat with a Telnyx AI Assistant and maintain conversation context over a product
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. AI Assistants run on that same network, so you can pair conversational AI with telephony and messaging through a single API and SDK instead of stitching together multiple vendors.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. AI Assistants run on that same network, so you can pair conversational AI with telephony and messaging through a single API and SDK instead of stitching together multiple vendors.
 
-- **One API, one SDK** — the same `Telnyx::Client` that sends SMS and dials calls also chats with assistants.
-- **Stateful conversations** — reuse a `conversation_id` across turns to keep multi-turn context server-side.
-- **Developer-first** — pay-as-you-go pricing, sandbox testing, and a comprehensive webhook event model.
+- **One API, one SDK** - the same `Telnyx::Client` that sends SMS and dials calls also chats with assistants.
+- **Stateful conversations** - reuse a `conversation_id` across turns to keep multi-turn context server-side.
+- **Developer-first** - pay-as-you-go pricing, sandbox testing, and a comprehensive webhook event model.
 
 ## Telnyx API Endpoints Used
 
-- **Chat with an Assistant**: `POST /v2/ai/assistants/{assistant_id}/chat` — [API reference](https://developers.telnyx.com/api-reference/assistants/chat-with-an-assistant)
+- **Chat with an Assistant**: `POST /v2/ai/assistants/{assistant_id}/chat` - [API reference](https://developers.telnyx.com/api-reference/assistants/chat-with-an-assistant)
 
 ## Architecture
 
@@ -58,12 +58,12 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_ASSISTANT_ID` | `string` | `assistant-1234abcd` | **yes** | ID of the AI Assistant to chat with | [Portal](https://portal.telnyx.com/ai/assistants) |
-| `TELNYX_PUBLIC_KEY` | `string` | `o2dx...` (base64) | only for webhooks | Ed25519 public key for verifying inbound webhooks | [Portal — Keys & Credentials](https://portal.telnyx.com) |
-| `PORT` | `number` | `3000` | no | Port the server listens on (defaults to `3000`) | — |
+| `TELNYX_PUBLIC_KEY` | `string` | `o2dx...` (base64) | only for webhooks | Ed25519 public key for verifying inbound webhooks | [Portal - Keys & Credentials](https://portal.telnyx.com) |
+| `PORT` | `number` | `3000` | no | Port the server listens on (defaults to `3000`) | - |
 
 ## Setup
 
-> Requires Ruby 3.2.0 or newer — the Telnyx 5.x SDK does not support older Rubies.
+> Requires Ruby 3.2.0 or newer - the Telnyx 5.x SDK does not support older Rubies.
 
 ```bash
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
@@ -119,7 +119,7 @@ curl http://localhost:3000/health
 
 | Issue | Cause | Fix |
 |-------|-------|-----|
-| `{"error":"Invalid API key"}` (401) | `TELNYX_API_KEY` is missing, wrong, or has trailing whitespace | Copy a fresh key from [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) into `.env` and restart — env vars load at boot |
+| `{"error":"Invalid API key"}` (401) | `TELNYX_API_KEY` is missing, wrong, or has trailing whitespace | Copy a fresh key from [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) into `.env` and restart - env vars load at boot |
 | `{"error":"AI_ASSISTANT_ID environment variable not set"}` (500) | `AI_ASSISTANT_ID` is not present in the environment | Add `AI_ASSISTANT_ID` to `.env` and restart the server |
 | `{"error":"Missing required field: 'message'"}` (400) | Request body has no `message` | Send a JSON body like `{"message":"Hello"}` with `Content-Type: application/json` |
 | `{"error":"Message cannot be empty"}` (400) | `message` is blank or whitespace-only | Provide a `message` with at least one non-whitespace character |
@@ -130,16 +130,16 @@ curl http://localhost:3000/health
 
 ## Related Examples
 
-- [chat-with-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-python/README.md) — the Python / Flask version of this example
-- [chat-with-ai-assistant-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-nodejs/README.md) — the Node.js / Express version
-- [create-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/create-ai-assistant-python/README.md) — create an AI Assistant to chat with
-- [list-ai-assistants-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/list-ai-assistants-python/README.md) — list assistants to find an `AI_ASSISTANT_ID`
-- [send-sms-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-ruby/README.md) — send SMS with the Telnyx Ruby SDK
+- [chat-with-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-python/README.md) - the Python / Flask version of this example
+- [chat-with-ai-assistant-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-nodejs/README.md) - the Node.js / Express version
+- [create-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/create-ai-assistant-python/README.md) - create an AI Assistant to chat with
+- [list-ai-assistants-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/list-ai-assistants-python/README.md) - list assistants to find an `AI_ASSISTANT_ID`
+- [send-sms-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-ruby/README.md) - send SMS with the Telnyx Ruby SDK
 
 ## Resources
 
 - [AI Assistants Guide](https://developers.telnyx.com/docs/inference/ai-assistants/no-code-voice-assistant)
-- [Chat with an Assistant — API Reference](https://developers.telnyx.com/api-reference/assistants/chat-with-an-assistant)
+- [Chat with an Assistant - API Reference](https://developers.telnyx.com/api-reference/assistants/chat-with-an-assistant)
 - [Ruby SDK](https://developers.telnyx.com/development/sdk/ruby)
 - [Telnyx AI Assistants](https://telnyx.com/ai-assistants)
 - [AI Pricing](https://telnyx.com/pricing/inference)

@@ -1,7 +1,7 @@
 ---
 name: voice-verified-identity-2fa
 title: "Voice-Verified Identity + 2FA"
-description: "Voice-Verified Identity + 2FA — Number Lookup, SMS OTP, and AI-assisted secure transactions."
+description: "Voice-Verified Identity + 2FA - Number Lookup, SMS OTP, and AI-assisted secure transactions."
 language: python
 framework: flask
 telnyx_products: [Voice AI, AI Inference, Number Lookup]
@@ -10,24 +10,24 @@ channel: [voice]
 
 # Voice-Verified Identity + 2FA
 
-Voice-Verified Identity + 2FA — Number Lookup, SMS OTP, and AI-assisted secure transactions.
+Voice-Verified Identity + 2FA - Number Lookup, SMS OTP, and AI-assisted secure transactions.
 
 ## Telnyx API Endpoints Used
 
-- **Number Lookup**: `GET /v2/number_lookup/{phone}` — [API reference](https://developers.telnyx.com/api/number-lookup/lookup)
-- **Create Verification**: `POST /v2/verifications` — [API reference](https://developers.telnyx.com/api/verify/create-verification)
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Number Lookup**: `GET /v2/number_lookup/{phone}` - [API reference](https://developers.telnyx.com/api/number-lookup/lookup)
+- **Create Verification**: `POST /v2/verifications` - [API reference](https://developers.telnyx.com/api/verify/create-verification)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)) ([Messaging docs](https://developers.telnyx.com/docs/api/v2/messaging)):
 
-- `call.answered` — Call connected — app begins interaction
-- `call.gather.ended` — Caller input received (speech transcription or DTMF digits)
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.initiated` — New inbound or outbound call detected
-- `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
-- `message.received` — Inbound SMS/MMS received
+- `call.answered` - Call connected - app begins interaction
+- `call.gather.ended` - Caller input received (speech transcription or DTMF digits)
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.initiated` - New inbound or outbound call detected
+- `call.speak.ended` - TTS playback finished - app transitions to next action (gather, transfer, etc.)
+- `message.received` - Inbound SMS/MMS received
 
 ## Architecture
 
@@ -66,9 +66,9 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `VERIFY_PROFILE_ID` | `string` | `your_value` | **yes** | Verify profile id | — |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `VERIFY_PROFILE_ID` | `string` | `your_value` | **yes** | Verify profile id | - |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -172,4 +172,4 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

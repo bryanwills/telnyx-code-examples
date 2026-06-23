@@ -1,7 +1,7 @@
 ---
 name: sms-escape-room-game
 title: "SMS Escape Room Game"
-description: "SMS Escape Room Game — text-based adventure game over SMS. Solve puzzles, find clues, escape before time runs out."
+description: "SMS Escape Room Game - text-based adventure game over SMS. Solve puzzles, find clues, escape before time runs out."
 language: python
 framework: flask
 telnyx_products: [SMS/MMS, AI Inference]
@@ -10,18 +10,18 @@ channel: [sms]
 
 # SMS Escape Room Game
 
-SMS Escape Room Game — text-based adventure game over SMS. Solve puzzles, find clues, escape before time runs out.
+SMS Escape Room Game - text-based adventure game over SMS. Solve puzzles, find clues, escape before time runs out.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Messaging docs](https://developers.telnyx.com/docs/api/v2/messaging)):
 
-- `message.received` — Inbound SMS/MMS received
+- `message.received` - Inbound SMS/MMS received
 
 ## Architecture
 
@@ -55,7 +55,7 @@ Copy `.env.example` to `.env` and fill in:
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
 | `GAME_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number for game line | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
 | `MESSAGING_PROFILE_ID` | `string` | `40017b7e-b3c0-4ac3-8740-9c3c5a0a0e0c` | no | Messaging profile ID | [Portal](https://portal.telnyx.com/messaging/profiles) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -179,4 +179,4 @@ Receives [Telnyx Messaging](https://developers.telnyx.com/docs/messaging) webhoo
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

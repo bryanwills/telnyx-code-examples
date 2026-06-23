@@ -1,7 +1,7 @@
 ---
 name: cloud-storage-call-archive
 title: "Cloud Storage Call Archive"
-description: "Cloud Storage Call Archive — archive call recordings to Telnyx Cloud Storage (S3-compatible) with searchable metadata."
+description: "Cloud Storage Call Archive - archive call recordings to Telnyx Cloud Storage (S3-compatible) with searchable metadata."
 language: python
 framework: flask
 telnyx_products: [Cloud Storage, Voice, Call Recording]
@@ -9,7 +9,7 @@ telnyx_products: [Cloud Storage, Voice, Call Recording]
 
 # Cloud Storage Call Archive
 
-Cloud Storage Call Archive — archive call recordings to Telnyx Cloud Storage with searchable metadata.
+Cloud Storage Call Archive - archive call recordings to Telnyx Cloud Storage with searchable metadata.
 
 Telnyx Cloud Storage is **S3-compatible**, so this example uploads with the AWS SDK (`boto3`) pointed at the Telnyx S3 endpoint (`https://{region}.telnyxcloudstorage.com`). The Telnyx API key is supplied as **both** the access key and the secret key. Recordings are downloaded from their Telnyx recording URL over HTTPS (using `requests`) and then stored in the bucket with their metadata attached to the object.
 
@@ -17,7 +17,7 @@ Telnyx Cloud Storage is **S3-compatible**, so this example uploads with the AWS 
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.recording.saved` — Call recording saved; the `recording_urls.mp3` URL is queued for archival.
+- `call.recording.saved` - Call recording saved; the `recording_urls.mp3` URL is queued for archival.
 
 ## Architecture
 
@@ -44,8 +44,8 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key; used as both S3 access key and secret key | [Portal](https://portal.telnyx.com/api-keys) |
 | `BUCKET_NAME` | `string` | `call-archive` | no | Telnyx Cloud Storage bucket name (default `call-archive`) | [Portal](https://portal.telnyx.com/storage) |
 | `TELNYX_STORAGE_REGION` | `string` | `us-central-1` | no | Storage region: `us-central-1` \| `us-east-1` \| `us-west-1` \| `eu-central-1` (default `us-central-1`) | [Cloud Storage docs](https://developers.telnyx.com/docs/cloud-storage/quick-start) |
-| `HOST` | `string` | `127.0.0.1` | no | HTTP bind address (default `127.0.0.1`) | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port (default `5000`) | — |
+| `HOST` | `string` | `127.0.0.1` | no | HTTP bind address (default `127.0.0.1`) | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port (default `5000`) | - |
 
 ## Setup
 
@@ -79,7 +79,7 @@ curl -X POST http://localhost:5000/buckets
 
 ### `POST /buckets`
 
-Create the archive bucket (idempotent — an existing bucket you own is treated as success).
+Create the archive bucket (idempotent - an existing bucket you own is treated as success).
 
 ```bash
 curl -X POST http://localhost:5000/buckets
@@ -112,7 +112,7 @@ curl http://localhost:5000/buckets
 
 ### `POST /archive`
 
-Download a recording from its Telnyx URL and store it in the bucket. The `recording_url` **must be an `https` Telnyx URL** (`telnyx.com` or a `*.telnyx.com` host) — any other URL is rejected so the API key is never sent to an attacker-supplied host.
+Download a recording from its Telnyx URL and store it in the bucket. The `recording_url` **must be an `https` Telnyx URL** (`telnyx.com` or a `*.telnyx.com` host) - any other URL is rejected so the API key is never sent to an attacker-supplied host.
 
 ```bash
 curl -X POST http://localhost:5000/archive \
@@ -238,4 +238,4 @@ Receives Telnyx Call Control webhooks. On `call.recording.saved`, it reads `data
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

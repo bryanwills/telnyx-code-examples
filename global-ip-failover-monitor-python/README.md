@@ -1,7 +1,7 @@
 ---
 name: global-ip-failover-monitor
 title: "Global IP Failover Monitor"
-description: "Global IP Failover Monitor — monitor Global IP endpoints across regions, auto-failover between healthy endpoints."
+description: "Global IP Failover Monitor - monitor Global IP endpoints across regions, auto-failover between healthy endpoints."
 language: python
 framework: flask
 telnyx_products: [Networking]
@@ -9,13 +9,13 @@ telnyx_products: [Networking]
 
 # Global IP Failover Monitor
 
-Global IP Failover Monitor — monitor Global IP endpoints across regions, auto-failover between healthy endpoints.
+Global IP Failover Monitor - monitor Global IP endpoints across regions, auto-failover between healthy endpoints.
 
 ## Telnyx API Endpoints Used
 
-- **List Global IPs**: `GET /v2/global_ips` — [API reference](https://developers.telnyx.com/api/global-ips/list-global-ips)
-- **Get IP Health**: `GET /v2/global_ips/{id}` — [API reference](https://developers.telnyx.com/api/global-ips/get-global-ip)
-- **Send Alert SMS**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **List Global IPs**: `GET /v2/global_ips` - [API reference](https://developers.telnyx.com/api/global-ips/list-global-ips)
+- **Get IP Health**: `GET /v2/global_ips/{id}` - [API reference](https://developers.telnyx.com/api/global-ips/get-global-ip)
+- **Send Alert SMS**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api/messaging/send-message)
 
 ## Architecture
 
@@ -40,8 +40,8 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `CHECK_INTERVAL` | `string` | `60` | no | Check interval | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `CHECK_INTERVAL` | `string` | `60` | no | Check interval | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -207,4 +207,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

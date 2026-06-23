@@ -1,7 +1,7 @@
 ---
 name: porting-loa-automation
 title: "Porting LOA Automation"
-description: "Porting LOA Automation — automate Letter of Authorization generation and porting order submission."
+description: "Porting LOA Automation - automate Letter of Authorization generation and porting order submission."
 language: python
 framework: flask
 telnyx_products: [Missions, Number Porting]
@@ -9,13 +9,13 @@ telnyx_products: [Missions, Number Porting]
 
 # Porting LOA Automation
 
-Porting LOA Automation — automate Letter of Authorization generation and porting order submission.
+Porting LOA Automation - automate Letter of Authorization generation and porting order submission.
 
 ## Telnyx API Endpoints Used
 
-- **Create Porting Order**: `POST /v2/porting_orders` — [API reference](https://developers.telnyx.com/api/porting/create-porting-order)
-- **List Porting Orders**: `GET /v2/porting_orders` — [API reference](https://developers.telnyx.com/api/porting/list-porting-orders)
-- **Upload LOA**: `POST /v2/porting_orders/{id}/loa` — [API reference](https://developers.telnyx.com/api/porting/upload-loa)
+- **Create Porting Order**: `POST /v2/porting_orders` - [API reference](https://developers.telnyx.com/api/porting/create-porting-order)
+- **List Porting Orders**: `GET /v2/porting_orders` - [API reference](https://developers.telnyx.com/api/porting/list-porting-orders)
+- **Upload LOA**: `POST /v2/porting_orders/{id}/loa` - [API reference](https://developers.telnyx.com/api/porting/upload-loa)
 
 ## Architecture
 
@@ -42,7 +42,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -211,4 +211,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

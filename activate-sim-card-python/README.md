@@ -13,9 +13,9 @@ Production-ready Flask application for SIM card activation via Telnyx.
 
 ## Telnyx API Endpoints Used
 
-- **List SIM Cards**: `GET /v2/sim_cards` — [API reference](https://developers.telnyx.com/api/sim-cards/list-sim-cards)
-- **Retrieve SIM Card**: `GET /v2/sim_cards/{id}` — [API reference](https://developers.telnyx.com/api/sim-cards/get-sim-card)
-- **Activate SIM Card**: `PATCH /v2/sim_cards/{id}` — [API reference](https://developers.telnyx.com/api/sim-cards/update-sim-card)
+- **List SIM Cards**: `GET /v2/sim_cards` - [API reference](https://developers.telnyx.com/api/sim-cards/list-sim-cards)
+- **Retrieve SIM Card**: `GET /v2/sim_cards/{id}` - [API reference](https://developers.telnyx.com/api/sim-cards/get-sim-card)
+- **Activate SIM Card**: `PATCH /v2/sim_cards/{id}` - [API reference](https://developers.telnyx.com/api/sim-cards/update-sim-card)
 
 ## Architecture
 
@@ -42,7 +42,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | - |
 
 ## Setup
 
@@ -143,4 +143,4 @@ curl -X POST http://localhost:5000/sim-cards/example-id/activate \
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

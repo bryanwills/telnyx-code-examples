@@ -14,7 +14,7 @@ Create, retrieve, and list credential-authenticated SIP connections using the Te
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. SIP connections traverse the Telnyx-owned IP backbone instead of the public internet, giving you lower latency, higher call quality, and credential-based authentication you provision entirely through the API.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. SIP connections traverse the Telnyx-owned IP backbone instead of the public internet, giving you lower latency, higher call quality, and credential-based authentication you provision entirely through the API.
 
 ## Telnyx API Endpoints Used
 
@@ -47,7 +47,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | — |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | - |
 
 ## Setup
 

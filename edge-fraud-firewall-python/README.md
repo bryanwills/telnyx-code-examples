@@ -1,7 +1,7 @@
 ---
 name: edge-fraud-firewall
 title: "Edge Fraud Firewall"
-description: "Screen every inbound call at the edge."
+description: "Screen every inbound call at the edge with Telnyx Voice, Number Lookup, and AI Inference."
 language: python
 framework: flask
 telnyx_products: [Edge Compute, Number Lookup, Voice, AI Inference]

@@ -1,7 +1,7 @@
 ---
 name: storage-voicemail-archive
 title: "Storage Voicemail Archive"
-description: "Storage Voicemail Archive — record voicemails to Telnyx Cloud Storage with search."
+description: "Storage Voicemail Archive - record voicemails to Telnyx Cloud Storage with search."
 language: python
 framework: flask
 telnyx_products: [Cloud Storage, Voice, Call Recording]
@@ -10,7 +10,7 @@ channel: [voice]
 
 # Storage Voicemail Archive
 
-Storage Voicemail Archive — record voicemails to Telnyx Cloud Storage with search.
+Storage Voicemail Archive - record voicemails to Telnyx Cloud Storage with search.
 
 ## Telnyx Cloud Storage (S3-Compatible)
 
@@ -34,16 +34,16 @@ The region comes from `TELNYX_STORAGE_REGION` (default `us-central-1`). Availabl
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)) ([Messaging docs](https://developers.telnyx.com/docs/api/v2/messaging)):
 
-- `call.answered` — Call connected — app begins interaction
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.initiated` — New inbound or outbound call detected
-- `call.recording.saved` — Call recording saved — URL available for download/processing
-- `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
-- `message.received` — Inbound SMS/MMS received
+- `call.answered` - Call connected - app begins interaction
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.initiated` - New inbound or outbound call detected
+- `call.recording.saved` - Call recording saved - URL available for download/processing
+- `call.speak.ended` - TTS playback finished - app transitions to next action (gather, transfer, etc.)
+- `message.received` - Inbound SMS/MMS received
 
 ## External Service Integrations
 
-- **Email / SMTP** — Email notifications and alerts
+- **Email / SMTP** - Email notifications and alerts
 
 ## Architecture
 
@@ -68,12 +68,12 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key — used for Call Control and as both the S3 access and secret key for Cloud Storage | [Portal](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key - used for Call Control and as both the S3 access and secret key for Cloud Storage | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `your_public_key` | **yes** | Telnyx public key for webhook signature verification | [Portal](https://portal.telnyx.com/api-keys) |
 | `STORAGE_BUCKET` | `string` | `my-bucket` | no | Telnyx Cloud Storage bucket name | [Portal](https://portal.telnyx.com/storage) |
 | `TELNYX_STORAGE_REGION` | `string` | `us-central-1` | no | Cloud Storage region endpoint (`us-central-1`, `us-east-1`, `us-west-1`, `eu-central-1`); defaults to `us-central-1` | [Cloud Storage docs](https://developers.telnyx.com/docs/cloud-storage/quick-start) |
-| `VOICEMAIL_NUMBER` | `string` | `your_value` | **yes** | Voicemail number | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `VOICEMAIL_NUMBER` | `string` | `your_value` | **yes** | Voicemail number | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -223,4 +223,4 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

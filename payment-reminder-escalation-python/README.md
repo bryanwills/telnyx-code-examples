@@ -15,18 +15,18 @@ Invoice overdue: day 1 SMS, day 7 voice call with payment link, day 14 escalatio
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
+- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` - [API reference](https://developers.telnyx.com/api/call-control/speak)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.answered` — Call connected — app begins interaction
+- `call.answered` - Call connected - app begins interaction
 
 ## External Service Integrations
 
-- **Slack** — Team notifications via incoming webhooks ([docs](https://api.slack.com/messaging/webhooks))
-- **Stripe** — Payment processing ([docs](https://docs.stripe.com/api))
+- **Slack** - Team notifications via incoming webhooks ([docs](https://api.slack.com/messaging/webhooks))
+- **Stripe** - Payment processing ([docs](https://docs.stripe.com/api))
 
 ## Architecture
 
@@ -56,9 +56,9 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
 | `CONNECTION_ID` | `string` | `1494404757140276705` | **yes** | Call Control connection/app ID | [Portal](https://portal.telnyx.com/call-control/applications) |
-| `COLLECTIONS_SLACK_WEBHOOK` | `string` | `your_value` | **yes** | Collections slack webhook | — |
-| `STRIPE_API_KEY` | `string` | `your_value` | **yes** | Stripe api key | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `COLLECTIONS_SLACK_WEBHOOK` | `string` | `your_value` | **yes** | Collections slack webhook | - |
+| `STRIPE_API_KEY` | `string` | `your_value` | **yes** | Stripe api key | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -245,4 +245,4 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

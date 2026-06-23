@@ -7,13 +7,13 @@ framework: flask
 telnyx_products: [AI Inference]
 ---
 
-# Run LLM inference on Telnyx — OpenAI-compatible chat completions API.
+# Run LLM inference on Telnyx - OpenAI-compatible chat completions API.
 
 Send chat completion requests to the Telnyx Inference API using an OpenAI-compatible interface from Python.
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
@@ -39,8 +39,8 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -56,7 +56,7 @@ python app.py           # starts on http://localhost:5000
 
 ### `POST /inference/chat`
 
-HTTP endpoint for chat completions — pass through to Telnyx Inference.
+HTTP endpoint for chat completions - pass through to Telnyx Inference.
 
 ```bash
 curl -X POST http://localhost:5000/inference/chat \
@@ -78,7 +78,7 @@ curl -X POST http://localhost:5000/inference/chat \
 
 ### `POST /inference/ask`
 
-Simplified endpoint — send a question, get an answer.
+Simplified endpoint - send a question, get an answer.
 
 ```bash
 curl -X POST http://localhost:5000/inference/ask \
@@ -139,4 +139,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

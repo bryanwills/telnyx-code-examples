@@ -1,7 +1,7 @@
 ---
 name: merge-expense-by-phone
 title: "Merge Expense by Phone"
-description: "Salesperson calls and dictates an expense."
+description: "Salesperson calls and dictates an expense using Telnyx Voice and AI Inference with Merge Accounting."
 language: python
 framework: flask
 telnyx_products: [Voice, AI Inference, Messaging]
@@ -17,7 +17,7 @@ Salesperson calls and dictates an expense. AI extracts amount, merchant, categor
 
 ## Why Telnyx
 
-Telnyx is AI Communications Infrastructure: voice, messaging, and AI inference run on one private global network, so a single dictated call can be answered, transcribed, structured by an LLM, and confirmed with an SMS receipt without stitching together separate vendors. This example uses Call Control for the inbound voice flow, AI Inference to extract structured expense data, and the Messaging API for the receipt — all behind one API key with usage-based pricing.
+Telnyx is AI Communications Infrastructure: voice, messaging, and AI inference run on one private global network, so a single dictated call can be answered, transcribed, structured by an LLM, and confirmed with an SMS receipt without stitching together separate vendors. This example uses Call Control for the inbound voice flow, AI Inference to extract structured expense data, and the Messaging API for the receipt - all behind one API key with usage-based pricing.
 
 ## Telnyx API Endpoints Used
 
@@ -151,10 +151,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — Call Control voice flow that routes callers to an AI agent.
-- [ai-sales-call-with-live-crm-updates-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-sales-call-with-live-crm-updates-python/README.md) — voice call that writes structured data back to CRM via Merge.
-- [merge-invoice-collector-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-invoice-collector-python/README.md) — sibling Merge accounting integration over voice.
-- [mms-receipt-scanner-expense-tracker-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/mms-receipt-scanner-expense-tracker-python/README.md) — expense capture from MMS receipt images.
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) - Call Control voice flow that routes callers to an AI agent.
+- [ai-sales-call-with-live-crm-updates-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-sales-call-with-live-crm-updates-python/README.md) - voice call that writes structured data back to CRM via Merge.
+- [merge-invoice-collector-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-invoice-collector-python/README.md) - sibling Merge accounting integration over voice.
+- [mms-receipt-scanner-expense-tracker-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/mms-receipt-scanner-expense-tracker-python/README.md) - expense capture from MMS receipt images.
 
 ## Resources
 

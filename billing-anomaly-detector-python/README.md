@@ -1,7 +1,7 @@
 ---
 name: billing-anomaly-detector
 title: "Billing Anomaly Detector"
-description: "Billing Anomaly Detector — monitor usage and billing for anomalies, alert on cost spikes and unusual patterns."
+description: "Billing Anomaly Detector - monitor usage and billing for anomalies, alert on cost spikes and unusual patterns."
 language: python
 framework: flask
 telnyx_products: [CDR, SMS/MMS]
@@ -9,12 +9,12 @@ telnyx_products: [CDR, SMS/MMS]
 
 # Billing Anomaly Detector
 
-Billing Anomaly Detector — monitor usage and billing for anomalies, alert on cost spikes and unusual patterns.
+Billing Anomaly Detector - monitor usage and billing for anomalies, alert on cost spikes and unusual patterns.
 
 ## Telnyx API Endpoints Used
 
-- **List CDRs**: `GET /v2/reports/cdrs` — [API reference](https://developers.telnyx.com/api/call-detail-records/list-cdrs)
-- **List MDRs**: `GET /v2/reports/mdrs` — [API reference](https://developers.telnyx.com/api/messaging-detail-records/get-messaging-detail-records)
+- **List CDRs**: `GET /v2/reports/cdrs` - [API reference](https://developers.telnyx.com/api/call-detail-records/list-cdrs)
+- **List MDRs**: `GET /v2/reports/mdrs` - [API reference](https://developers.telnyx.com/api/messaging-detail-records/get-messaging-detail-records)
 
 ## Architecture
 
@@ -41,8 +41,8 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `ALERT_WEBHOOK` | `string` | `your_value` | **yes** | Alert webhook | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `ALERT_WEBHOOK` | `string` | `your_value` | **yes** | Alert webhook | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -211,4 +211,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

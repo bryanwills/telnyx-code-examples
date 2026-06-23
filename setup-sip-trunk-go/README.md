@@ -14,7 +14,7 @@ Create, list, and retrieve Telnyx SIP trunk connections via a Go and Gin REST AP
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. SIP connections route over the Telnyx-owned IP backbone for lower latency and higher call reliability than the public internet, with credential-based authentication and outbound voice profiles managed entirely through the API.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. SIP connections route over the Telnyx-owned IP backbone for lower latency and higher call reliability than the public internet, with credential-based authentication and outbound voice profiles managed entirely through the API.
 
 ## Telnyx API Endpoints Used
 
@@ -160,17 +160,17 @@ curl http://localhost:8080/health
 |-------|-------|-----|
 | `Error: TELNYX_API_KEY environment variable not set` on startup | No API key in environment; the app exits in `init()`. | Set `TELNYX_API_KEY` in `.env` (or export it) and re-run `go run .`. |
 | `401 {"error": "Invalid API key"}` | `TELNYX_API_KEY` is wrong, revoked, or has stray quotes/spaces. | Regenerate a key at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) and update `.env`. |
-| `400 SIP endpoint port must be between 1 and 65535` | `sip_endpoint_port` is out of range. | Use a valid port — SIP is commonly `5060` (UDP/TCP) or `5061` (TLS). |
+| `400 SIP endpoint port must be between 1 and 65535` | `sip_endpoint_port` is out of range. | Use a valid port - SIP is commonly `5060` (UDP/TCP) or `5061` (TLS). |
 | `400` binding error on create | A required field (`name`, `username`, `password`, `sip_endpoint_ip`, `sip_endpoint_port`) is missing or malformed JSON. | Include all required fields and send valid `Content-Type: application/json`. |
 | `429 Rate limit exceeded` | Too many requests to the Telnyx API. | Slow down and retry with backoff. |
 | `503 Network error connecting to Telnyx` | Outbound HTTPS to `api.telnyx.com` is blocked or down. | Check connectivity and that a firewall/proxy is not blocking outbound HTTPS, then retry. |
 
 ## Related Examples
 
-- [setup-sip-trunk-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-python/README.md) — same SIP trunk setup in Python/Flask
-- [setup-sip-trunk-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/README.md) — same SIP trunk setup in Node.js/Express
-- [inbound-sip-routing-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/inbound-sip-routing-python/README.md) — route inbound SIP calls
-- [sip-failover-routing-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sip-failover-routing-python/README.md) — failover routing for high availability
+- [setup-sip-trunk-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-python/README.md) - same SIP trunk setup in Python/Flask
+- [setup-sip-trunk-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/README.md) - same SIP trunk setup in Node.js/Express
+- [inbound-sip-routing-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/inbound-sip-routing-python/README.md) - route inbound SIP calls
+- [sip-failover-routing-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sip-failover-routing-python/README.md) - failover routing for high availability
 
 ## Resources
 

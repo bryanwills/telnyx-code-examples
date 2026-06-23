@@ -1,7 +1,7 @@
 ---
 name: merge-invoice-collector
 title: "Merge Invoice Collector"
-description: "Pulls overdue invoices from accounting via Merge sorted by amount."
+description: "Pulls overdue invoices from Merge Accounting and collects payments using Telnyx Voice, AI Inference, and Messaging."
 language: python
 framework: flask
 telnyx_products: [Voice, AI Inference, Messaging]
@@ -17,7 +17,7 @@ Pulls overdue invoices from accounting via Merge sorted by amount. AI calls debt
 
 ## Why Telnyx
 
-This collector places outbound calls, runs conversational AI inference, and fires SMS payment links from a single provider — Telnyx, the AI Communications Infrastructure that delivers voice, messaging, and AI inference over one private global network. Keeping Call Control, the inference API, and the messaging API on the same backbone means low-latency AI responses mid-call and a single API key to manage instead of stitching together separate voice, SMS, and LLM vendors.
+This collector places outbound calls, runs conversational AI inference, and fires SMS payment links from a single provider - Telnyx, the AI Communications Infrastructure that delivers voice, messaging, and AI inference over one private global network. Keeping Call Control, the inference API, and the messaging API on the same backbone means low-latency AI responses mid-call and a single API key to manage instead of stitching together separate voice, SMS, and LLM vendors.
 
 ## Telnyx API Endpoints Used
 
@@ -180,10 +180,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [merge-expense-by-phone-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-expense-by-phone-python/README.md) — voice + Merge accounting workflow over the phone
-- [merge-deal-desk-alerts-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-deal-desk-alerts-python/README.md) — Merge-driven alerts routed through Telnyx
-- [merge-employee-hotline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-employee-hotline-python/README.md) — Merge data backing an AI voice hotline
-- [edge-merge-ai-receptionist-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-ai-receptionist-python/README.md) — AI receptionist combining Merge data with Telnyx voice
+- [merge-expense-by-phone-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-expense-by-phone-python/README.md) - voice + Merge accounting workflow over the phone
+- [merge-deal-desk-alerts-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-deal-desk-alerts-python/README.md) - Merge-driven alerts routed through Telnyx
+- [merge-employee-hotline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-employee-hotline-python/README.md) - Merge data backing an AI voice hotline
+- [edge-merge-ai-receptionist-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-ai-receptionist-python/README.md) - AI receptionist combining Merge data with Telnyx voice
 
 ## Resources
 

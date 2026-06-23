@@ -1,7 +1,7 @@
 ---
 name: iot-fleet-alert-escalation
 title: "IoT Fleet Alert Escalation"
-description: "IoT Fleet Alert Escalation — severity-based routing from IoT sensors to SMS, calls, and multi-party conferences."
+description: "IoT Fleet Alert Escalation - severity-based routing from IoT sensors to SMS, calls, and multi-party conferences."
 language: python
 framework: flask
 telnyx_products: [SMS/MMS, Voice, AI Inference, Conferencing]
@@ -10,21 +10,21 @@ channel: [voice]
 
 # IoT Fleet Alert Escalation
 
-IoT Fleet Alert Escalation — severity-based routing from IoT sensors to SMS, calls, and multi-party conferences.
+IoT Fleet Alert Escalation - severity-based routing from IoT sensors to SMS, calls, and multi-party conferences.
 
 ## Telnyx API Endpoints Used
 
-- **Create Call**: `POST /v2/calls` — [API reference](https://developers.telnyx.com/api/call-control/create-call)
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Create Call**: `POST /v2/calls` - [API reference](https://developers.telnyx.com/api/call-control/create-call)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.answered` — Call connected — app begins interaction
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
+- `call.answered` - Call connected - app begins interaction
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.speak.ended` - TTS playback finished - app transitions to next action (gather, transfer, etc.)
 
 ## Architecture
 
@@ -58,12 +58,12 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `ALERT_NUMBER` | `string` | `your_value` | **yes** | Alert number | — |
-| `ONCALL_NUMBER` | `string` | `your_value` | **yes** | Oncall number | — |
-| `DISPATCHER_NUMBER` | `string` | `your_value` | **yes** | Dispatcher number | — |
+| `ALERT_NUMBER` | `string` | `your_value` | **yes** | Alert number | - |
+| `ONCALL_NUMBER` | `string` | `your_value` | **yes** | Oncall number | - |
+| `DISPATCHER_NUMBER` | `string` | `your_value` | **yes** | Dispatcher number | - |
 | `CONNECTION_ID` | `string` | `1494404757140276705` | **yes** | Call Control connection/app ID | [Portal](https://portal.telnyx.com/call-control/applications) |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -219,4 +219,4 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

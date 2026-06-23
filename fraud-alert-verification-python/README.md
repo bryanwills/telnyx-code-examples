@@ -15,21 +15,21 @@ Suspicious transaction triggers voice call to customer, verifies via DTMF, block
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Gather (STT/DTMF)**: `POST /v2/calls/{id}/actions/gather_using_speak` — [API reference](https://developers.telnyx.com/api/call-control/gather)
-- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
+- **Call Control: Gather (STT/DTMF)**: `POST /v2/calls/{id}/actions/gather_using_speak` - [API reference](https://developers.telnyx.com/api/call-control/gather)
+- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` - [API reference](https://developers.telnyx.com/api/call-control/speak)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.answered` — Call connected — app begins interaction
-- `call.gather.ended` — Caller input received (speech transcription or DTMF digits)
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
+- `call.answered` - Call connected - app begins interaction
+- `call.gather.ended` - Caller input received (speech transcription or DTMF digits)
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.speak.ended` - TTS playback finished - app transitions to next action (gather, transfer, etc.)
 
 ## External Service Integrations
 
-- **Slack** — Team notifications via incoming webhooks ([docs](https://api.slack.com/messaging/webhooks))
+- **Slack** - Team notifications via incoming webhooks ([docs](https://api.slack.com/messaging/webhooks))
 
 ## Architecture
 
@@ -62,7 +62,7 @@ Copy `.env.example` to `.env` and fill in:
 | `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
 | `CONNECTION_ID` | `string` | `1494404757140276705` | **yes** | Call Control connection/app ID | [Portal](https://portal.telnyx.com/call-control/applications) |
 | `FRAUD_SLACK_WEBHOOK` | `string` | `https://hooks.slack.com/services/T.../B.../xxx` | no | Slack webhook for fraud alerts | [Portal](https://api.slack.com/messaging/webhooks) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -249,4 +249,4 @@ Receives [Telnyx Messaging](https://developers.telnyx.com/docs/messaging) webhoo
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

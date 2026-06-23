@@ -43,9 +43,9 @@ Monitor Telnyx IoT SIM card data usage with an Express server that polls usage o
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform that gives developers a single, private global network for voice, messaging, SIP, AI, and IoT — including programmable IoT SIM cards with real-time data usage reporting through one consistent API.
+Telnyx is an **AI Communications Infrastructure** platform that gives developers a single, private global network for voice, messaging, SIP, AI, and IoT - including programmable IoT SIM cards with real-time data usage reporting through one consistent API.
 
-- **Global IoT connectivity** — one SIM, multi-carrier coverage, and usage data you can query programmatically.
+- **Global IoT connectivity** - one SIM, multi-carrier coverage, and usage data you can query programmatically.
 
 ## Environment Variables
 
@@ -54,8 +54,8 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `POLLING_INTERVAL` | `number` | `300000` | no | Poll interval in milliseconds (defaults to `300000` = 5 min) | — |
-| `PORT` | `number` | `5000` | no | Port the server listens on (defaults to `3000`) | — |
+| `POLLING_INTERVAL` | `number` | `300000` | no | Poll interval in milliseconds (defaults to `300000` = 5 min) | - |
+| `PORT` | `number` | `5000` | no | Port the server listens on (defaults to `3000`) | - |
 
 ## Setup
 

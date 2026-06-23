@@ -13,11 +13,11 @@ Place an outbound phone call with the Telnyx Call Control API in vanilla PHP. A 
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT delivered over one private, global network. The Call Control API used here links each outbound call to your Call Control Application via a connection ID, giving you programmatic control over the call lifecycle with low latency and predictable, pay-as-you-go pricing.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT delivered over one private, global network. The Call Control API used here links each outbound call to your Call Control Application via a connection ID, giving you programmatic control over the call lifecycle with low latency and predictable, pay-as-you-go pricing.
 
 ## Telnyx API Endpoints Used
 
-- **Dial (Call Control)**: `POST /v2/calls` — [API reference](https://developers.telnyx.com/api-reference/call-commands/dial)
+- **Dial (Call Control)**: `POST /v2/calls` - [API reference](https://developers.telnyx.com/api-reference/call-commands/dial)
 
 The webhook receiver consumes Telnyx call control events (`call.initiated`, `call.answered`, `call.hangup`, …) posted back to your server.
 
@@ -122,10 +122,10 @@ See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/
 
 ## Related Examples
 
-- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) — Same outbound call flow in Node.js
-- [make-outbound-phone-call-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-python/README.md) — Same outbound call flow in Python
-- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — Handle inbound call webhooks
-- [build-ivr-phone-menu-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-ivr-phone-menu-python/README.md) — Build an IVR menu with Call Control
+- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) - Same outbound call flow in Node.js
+- [make-outbound-phone-call-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-python/README.md) - Same outbound call flow in Python
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) - Handle inbound call webhooks
+- [build-ivr-phone-menu-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-ivr-phone-menu-python/README.md) - Build an IVR menu with Call Control
 
 ## Resources
 

@@ -1,7 +1,7 @@
 ---
 name: smart-ivr-ab-tester
 title: "Smart IVR A/B Tester"
-description: "Smart IVR A/B Tester — run two IVR flows simultaneously and track which converts better."
+description: "Smart IVR A/B Tester - run two IVR flows simultaneously and track which converts better."
 language: python
 framework: flask
 telnyx_products: [Voice]
@@ -10,23 +10,23 @@ channel: [voice]
 
 # Smart IVR A/B Tester
 
-Smart IVR A/B Tester — run two IVR flows simultaneously and track which converts better.
+Smart IVR A/B Tester - run two IVR flows simultaneously and track which converts better.
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` — [API reference](https://developers.telnyx.com/api/call-control/answer-call)
-- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
-- **Call Control: Gather (STT/DTMF)**: `POST /v2/calls/{id}/actions/gather_using_speak` — [API reference](https://developers.telnyx.com/api/call-control/gather)
+- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` - [API reference](https://developers.telnyx.com/api/call-control/answer-call)
+- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` - [API reference](https://developers.telnyx.com/api/call-control/speak)
+- **Call Control: Gather (STT/DTMF)**: `POST /v2/calls/{id}/actions/gather_using_speak` - [API reference](https://developers.telnyx.com/api/call-control/gather)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.answered` — Call connected — app begins interaction
-- `call.gather.ended` — Caller input received (speech transcription or DTMF digits)
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.initiated` — New inbound or outbound call detected
-- `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
+- `call.answered` - Call connected - app begins interaction
+- `call.gather.ended` - Caller input received (speech transcription or DTMF digits)
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.initiated` - New inbound or outbound call detected
+- `call.speak.ended` - TTS playback finished - app transitions to next action (gather, transfer, etc.)
 
 ## Architecture
 
@@ -54,9 +54,9 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `IVR_NUMBER` | `string` | `your_value` | **yes** | Ivr number | — |
-| `AGENT_NUMBER` | `string` | `your_value` | **yes** | Agent number | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `IVR_NUMBER` | `string` | `your_value` | **yes** | Ivr number | - |
+| `AGENT_NUMBER` | `string` | `your_value` | **yes** | Agent number | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -202,4 +202,4 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

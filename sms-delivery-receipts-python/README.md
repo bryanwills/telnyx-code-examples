@@ -14,11 +14,11 @@ Track SMS delivery status with Telnyx `message.finalized` webhooks, store delive
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Delivery receipts built in** — every outbound message emits `message.sent` and `message.finalized` events with carrier-level status and error codes.
-- **Signed webhooks** — inbound events are signed with Ed25519 so you can verify they came from Telnyx before trusting them.
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
+- **Delivery receipts built in** - every outbound message emits `message.sent` and `message.finalized` events with carrier-level status and error codes.
+- **Signed webhooks** - inbound events are signed with Ed25519 so you can verify they came from Telnyx before trusting them.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
 
 ## Telnyx API Endpoints Used
 
@@ -56,7 +56,7 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key for sending messages | [Portal → API Keys](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `your_telnyx_public_key_here` | **yes** | Ed25519 public key used to verify inbound webhook signatures | [Portal → API Keys → Public Key](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number (E.164) used as the sender | [Portal → My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
-| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode (`true`/`false`) | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode (`true`/`false`) | - |
 
 ## Setup
 
@@ -197,14 +197,14 @@ curl "http://localhost:5000/messages?status=delivered"
 
 ## Related Examples
 
-- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send a single SMS with delivery status webhooks.
-- [ai-compliance-quiz-phone-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-compliance-quiz-phone-python/README.md) — another example using signed Telnyx webhooks.
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - send a single SMS with delivery status webhooks.
+- [ai-compliance-quiz-phone-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-compliance-quiz-phone-python/README.md) - another example using signed Telnyx webhooks.
 
 ## Resources
 
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
 - [Receiving Webhooks](https://developers.telnyx.com/docs/messaging/messages/receiving-webhooks)
-- [Send a Message — API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Send a Message - API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)
 - [Messaging Pricing](https://telnyx.com/pricing/messaging)

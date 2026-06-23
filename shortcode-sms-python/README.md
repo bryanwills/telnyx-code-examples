@@ -14,16 +14,16 @@ Send and receive two-way SMS over a Telnyx shortcode with Flask. Includes inboun
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Shortcodes built for scale** — high-throughput A2P messaging with carrier-grade deliverability and number reputation included.
-- **Two-way messaging** — inbound and outbound SMS on the same shortcode, delivered to your webhook with signed payloads.
-- **Developer-first** — typed SDKs, a consistent webhook event model, and a sandbox for testing.
+- **Shortcodes built for scale** - high-throughput A2P messaging with carrier-grade deliverability and number reputation included.
+- **Two-way messaging** - inbound and outbound SMS on the same shortcode, delivered to your webhook with signed payloads.
+- **Developer-first** - typed SDKs, a consistent webhook event model, and a sandbox for testing.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
-- **Inbound / delivery webhooks**: `message.received` and `message.finalized` events delivered to your `/webhooks/sms` route — [Inbound message webhook reference](https://developers.telnyx.com/api-reference/messaging/inbound-message-webhook)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- **Inbound / delivery webhooks**: `message.received` and `message.finalized` events delivered to your `/webhooks/sms` route - [Inbound message webhook reference](https://developers.telnyx.com/api-reference/messaging/inbound-message-webhook)
 
 ## Architecture
 
@@ -49,8 +49,8 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal → API Keys](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `e5q8...` | **yes** | Public key used to verify inbound webhook signatures | [Portal → Account → Public Key](https://portal.telnyx.com/) |
 | `TELNYX_SHORTCODE` | `string` | `123456` | **yes** | Provisioned Telnyx shortcode used as the `from` address | [Portal → Messaging](https://portal.telnyx.com/messaging) |
-| `WEBHOOK_URL` | `string` | `https://your-domain.com/webhooks/sms` | no | Public URL Telnyx posts inbound events to (reference only) | — |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug mode | — |
+| `WEBHOOK_URL` | `string` | `https://your-domain.com/webhooks/sms` | no | Public URL Telnyx posts inbound events to (reference only) | - |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug mode | - |
 
 ## Setup
 
@@ -173,18 +173,18 @@ curl http://localhost:5000/health
 - **`401 invalid signature` on `/webhooks/sms`**: The Ed25519 signature check failed. Confirm `TELNYX_PUBLIC_KEY` matches the public key in your Telnyx account and that the request actually came from Telnyx. Signature verification covers the raw request body, so do not modify the payload upstream (no proxies that re-serialize JSON).
 - **`401 Invalid API key` on `/sms/send`**: Your `TELNYX_API_KEY` is invalid. Generate a new one at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys).
 - **`TELNYX_SHORTCODE environment variable not set`**: Add `TELNYX_SHORTCODE` to your `.env` file and restart the server.
-- **Webhook never fires**: Verify the Inbound Webhook URL on your Messaging Profile points at your public `/webhooks/sms` URL and is reachable over HTTPS (`curl https://<id>.ngrok.io/health`). If using ngrok, the URL changes on each restart — update the portal accordingly.
+- **Webhook never fires**: Verify the Inbound Webhook URL on your Messaging Profile points at your public `/webhooks/sms` URL and is reachable over HTTPS (`curl https://<id>.ngrok.io/health`). If using ngrok, the URL changes on each restart - update the portal accordingly.
 - **Messages show `failed`/`undelivered`**: Confirm the destination number is valid E.164 (e.g. `+15551234567`), the shortcode is active, and it is registered for the destination country.
 
 ## Related Examples
 
-- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send a single SMS from a long-code number.
-- [receive-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-python/README.md) — inbound SMS webhook handling.
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - send a single SMS from a long-code number.
+- [receive-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-python/README.md) - inbound SMS webhook handling.
 
 ## Resources
 
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
-- [Send a Message — API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Send a Message - API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Webhook signature verification](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)

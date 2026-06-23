@@ -1,7 +1,7 @@
 ---
 name: wireguard-private-voice-network
 title: "WireGuard Private Voice Network"
-description: "WireGuard Private Voice Network — create WireGuard mesh network for private SIP trunking with encrypted voice traffic."
+description: "WireGuard Private Voice Network - create WireGuard mesh network for private SIP trunking with encrypted voice traffic."
 language: python
 framework: flask
 telnyx_products: [Networking]
@@ -9,13 +9,13 @@ telnyx_products: [Networking]
 
 # WireGuard Private Voice Network
 
-WireGuard Private Voice Network — create WireGuard mesh network for private SIP trunking with encrypted voice traffic.
+WireGuard Private Voice Network - create WireGuard mesh network for private SIP trunking with encrypted voice traffic.
 
 ## Telnyx API Endpoints Used
 
-- **Create WireGuard Interface**: `POST /v2/wireguard_interfaces` — [API reference](https://developers.telnyx.com/api/networking/create-wireguard-interface)
-- **List WireGuard Interfaces**: `GET /v2/wireguard_interfaces` — [API reference](https://developers.telnyx.com/api/networking/list-wireguard-interfaces)
-- **Create Call**: `POST /v2/calls` — [API reference](https://developers.telnyx.com/api/call-control/create-call)
+- **Create WireGuard Interface**: `POST /v2/wireguard_interfaces` - [API reference](https://developers.telnyx.com/api/networking/create-wireguard-interface)
+- **List WireGuard Interfaces**: `GET /v2/wireguard_interfaces` - [API reference](https://developers.telnyx.com/api/networking/list-wireguard-interfaces)
+- **Create Call**: `POST /v2/calls` - [API reference](https://developers.telnyx.com/api/call-control/create-call)
 
 ## Architecture
 
@@ -40,7 +40,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -222,4 +222,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

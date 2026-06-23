@@ -48,10 +48,10 @@ Submit text, AI Inference chunks into chapters with pacing/emotion markup, TTS n
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Co-located inference** — LLM runs on the same network as voice traffic. Sub-200ms round trips.
-- **Integrated storage** — S3-compatible storage co-located with voice and AI infrastructure.
+- **Co-located inference** - LLM runs on the same network as voice traffic. Sub-200ms round trips.
+- **Integrated storage** - S3-compatible storage co-located with voice and AI infrastructure.
 
 ## Environment Variables
 

@@ -16,7 +16,7 @@ Multi-tenant webhook consolidation at the edge. Receives all Telnyx voice and me
 
 ## Why Telnyx
 
-Telnyx is AI Communications Infrastructure: voice, messaging, and AI on one private global network instead of the public internet. Because every voice and SMS event already flows through that network, this aggregator can verify each webhook's Ed25519 signature, consolidate events per tenant at the edge, and forward a single batched payload — cutting backend traffic without bolting on a third-party event bus. One provider, one signing key, and one billing relationship across all channels.
+Telnyx is AI Communications Infrastructure: voice, messaging, and AI on one private global network instead of the public internet. Because every voice and SMS event already flows through that network, this aggregator can verify each webhook's Ed25519 signature, consolidate events per tenant at the edge, and forward a single batched payload - cutting backend traffic without bolting on a third-party event bus. One provider, one signing key, and one billing relationship across all channels.
 
 ## Telnyx API Endpoints Used
 
@@ -157,17 +157,17 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | `401 invalid signature` on `/webhooks/ingest` | `TELNYX_PUBLIC_KEY` is unset, wrong, or signature verification is disabled | Set `TELNYX_PUBLIC_KEY` from [Portal -> Keys & Credentials](https://portal.telnyx.com/api-keys) (base64 Ed25519 public key). An empty/invalid key disables verification and rejects every request. |
-| `401` despite a valid key | Request timestamp is more than 5 minutes off (`MAX_SKEW_SECONDS`), or a proxy altered the raw body before it reached Flask | Sync the server clock and ensure the signature is verified against the unmodified raw body — do not re-serialize the JSON upstream. |
+| `401` despite a valid key | Request timestamp is more than 5 minutes off (`MAX_SKEW_SECONDS`), or a proxy altered the raw body before it reached Flask | Sync the server clock and ensure the signature is verified against the unmodified raw body - do not re-serialize the JSON upstream. |
 | Webhooks never arrive | Telnyx cannot reach your server, or the URL points at `/webhooks/voice` instead of the ingest route | Expose the server with `ngrok http 5000` and configure the public webhook URL to `https://<id>.ngrok.io/webhooks/ingest`. |
 | Events land under `unassigned` | The event's `to`/`from` number is not in `tenant_map` | Register the tenant first via `POST /tenants` with the matching `phone_numbers`. |
 | `callback_url must be a public https URL` on `POST /tenants` | Callback is non-https or resolves to a private/loopback/metadata address (SSRF guard) | Use a publicly reachable `https://` endpoint; localhost and internal IPs are rejected by design. |
 
 ## Related Examples
 
-- [edge-compute-webhook-proxy-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-compute-webhook-proxy-python/README.md) — single-tenant webhook proxy/transform at the edge
-- [edge-fraud-firewall-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-fraud-firewall-python/README.md) — inspect and filter Telnyx events at the edge before they hit your backend
-- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — handle the voice events this aggregator consolidates
-- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) — receive and verify the messaging webhooks aggregated here
+- [edge-compute-webhook-proxy-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-compute-webhook-proxy-python/README.md) - single-tenant webhook proxy/transform at the edge
+- [edge-fraud-firewall-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-fraud-firewall-python/README.md) - inspect and filter Telnyx events at the edge before they hit your backend
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) - handle the voice events this aggregator consolidates
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) - receive and verify the messaging webhooks aggregated here
 
 ## Resources
 

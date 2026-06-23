@@ -48,10 +48,10 @@ Submit a script, hear it read by every available TTS voice. AI scores and ranks 
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Co-located inference** — LLM runs on the same network as voice traffic. Sub-200ms round trips.
-- **Integrated storage** — S3-compatible storage (accessed with the AWS SDK / boto3) co-located with voice and AI infrastructure, serving rendered takes via presigned URLs.
+- **Co-located inference** - LLM runs on the same network as voice traffic. Sub-200ms round trips.
+- **Integrated storage** - S3-compatible storage (accessed with the AWS SDK / boto3) co-located with voice and AI infrastructure, serving rendered takes via presigned URLs.
 
 ## Environment Variables
 

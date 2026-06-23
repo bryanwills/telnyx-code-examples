@@ -13,12 +13,12 @@ Receive inbound Telnyx Call Control webhooks in a Sinatra app, verify the Ed2551
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI assistants, and IoT on one private, global network. You get programmable [Voice AI agents](https://telnyx.com/products/voice-ai-agents), a developer-first webhook event model, and pay-as-you-go pricing, all from a single API and SDK.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI assistants, and IoT on one private, global network. You get programmable [Voice AI agents](https://telnyx.com/products/voice-ai-agents), a developer-first webhook event model, and pay-as-you-go pricing, all from a single API and SDK.
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Answer** — `POST /v2/calls/{call_control_id}/actions/answer` — SDK: `client.calls.actions.answer(call_control_id)`
-- **Call Control: Start AI Assistant** — `POST /v2/calls/{call_control_id}/actions/start_ai_assistant` — SDK: `client.calls.actions.start_ai_assistant(call_control_id, assistant: { id: ... })`
+- **Call Control: Answer** - `POST /v2/calls/{call_control_id}/actions/answer` - SDK: `client.calls.actions.answer(call_control_id)`
+- **Call Control: Start AI Assistant** - `POST /v2/calls/{call_control_id}/actions/start_ai_assistant` - SDK: `client.calls.actions.start_ai_assistant(call_control_id, assistant: { id: ... })`
 
 See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-ruby/API.md) for the typed request/response reference.
 
@@ -26,9 +26,9 @@ See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/
 
 This app receives Call Control webhook events on `POST /webhooks/voice`:
 
-- `call.initiated` — a new inbound call arrived; the app answers it.
-- `call.answered` — the leg is live; the app routes the caller to the AI assistant.
-- `call.hangup` — the call ended; the app logs the cause.
+- `call.initiated` - a new inbound call arrived; the app answers it.
+- `call.answered` - the leg is live; the app routes the caller to the AI assistant.
+- `call.hangup` - the call ended; the app logs the cause.
 
 ## Architecture
 
@@ -58,7 +58,7 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key used to issue Call Control commands | [Portal → Keys & Credentials](https://portal.telnyx.com) |
 | `TELNYX_PUBLIC_KEY` | `string` | `base64-encoded key` | **yes** | Base64 Ed25519 public key used to verify webhook signatures | [Portal → Keys & Credentials → Public Key](https://portal.telnyx.com) |
 | `TELNYX_ASSISTANT_ID` | `string` | `assistant_abc123` | **yes** | The AI assistant answered calls are routed into | [Portal → AI Assistants](https://portal.telnyx.com) |
-| `PORT` | `number` | `4567` | no | Local port for the Sinatra server (defaults to `4567`) | — |
+| `PORT` | `number` | `4567` | no | Local port for the Sinatra server (defaults to `4567`) | - |
 
 ## Setup
 

@@ -37,11 +37,11 @@ Manage SMS opt-out preferences with Telnyx. Auto-handles STOP/UNSUBSCRIBE replie
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Compliance built in** — Telnyx auto-handles carrier-level STOP/HELP keywords, and this example layers your own auditable opt-out store on top so you stay TCPA/CTIA compliant.
-- **Deliverability** — number reputation, 10DLC registration, and deliverability monitoring are included.
-- **Signed webhooks** — every inbound event is Ed25519-signed so you can verify it really came from Telnyx.
+- **Compliance built in** - Telnyx auto-handles carrier-level STOP/HELP keywords, and this example layers your own auditable opt-out store on top so you stay TCPA/CTIA compliant.
+- **Deliverability** - number reputation, 10DLC registration, and deliverability monitoring are included.
+- **Signed webhooks** - every inbound event is Ed25519-signed so you can verify it really came from Telnyx.
 
 ## Environment Variables
 
@@ -52,8 +52,8 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `your_public_key` | **yes** | Public key used to verify inbound webhook signatures | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Your Telnyx phone number (E.164) | [Numbers](https://portal.telnyx.com/numbers/my-numbers) |
-| `DB_PATH` | `string` | `optout.db` | no | SQLite database file path (default `optout.db`) | — |
-| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode | — |
+| `DB_PATH` | `string` | `optout.db` | no | SQLite database file path (default `optout.db`) | - |
+| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode | - |
 
 ## Setup
 
@@ -181,7 +181,7 @@ curl -X POST http://localhost:5000/optout/check \
 
 ### `POST /webhooks/sms`
 
-Inbound SMS webhook from Telnyx. The Ed25519 signature is verified before parsing; on a `message.received` event whose text is `STOP`, `STOPALL`, `UNSUBSCRIBE`, or `QUIT`, the sender is added to the opt-out list. Configure this URL on your Messaging Profile — you do not call it yourself.
+Inbound SMS webhook from Telnyx. The Ed25519 signature is verified before parsing; on a `message.received` event whose text is `STOP`, `STOPALL`, `UNSUBSCRIBE`, or `QUIT`, the sender is added to the opt-out list. Configure this URL on your Messaging Profile - you do not call it yourself.
 
 **Response (opt-out keyword received):**
 
@@ -207,7 +207,7 @@ Inbound SMS webhook from Telnyx. The Ed25519 signature is verified before parsin
 
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
 - [Receive Inbound Messages](https://developers.telnyx.com/docs/messaging/messages/receive-message)
-- [Send a Message — API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Send a Message - API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Webhook Signature Verification](https://developers.telnyx.com/docs/messaging/messages/webhooks)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)

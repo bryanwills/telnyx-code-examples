@@ -14,7 +14,7 @@ Send an SMS message using the Telnyx Messaging API with a Node.js and Express en
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network — with deliverability built in (number reputation, 10DLC registration, and deliverability monitoring) and SDKs for every major language.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network - with deliverability built in (number reputation, 10DLC registration, and deliverability monitoring) and SDKs for every major language.
 
 ## Telnyx API Endpoints Used
 
@@ -49,7 +49,7 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number to send from (E.164) | [My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
-| `PORT` | `number` | `5000` | no | Port the Express server listens on | — |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on | - |
 
 ## Setup
 
@@ -118,7 +118,7 @@ curl -X POST http://localhost:5000/sms/send \
 ## Resources
 
 - [Messaging Overview](https://developers.telnyx.com/docs/messaging)
-- [Send a Message — API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Send a Message - API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)
 - [Messaging Pricing](https://telnyx.com/pricing/messaging)

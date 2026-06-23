@@ -1,7 +1,7 @@
 ---
 name: branded-caller-id-manager
 title: "Branded Caller ID Manager"
-description: "Branded Caller ID Manager — register, manage, and verify branded calling profiles with STIR/SHAKEN attestation for higher answer rates."
+description: "Branded Caller ID Manager - register, manage, and verify branded calling profiles with STIR/SHAKEN attestation for higher answer rates."
 language: python
 framework: flask
 telnyx_products: [Branded Calling, CNAM Lookup, Verify]
@@ -9,13 +9,13 @@ telnyx_products: [Branded Calling, CNAM Lookup, Verify]
 
 # Branded Caller ID Manager
 
-Branded Caller ID Manager — register, manage, and verify branded calling profiles with STIR/SHAKEN attestation for higher answer rates.
+Branded Caller ID Manager - register, manage, and verify branded calling profiles with STIR/SHAKEN attestation for higher answer rates.
 
 ## Telnyx API Endpoints Used
 
-- **Update Number**: `PATCH /v2/phone_numbers/{id}` — [API reference](https://developers.telnyx.com/api/numbers/update-phone-number)
-- **CNAM Listing**: `POST /v2/cnam_requests` — [API reference](https://developers.telnyx.com/api/cnam/create-cnam-request)
-- **Number Lookup**: `GET /v2/number_lookup/{phone_number}` — [API reference](https://developers.telnyx.com/api/number-lookup/lookup-number)
+- **Update Number**: `PATCH /v2/phone_numbers/{id}` - [API reference](https://developers.telnyx.com/api/numbers/update-phone-number)
+- **CNAM Listing**: `POST /v2/cnam_requests` - [API reference](https://developers.telnyx.com/api/cnam/create-cnam-request)
+- **Number Lookup**: `GET /v2/number_lookup/{phone_number}` - [API reference](https://developers.telnyx.com/api/number-lookup/lookup-number)
 
 ## Architecture
 
@@ -42,7 +42,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -249,4 +249,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

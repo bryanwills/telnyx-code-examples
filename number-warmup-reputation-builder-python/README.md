@@ -1,7 +1,7 @@
 ---
 name: number-warmup-reputation-builder
 title: "Number Warmup & Reputation Builder"
-description: "Number Warmup & Reputation Builder — gradually ramp SMS volume on new numbers to build carrier reputation and avoid spam flags."
+description: "Number Warmup & Reputation Builder - gradually ramp SMS volume on new numbers to build carrier reputation and avoid spam flags."
 language: python
 framework: flask
 telnyx_products: [SMS/MMS]
@@ -9,11 +9,11 @@ telnyx_products: [SMS/MMS]
 
 # Number Warmup & Reputation Builder
 
-Number Warmup & Reputation Builder — gradually ramp SMS volume on new numbers to build carrier reputation and avoid spam flags.
+Number Warmup & Reputation Builder - gradually ramp SMS volume on new numbers to build carrier reputation and avoid spam flags.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api/messaging/send-message)
 
 ## Architecture
 
@@ -37,7 +37,7 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `MESSAGING_PROFILE_ID` | `string` | `40017b7e-b3c0-4ac3-8740-9c3c5a0a0e0c` | no | Messaging profile ID | [Portal](https://portal.telnyx.com/messaging/profiles) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -179,4 +179,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

@@ -1,7 +1,7 @@
 ---
 name: fax-to-ai-document-processor
 title: "Fax to AI Document Processor"
-description: "Fax to AI Document Processor — receive fax, AI extracts data, forwards structured summary."
+description: "Fax to AI Document Processor - receive fax, AI extracts data, forwards structured summary."
 language: python
 framework: flask
 telnyx_products: [SMS/MMS, AI Inference]
@@ -9,22 +9,22 @@ telnyx_products: [SMS/MMS, AI Inference]
 
 # Fax to AI Document Processor
 
-Fax to AI Document Processor — receive fax, AI extracts data, forwards structured summary.
+Fax to AI Document Processor - receive fax, AI extracts data, forwards structured summary.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events:
 
-- `fax.received` — Inbound fax received — media URL available
+- `fax.received` - Inbound fax received - media URL available
 
 ## External Service Integrations
 
-- **Email / SMTP** — Email notifications and alerts
+- **Email / SMTP** - Email notifications and alerts
 
 ## Architecture
 
@@ -55,9 +55,9 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `FAX_NUMBER` | `string` | `your_value` | **yes** | Fax number | — |
-| `FORWARD_EMAIL` | `string` | `your_value` | **yes** | Forward email | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `FAX_NUMBER` | `string` | `your_value` | **yes** | Fax number | - |
+| `FORWARD_EMAIL` | `string` | `your_value` | **yes** | Forward email | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -178,4 +178,4 @@ Receives [Telnyx Fax](https://developers.telnyx.com/docs/fax) webhook events.
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

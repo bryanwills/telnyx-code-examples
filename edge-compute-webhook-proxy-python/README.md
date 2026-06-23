@@ -13,13 +13,13 @@ channel: [voice, sms]
 
 Receive Telnyx voice and SMS webhooks at the edge with sub-10ms cold starts. Validates payloads, enriches with edge timestamps, HMAC-signs the forwarded request, and sends to your backend.
 
-**Runs on [Telnyx Edge Compute](https://developers.telnyx.com/docs/edge-compute)** — deploy with `telnyx-edge ship`.
+**Runs on [Telnyx Edge Compute](https://developers.telnyx.com/docs/edge-compute)** - deploy with `telnyx-edge ship`.
 
 ## Telnyx API Endpoints Used
 
-- **Edge Compute**: `telnyx-edge ship` — [Docs](https://developers.telnyx.com/docs/edge-compute)
-- **Call Control Webhooks**: Events from Call Control Application — [API reference](https://developers.telnyx.com/api/call-control)
-- **Messaging Webhooks**: Events from Messaging Profile — [API reference](https://developers.telnyx.com/api/messaging)
+- **Edge Compute**: `telnyx-edge ship` - [Docs](https://developers.telnyx.com/docs/edge-compute)
+- **Call Control Webhooks**: Events from Call Control Application - [API reference](https://developers.telnyx.com/api/call-control)
+- **Messaging Webhooks**: Events from Messaging Profile - [API reference](https://developers.telnyx.com/api/messaging)
 
 ## Architecture
 
@@ -53,7 +53,7 @@ Receive Telnyx voice and SMS webhooks at the edge with sub-10ms cold starts. Val
 ```bash
 telnyx-edge auth login
 telnyx-edge secrets add FORWARD_SECRET "your-hmac-secret"
-# Edit func.toml — set FORWARD_URL
+# Edit func.toml - set FORWARD_URL
 telnyx-edge ship
 ```
 
@@ -75,10 +75,10 @@ edge-compute-webhook-proxy-python/
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Single-vendor voice stack** — call control, STT, TTS, and recording from one API. No multi-vendor coordination.
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
+- **Single-vendor voice stack** - call control, STT, TTS, and recording from one API. No multi-vendor coordination.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
 
 ## Environment Variables
 

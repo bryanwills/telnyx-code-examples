@@ -13,8 +13,8 @@ Submit, track, and manage number porting orders with SLA monitoring, timeline vi
 
 ## Telnyx API Endpoints Used
 
-- **List Porting Orders**: `GET /v2/porting_orders` — [API reference](https://developers.telnyx.com/api/porting/list-porting-orders)
-- **Retrieve Porting Order**: `GET /v2/porting_orders/{id}` — [API reference](https://developers.telnyx.com/api/porting/get-porting-order)
+- **List Porting Orders**: `GET /v2/porting_orders` - [API reference](https://developers.telnyx.com/api/porting/list-porting-orders)
+- **Retrieve Porting Order**: `GET /v2/porting_orders/{id}` - [API reference](https://developers.telnyx.com/api/porting/get-porting-order)
 
 ## Architecture
 
@@ -48,8 +48,8 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `ALERT_WEBHOOK` | `string` | `your_value` | **yes** | Alert webhook | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `ALERT_WEBHOOK` | `string` | `your_value` | **yes** | Alert webhook | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -245,4 +245,4 @@ Receives Telnyx webhook events for `/webhooks/porting`.
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

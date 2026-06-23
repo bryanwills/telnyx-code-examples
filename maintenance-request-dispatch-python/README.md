@@ -15,11 +15,11 @@ Tenant texts issue, AI categorizes and estimates cost, auto-dispatches vendor fo
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## External Service Integrations
 
-- **Slack** — Team notifications via incoming webhooks ([docs](https://api.slack.com/messaging/webhooks))
+- **Slack** - Team notifications via incoming webhooks ([docs](https://api.slack.com/messaging/webhooks))
 
 ## Architecture
 
@@ -60,9 +60,9 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `MANAGER_NUMBER` | `string` | `your_value` | **yes** | Manager number | — |
+| `MANAGER_NUMBER` | `string` | `your_value` | **yes** | Manager number | - |
 | `MANAGER_SLACK_WEBHOOK` | `string` | `https://hooks.slack.com/services/T.../B.../xxx` | no | Slack webhook for manager alerts | [Portal](https://api.slack.com/messaging/webhooks) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -189,4 +189,4 @@ Receives [Telnyx Messaging](https://developers.telnyx.com/docs/messaging) webhoo
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

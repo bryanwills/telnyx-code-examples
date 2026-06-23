@@ -14,13 +14,13 @@ Create, list, and retrieve credential-authenticated Telnyx SIP connections with 
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. Credential (SIP) connections route over the Telnyx-owned IP backbone for lower latency and higher call reliability than the public internet, with SIP username/password authentication and outbound voice profiles managed entirely through the API.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. Credential (SIP) connections route over the Telnyx-owned IP backbone for lower latency and higher call reliability than the public internet, with SIP username/password authentication and outbound voice profiles managed entirely through the API.
 
 ## Telnyx API Endpoints Used
 
-- **Create Credential Connection**: `POST /v2/credential_connections` — [API reference](https://developers.telnyx.com/api/connections/create-credential-connection)
-- **List Credential Connections**: `GET /v2/credential_connections` — [API reference](https://developers.telnyx.com/api/connections/list-credential-connections)
-- **Retrieve Credential Connection**: `GET /v2/credential_connections/{id}` — [API reference](https://developers.telnyx.com/api/connections/retrieve-credential-connection)
+- **Create Credential Connection**: `POST /v2/credential_connections` - [API reference](https://developers.telnyx.com/api/connections/create-credential-connection)
+- **List Credential Connections**: `GET /v2/credential_connections` - [API reference](https://developers.telnyx.com/api/connections/list-credential-connections)
+- **Retrieve Credential Connection**: `GET /v2/credential_connections/{id}` - [API reference](https://developers.telnyx.com/api/connections/retrieve-credential-connection)
 
 These are reached through the SDK's `client.credentialConnections()` service (`create` / `list` / `retrieve`).
 
@@ -44,7 +44,7 @@ These are reached through the SDK's `client.credentialConnections()` service (`c
   └─────────────────────────────────┘
 ```
 
-A single `TelnyxClient` is created once at startup via `TelnyxOkHttpClient.fromEnv()` and shared across requests (the client is thread-safe). The HTTP layer is the JDK's `com.sun.net.httpserver.HttpServer` — no web framework. SDK response models are mapped to plain maps before serialization, and the SIP `password` is never echoed back in any response.
+A single `TelnyxClient` is created once at startup via `TelnyxOkHttpClient.fromEnv()` and shared across requests (the client is thread-safe). The HTTP layer is the JDK's `com.sun.net.httpserver.HttpServer` - no web framework. SDK response models are mapped to plain maps before serialization, and the SIP `password` is never echoed back in any response.
 
 ## Environment Variables
 
@@ -54,7 +54,7 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/app/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `o0Yv...base64...` | no | Base64 Ed25519 public key for verifying inbound webhook signatures (only if you extend this example to receive webhooks) | [Portal](https://portal.telnyx.com/app/api-keys) |
-| `PORT` | `integer` | `8080` | no | Local HTTP server port (defaults to `8080`) | — |
+| `PORT` | `integer` | `8080` | no | Local HTTP server port (defaults to `8080`) | - |
 
 > Only `TELNYX_API_KEY` is required to start the server. The Telnyx SDK reads `TELNYX_API_KEY` (and the optional `TELNYX_PUBLIC_KEY` / `TELNYX_BASE_URL`) directly from the environment via `TelnyxOkHttpClient.fromEnv()`.
 
@@ -175,10 +175,10 @@ See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-example
 
 ## Related Examples
 
-- [setup-sip-trunk-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-python/README.md) — same SIP trunk setup in Python/Flask
-- [setup-sip-trunk-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/README.md) — same SIP trunk setup in Node.js/Express
-- [setup-sip-trunk-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-go/README.md) — same SIP trunk setup in Go/Gin
-- [inbound-sip-routing-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/inbound-sip-routing-nodejs/README.md) — route inbound SIP calls
+- [setup-sip-trunk-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-python/README.md) - same SIP trunk setup in Python/Flask
+- [setup-sip-trunk-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/README.md) - same SIP trunk setup in Node.js/Express
+- [setup-sip-trunk-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-go/README.md) - same SIP trunk setup in Go/Gin
+- [inbound-sip-routing-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/inbound-sip-routing-nodejs/README.md) - route inbound SIP calls
 
 ## Resources
 

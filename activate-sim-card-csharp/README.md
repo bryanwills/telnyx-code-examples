@@ -13,11 +13,11 @@ Production-ready minimal ASP.NET (net8.0) app that enables (activates) a Telnyx 
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform that runs voice, messaging, SIP, AI, and IoT connectivity on one private, global network. The IoT SIM API lets you provision and control cellular connectivity for your fleet programmatically — enable a SIM the moment a device ships, and it joins the network on Telnyx's own backbone for predictable latency and data pricing.
+Telnyx is an **AI Communications Infrastructure** platform that runs voice, messaging, SIP, AI, and IoT connectivity on one private, global network. The IoT SIM API lets you provision and control cellular connectivity for your fleet programmatically - enable a SIM the moment a device ships, and it joins the network on Telnyx's own backbone for predictable latency and data pricing.
 
 ## Telnyx API Endpoints Used
 
-- **Enable (activate) SIM card**: `POST /v2/sim_cards/{id}/actions/enable` — moves a SIM into the `enabled` state. Called via the SDK as `SimCardsService.EnableAsync(simCardId)`. [API reference](https://developers.telnyx.com/api/wireless/enable-sim-card)
+- **Enable (activate) SIM card**: `POST /v2/sim_cards/{id}/actions/enable` - moves a SIM into the `enabled` state. Called via the SDK as `SimCardsService.EnableAsync(simCardId)`. [API reference](https://developers.telnyx.com/api/wireless/enable-sim-card)
 - **Inbound webhook (signature-verified)**: your `POST /webhooks/sim` endpoint receives Telnyx event callbacks (e.g. SIM status changes), verified with Ed25519. [Webhook reference](https://developers.telnyx.com/docs/development/api-guide/receiving-webhooks)
 
 ## Architecture
@@ -48,9 +48,9 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF...` | **yes** | Telnyx API v2 key | [Portal → API Keys](https://portal.telnyx.com/app/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `o5p...base64...=` | only for `/webhooks/sim` | Account public key used to verify Ed25519 webhook signatures | [Portal → Keys & Credentials](https://portal.telnyx.com) |
-| `ASPNETCORE_URLS` | `string` | `http://localhost:5000` | no | Override the bind address/port | — |
+| `ASPNETCORE_URLS` | `string` | `http://localhost:5000` | no | Override the bind address/port | - |
 
-Never commit a real `.env` file — only `.env.example` with placeholder values.
+Never commit a real `.env` file - only `.env.example` with placeholder values.
 
 ## Setup
 
@@ -103,7 +103,7 @@ curl -X POST http://localhost:5000/webhooks/sim \
 { "received": true, "event_type": "sim_card.status.changed" }
 ```
 
-**Response `401 Unauthorized`** — invalid signature or stale timestamp.
+**Response `401 Unauthorized`** - invalid signature or stale timestamp.
 
 ### `GET /health`
 
@@ -134,8 +134,8 @@ See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-example
 
 ## Resources
 
-- [IoT SIM API guide](https://developers.telnyx.com/docs/wireless/get-started) — dev docs
-- [Enable SIM Card API reference](https://developers.telnyx.com/api/wireless/enable-sim-card) — api-reference
-- [Telnyx .NET SDK](https://developers.telnyx.com/development/sdk/dotnet) — SDK
-- [Telnyx IoT SIM Cards](https://telnyx.com/products/iot-sim-card) — product
-- [IoT SIM pricing](https://telnyx.com/pricing/wireless) — pricing
+- [IoT SIM API guide](https://developers.telnyx.com/docs/wireless/get-started) - dev docs
+- [Enable SIM Card API reference](https://developers.telnyx.com/api/wireless/enable-sim-card) - api-reference
+- [Telnyx .NET SDK](https://developers.telnyx.com/development/sdk/dotnet) - SDK
+- [Telnyx IoT SIM Cards](https://telnyx.com/products/iot-sim-card) - product
+- [IoT SIM pricing](https://telnyx.com/pricing/wireless) - pricing

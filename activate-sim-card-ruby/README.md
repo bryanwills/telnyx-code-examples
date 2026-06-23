@@ -13,15 +13,15 @@ Activate (enable) a Telnyx IoT SIM card over HTTP using the Telnyx Ruby SDK and 
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT SIM management on one private, global network — so you provision and activate cellular connectivity through the same API you use for the rest of your stack.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT SIM management on one private, global network - so you provision and activate cellular connectivity through the same API you use for the rest of your stack.
 
-- **Global IoT SIMs** — a single SKU with multi-carrier coverage, managed entirely over the API.
-- **Developer-first** — official SDKs (Ruby, Python, Node.js, Go, and more) with a consistent client interface and a comprehensive webhook event model.
-- **Private network** — traffic traverses the Telnyx-owned IP network for lower latency and higher reliability than the public internet.
+- **Global IoT SIMs** - a single SKU with multi-carrier coverage, managed entirely over the API.
+- **Developer-first** - official SDKs (Ruby, Python, Node.js, Go, and more) with a consistent client interface and a comprehensive webhook event model.
+- **Private network** - traffic traverses the Telnyx-owned IP network for lower latency and higher reliability than the public internet.
 
 ## Telnyx API Endpoints Used
 
-- **Enable (activate) SIM Card**: `POST /v2/sim_cards/{id}/actions/enable` — [API reference](https://developers.telnyx.com/api-reference/sim-cards/enable-sim-card)
+- **Enable (activate) SIM Card**: `POST /v2/sim_cards/{id}/actions/enable` - [API reference](https://developers.telnyx.com/api-reference/sim-cards/enable-sim-card)
 
 The SDK method is `client.sim_cards.actions.enable(sim_card_id)`.
 
@@ -61,7 +61,7 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal → Keys & Credentials](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `o6i...base64...=` | webhooks only | Base64 Ed25519 public key used to verify inbound webhook signatures | Portal → Account → Keys & Credentials → Public Key |
-| `PORT` | `int` | `4567` | no | Port the Sinatra server listens on (default `4567`) | — |
+| `PORT` | `int` | `4567` | no | Port the Sinatra server listens on (default `4567`) | - |
 
 ## Setup
 
@@ -111,7 +111,7 @@ Receives SIM status-change webhooks from Telnyx. The handler verifies the Ed2551
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | App exits with `TELNYX_API_KEY environment variable not set` on startup | `.env` missing or not loaded | Confirm `.env` exists in the same directory as `app.rb` and contains `TELNYX_API_KEY`. `dotenv/load` runs on require. |
-| `LoadError` mentioning `standardwebhooks` when starting | `standardwebhooks` not installed | `require "telnyx"` loads it at startup. Run `bundle install` — it is pinned in the `Gemfile`. |
+| `LoadError` mentioning `standardwebhooks` when starting | `standardwebhooks` not installed | `require "telnyx"` loads it at startup. Run `bundle install` - it is pinned in the `Gemfile`. |
 | `{"error": "Invalid API key"}` (HTTP 401) on `/sim/activate` | `TELNYX_API_KEY` is wrong or revoked | Generate a new key at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) and update `.env`. Remove any trailing spaces or quotes. |
 | `{"error": "Missing required field: 'sim_card_id'"}` (HTTP 400) | Body missing `sim_card_id` or not valid JSON | Send a JSON body with a non-empty `sim_card_id` and `Content-Type: application/json`. |
 | API error about SIM status / group | SIM is not in a state that can be enabled, or is not in a SIM card group | A SIM must belong to a SIM card group before it can be enabled. Check the SIM in [Telnyx Portal](https://portal.telnyx.com) under IoT → SIM Cards. |
@@ -121,10 +121,10 @@ Receives SIM status-change webhooks from Telnyx. The handler verifies the Ed2551
 
 ## Related Examples
 
-- [activate-sim-card-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-python/README.md) — Same flow in Python
-- [activate-sim-card-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-nodejs/README.md) — Same flow in Node.js
-- [activate-sim-card-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-go/README.md) — Same flow in Go
-- [send-sms-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-ruby/README.md) — Send SMS with the Telnyx Ruby SDK
+- [activate-sim-card-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-python/README.md) - Same flow in Python
+- [activate-sim-card-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-nodejs/README.md) - Same flow in Node.js
+- [activate-sim-card-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/activate-sim-card-go/README.md) - Same flow in Go
+- [send-sms-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-ruby/README.md) - Send SMS with the Telnyx Ruby SDK
 
 ## Resources
 

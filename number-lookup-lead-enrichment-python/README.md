@@ -1,7 +1,7 @@
 ---
 name: number-lookup-lead-enrichment
 title: "Number Lookup Lead Enrichment"
-description: "Number Lookup Lead Enrichment — CNAM and carrier lookup to qualify and enrich sales leads."
+description: "Number Lookup Lead Enrichment - CNAM and carrier lookup to qualify and enrich sales leads."
 language: python
 framework: flask
 telnyx_products: [AI Inference, Number Lookup]
@@ -9,16 +9,16 @@ telnyx_products: [AI Inference, Number Lookup]
 
 # Number Lookup Lead Enrichment
 
-Number Lookup Lead Enrichment — CNAM and carrier lookup to qualify and enrich sales leads.
+Number Lookup Lead Enrichment - CNAM and carrier lookup to qualify and enrich sales leads.
 
 ## Telnyx API Endpoints Used
 
-- **Number Lookup**: `GET /v2/number_lookup/{phone}` — [API reference](https://developers.telnyx.com/api/number-lookup/lookup)
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Number Lookup**: `GET /v2/number_lookup/{phone}` - [API reference](https://developers.telnyx.com/api/number-lookup/lookup)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## External Service Integrations
 
-- **Email / SMTP** — Email notifications and alerts
+- **Email / SMTP** - Email notifications and alerts
 
 ## Architecture
 
@@ -45,7 +45,7 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -142,4 +142,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

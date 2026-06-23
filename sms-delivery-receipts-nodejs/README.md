@@ -40,11 +40,11 @@ Send SMS through Telnyx and track each message's final delivery status using sig
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Real delivery feedback** — finalized webhooks tell you whether each message was actually delivered or failed, with carrier-level error reasons.
-- **Signed webhooks** — every inbound event is Ed25519-signed so you can reject spoofed requests.
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
+- **Real delivery feedback** - finalized webhooks tell you whether each message was actually delivered or failed, with carrier-level error reasons.
+- **Signed webhooks** - every inbound event is Ed25519-signed so you can reject spoofed requests.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
 
 See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-delivery-receipts-nodejs/API.md) for the typed endpoint reference and [GUIDE.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-delivery-receipts-nodejs/GUIDE.md) for a step-by-step tutorial.
 
@@ -57,7 +57,7 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal → API Keys](https://portal.telnyx.com/app/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `o4i...=` | **yes** | Public key used to verify inbound webhook signatures | [Portal → Account → Public Key](https://portal.telnyx.com/app/account/public-key) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number (E.164) used as the SMS sender | [Portal → My Numbers](https://portal.telnyx.com/app/numbers/my-numbers) |
-| `PORT` | `number` | `3000` | no | Port the Express server listens on | — |
+| `PORT` | `number` | `3000` | no | Port the Express server listens on | - |
 
 ## Setup
 
@@ -111,7 +111,7 @@ curl -X POST http://localhost:3000/sms/send \
 
 ### `POST /webhooks/sms`
 
-Receives Telnyx delivery-receipt webhooks. The raw body and `telnyx-signature-ed25519` / `telnyx-timestamp` headers are verified against `TELNYX_PUBLIC_KEY` on every request; unsigned or invalid requests get `401`. Telnyx calls this endpoint — you do not call it directly.
+Receives Telnyx delivery-receipt webhooks. The raw body and `telnyx-signature-ed25519` / `telnyx-timestamp` headers are verified against `TELNYX_PUBLIC_KEY` on every request; unsigned or invalid requests get `401`. Telnyx calls this endpoint - you do not call it directly.
 
 ```json
 {
@@ -173,14 +173,14 @@ curl http://localhost:3000/receipts
 
 ## Related Examples
 
-- [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md) — send a single SMS.
-- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) — receive inbound SMS via webhooks.
-- [send-bulk-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-nodejs/README.md) — send SMS to many recipients.
+- [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md) - send a single SMS.
+- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) - receive inbound SMS via webhooks.
+- [send-bulk-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-nodejs/README.md) - send SMS to many recipients.
 
 ## Resources
 
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
-- [Send a Message — API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Send a Message - API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Webhook signing & verification](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)

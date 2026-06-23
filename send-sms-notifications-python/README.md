@@ -14,16 +14,16 @@ Production-ready Flask service that sends SMS notifications, tracks delivery sta
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
-- **Signed webhooks** — every delivery-status callback is Ed25519-signed, so you can verify it really came from Telnyx before acting on it.
-- **One API across channels** — start with SMS notifications, add voice or AI later without changing vendors.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
+- **Signed webhooks** - every delivery-status callback is Ed25519-signed, so you can verify it really came from Telnyx before acting on it.
+- **One API across channels** - start with SMS notifications, add voice or AI later without changing vendors.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — sends an outbound SMS. [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
-- **Inbound delivery webhooks** — Telnyx posts `message.sent` and `message.finalized` events to your `/api/webhooks/sms` route. [Webhook reference](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
+- **Send Message**: `POST /v2/messages` - sends an outbound SMS. [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- **Inbound delivery webhooks** - Telnyx posts `message.sent` and `message.finalized` events to your `/api/webhooks/sms` route. [Webhook reference](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 
 ## Architecture
 
@@ -55,9 +55,9 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal → API Keys](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `abc123...` | **yes** | Public key used to verify inbound webhook signatures | [Portal → Account → Keys & Credentials](https://portal.telnyx.com) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number to send from (E.164) | [Portal → Numbers](https://portal.telnyx.com/numbers/my-numbers) |
-| `WEBHOOK_URL` | `string` | `https://abc.ngrok.io/api/webhooks/sms` | no | Public URL Telnyx posts delivery events to | — |
-| `FLASK_ENV` | `string` | `development` | no | Flask environment | — |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug mode | — |
+| `WEBHOOK_URL` | `string` | `https://abc.ngrok.io/api/webhooks/sms` | no | Public URL Telnyx posts delivery events to | - |
+| `FLASK_ENV` | `string` | `development` | no | Flask environment | - |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug mode | - |
 
 ## Setup
 
@@ -187,20 +187,20 @@ is read from `data.event_type`; message fields are read from `data.payload`.
 
 - **`401 invalid signature` on the webhook**: `TELNYX_PUBLIC_KEY` is missing or wrong, or the raw body was altered by a proxy. Copy the Public Key from the Portal exactly and ensure nothing rewrites the request body before Flask reads it.
 - **`401 Invalid API key` on send**: Your `TELNYX_API_KEY` is invalid. Generate a new one at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys).
-- **`Phone number must be in E.164 format`**: Numbers must start with `+` and country code, no spaces or dashes — e.g. `+12125551234`.
+- **`Phone number must be in E.164 format`**: Numbers must start with `+` and country code, no spaces or dashes - e.g. `+12125551234`.
 - **Status never moves past `sent`**: Telnyx can't reach your webhook. Confirm the ngrok URL is set on the Messaging Profile and points at `/api/webhooks/sms`.
 - **`429 Rate limit exceeded`**: You're sending faster than your plan allows. Throttle sends or queue them.
 
 ## Related Examples
 
-- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — minimal single-message send.
-- [sms-delivery-receipts-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-delivery-receipts-python/README.md) — focused on delivery-receipt webhooks.
-- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) — handling inbound messages.
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - minimal single-message send.
+- [sms-delivery-receipts-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-delivery-receipts-python/README.md) - focused on delivery-receipt webhooks.
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) - handling inbound messages.
 
 ## Resources
 
 - [Messaging Overview](https://developers.telnyx.com/docs/messaging)
-- [Send an SMS — Quickstart](https://developers.telnyx.com/docs/messaging/messages/send-message)
+- [Send an SMS - Quickstart](https://developers.telnyx.com/docs/messaging/messages/send-message)
 - [Receive Webhooks](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Messaging API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)

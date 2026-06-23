@@ -15,12 +15,12 @@ Generate professional IVR/phone system prompts. AI writes caller-friendly script
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.answered` — Call connected — app begins interaction (TTS greeting, gather)
-- `call.speak.ended` — TTS playback finished — app transitions to next action (gather, transfer, etc.)
+- `call.answered` - Call connected - app begins interaction (TTS greeting, gather)
+- `call.speak.ended` - TTS playback finished - app transitions to next action (gather, transfer, etc.)
 
 ## External Service Integrations
 
-- **Email / SMTP** — Email notifications and alerts
+- **Email / SMTP** - Email notifications and alerts
 
 ## Architecture
 
@@ -57,7 +57,7 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 - **Speak (playback)**: `POST /v2/calls/{id}/actions/speak` -- [ref](https://developers.telnyx.com/api/call-control/speak)
 - **Cloud Storage (S3-compatible)**: `s3.put_object(...)` via boto3 against `https://{region}.telnyxcloudstorage.com`, then a presigned GET URL -- [docs](https://developers.telnyx.com/docs/cloud-storage/quick-start)
 
-Telnyx Cloud Storage is S3-compatible, so rendered TTS audio is uploaded with the AWS SDK (boto3) pointed at the region-scoped Telnyx S3 endpoint — not a REST API. Auth uses your Telnyx API key as **both** the access key and the secret key. Each upload returns a time-limited presigned GET URL (valid 1 hour) you can drop straight into a Call Control `speak`/`playback_audio` command or a TeXML `<Play>` verb.
+Telnyx Cloud Storage is S3-compatible, so rendered TTS audio is uploaded with the AWS SDK (boto3) pointed at the region-scoped Telnyx S3 endpoint - not a REST API. Auth uses your Telnyx API key as **both** the access key and the secret key. Each upload returns a time-limited presigned GET URL (valid 1 hour) you can drop straight into a Call Control `speak`/`playback_audio` command or a TeXML `<Play>` verb.
 
 ## Environment Variables
 
@@ -126,7 +126,7 @@ curl http://localhost:5000/health
 
 ### `POST /webhooks/voice`
 
-Handles Telnyx Call Control webhook events. Called automatically by Telnyx — do not call directly.
+Handles Telnyx Call Control webhook events. Called automatically by Telnyx - do not call directly.
 
 ## Troubleshooting
 
@@ -153,4 +153,4 @@ Handles Telnyx Call Control webhook events. Called automatically by Telnyx — d
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

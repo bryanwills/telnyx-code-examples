@@ -14,7 +14,7 @@ Receive inbound SMS messages via Telnyx webhooks with an Express server. Validat
 
 ## Telnyx API Endpoints Used
 
-This example does not call the Telnyx REST API — it receives webhook events that Telnyx sends to your server when an SMS arrives.
+This example does not call the Telnyx REST API - it receives webhook events that Telnyx sends to your server when an SMS arrives.
 
 - **Inbound Message webhook**: `POST /webhooks/sms` (your endpoint, called by Telnyx) -- [Webhook reference](https://developers.telnyx.com/docs/messaging/messages/receive-message)
 
@@ -39,9 +39,9 @@ This example does not call the Telnyx REST API — it receives webhook events th
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. Inbound SMS is delivered over the Telnyx-owned network with a webhook event model built for low-latency, reliable delivery.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. Inbound SMS is delivered over the Telnyx-owned network with a webhook event model built for low-latency, reliable delivery.
 
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
 
 ## Environment Variables
 
@@ -50,7 +50,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key used to initialize the SDK client | [Portal](https://portal.telnyx.com/api-keys) |
-| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000`) | — |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000`) | - |
 
 ## Setup
 
@@ -160,7 +160,7 @@ curl http://localhost:5000/health
 | Connection refused on port 5000 | Server isn't running, or another process holds the port. | Run `node server.js` and confirm no other process uses the port. Note the code defaults to `3000` if `PORT` is unset. |
 | `400 {"error":"Invalid webhook payload"}` | Request body is missing `data`. | Send a JSON body with a `data` object. Ensure `body-parser` runs before the route and `Content-Type: application/json` is set. |
 | `400 {"error":"Invalid webhook payload structure"}` | Body has `data` but no `data.payload`. | Confirm the Messaging Profile is sending the `message.received` event and the payload nests message fields under `data.payload`. |
-| `400 {"error":"Missing sender or recipient phone number in webhook"}` | `from.phone_number` or `to[0].phone_number` is absent. | Inspect the payload — `from` is at `data.payload.from.phone_number`, `to` at `data.payload.to[0].phone_number`. Update accessors if your API version differs. |
+| `400 {"error":"Missing sender or recipient phone number in webhook"}` | `from.phone_number` or `to[0].phone_number` is absent. | Inspect the payload - `from` is at `data.payload.from.phone_number`, `to` at `data.payload.to[0].phone_number`. Update accessors if your API version differs. |
 | No webhook requests arrive | Webhook URL not reachable or not assigned. | Verify the HTTPS URL (use ngrok locally), confirm it ends in `/webhooks/sms`, and assign your number to the Messaging Profile. Check Portal webhook delivery logs. |
 
 ## Related Examples

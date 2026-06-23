@@ -1,7 +1,7 @@
 ---
 name: merge-interview-pipeline
 title: "Merge Interview Pipeline"
-description: "ATS webhook fires when a new application arrives."
+description: "ATS webhook fires when a new application arrives, triggering Telnyx Voice, AI Inference, and Messaging with Merge ATS."
 language: python
 framework: flask
 telnyx_products: [Voice, AI Inference, Messaging]
@@ -17,7 +17,7 @@ ATS webhook fires when a new application arrives. App calls the candidate within
 
 ## Why Telnyx
 
-Telnyx is **AI Communications Infrastructure** — outbound calls, real-time speech gather, text-to-speech, AI inference, and SMS all run on one private global network, so this entire screen-call-score-confirm pipeline needs a single provider and a single API key. Placing the outbound call, conducting the AI conversation, scoring the transcript, and texting the confirmation happen with low latency and no carrier hop-off between vendors. That keeps candidate experience fast and your hiring automation simple to operate.
+Telnyx is **AI Communications Infrastructure** - outbound calls, real-time speech gather, text-to-speech, AI inference, and SMS all run on one private global network, so this entire screen-call-score-confirm pipeline needs a single provider and a single API key. Placing the outbound call, conducting the AI conversation, scoring the transcript, and texting the confirmation happen with low latency and no carrier hop-off between vendors. That keeps candidate experience fast and your hiring automation simple to operate.
 
 ## Telnyx API Endpoints Used
 
@@ -180,10 +180,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [ai-hiring-phone-screen-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-hiring-phone-screen-python/README.md) — AI-conducted phone screen without the ATS integration
-- [interview-screen-scheduler-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/interview-screen-scheduler-python/README.md) — schedule candidate screens over voice/SMS
-- [merge-recruitment-hotline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-recruitment-hotline-python/README.md) — Merge ATS-backed recruiting hotline
-- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — route inbound calls to an AI voice agent
+- [ai-hiring-phone-screen-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-hiring-phone-screen-python/README.md) - AI-conducted phone screen without the ATS integration
+- [interview-screen-scheduler-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/interview-screen-scheduler-python/README.md) - schedule candidate screens over voice/SMS
+- [merge-recruitment-hotline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-recruitment-hotline-python/README.md) - Merge ATS-backed recruiting hotline
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) - route inbound calls to an AI voice agent
 
 ## Resources
 

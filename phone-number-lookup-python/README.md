@@ -38,11 +38,11 @@ Look up carrier, line type, and portability data for any phone number using the 
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Authoritative number data** — carrier, line type, and number portability sourced directly, not resold.
-- **Low latency** — lookups served over the Telnyx-owned IP network.
-- **One API, one bill** — Number Lookup sits alongside Voice, Messaging, SIP, and IoT under a single account.
+- **Authoritative number data** - carrier, line type, and number portability sourced directly, not resold.
+- **Low latency** - lookups served over the Telnyx-owned IP network.
+- **One API, one bill** - Number Lookup sits alongside Voice, Messaging, SIP, and IoT under a single account.
 
 ## Environment Variables
 
@@ -51,7 +51,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode | - |
 
 ## Setup
 
@@ -127,7 +127,7 @@ curl http://localhost:5000/cache/stats
 - **Connection refused on port 5000**: App isn't running. Run `python app.py` and check no other process uses port 5000.
 - **401 Invalid API key**: Your `TELNYX_API_KEY` is wrong or revoked. Generate a new one at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) and restart the server.
 - **400 Invalid request**: The number is not in E.164 format. Numbers must start with `+` followed by country code and digits, e.g. `+15551234567`.
-- **429 Rate limit exceeded**: Space out requests and rely on the cache — repeated lookups of the same number return `from_cache: true` without hitting the API.
+- **429 Rate limit exceeded**: Space out requests and rely on the cache - repeated lookups of the same number return `from_cache: true` without hitting the API.
 - **503 Network error**: Telnyx was unreachable. Check connectivity and the [Telnyx Status Page](https://status.telnyx.com).
 
 ## Related Examples

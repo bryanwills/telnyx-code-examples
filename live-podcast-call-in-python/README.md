@@ -118,7 +118,7 @@ curl http://localhost:5000/health
 
 ### `POST /webhooks/voice`
 
-Handles Telnyx Call Control webhook events. Called automatically by Telnyx — do not call directly.
+Handles Telnyx Call Control webhook events. Called automatically by Telnyx - do not call directly.
 
 ## Troubleshooting
 
@@ -145,4 +145,4 @@ Handles Telnyx Call Control webhook events. Called automatically by Telnyx — d
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

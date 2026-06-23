@@ -1,7 +1,7 @@
 ---
 name: compliance-call-recorder-ai-auditor
 title: "Compliance Call Recorder + AI Auditor"
-description: "Compliance Call Recorder + AI Auditor — auto-record, batch-process with AI, flag violations, create tickets."
+description: "Compliance Call Recorder + AI Auditor - auto-record, batch-process with AI, flag violations, create tickets."
 language: python
 framework: flask
 telnyx_products: [Voice AI, AI Inference, Call Recording]
@@ -10,22 +10,22 @@ channel: [voice]
 
 # Compliance Call Recorder + AI Auditor
 
-Compliance Call Recorder + AI Auditor — auto-record, batch-process with AI, flag violations, create tickets.
+Compliance Call Recorder + AI Auditor - auto-record, batch-process with AI, flag violations, create tickets.
 
 ## Telnyx APIs Used
 
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 - **Cloud Storage (S3-compatible)**: recordings are uploaded with the AWS S3 SDK (`boto3`) against the regional endpoint `https://{region}.telnyxcloudstorage.com`. Authentication is S3 SigV4 with your Telnyx API key supplied as **both** the access key and the secret key. See the [Cloud Storage quickstart](https://developers.telnyx.com/docs/cloud-storage/quick-start).
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.answered` — Call connected — app begins interaction
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.initiated` — New inbound or outbound call detected
-- `call.recording.saved` — Call recording saved — URL available for download/processing
-- `call.transcription` — Real-time transcription chunk received
+- `call.answered` - Call connected - app begins interaction
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.initiated` - New inbound or outbound call detected
+- `call.recording.saved` - Call recording saved - URL available for download/processing
+- `call.transcription` - Real-time transcription chunk received
 
 ## Architecture
 
@@ -61,13 +61,13 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key — also used as both the access key and secret key for the S3-compatible Cloud Storage API | [Portal](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key - also used as both the access key and secret key for the S3-compatible Cloud Storage API | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
 | `STORAGE_BUCKET` | `string` | `my-bucket` | no | Telnyx Cloud Storage bucket name (recordings are skipped if unset) | [Portal](https://portal.telnyx.com/storage) |
-| `TELNYX_STORAGE_REGION` | `string` | `us-central-1` | no | Cloud Storage region — selects the `https://{region}.telnyxcloudstorage.com` endpoint (`us-central-1`, `us-east-1`, `us-west-1`, `eu-central-1`); defaults to `us-central-1` | [Quickstart](https://developers.telnyx.com/docs/cloud-storage/quick-start) |
-| `TICKET_WEBHOOK_URL` | `string` | `https://your-server.example.com/webhook` | **yes** | Ticket webhook url | — |
+| `TELNYX_STORAGE_REGION` | `string` | `us-central-1` | no | Cloud Storage region - selects the `https://{region}.telnyxcloudstorage.com` endpoint (`us-central-1`, `us-east-1`, `us-west-1`, `eu-central-1`); defaults to `us-central-1` | [Quickstart](https://developers.telnyx.com/docs/cloud-storage/quick-start) |
+| `TICKET_WEBHOOK_URL` | `string` | `https://your-server.example.com/webhook` | **yes** | Ticket webhook url | - |
 | `TELNYX_PUBLIC_KEY` | `string` | `your_telnyx_public_key_here` | no | Public key used to verify Telnyx webhook signatures | [Portal](https://portal.telnyx.com/api-keys) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -197,4 +197,4 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

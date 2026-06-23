@@ -1,7 +1,7 @@
 ---
 name: edge-merge-reference-checker
 title: "Edge Merge Reference Checker"
-description: "ATS application reaches reference-check stage."
+description: "Automate reference checks when an ATS application advances using Telnyx Voice and AI Inference with Merge ATS."
 language: python
 framework: flask
 telnyx_products: [Edge Compute, Voice, AI Inference, Messaging]
@@ -17,7 +17,7 @@ ATS application reaches reference-check stage. Calls each reference. AI conducts
 
 ## Why Telnyx
 
-This example runs outbound voice calls, real-time AI inference, and SMS notifications on Telnyx's **AI Communications Infrastructure** — one private global network instead of bolting together separate voice, AI, and messaging vendors. The same API key places the reference call, scores the responses with AI Inference, and texts the hiring manager the summary, so reference checks complete end-to-end with low latency and a single point of integration.
+This example runs outbound voice calls, real-time AI inference, and SMS notifications on Telnyx's **AI Communications Infrastructure** - one private global network instead of bolting together separate voice, AI, and messaging vendors. The same API key places the reference call, scores the responses with AI Inference, and texts the hiring manager the summary, so reference checks complete end-to-end with low latency and a single point of integration.
 
 ## Telnyx API Endpoints Used
 
@@ -181,10 +181,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [edge-merge-ai-receptionist-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-ai-receptionist-python/README.md) — Edge voice + Merge ATS/CRM AI receptionist sibling
-- [edge-merge-shift-coverage-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-shift-coverage-python/README.md) — outbound voice + Merge integration for filling open shifts
-- [ai-hiring-phone-screen-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-hiring-phone-screen-python/README.md) — AI-conducted structured phone screen for candidates
-- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — Call Control patterns for connecting calls to an AI agent
+- [edge-merge-ai-receptionist-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-ai-receptionist-python/README.md) - Edge voice + Merge ATS/CRM AI receptionist sibling
+- [edge-merge-shift-coverage-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-shift-coverage-python/README.md) - outbound voice + Merge integration for filling open shifts
+- [ai-hiring-phone-screen-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-hiring-phone-screen-python/README.md) - AI-conducted structured phone screen for candidates
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) - Call Control patterns for connecting calls to an AI agent
 
 ## Resources
 

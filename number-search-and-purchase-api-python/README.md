@@ -1,7 +1,7 @@
 ---
 name: number-search-and-purchase-api
 title: "Number Search and Purchase API"
-description: "Number Search and Purchase API — search, filter, and buy phone numbers programmatically."
+description: "Number Search and Purchase API - search, filter, and buy phone numbers programmatically."
 language: python
 framework: flask
 telnyx_products: [Numbers]
@@ -9,13 +9,13 @@ telnyx_products: [Numbers]
 
 # Number Search and Purchase API
 
-Number Search and Purchase API — search, filter, and buy phone numbers programmatically.
+Number Search and Purchase API - search, filter, and buy phone numbers programmatically.
 
 ## Telnyx API Endpoints Used
 
-- **Search Available Numbers**: `GET /v2/available_phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-available-phone-numbers)
-- **Create Number Order**: `POST /v2/number_orders` — [API reference](https://developers.telnyx.com/api/numbers/create-number-order)
-- **List Phone Numbers**: `GET /v2/phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-phone-numbers)
+- **Search Available Numbers**: `GET /v2/available_phone_numbers` - [API reference](https://developers.telnyx.com/api/numbers/list-available-phone-numbers)
+- **Create Number Order**: `POST /v2/number_orders` - [API reference](https://developers.telnyx.com/api/numbers/create-number-order)
+- **List Phone Numbers**: `GET /v2/phone_numbers` - [API reference](https://developers.telnyx.com/api/numbers/list-phone-numbers)
 
 ## Architecture
 
@@ -42,7 +42,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -169,4 +169,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

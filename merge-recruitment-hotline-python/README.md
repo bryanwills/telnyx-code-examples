@@ -1,7 +1,7 @@
 ---
 name: merge-recruitment-hotline
 title: "Merge Recruitment Hotline"
-description: "Job seekers call."
+description: "Job seekers call a recruitment hotline powered by Telnyx Voice, AI Inference, and Messaging with Merge ATS."
 language: python
 framework: flask
 telnyx_products: [Voice, AI Inference, Messaging]
@@ -17,7 +17,7 @@ Job seekers call. AI asks what role they want, searches open positions in ATS vi
 
 ## Why Telnyx
 
-Telnyx is the AI Communications Infrastructure that runs voice, messaging, and AI inference on one owned, private global network — so the call audio, the TTS, the LLM that describes job matches, and the confirmation SMS all live behind a single API and key. This example uses Telnyx Call Control for the inbound phone leg, the Telnyx AI Inference endpoint for conversational job descriptions, and the Messaging API for the confirmation text, with no third-party telecom or model providers to stitch together. Keeping it on one low-latency backbone means faster spoken responses and one bill, one SLA, and one support team for the whole hotline.
+Telnyx is the AI Communications Infrastructure that runs voice, messaging, and AI inference on one owned, private global network - so the call audio, the TTS, the LLM that describes job matches, and the confirmation SMS all live behind a single API and key. This example uses Telnyx Call Control for the inbound phone leg, the Telnyx AI Inference endpoint for conversational job descriptions, and the Messaging API for the confirmation text, with no third-party telecom or model providers to stitch together. Keeping it on one low-latency backbone means faster spoken responses and one bill, one SLA, and one support team for the whole hotline.
 
 ## Telnyx API Endpoints Used
 
@@ -164,10 +164,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [merge-interview-pipeline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-interview-pipeline-python/README.md) — voice-driven interview pipeline updates against a Merge ATS.
-- [edge-merge-reference-checker-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-reference-checker-python/README.md) — automated reference checks over Merge for hiring workflows.
-- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — route inbound Call Control calls into a Telnyx AI voice agent.
-- [ai-phone-story-hotline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-phone-story-hotline-python/README.md) — another inbound voice hotline using gather-using-speak and AI inference.
+- [merge-interview-pipeline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-interview-pipeline-python/README.md) - voice-driven interview pipeline updates against a Merge ATS.
+- [edge-merge-reference-checker-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-reference-checker-python/README.md) - automated reference checks over Merge for hiring workflows.
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) - route inbound Call Control calls into a Telnyx AI voice agent.
+- [ai-phone-story-hotline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-phone-story-hotline-python/README.md) - another inbound voice hotline using gather-using-speak and AI inference.
 
 ## Resources
 

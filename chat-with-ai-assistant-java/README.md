@@ -14,14 +14,14 @@ Chat with a Telnyx AI Assistant and thread a multi-turn conversation using the T
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT SIM management on one private, global network. The AI Assistants API lets you build conversational agents that you can reach over the same API key and SDK you use for everything else.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT SIM management on one private, global network. The AI Assistants API lets you build conversational agents that you can reach over the same API key and SDK you use for everything else.
 
-- **Conversational AI** — send a message to an assistant and get a reply, with a conversation id to thread multi-turn exchanges.
-- **One platform** — AI sits next to voice, messaging, and SIP under a single API key.
+- **Conversational AI** - send a message to an assistant and get a reply, with a conversation id to thread multi-turn exchanges.
+- **One platform** - AI sits next to voice, messaging, and SIP under a single API key.
 
 ## Telnyx API Endpoints Used
 
-- **Chat with an AI Assistant**: `POST /v2/ai/assistants/{assistant_id}/chat` — via `client.ai().assistants().chat(assistantId, params)` — [API reference](https://developers.telnyx.com/api-reference/assistants/chat)
+- **Chat with an AI Assistant**: `POST /v2/ai/assistants/{assistant_id}/chat` - via `client.ai().assistants().chat(assistantId, params)` - [API reference](https://developers.telnyx.com/api-reference/assistants/chat)
 
 ## Architecture
 
@@ -51,9 +51,9 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key, read by `TelnyxOkHttpClient.fromEnv()` | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_ASSISTANT_ID` | `string` | `assistant-abc123` | **yes** | The AI Assistant to chat with | AI → Assistants in the [Portal](https://portal.telnyx.com) |
-| `PORT` | `number` | `8080` | no | Port the `HttpServer` listens on (defaults to `8080`) | — |
+| `PORT` | `number` | `8080` | no | Port the `HttpServer` listens on (defaults to `8080`) | - |
 
-The Telnyx Java SDK reads `TELNYX_API_KEY` (and optional `TELNYX_BASE_URL`) directly from the process environment. Export the variables into your shell before running — see Setup.
+The Telnyx Java SDK reads `TELNYX_API_KEY` (and optional `TELNYX_BASE_URL`) directly from the process environment. Export the variables into your shell before running - see Setup.
 
 ## Setup
 
@@ -137,7 +137,7 @@ See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-example
 ## Resources
 
 - [AI Assistants Guide](https://developers.telnyx.com/docs/inference/ai-assistants/no-code-voice-assistant)
-- [Chat with an Assistant — API Reference](https://developers.telnyx.com/api-reference/assistants/chat)
+- [Chat with an Assistant - API Reference](https://developers.telnyx.com/api-reference/assistants/chat)
 - [Java SDK](https://developers.telnyx.com/development/sdk/java)
 - [Telnyx AI Assistants](https://telnyx.com/ai-assistants)
 - [AI Inference Pricing](https://telnyx.com/pricing/inference)

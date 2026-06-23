@@ -1,7 +1,7 @@
 ---
 name: mms-receipt-scanner-expense-tracker
 title: "MMS Receipt Scanner & Expense Tracker"
-description: "MMS Receipt Scanner & Expense Tracker — text a photo of a receipt, AI extracts data and tracks expenses."
+description: "MMS Receipt Scanner & Expense Tracker - text a photo of a receipt, AI extracts data and tracks expenses."
 language: python
 framework: flask
 telnyx_products: [SMS/MMS, AI Inference]
@@ -10,18 +10,18 @@ channel: [sms]
 
 # MMS Receipt Scanner & Expense Tracker
 
-MMS Receipt Scanner & Expense Tracker — text a photo of a receipt, AI extracts data and tracks expenses.
+MMS Receipt Scanner & Expense Tracker - text a photo of a receipt, AI extracts data and tracks expenses.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Messaging docs](https://developers.telnyx.com/docs/api/v2/messaging)):
 
-- `message.received` — Inbound SMS/MMS received
+- `message.received` - Inbound SMS/MMS received
 
 ## Architecture
 
@@ -53,8 +53,8 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `BOT_NUMBER` | `string` | `your_value` | **yes** | Bot number | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `BOT_NUMBER` | `string` | `your_value` | **yes** | Bot number | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -158,4 +158,4 @@ Receives [Telnyx Messaging](https://developers.telnyx.com/docs/messaging) webhoo
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

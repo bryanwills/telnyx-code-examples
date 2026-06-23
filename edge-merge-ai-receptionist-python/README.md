@@ -1,7 +1,7 @@
 ---
 name: edge-merge-ai-receptionist
 title: "Edge Merge AI Receptionist"
-description: "Edge worker answers every call."
+description: "Edge worker answers every call using Telnyx Voice, AI Inference, and Edge Compute with Merge HRIS."
 language: python
 framework: flask
 telnyx_products: [Edge Compute, Voice, AI Inference]

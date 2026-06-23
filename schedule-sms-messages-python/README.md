@@ -14,15 +14,15 @@ Schedule SMS messages to be sent at a future time with the Telnyx Messaging API,
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
-- **Developer-first** — a single SDK (`telnyx.Telnyx`) wraps the Messaging API, so scheduling logic stays in your application while delivery stays with Telnyx.
-- **Pay-as-you-go pricing** — no minimums, contracts, or per-seat fees.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
+- **Developer-first** - a single SDK (`telnyx.Telnyx`) wraps the Messaging API, so scheduling logic stays in your application while delivery stays with Telnyx.
+- **Pay-as-you-go pricing** - no minimums, contracts, or per-seat fees.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — called from the scheduled job via `client.messages.create(...)`. [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- **Send Message**: `POST /v2/messages` - called from the scheduled job via `client.messages.create(...)`. [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 
 ## Architecture
 
@@ -54,7 +54,7 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key used to send messages | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number (E.164) used as the `from` address | [My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
-| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode (`true`/`false`) | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode (`true`/`false`) | - |
 
 ## Setup
 
@@ -160,7 +160,7 @@ curl -X DELETE http://localhost:5000/sms/scheduled/sms_1718721000123
 
 ## Troubleshooting
 
-- **Job never sends / status stays `scheduled`**: The Flask process must stay running until the `send_at` time — APScheduler runs in a background thread inside the same process. Confirm the app is up and check the logs.
+- **Job never sends / status stays `scheduled`**: The Flask process must stay running until the `send_at` time - APScheduler runs in a background thread inside the same process. Confirm the app is up and check the logs.
 - **`"Scheduled time must be in the future"`**: The server compares against `datetime.utcnow()`. Send a UTC ISO 8601 timestamp (e.g. `2026-06-18T14:30:00Z`) at least a minute ahead, and check for clock skew.
 - **`"Invalid datetime format"`**: `send_at` must be ISO 8601. A trailing `Z` is accepted and normalized to `+00:00`.
 - **Job status `failed` with "Authentication error"**: Your `TELNYX_API_KEY` is invalid or lacks messaging permission. Regenerate at [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) and restart the app.
@@ -168,12 +168,12 @@ curl -X DELETE http://localhost:5000/sms/scheduled/sms_1718721000123
 
 ## Related Examples
 
-- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send a single SMS immediately.
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - send a single SMS immediately.
 
 ## Resources
 
 - [Messaging Overview](https://developers.telnyx.com/docs/messaging)
-- [Send a Message — API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Send a Message - API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)
 - [Messaging Pricing](https://telnyx.com/pricing/messaging)

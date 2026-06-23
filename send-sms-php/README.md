@@ -14,14 +14,14 @@ Send an SMS message using the Telnyx Messaging API and the Telnyx PHP SDK, expos
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
-- **One SDK** — the same `telnyx/telnyx-php` client covers messaging, voice, SIP, and AI.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
+- **One SDK** - the same `telnyx/telnyx-php` client covers messaging, voice, SIP, and AI.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 
 ## Architecture
 
@@ -96,7 +96,7 @@ See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/
 
 | Issue | Cause | Fix |
 |-------|-------|-----|
-| `{"error":"Invalid API key"}` (401) | `TELNYX_API_KEY` is missing, wrong, or has trailing whitespace | Copy a fresh key from [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) into `.env` and restart the server — env vars load at boot |
+| `{"error":"Invalid API key"}` (401) | `TELNYX_API_KEY` is missing, wrong, or has trailing whitespace | Copy a fresh key from [portal.telnyx.com/api-keys](https://portal.telnyx.com/api-keys) into `.env` and restart the server - env vars load at boot |
 | `{"error":"Phone number must be in E.164 format (e.g., +15551234567)"}` (400) | The `to` value does not start with `+` | Send the number in E.164 form, e.g. `+12125551234` |
 | `{"error":"Missing required fields: 'to' and 'message'"}` (400) | The request body omitted `to` or `message` | Include both fields in the JSON body |
 | `{"error":"TELNYX_PHONE_NUMBER environment variable not set"}` (500) | `TELNYX_PHONE_NUMBER` is not exported | Set it in `.env` and restart the server |
@@ -115,7 +115,7 @@ See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/
 ## Resources
 
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
-- [Send a Message — API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Send a Message - API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [PHP SDK](https://developers.telnyx.com/development/sdk/php)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)
 - [Messaging Pricing](https://telnyx.com/pricing/messaging)

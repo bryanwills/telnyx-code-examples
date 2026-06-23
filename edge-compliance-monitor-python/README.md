@@ -1,7 +1,7 @@
 ---
 name: edge-compliance-monitor
 title: "Edge Compliance Monitor"
-description: "Real-time compliance checking for regulated call centers at the edge."
+description: "Real-time compliance checking for regulated call centers using Telnyx Voice, AI Inference, and Edge Compute."
 language: python
 framework: flask
 telnyx_products: [Edge Compute, Voice, AI Inference]

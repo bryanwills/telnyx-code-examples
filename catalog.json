@@ -3,7 +3,7 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-06-23T14:12:46Z",
+  "generated_at": "2026-06-23T21:53:53Z",
   "example_count": 291,
   "examples": [
     {
@@ -693,7 +693,7 @@
     {
       "folder": "sms-marketing-campaign-python",
       "title": "SMS Marketing Campaign",
-      "description": "Run bulk SMS marketing campaigns with Flask and the Telnyx Messaging API — create campaigns, send rate-limited batches, and track delivery via webhooks.",
+      "description": "Run bulk SMS marketing campaigns with Flask and the Telnyx Messaging API - create campaigns, send rate-limited batches, and track delivery via webhooks.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -837,7 +837,7 @@
     {
       "folder": "ai-after-hours-emergency-triage-python",
       "title": "AI After-Hours Emergency Triage",
-      "description": "AI After-Hours Emergency Triage — after-hours calls screened by AI. True emergencies get forwarded to on-call; everything else gets a voicemail + next-day callback promise.",
+      "description": "AI After-Hours Emergency Triage - after-hours calls screened by AI. True emergencies get forwarded to on-call; everything else gets a voicemail + next-day callback promise.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -846,7 +846,7 @@
     {
       "folder": "ai-assistant-knowledge-base-python",
       "title": "AI Assistant Knowledge Base",
-      "description": "AI Assistant Knowledge Base — AI Assistant with document knowledge base for context-aware Q&A over uploaded documents.",
+      "description": "AI Assistant Knowledge Base - AI Assistant with document knowledge base for context-aware Q&A over uploaded documents.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -855,7 +855,7 @@
     {
       "folder": "ai-assistant-multi-tool-python",
       "title": "AI Assistant Multi-Tool",
-      "description": "AI Assistant Multi-Tool — AI Assistant with custom function-calling tools for CRM lookup, appointment booking, and order status.",
+      "description": "AI Assistant Multi-Tool - AI Assistant with custom function-calling tools for CRM lookup, appointment booking, and order status.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -864,7 +864,7 @@
     {
       "folder": "ai-assistant-phone-setup-python",
       "title": "AI Assistant Phone Setup",
-      "description": "AI Assistant Phone Setup — create and configure a managed Telnyx AI Assistant and wire it to a phone number.",
+      "description": "AI Assistant Phone Setup - create and configure a managed Telnyx AI Assistant and wire it to a phone number.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -882,7 +882,7 @@
     {
       "folder": "ai-billing-dispute-resolution-agent-python",
       "title": "AI Billing Dispute Resolution Agent",
-      "description": "AI Billing Dispute Resolution Agent — handles billing questions with account lookup.",
+      "description": "AI Billing Dispute Resolution Agent - handles billing questions with account lookup.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -891,7 +891,7 @@
     {
       "folder": "ai-call-center-quality-scorer-python",
       "title": "AI Call Center Quality Scorer",
-      "description": "AI Call Center Quality Scorer — automatically score agent performance from call recordings on compliance, empathy, resolution, and talk-to-listen ratio.",
+      "description": "AI Call Center Quality Scorer - automatically score agent performance from call recordings on compliance, empathy, resolution, and talk-to-listen ratio.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -900,7 +900,7 @@
     {
       "folder": "ai-cold-caller-objection-trainer-python",
       "title": "AI Cold Caller Objection Trainer",
-      "description": "AI Cold Caller Objection Trainer — practice handling sales objections with AI-generated scenarios.",
+      "description": "AI Cold Caller Objection Trainer - practice handling sales objections with AI-generated scenarios.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -909,7 +909,7 @@
     {
       "folder": "ai-competitive-win-loss-call-analyzer-python",
       "title": "AI Competitive Win/Loss Call Analyzer",
-      "description": "AI Competitive Win/Loss Call Analyzer — analyze recorded sales calls for competitive intelligence.",
+      "description": "AI Competitive Win/Loss Call Analyzer - analyze recorded sales calls for competitive intelligence.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -918,7 +918,7 @@
     {
       "folder": "ai-compliance-quiz-phone-python",
       "title": "AI Compliance Quiz Phone",
-      "description": "AI Compliance Quiz Phone — employees call and take a compliance quiz. AI asks questions, evaluates answers, scores pass/fail, records completion.",
+      "description": "AI Compliance Quiz Phone - employees call and take a compliance quiz. AI asks questions, evaluates answers, scores pass/fail, records completion.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -936,7 +936,7 @@
     {
       "folder": "ai-conference-note-taker-python",
       "title": "AI Conference Note-Taker",
-      "description": "AI Conference Note-Taker — joins calls, transcribes, extracts action items, sends SMS summaries.",
+      "description": "AI Conference Note-Taker - joins calls, transcribes, extracts action items, sends SMS summaries.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -954,7 +954,7 @@
     {
       "folder": "ai-customer-churn-predictor-python",
       "title": "AI Customer Churn Predictor",
-      "description": "AI Customer Churn Predictor — analyze call/message patterns via Telnyx APIs, AI predicts churn risk and suggests interventions.",
+      "description": "AI Customer Churn Predictor - analyze call/message patterns via Telnyx APIs, AI predicts churn risk and suggests interventions.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -963,7 +963,7 @@
     {
       "folder": "ai-customer-winback-caller-python",
       "title": "AI Customer Winback Caller",
-      "description": "AI Customer Winback Caller — AI calls churned customers with personalized re-engagement offers.",
+      "description": "AI Customer Winback Caller - AI calls churned customers with personalized re-engagement offers.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -972,7 +972,7 @@
     {
       "folder": "ai-debt-collection-compliance-agent-python",
       "title": "AI Debt Collection Compliance Agent",
-      "description": "AI Debt Collection Compliance Agent — FDCPA-compliant outbound collection with real-time guardrails.",
+      "description": "AI Debt Collection Compliance Agent - FDCPA-compliant outbound collection with real-time guardrails.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -990,7 +990,7 @@
     {
       "folder": "ai-event-rsvp-phone-line-python",
       "title": "AI Event RSVP Phone Line",
-      "description": "AI Event RSVP Phone Line — call to RSVP for an event. AI collects guest info, dietary restrictions, plus-ones, and confirms the reservation.",
+      "description": "AI Event RSVP Phone Line - call to RSVP for an event. AI collects guest info, dietary restrictions, plus-ones, and confirms the reservation.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -999,7 +999,7 @@
     {
       "folder": "ai-hiring-phone-screen-python",
       "title": "AI Hiring Phone Screen",
-      "description": "AI Hiring Phone Screen — automated first-round phone screening for job applicants.",
+      "description": "AI Hiring Phone Screen - automated first-round phone screening for job applicants.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1008,7 +1008,7 @@
     {
       "folder": "ai-insurance-claims-intake-voice-python",
       "title": "AI Insurance Claims Intake",
-      "description": "AI Insurance Claims Intake — voice agent collects claim details, classifies, routes to adjuster.",
+      "description": "AI Insurance Claims Intake - voice agent collects claim details, classifies, routes to adjuster.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1017,7 +1017,7 @@
     {
       "folder": "ai-language-learning-phone-tutor-python",
       "title": "AI Language Learning Phone Tutor",
-      "description": "AI Language Learning Phone Tutor — call a number, practice a foreign language with AI.",
+      "description": "AI Language Learning Phone Tutor - call a number, practice a foreign language with AI.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1035,7 +1035,7 @@
     {
       "folder": "ai-medical-appointment-prep-caller-python",
       "title": "AI Medical Appointment Prep Caller",
-      "description": "AI Medical Appointment Prep Caller — calls patients before appointments to collect intake info.",
+      "description": "AI Medical Appointment Prep Caller - calls patients before appointments to collect intake info.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1053,7 +1053,7 @@
     {
       "folder": "ai-negotiation-practice-phone-python",
       "title": "AI Negotiation Practice Phone",
-      "description": "AI Negotiation Practice Phone — practice salary negotiations, sales deals, or vendor contracts with an AI that plays the opposing side and scores your technique.",
+      "description": "AI Negotiation Practice Phone - practice salary negotiations, sales deals, or vendor contracts with an AI that plays the opposing side and scores your technique.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1062,7 +1062,7 @@
     {
       "folder": "ai-phone-story-hotline-python",
       "title": "AI Phone Story Hotline",
-      "description": "AI Phone Story Hotline — call a number, choose a genre, and listen to an AI-generated interactive story where your choices shape the narrative.",
+      "description": "AI Phone Story Hotline - call a number, choose a genre, and listen to an AI-generated interactive story where your choices shape the narrative.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1071,7 +1071,7 @@
     {
       "folder": "ai-phone-tree-builder-from-description-python",
       "title": "AI Phone Tree Builder",
-      "description": "AI Phone Tree Builder — describe your business in English, AI creates a working phone system.",
+      "description": "AI Phone Tree Builder - describe your business in English, AI creates a working phone system.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1080,7 +1080,7 @@
     {
       "folder": "ai-podcast-call-in-show-python",
       "title": "AI Podcast Call-In Show",
-      "description": "AI Podcast Call-In Show — callers dial in, AI screens and queues them, host manages live.",
+      "description": "AI Podcast Call-In Show - callers dial in, AI screens and queues them, host manages live.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1089,7 +1089,7 @@
     {
       "folder": "ai-podcast-post-producer-python",
       "title": "AI Podcast Post-Producer",
-      "description": "AI Podcast Post-Producer — record a podcast over a conference call, then AI generates show notes, timestamps, highlights, and social media clips.",
+      "description": "AI Podcast Post-Producer - record a podcast over a conference call, then AI generates show notes, timestamps, highlights, and social media clips.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1107,7 +1107,7 @@
     {
       "folder": "ai-powered-ivr-replacement-python",
       "title": "AI-Powered IVR Replacement",
-      "description": "AI-Powered IVR Replacement — natural language routing with A/B testing and structured insights.",
+      "description": "AI-Powered IVR Replacement - natural language routing with A/B testing and structured insights.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1116,7 +1116,7 @@
     {
       "folder": "ai-price-quote-phone-agent-python",
       "title": "AI Price Quote Phone Agent",
-      "description": "AI Price Quote Phone Agent — caller describes what they need, AI generates a customized price quote in real time with line items.",
+      "description": "AI Price Quote Phone Agent - caller describes what they need, AI generates a customized price quote in real time with line items.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1125,7 +1125,7 @@
     {
       "folder": "ai-property-management-maintenance-line-python",
       "title": "AI Property Management Maintenance Line",
-      "description": "AI Property Management Maintenance Line — tenants call, AI triages maintenance requests.",
+      "description": "AI Property Management Maintenance Line - tenants call, AI triages maintenance requests.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1134,7 +1134,7 @@
     {
       "folder": "ai-real-estate-showing-scheduler-python",
       "title": "AI Real Estate Showing Scheduler",
-      "description": "AI Real Estate Showing Scheduler — buyers call or text, AI checks availability and books showings.",
+      "description": "AI Real Estate Showing Scheduler - buyers call or text, AI checks availability and books showings.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1152,7 +1152,7 @@
     {
       "folder": "ai-receptionist-with-booking-tools-python",
       "title": "AI Receptionist with Booking Tools",
-      "description": "AI Receptionist with Booking Tools — AI Assistant with tool_use for real calendar booking actions.",
+      "description": "AI Receptionist with Booking Tools - AI Assistant with tool_use for real calendar booking actions.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1161,7 +1161,7 @@
     {
       "folder": "ai-restaurant-reservation-voice-agent-python",
       "title": "AI Restaurant Reservation Voice Agent",
-      "description": "AI Restaurant Reservation Voice Agent — handles calls, checks availability, books tables, sends SMS confirmation.",
+      "description": "AI Restaurant Reservation Voice Agent - handles calls, checks availability, books tables, sends SMS confirmation.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1170,7 +1170,7 @@
     {
       "folder": "ai-sales-call-with-live-crm-updates-python",
       "title": "AI Sales Call with Live CRM Updates",
-      "description": "AI Sales Call with Live CRM Updates — multi-participant call with real-time deal intelligence.",
+      "description": "AI Sales Call with Live CRM Updates - multi-participant call with real-time deal intelligence.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1188,7 +1188,7 @@
     {
       "folder": "ai-sales-demo-booking-agent-python",
       "title": "AI Sales Demo Booking Agent",
-      "description": "AI Sales Demo Booking Agent — inbound calls, AI qualifies the lead, books a demo on the calendar.",
+      "description": "AI Sales Demo Booking Agent - inbound calls, AI qualifies the lead, books a demo on the calendar.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1197,7 +1197,7 @@
     {
       "folder": "ai-standup-facilitator-phone-python",
       "title": "AI Standup Facilitator Phone",
-      "description": "AI Standup Facilitator Phone — team members call in their daily standup update. AI collects what they did, what they're doing, and blockers, then summarizes for the team.",
+      "description": "AI Standup Facilitator Phone - team members call in their daily standup update. AI collects what they did, what they're doing, and blockers, then summarizes for the team.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1224,7 +1224,7 @@
     {
       "folder": "ai-voice-agent-with-function-calling-python",
       "title": "AI Voice Agent with Function Calling",
-      "description": "AI Voice Agent with Function Calling — voice agent that calls external APIs mid-conversation.",
+      "description": "AI Voice Agent with Function Calling - voice agent that calls external APIs mid-conversation.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1233,7 +1233,7 @@
     {
       "folder": "ai-voice-memo-to-email-python",
       "title": "AI Voice Memo to Email",
-      "description": "AI Voice Memo to Email — call a number, dictate a memo, AI cleans it up and sends it as a formatted email via Telnyx.",
+      "description": "AI Voice Memo to Email - call a number, dictate a memo, AI cleans it up and sends it as a formatted email via Telnyx.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1242,7 +1242,7 @@
     {
       "folder": "ai-voice-survey-sentiment-tracker-python",
       "title": "AI Voice Survey Sentiment Tracker",
-      "description": "AI Voice Survey Sentiment Tracker — real-time CSAT scoring from voice tone and word choice.",
+      "description": "AI Voice Survey Sentiment Tracker - real-time CSAT scoring from voice tone and word choice.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1251,7 +1251,7 @@
     {
       "folder": "ai-voicemail-transcription-forwarding-python",
       "title": "AI Voicemail Transcription & Forwarding",
-      "description": "AI Voicemail Transcription & Forwarding — voicemail to AI-summarized SMS/email with priority classification.",
+      "description": "AI Voicemail Transcription & Forwarding - voicemail to AI-summarized SMS/email with priority classification.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1269,7 +1269,7 @@
     {
       "folder": "build-voice-ai-agent-nodejs",
       "title": "Build a Voice AI Agent",
-      "description": "Build a complete voice AI agent with Telnyx — answer inbound calls, transcribe speech, generate replies with Telnyx Inference, and speak them back via Call Control.",
+      "description": "Build a complete voice AI agent with Telnyx - answer inbound calls, transcribe speech, generate replies with Telnyx Inference, and speak them back via Call Control.",
       "product": "ai",
       "language": "nodejs",
       "framework": "express",
@@ -1278,7 +1278,7 @@
     {
       "folder": "build-voice-ai-agent-python",
       "title": "Build a complete voice AI agent with Telnyx",
-      "description": "Build a complete voice AI agent with Telnyx — inbound call handling, AI conversation, and call control.",
+      "description": "Build a complete voice AI agent with Telnyx - inbound call handling, AI conversation, and call control.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1287,7 +1287,7 @@
     {
       "folder": "call-recording-ai-summarizer-python",
       "title": "Call Recording AI Summarizer",
-      "description": "Call Recording AI Summarizer — record calls, then summarize and extract action items with AI.",
+      "description": "Call Recording AI Summarizer - record calls, then summarize and extract action items with AI.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1296,7 +1296,7 @@
     {
       "folder": "click-to-call-webrtc-with-ai-assist-python",
       "title": "Click-to-Call WebRTC with AI Assist",
-      "description": "Click-to-Call WebRTC with AI Assist — browser-based calling with real-time AI coaching sidebar.",
+      "description": "Click-to-Call WebRTC with AI Assist - browser-based calling with real-time AI coaching sidebar.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1305,7 +1305,7 @@
     {
       "folder": "compliance-call-recorder-ai-auditor-python",
       "title": "Compliance Call Recorder + AI Auditor",
-      "description": "Compliance Call Recorder + AI Auditor — auto-record, batch-process with AI, flag violations, create tickets.",
+      "description": "Compliance Call Recorder + AI Auditor - auto-record, batch-process with AI, flag violations, create tickets.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1314,7 +1314,7 @@
     {
       "folder": "conference-call-with-ai-summary-python",
       "title": "Conference Call with AI Summary",
-      "description": "Conference Call with AI Summary — multi-party conference with transcription and AI post-call summary.",
+      "description": "Conference Call with AI Summary - multi-party conference with transcription and AI post-call summary.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1323,7 +1323,7 @@
     {
       "folder": "fax-to-ai-document-processor-python",
       "title": "Fax to AI Document Processor",
-      "description": "Fax to AI Document Processor — receive fax, AI extracts data, forwards structured summary.",
+      "description": "Fax to AI Document Processor - receive fax, AI extracts data, forwards structured summary.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1332,7 +1332,7 @@
     {
       "folder": "full-stack-ai-contact-center-python",
       "title": "Full-Stack AI Contact Center",
-      "description": "Full-Stack AI Contact Center — complete contact center: IVR + queue + AI agent assist + recording + live analytics.",
+      "description": "Full-Stack AI Contact Center - complete contact center: IVR + queue + AI agent assist + recording + live analytics.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1341,7 +1341,7 @@
     {
       "folder": "global-ip-failover-monitor-python",
       "title": "Global IP Failover Monitor",
-      "description": "Global IP Failover Monitor — monitor Global IP endpoints across regions, auto-failover between healthy endpoints.",
+      "description": "Global IP Failover Monitor - monitor Global IP endpoints across regions, auto-failover between healthy endpoints.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1368,7 +1368,7 @@
     {
       "folder": "missions-ai-task-runner-python",
       "title": "Missions AI Task Runner",
-      "description": "Missions AI Task Runner — AI-driven task execution within the Telnyx Missions framework. AI decides next steps based on task results.",
+      "description": "Missions AI Task Runner - AI-driven task execution within the Telnyx Missions framework. AI decides next steps based on task results.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1377,7 +1377,7 @@
     {
       "folder": "multi-channel-ai-helpdesk-with-ticketing-python",
       "title": "Multi-Channel AI Helpdesk with Ticketing",
-      "description": "Multi-Channel AI Helpdesk with Ticketing — voice + SMS + WhatsApp support with auto-ticket creation.",
+      "description": "Multi-Channel AI Helpdesk with Ticketing - voice + SMS + WhatsApp support with auto-ticket creation.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1440,7 +1440,7 @@
     {
       "folder": "storage-voicemail-archive-python",
       "title": "Storage Voicemail Archive",
-      "description": "Storage Voicemail Archive — record voicemails to Telnyx Cloud Storage with search.",
+      "description": "Storage Voicemail Archive - record voicemails to Telnyx Cloud Storage with search.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1467,7 +1467,7 @@
     {
       "folder": "video-room-ai-meeting-moderator-python",
       "title": "Video Room AI Meeting Moderator",
-      "description": "Video Room AI Meeting Moderator — create video rooms with AI-powered agenda tracking and time management.",
+      "description": "Video Room AI Meeting Moderator - create video rooms with AI-powered agenda tracking and time management.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1476,7 +1476,7 @@
     {
       "folder": "video-room-ai-moderator-python",
       "title": "Video Room AI Moderator",
-      "description": "Video Room AI Moderator — create video rooms with AI-powered content moderation on chat and participant management.",
+      "description": "Video Room AI Moderator - create video rooms with AI-powered content moderation on chat and participant management.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1485,7 +1485,7 @@
     {
       "folder": "voice-journal-daily-log-python",
       "title": "Voice Journal Daily Log",
-      "description": "Voice Journal Daily Log — call a number, speak your daily journal entry, AI transcribes and organizes it with mood, topics, and gratitude extraction.",
+      "description": "Voice Journal Daily Log - call a number, speak your daily journal entry, AI transcribes and organizes it with mood, topics, and gratitude extraction.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1503,7 +1503,7 @@
     {
       "folder": "webhook-debugger-ai-assistant-python",
       "title": "Webhook Debugger AI Assistant",
-      "description": "Webhook Debugger AI Assistant — catch, inspect, and debug Telnyx webhooks with AI explanations.",
+      "description": "Webhook Debugger AI Assistant - catch, inspect, and debug Telnyx webhooks with AI explanations.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1512,7 +1512,7 @@
     {
       "folder": "webrtc-ai-interpreter-live-calls-python",
       "title": "WebRTC AI Interpreter for Live Calls",
-      "description": "WebRTC AI Interpreter for Live Calls — real-time translation between two callers speaking different languages.",
+      "description": "WebRTC AI Interpreter for Live Calls - real-time translation between two callers speaking different languages.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
@@ -1521,7 +1521,7 @@
     {
       "folder": "iot-fleet-alert-escalation-python",
       "title": "IoT Fleet Alert Escalation",
-      "description": "IoT Fleet Alert Escalation — severity-based routing from IoT sensors to SMS, calls, and multi-party conferences.",
+      "description": "IoT Fleet Alert Escalation - severity-based routing from IoT sensors to SMS, calls, and multi-party conferences.",
       "product": "iot",
       "language": "python",
       "framework": "flask",
@@ -1530,7 +1530,7 @@
     {
       "folder": "iot-panic-button-voice-alert-python",
       "title": "IoT Panic Button Voice Alert",
-      "description": "IoT Panic Button Voice Alert — IoT device triggers SIM-based alert, system calls emergency contacts with location and status.",
+      "description": "IoT Panic Button Voice Alert - IoT device triggers SIM-based alert, system calls emergency contacts with location and status.",
       "product": "iot",
       "language": "python",
       "framework": "flask",
@@ -1539,7 +1539,7 @@
     {
       "folder": "iot-smart-building-voice-control-python",
       "title": "IoT Smart Building Voice Control",
-      "description": "IoT Smart Building Voice Control — call a number to control building systems via AI + IoT SIMs.",
+      "description": "IoT Smart Building Voice Control - call a number to control building systems via AI + IoT SIMs.",
       "product": "iot",
       "language": "python",
       "framework": "flask",
@@ -1548,7 +1548,7 @@
     {
       "folder": "sim-fleet-data-usage-anomaly-detector-python",
       "title": "SIM Fleet Data Usage Anomaly Detector",
-      "description": "SIM Fleet Data Usage Anomaly Detector — monitor IoT SIM usage, AI detects anomalies, SMS alerts.",
+      "description": "SIM Fleet Data Usage Anomaly Detector - monitor IoT SIM usage, AI detects anomalies, SMS alerts.",
       "product": "iot",
       "language": "python",
       "framework": "flask",
@@ -1557,7 +1557,7 @@
     {
       "folder": "voice-activated-iot-command-python",
       "title": "Voice-Activated IoT Command",
-      "description": "Voice-Activated IoT Command — call a number, speak commands to control IoT devices. AI interprets natural language into device actions dispatched via SIM API.",
+      "description": "Voice-Activated IoT Command - call a number, speak commands to control IoT devices. AI interprets natural language into device actions dispatched via SIM API.",
       "product": "iot",
       "language": "python",
       "framework": "flask",
@@ -1575,7 +1575,7 @@
     {
       "folder": "sip-load-balancer-health-check-python",
       "title": "SIP Load Balancer Health Check",
-      "description": "SIP Load Balancer Health Check — monitor SIP trunk health across multiple endpoints, auto-failover to healthy trunks, track uptime metrics.",
+      "description": "SIP Load Balancer Health Check - monitor SIP trunk health across multiple endpoints, auto-failover to healthy trunks, track uptime metrics.",
       "product": "sip",
       "language": "python",
       "framework": "flask",
@@ -1584,7 +1584,7 @@
     {
       "folder": "sip-trunking-failover-monitor-python",
       "title": "SIP Trunking Failover Monitor",
-      "description": "SIP Trunking Failover Monitor — health-check SIP connections, auto-failover, SMS alerts.",
+      "description": "SIP Trunking Failover Monitor - health-check SIP connections, auto-failover, SMS alerts.",
       "product": "sip",
       "language": "python",
       "framework": "flask",
@@ -1620,7 +1620,7 @@
     {
       "folder": "ai-appointment-booking-sms-flow-python",
       "title": "AI Appointment Booking SMS Flow",
-      "description": "AI Appointment Booking SMS Flow — guided SMS booking with available slot selection.",
+      "description": "AI Appointment Booking SMS Flow - guided SMS booking with available slot selection.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1629,7 +1629,7 @@
     {
       "folder": "ai-appointment-reminder-sms-voice-python",
       "title": "AI Appointment Reminder",
-      "description": "AI Appointment Reminder — SMS first, voice call for non-responders, AI handles rescheduling.",
+      "description": "AI Appointment Reminder - SMS first, voice call for non-responders, AI handles rescheduling.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1638,7 +1638,7 @@
     {
       "folder": "autonomous-outbound-sales-agent-python",
       "title": "Autonomous Outbound Sales Agent",
-      "description": "Autonomous Outbound Sales Agent — AI-driven lead qualification, objection handling, and meeting booking.",
+      "description": "Autonomous Outbound Sales Agent - AI-driven lead qualification, objection handling, and meeting booking.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1647,7 +1647,7 @@
     {
       "folder": "billing-anomaly-detector-python",
       "title": "Billing Anomaly Detector",
-      "description": "Billing Anomaly Detector — monitor usage and billing for anomalies, alert on cost spikes and unusual patterns.",
+      "description": "Billing Anomaly Detector - monitor usage and billing for anomalies, alert on cost spikes and unusual patterns.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1665,7 +1665,7 @@
     {
       "folder": "cloud-storage-media-cdn-python",
       "title": "Cloud Storage Media CDN",
-      "description": "Cloud Storage Media CDN — use Telnyx Cloud Storage (S3-compatible) as a CDN for IVR prompts, hold music, and voice assets.",
+      "description": "Cloud Storage Media CDN - use Telnyx Cloud Storage (S3-compatible) as a CDN for IVR prompts, hold music, and voice assets.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1719,7 +1719,7 @@
     {
       "folder": "emergency-mass-notification-system-python",
       "title": "Emergency Mass Notification System",
-      "description": "Emergency Mass Notification System — SMS + voice calls with delivery tracking and escalation.",
+      "description": "Emergency Mass Notification System - SMS + voice calls with delivery tracking and escalation.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1737,7 +1737,7 @@
     {
       "folder": "global-lead-response-engine-python",
       "title": "Global Lead Response Engine",
-      "description": "Global Lead Response Engine — multi-language AI qualification with live transfer and omnichannel follow-up.",
+      "description": "Global Lead Response Engine - multi-language AI qualification with live transfer and omnichannel follow-up.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1746,7 +1746,7 @@
     {
       "folder": "hosted-messaging-campaign-manager-python",
       "title": "Hosted Messaging Campaign Manager",
-      "description": "Hosted Messaging Campaign Manager — manage hosted messaging campaigns with subscriber opt-in/out tracking and delivery analytics.",
+      "description": "Hosted Messaging Campaign Manager - manage hosted messaging campaigns with subscriber opt-in/out tracking and delivery analytics.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1809,7 +1809,7 @@
     {
       "folder": "media-stream-custom-audio-mixer-python",
       "title": "Media Stream Custom Audio Mixer",
-      "description": "Media Stream Custom Audio Mixer — mix custom audio into live calls via WebSocket-based media streaming.",
+      "description": "Media Stream Custom Audio Mixer - mix custom audio into live calls via WebSocket-based media streaming.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1818,7 +1818,7 @@
     {
       "folder": "media-stream-live-transcription-python",
       "title": "Media Stream Live Transcription",
-      "description": "Media Stream Live Transcription — fork call audio to WebSocket for real-time transcription display.",
+      "description": "Media Stream Live Transcription - fork call audio to WebSocket for real-time transcription display.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1827,7 +1827,7 @@
     {
       "folder": "messaging-campaign-ab-test-optimizer-python",
       "title": "Messaging Campaign A/B Test Optimizer",
-      "description": "Messaging Campaign A/B Test Optimizer — test SMS copy variants, AI picks winners, auto-scales.",
+      "description": "Messaging Campaign A/B Test Optimizer - test SMS copy variants, AI picks winners, auto-scales.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1836,7 +1836,7 @@
     {
       "folder": "migrate-from-elevenlabs-python",
       "title": "Migrate from ElevenLabs",
-      "description": "Migrate from ElevenLabs — import ElevenLabs voice configurations to Telnyx TTS with voice mapping and cost comparison.",
+      "description": "Migrate from ElevenLabs - import ElevenLabs voice configurations to Telnyx TTS with voice mapping and cost comparison.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1845,7 +1845,7 @@
     {
       "folder": "migrate-from-twilio-python",
       "title": "Migrate from Twilio",
-      "description": "Migrate from Twilio — complete Twilio-to-Telnyx migration tool: numbers, messaging profiles, voice apps, and webhook configs.",
+      "description": "Migrate from Twilio - complete Twilio-to-Telnyx migration tool: numbers, messaging profiles, voice apps, and webhook configs.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1854,7 +1854,7 @@
     {
       "folder": "migrate-from-vapi-python",
       "title": "Migrate from Vapi",
-      "description": "Migrate from Vapi — import Vapi voice agents to Telnyx AI Assistants with voice, prompt, and tool configuration mapping.",
+      "description": "Migrate from Vapi - import Vapi voice agents to Telnyx AI Assistants with voice, prompt, and tool configuration mapping.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1863,7 +1863,7 @@
     {
       "folder": "missions-workflow-orchestrator-python",
       "title": "Missions Workflow Orchestrator",
-      "description": "Missions Workflow Orchestrator — create and manage multi-step mission workflows using the Telnyx Missions API.",
+      "description": "Missions Workflow Orchestrator - create and manage multi-step mission workflows using the Telnyx Missions API.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1872,7 +1872,7 @@
     {
       "folder": "mms-photo-inventory-tracker-python",
       "title": "MMS Photo Inventory Tracker",
-      "description": "MMS Photo Inventory Tracker — text a photo of inventory items with MMS, AI identifies and catalogs them automatically.",
+      "description": "MMS Photo Inventory Tracker - text a photo of inventory items with MMS, AI identifies and catalogs them automatically.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1881,7 +1881,7 @@
     {
       "folder": "mms-receipt-scanner-expense-tracker-python",
       "title": "MMS Receipt Scanner & Expense Tracker",
-      "description": "MMS Receipt Scanner & Expense Tracker — text a photo of a receipt, AI extracts data and tracks expenses.",
+      "description": "MMS Receipt Scanner & Expense Tracker - text a photo of a receipt, AI extracts data and tracks expenses.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1890,7 +1890,7 @@
     {
       "folder": "multi-channel-appointment-confirmation-python",
       "title": "Multi-Channel Appointment Confirmation",
-      "description": "Multi-Channel Appointment Confirmation — confirm appointments via SMS, voice call, and WhatsApp. Tries SMS first, escalates to voice if no response.",
+      "description": "Multi-Channel Appointment Confirmation - confirm appointments via SMS, voice call, and WhatsApp. Tries SMS first, escalates to voice if no response.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1899,7 +1899,7 @@
     {
       "folder": "multi-language-customer-survey-python",
       "title": "Multi-Language Customer Survey",
-      "description": "Multi-Language Customer Survey — outbound voice surveys in the caller's language with AI analysis.",
+      "description": "Multi-Language Customer Survey - outbound voice surveys in the caller's language with AI analysis.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1962,7 +1962,7 @@
     {
       "folder": "programmable-hold-experience-python",
       "title": "Programmable Hold Experience",
-      "description": "Programmable Hold Experience — custom hold experiences: tips, trivia, estimated wait time, callback offers.",
+      "description": "Programmable Hold Experience - custom hold experiences: tips, trivia, estimated wait time, callback offers.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -1971,7 +1971,7 @@
     {
       "folder": "rcs-rich-card-product-catalog-python",
       "title": "RCS Rich Card Product Catalog",
-      "description": "RCS Rich Card Product Catalog — AI-powered product recommendations with rich cards and carousels.",
+      "description": "RCS Rich Card Product Catalog - AI-powered product recommendations with rich cards and carousels.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -2016,7 +2016,7 @@
     {
       "folder": "smart-ivr-ab-tester-python",
       "title": "Smart IVR A/B Tester",
-      "description": "Smart IVR A/B Tester — run two IVR flows simultaneously and track which converts better.",
+      "description": "Smart IVR A/B Tester - run two IVR flows simultaneously and track which converts better.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -2025,7 +2025,7 @@
     {
       "folder": "sms-appointment-no-show-predictor-python",
       "title": "SMS Appointment No-Show Predictor",
-      "description": "SMS Appointment No-Show Predictor — AI predicts no-shows from SMS response patterns, triggers interventions.",
+      "description": "SMS Appointment No-Show Predictor - AI predicts no-shows from SMS response patterns, triggers interventions.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -2034,7 +2034,7 @@
     {
       "folder": "sms-chatbot-with-conversation-memory-python",
       "title": "SMS Chatbot with Conversation Memory",
-      "description": "SMS Chatbot with Conversation Memory — persistent AI conversations over text with context retention.",
+      "description": "SMS Chatbot with Conversation Memory - persistent AI conversations over text with context retention.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -2043,7 +2043,7 @@
     {
       "folder": "sms-drip-campaign-engine-python",
       "title": "SMS Drip Campaign Engine",
-      "description": "SMS Drip Campaign Engine — multi-step nurture sequences with branch logic and AI personalization.",
+      "description": "SMS Drip Campaign Engine - multi-step nurture sequences with branch logic and AI personalization.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -2052,7 +2052,7 @@
     {
       "folder": "sms-emergency-check-in-python",
       "title": "SMS Emergency Check-In",
-      "description": "SMS Emergency Check-In — periodic wellness checks via SMS with escalation to emergency contacts.",
+      "description": "SMS Emergency Check-In - periodic wellness checks via SMS with escalation to emergency contacts.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -2061,7 +2061,7 @@
     {
       "folder": "sms-escape-room-game-python",
       "title": "SMS Escape Room Game",
-      "description": "SMS Escape Room Game — text-based adventure game over SMS. Solve puzzles, find clues, escape before time runs out.",
+      "description": "SMS Escape Room Game - text-based adventure game over SMS. Solve puzzles, find clues, escape before time runs out.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -2070,7 +2070,7 @@
     {
       "folder": "sms-keyword-auto-responder-python",
       "title": "SMS Keyword Auto Responder",
-      "description": "SMS Keyword Auto-Responder — keyword-triggered responses with match analytics.",
+      "description": "SMS Keyword Auto-Responder - keyword-triggered responses with match analytics.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -2088,7 +2088,7 @@
     {
       "folder": "sms-trivia-game-tournament-python",
       "title": "SMS Trivia Game Tournament",
-      "description": "SMS Trivia Game Tournament — multi-player trivia via SMS. Players join, answer timed questions, scores tracked on a live leaderboard.",
+      "description": "SMS Trivia Game Tournament - multi-player trivia via SMS. Players join, answer timed questions, scores tracked on a live leaderboard.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -2097,7 +2097,7 @@
     {
       "folder": "toll-free-sms-campaign-manager-python",
       "title": "Toll-Free SMS Campaign Manager",
-      "description": "Toll-Free SMS Campaign Manager — manage toll-free verification and send compliant campaigns.",
+      "description": "Toll-Free SMS Campaign Manager - manage toll-free verification and send compliant campaigns.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -2106,7 +2106,7 @@
     {
       "folder": "verify-multi-channel-auth-python",
       "title": "Verify Multi-Channel Auth",
-      "description": "Verify Multi-Channel Auth — multi-channel verification: SMS first, fallback to voice call, then WhatsApp. Cascading 2FA.",
+      "description": "Verify Multi-Channel Auth - multi-channel verification: SMS first, fallback to voice call, then WhatsApp. Cascading 2FA.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -2115,7 +2115,7 @@
     {
       "folder": "verify-phone-number-otp-flow-python",
       "title": "Verify Phone Number OTP Flow",
-      "description": "Verify Phone Number OTP Flow — Telnyx Verify API with SMS primary and voice call fallback.",
+      "description": "Verify Phone Number OTP Flow - Telnyx Verify API with SMS primary and voice call fallback.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -2124,7 +2124,7 @@
     {
       "folder": "whatsapp-order-tracking-notifications-python",
       "title": "WhatsApp Order Tracking Notifications",
-      "description": "WhatsApp Order Tracking Notifications — proactive shipping updates and AI-powered order inquiries.",
+      "description": "WhatsApp Order Tracking Notifications - proactive shipping updates and AI-powered order inquiries.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -2133,7 +2133,7 @@
     {
       "folder": "whatsapp-sms-bridge-python",
       "title": "WhatsApp-SMS Bridge",
-      "description": "WhatsApp-SMS Bridge — receive messages on WhatsApp and forward them via SMS, and vice versa. Bidirectional bridge between two messaging channels.",
+      "description": "WhatsApp-SMS Bridge - receive messages on WhatsApp and forward them via SMS, and vice versa. Bidirectional bridge between two messaging channels.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -2151,7 +2151,7 @@
     {
       "folder": "x402-usdc-account-funder-python",
       "title": "x402 USDC Account Funder",
-      "description": "X402 USDC Account Funder — fund your Telnyx account with USDC cryptocurrency on the Base blockchain.",
+      "description": "X402 USDC Account Funder - fund your Telnyx account with USDC cryptocurrency on the Base blockchain.",
       "product": "sms",
       "language": "python",
       "framework": "flask",
@@ -2160,7 +2160,7 @@
     {
       "folder": "branded-caller-id-manager-python",
       "title": "Branded Caller ID Manager",
-      "description": "Branded Caller ID Manager — register, manage, and verify branded calling profiles with STIR/SHAKEN attestation for higher answer rates.",
+      "description": "Branded Caller ID Manager - register, manage, and verify branded calling profiles with STIR/SHAKEN attestation for higher answer rates.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2169,7 +2169,7 @@
     {
       "folder": "bulk-number-validation-cleaner-python",
       "title": "Bulk Number Validation & Cleaner",
-      "description": "Bulk Number Validation & Cleaner — validate and clean phone number lists via Telnyx Number Lookup API.",
+      "description": "Bulk Number Validation & Cleaner - validate and clean phone number lists via Telnyx Number Lookup API.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2187,7 +2187,7 @@
     {
       "folder": "call-queue-with-hold-music-python",
       "title": "Call Queue with Hold Music",
-      "description": "Call Queue with Hold Music — queue callers with position announcements and hold music, route to agents.",
+      "description": "Call Queue with Hold Music - queue callers with position announcements and hold music, route to agents.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2196,7 +2196,7 @@
     {
       "folder": "call-sentiment-live-escalation-python",
       "title": "Call Sentiment Live Escalation",
-      "description": "Call Sentiment Live Escalation — monitor call transcripts in real-time. When negative sentiment or distress is detected, auto-escalate to a supervisor.",
+      "description": "Call Sentiment Live Escalation - monitor call transcripts in real-time. When negative sentiment or distress is detected, auto-escalate to a supervisor.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2205,7 +2205,7 @@
     {
       "folder": "call-whisper-screen-pop-python",
       "title": "Call Whisper & Screen Pop",
-      "description": "Call Whisper & Screen Pop — whisper caller info to agent before connecting the call.",
+      "description": "Call Whisper & Screen Pop - whisper caller info to agent before connecting the call.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2214,7 +2214,7 @@
     {
       "folder": "cloud-storage-call-archive-python",
       "title": "Cloud Storage Call Archive",
-      "description": "Cloud Storage Call Archive — archive call recordings to Telnyx Cloud Storage (S3-compatible) with searchable metadata.",
+      "description": "Cloud Storage Call Archive - archive call recordings to Telnyx Cloud Storage (S3-compatible) with searchable metadata.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2223,7 +2223,7 @@
     {
       "folder": "cnam-caller-id-lookup-enrichment-python",
       "title": "CNAM Caller ID Lookup Enrichment",
-      "description": "CNAM Caller ID Lookup Enrichment — look up CNAM for inbound callers, enrich CRM records with caller identity.",
+      "description": "CNAM Caller ID Lookup Enrichment - look up CNAM for inbound callers, enrich CRM records with caller identity.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2241,7 +2241,7 @@
     {
       "folder": "conference-live-poll-dtmf-python",
       "title": "Conference Live Poll via DTMF",
-      "description": "Conference Live Poll via DTMF — host asks a question, all conference participants vote by pressing 1-4, results tallied instantly.",
+      "description": "Conference Live Poll via DTMF - host asks a question, all conference participants vote by pressing 1-4, results tallied instantly.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2259,7 +2259,7 @@
     {
       "folder": "fax-to-structured-data-pipeline-python",
       "title": "Fax-to-Structured-Data Pipeline",
-      "description": "Fax-to-Structured-Data Pipeline — receive faxes, AI extracts structured data (invoices, orders, prescriptions) into JSON.",
+      "description": "Fax-to-Structured-Data Pipeline - receive faxes, AI extracts structured data (invoices, orders, prescriptions) into JSON.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2277,7 +2277,7 @@
     {
       "folder": "media-stream-voice-cloak-python",
       "title": "Media Stream Voice Cloak",
-      "description": "Media Stream Voice Cloak — real-time voice modification via media streaming API. Apply pitch shift, echo, or anonymization.",
+      "description": "Media Stream Voice Cloak - real-time voice modification via media streaming API. Apply pitch shift, echo, or anonymization.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2286,7 +2286,7 @@
     {
       "folder": "multi-number-identity-router-python",
       "title": "Multi-Number Identity Router",
-      "description": "Multi-Number Identity Router — route calls based on which number was dialed. Each number maps to a different business identity, greeting, and routing destination.",
+      "description": "Multi-Number Identity Router - route calls based on which number was dialed. Each number maps to a different business identity, greeting, and routing destination.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2304,7 +2304,7 @@
     {
       "folder": "number-lookup-fraud-screener-python",
       "title": "Number Lookup Fraud Screener",
-      "description": "Number Lookup Fraud Screener — screen inbound calls/messages for fraud indicators using number lookup before connecting.",
+      "description": "Number Lookup Fraud Screener - screen inbound calls/messages for fraud indicators using number lookup before connecting.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2313,7 +2313,7 @@
     {
       "folder": "number-lookup-lead-enrichment-python",
       "title": "Number Lookup Lead Enrichment",
-      "description": "Number Lookup Lead Enrichment — CNAM and carrier lookup to qualify and enrich sales leads.",
+      "description": "Number Lookup Lead Enrichment - CNAM and carrier lookup to qualify and enrich sales leads.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2322,7 +2322,7 @@
     {
       "folder": "number-porting-status-tracker-python",
       "title": "Number Porting Status Tracker",
-      "description": "Number Porting Status Tracker — track porting orders with status webhooks and SMS alerts.",
+      "description": "Number Porting Status Tracker - track porting orders with status webhooks and SMS alerts.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2331,7 +2331,7 @@
     {
       "folder": "number-reputation-monitor-auto-rotate-python",
       "title": "Number Reputation Monitor",
-      "description": "Number Reputation Monitor — track outbound number reputation, auto-rotate flagged numbers.",
+      "description": "Number Reputation Monitor - track outbound number reputation, auto-rotate flagged numbers.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2340,7 +2340,7 @@
     {
       "folder": "number-search-and-purchase-api-python",
       "title": "Number Search and Purchase API",
-      "description": "Number Search and Purchase API — search, filter, and buy phone numbers programmatically.",
+      "description": "Number Search and Purchase API - search, filter, and buy phone numbers programmatically.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2349,7 +2349,7 @@
     {
       "folder": "number-warmup-reputation-builder-python",
       "title": "Number Warmup & Reputation Builder",
-      "description": "Number Warmup & Reputation Builder — gradually ramp SMS volume on new numbers to build carrier reputation and avoid spam flags.",
+      "description": "Number Warmup & Reputation Builder - gradually ramp SMS volume on new numbers to build carrier reputation and avoid spam flags.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2358,7 +2358,7 @@
     {
       "folder": "porting-loa-automation-python",
       "title": "Porting LOA Automation",
-      "description": "Porting LOA Automation — automate Letter of Authorization generation and porting order submission.",
+      "description": "Porting LOA Automation - automate Letter of Authorization generation and porting order submission.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2376,7 +2376,7 @@
     {
       "folder": "real-time-call-intelligence-dashboard-python",
       "title": "Real-Time Call Intelligence Dashboard",
-      "description": "Real-Time Call Intelligence Dashboard — live transcription, sentiment analysis, and competitor detection.",
+      "description": "Real-Time Call Intelligence Dashboard - live transcription, sentiment analysis, and competitor detection.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2385,7 +2385,7 @@
     {
       "folder": "smart-number-geo-assignment-python",
       "title": "Smart Number Geo-Assignment",
-      "description": "Smart Number Geo-Assignment — automatically purchase and assign local numbers based on caller geography to maximize answer rates.",
+      "description": "Smart Number Geo-Assignment - automatically purchase and assign local numbers based on caller geography to maximize answer rates.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2394,7 +2394,7 @@
     {
       "folder": "texml-dynamic-call-router-python",
       "title": "TeXML Dynamic Call Router",
-      "description": "TeXML Dynamic Call Router — time-of-day and caller-based routing with TeXML responses.",
+      "description": "TeXML Dynamic Call Router - time-of-day and caller-based routing with TeXML responses.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2412,7 +2412,7 @@
     {
       "folder": "video-webinar-recording-manager-python",
       "title": "Video Webinar Recording Manager",
-      "description": "Video Webinar Recording Manager — manage video room webinars with automatic recording, transcription, and clip extraction.",
+      "description": "Video Webinar Recording Manager - manage video room webinars with automatic recording, transcription, and clip extraction.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2421,7 +2421,7 @@
     {
       "folder": "voice-to-slack-bridge-python",
       "title": "Voice-to-Slack Bridge",
-      "description": "Voice-to-Slack Bridge — call a phone number, speak a message, AI transcribes and posts to Slack with urgency tagging.",
+      "description": "Voice-to-Slack Bridge - call a phone number, speak a message, AI transcribes and posts to Slack with urgency tagging.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2430,7 +2430,7 @@
     {
       "folder": "voice-verified-identity-2fa-python",
       "title": "Voice-Verified Identity + 2FA",
-      "description": "Voice-Verified Identity + 2FA — Number Lookup, SMS OTP, and AI-assisted secure transactions.",
+      "description": "Voice-Verified Identity + 2FA - Number Lookup, SMS OTP, and AI-assisted secure transactions.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2448,7 +2448,7 @@
     {
       "folder": "wireguard-private-voice-network-python",
       "title": "WireGuard Private Voice Network",
-      "description": "WireGuard Private Voice Network — create WireGuard mesh network for private SIP trunking with encrypted voice traffic.",
+      "description": "WireGuard Private Voice Network - create WireGuard mesh network for private SIP trunking with encrypted voice traffic.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2457,7 +2457,7 @@
     {
       "folder": "edge-compliance-monitor-python",
       "title": "Edge Compliance Monitor",
-      "description": "Real-time compliance checking for regulated call centers at the edge.",
+      "description": "Real-time compliance checking for regulated call centers using Telnyx Voice, AI Inference, and Edge Compute.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2466,7 +2466,7 @@
     {
       "folder": "edge-fraud-firewall-python",
       "title": "Edge Fraud Firewall",
-      "description": "Screen every inbound call at the edge.",
+      "description": "Screen every inbound call at the edge with Telnyx Voice, Number Lookup, and AI Inference.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2475,7 +2475,7 @@
     {
       "folder": "edge-geo-smart-router-python",
       "title": "Edge Geo Smart Router",
-      "description": "Route calls by geography at the edge.",
+      "description": "Route calls by geography at the edge using Telnyx Voice, AI Inference, and Edge Compute.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2493,7 +2493,7 @@
     {
       "folder": "edge-merge-ai-receptionist-python",
       "title": "Edge Merge AI Receptionist",
-      "description": "Edge worker answers every call.",
+      "description": "Edge worker answers every call using Telnyx Voice, AI Inference, and Edge Compute with Merge HRIS.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2502,7 +2502,7 @@
     {
       "folder": "edge-merge-reference-checker-python",
       "title": "Edge Merge Reference Checker",
-      "description": "ATS application reaches reference-check stage.",
+      "description": "Automate reference checks when an ATS application advances using Telnyx Voice and AI Inference with Merge ATS.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2511,7 +2511,7 @@
     {
       "folder": "edge-merge-shift-coverage-python",
       "title": "Edge Merge Shift Coverage",
-      "description": "Manager texts need a closer tonight.",
+      "description": "Manager texts need a closer tonight using Telnyx Messaging and Edge Compute with Merge HRIS.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2547,7 +2547,7 @@
     {
       "folder": "merge-deal-desk-alerts-python",
       "title": "Merge Deal Desk Alerts",
-      "description": "CRM webhook fires when a deal moves to negotiation or exceeds a revenue threshold.",
+      "description": "CRM webhook fires when a deal moves to negotiation, triggering Telnyx Voice and AI Inference alerts with Merge CRM.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2556,7 +2556,7 @@
     {
       "folder": "merge-employee-hotline-python",
       "title": "Merge Employee Hotline",
-      "description": "Employees call and authenticate via caller ID matched against Merge HRIS.",
+      "description": "Employees call and authenticate via caller ID using Telnyx Voice and AI Inference with Merge HRIS.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2574,7 +2574,7 @@
     {
       "folder": "merge-expense-by-phone-python",
       "title": "Merge Expense by Phone",
-      "description": "Salesperson calls and dictates an expense.",
+      "description": "Salesperson calls and dictates an expense using Telnyx Voice and AI Inference with Merge Accounting.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2583,7 +2583,7 @@
     {
       "folder": "merge-interview-pipeline-python",
       "title": "Merge Interview Pipeline",
-      "description": "ATS webhook fires when a new application arrives.",
+      "description": "ATS webhook fires when a new application arrives, triggering Telnyx Voice, AI Inference, and Messaging with Merge ATS.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2592,7 +2592,7 @@
     {
       "folder": "merge-invoice-collector-python",
       "title": "Merge Invoice Collector",
-      "description": "Pulls overdue invoices from accounting via Merge sorted by amount.",
+      "description": "Pulls overdue invoices from Merge Accounting and collects payments using Telnyx Voice, AI Inference, and Messaging.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2601,7 +2601,7 @@
     {
       "folder": "merge-pipeline-briefing-python",
       "title": "Merge Pipeline Briefing",
-      "description": "Morning pipeline briefing.",
+      "description": "Morning pipeline briefing delivered by Telnyx Voice and AI Inference with Merge CRM.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2610,7 +2610,7 @@
     {
       "folder": "merge-recruitment-hotline-python",
       "title": "Merge Recruitment Hotline",
-      "description": "Job seekers call.",
+      "description": "Job seekers call a recruitment hotline powered by Telnyx Voice, AI Inference, and Messaging with Merge ATS.",
       "product": "voice",
       "language": "python",
       "framework": "flask",
@@ -2619,7 +2619,7 @@
     {
       "folder": "merge-ticket-escalation-python",
       "title": "Merge Ticket Escalation",
-      "description": "Critical ticket fires a webhook from Merge Ticketing.",
+      "description": "Critical ticket fires a webhook from Merge Ticketing, escalating via Telnyx Voice and AI Inference.",
       "product": "voice",
       "language": "python",
       "framework": "flask",

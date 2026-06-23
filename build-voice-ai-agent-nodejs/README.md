@@ -1,7 +1,7 @@
 ---
 name: build-voice-ai-agent
 title: "Build a Voice AI Agent"
-description: "Build a complete voice AI agent with Telnyx — answer inbound calls, transcribe speech, generate replies with Telnyx Inference, and speak them back via Call Control."
+description: "Build a complete voice AI agent with Telnyx - answer inbound calls, transcribe speech, generate replies with Telnyx Inference, and speak them back via Call Control."
 language: nodejs
 framework: express
 telnyx_products: [Voice, Inference]
@@ -10,18 +10,18 @@ channel: [voice]
 
 # Build a Voice AI Agent
 
-Build a complete voice AI agent with Telnyx — answer inbound calls, transcribe speech, generate replies with Telnyx Inference, and speak them back via Call Control.
+Build a complete voice AI agent with Telnyx - answer inbound calls, transcribe speech, generate replies with Telnyx Inference, and speak them back via Call Control.
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, AI inference, speech processing, and telephony run on the same private, global network. Inference is co-located with the telephony switch, so the speech-to-LLM-to-speech loop avoids the 30-80ms vendor boundaries you hit when stitching together separate STT, LLM, and TTS providers, and you get one bill and one SLA for the whole stack.
+Telnyx is an **AI Communications Infrastructure** platform - voice, AI inference, speech processing, and telephony run on the same private, global network. Inference is co-located with the telephony switch, so the speech-to-LLM-to-speech loop avoids the 30-80ms vendor boundaries you hit when stitching together separate STT, LLM, and TTS providers, and you get one bill and one SLA for the whole stack.
 
 ## Telnyx API Endpoints Used
 
-- **Chat Completions (Inference)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/inference-embedding/post-chat-completions)
-- **Answer Call**: `POST /v2/calls/{call_control_id}/actions/answer` — [API reference](https://developers.telnyx.com/api/call-control/answer-call)
-- **Speak Text (TTS)**: `POST /v2/calls/{call_control_id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak-call)
-- **Gather Using Speech**: `POST /v2/calls/{call_control_id}/actions/gather` — [API reference](https://developers.telnyx.com/api/call-control/gather-call)
+- **Chat Completions (Inference)**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/inference-embedding/post-chat-completions)
+- **Answer Call**: `POST /v2/calls/{call_control_id}/actions/answer` - [API reference](https://developers.telnyx.com/api/call-control/answer-call)
+- **Speak Text (TTS)**: `POST /v2/calls/{call_control_id}/actions/speak` - [API reference](https://developers.telnyx.com/api/call-control/speak-call)
+- **Gather Using Speech**: `POST /v2/calls/{call_control_id}/actions/gather` - [API reference](https://developers.telnyx.com/api/call-control/gather-call)
 
 ## Architecture
 
@@ -49,11 +49,11 @@ Telnyx is an **AI Communications Infrastructure** platform — voice, AI inferen
 
 ### Call lifecycle
 
-1. `call.initiated` — answer the inbound call
-2. `call.answered` — greet the caller with TTS (`speak`)
-3. `call.speak.ended` — start listening for speech (`gather`)
-4. `call.gather.ended` — send transcript to Telnyx Inference, speak the reply, loop back to step 3
-5. `call.hangup` — clear the conversation history for that call
+1. `call.initiated` - answer the inbound call
+2. `call.answered` - greet the caller with TTS (`speak`)
+3. `call.speak.ended` - start listening for speech (`gather`)
+4. `call.gather.ended` - send transcript to Telnyx Inference, speak the reply, loop back to step 3
+5. `call.hangup` - clear the conversation history for that call
 
 ## Environment Variables
 
@@ -63,9 +63,9 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key (needs Inference + Call Control access) | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `meta-llama/Llama-3.3-70B-Instruct` | no | Inference model used for replies | [Inference docs](https://developers.telnyx.com/docs/inference) |
-| `SYSTEM_PROMPT` | `string` | `You are a helpful voice AI agent...` | no | System prompt that sets the agent's personality | — |
-| `TRANSFER_NUMBER` | `string` | `+12125551234` | no | Phone number for human transfer (E.164) | — |
-| `PORT` | `number` | `5000` | no | Port the Express server listens on | — |
+| `SYSTEM_PROMPT` | `string` | `You are a helpful voice AI agent...` | no | System prompt that sets the agent's personality | - |
+| `TRANSFER_NUMBER` | `string` | `+12125551234` | no | Phone number for human transfer (E.164) | - |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on | - |
 
 ## Setup
 
@@ -95,7 +95,7 @@ node server.js          # starts on http://localhost:5000
 
 ### `POST /webhooks/voice`
 
-Receives Call Control webhook events from Telnyx and drives the call: answer, greet, listen, respond, and clean up. Telnyx calls this endpoint — you do not call it directly — but you can simulate an event to verify routing:
+Receives Call Control webhook events from Telnyx and drives the call: answer, greet, listen, respond, and clean up. Telnyx calls this endpoint - you do not call it directly - but you can simulate an event to verify routing:
 
 ```bash
 curl -X POST http://localhost:5000/webhooks/voice \
@@ -149,10 +149,10 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [build-voice-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-voice-ai-agent-python/README.md) — same agent in Python
-- [route-phone-calls-to-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-nodejs/README.md) — route inbound calls to an AI agent
-- [run-llm-inference-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/run-llm-inference-nodejs/README.md) — call Telnyx Inference directly
-- [create-ai-assistant-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/create-ai-assistant-nodejs/README.md) — managed AI Assistant alternative
+- [build-voice-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-voice-ai-agent-python/README.md) - same agent in Python
+- [route-phone-calls-to-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-nodejs/README.md) - route inbound calls to an AI agent
+- [run-llm-inference-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/run-llm-inference-nodejs/README.md) - call Telnyx Inference directly
+- [create-ai-assistant-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/create-ai-assistant-nodejs/README.md) - managed AI Assistant alternative
 
 ## Resources
 

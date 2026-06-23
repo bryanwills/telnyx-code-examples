@@ -14,15 +14,15 @@ Run multi-question SMS surveys over the Telnyx Messaging API. Sends questions, v
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring are included.
-- **Signed webhooks** — every inbound event is Ed25519-signed so you can reject spoofed traffic before processing.
-- **Developer-first** — typed SDKs for Python, Node.js, Go, and Ruby with a consistent webhook event model.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring are included.
+- **Signed webhooks** - every inbound event is Ed25519-signed so you can reject spoofed traffic before processing.
+- **Developer-first** - typed SDKs for Python, Node.js, Go, and Ruby with a consistent webhook event model.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — sends each survey question, validation prompts, and the completion message. [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- **Send Message**: `POST /v2/messages` - sends each survey question, validation prompts, and the completion message. [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - **Inbound message webhook** (`message.received`): Telnyx delivers each participant reply to `/webhook/sms`. [Webhook reference](https://developers.telnyx.com/api-reference/inbound-message-webhook)
 
 | Direction | Endpoint / Event | Purpose |
@@ -59,7 +59,7 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key, used to send messages | [Portal → API Keys](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `e5b5c...` | **yes** | Public key used to verify inbound webhook signatures | [Portal → Account → Public Key](https://portal.telnyx.com) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | SMS-enabled Telnyx number the survey sends from (E.164) | [Portal → Numbers](https://portal.telnyx.com/numbers/my-numbers) |
-| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode | - |
 
 ## Setup
 
@@ -198,13 +198,13 @@ curl http://localhost:5000/survey/participant/%2B12125551234
 
 ## Related Examples
 
-- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send a single SMS message.
-- [ai-compliance-quiz-phone-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-compliance-quiz-phone-python/README.md) — interactive quiz over voice with signed webhooks.
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - send a single SMS message.
+- [ai-compliance-quiz-phone-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-compliance-quiz-phone-python/README.md) - interactive quiz over voice with signed webhooks.
 
 ## Resources
 
 - [Messaging Overview](https://developers.telnyx.com/docs/messaging)
-- [Send a Message — API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Send a Message - API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Inbound Message Webhook reference](https://developers.telnyx.com/api-reference/inbound-message-webhook)
 - [Webhook signature verification](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)

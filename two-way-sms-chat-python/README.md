@@ -14,16 +14,16 @@ Send and receive SMS with Telnyx to run interactive, stateful text conversations
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Two-way messaging built in** — send and receive SMS through a single Messaging Profile, with inbound delivered to your webhook in real time.
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
-- **Signed webhooks** — every inbound event is signed with Ed25519 so you can verify it came from Telnyx before acting on it.
+- **Two-way messaging built in** - send and receive SMS through a single Messaging Profile, with inbound delivered to your webhook in real time.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
+- **Signed webhooks** - every inbound event is signed with Ed25519 so you can verify it came from Telnyx before acting on it.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — sends the outbound reply. [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
-- **Inbound Message webhook**: `message.received` — Telnyx delivers inbound SMS to your `/webhooks/sms` route. [Webhook reference](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
+- **Send Message**: `POST /v2/messages` - sends the outbound reply. [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- **Inbound Message webhook**: `message.received` - Telnyx delivers inbound SMS to your `/webhooks/sms` route. [Webhook reference](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 
 ## Architecture
 
@@ -58,7 +58,7 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key, used to send replies | [Portal → API Keys](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `MFkwEwYH...` | **yes** | Public key used to verify inbound webhook signatures | [Portal → API Keys](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Your Telnyx number (E.164) that sends/receives messages | [Portal → My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
-| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode | - |
 
 ## Setup
 
@@ -91,7 +91,7 @@ python app.py           # starts on http://localhost:5000
 Receives signed `message.received` events from Telnyx. The signature is verified before the body is parsed; an invalid or missing signature returns `401`. On a valid inbound message the route generates a reply and sends it back to the user.
 
 ```bash
-# Telnyx calls this — example shape of the event it POSTs:
+# Telnyx calls this - example shape of the event it POSTs:
 curl -X POST http://localhost:5000/webhooks/sms \
   -H "Content-Type: application/json" \
   -H "telnyx-signature-ed25519: <signature>" \
@@ -176,8 +176,8 @@ See [API.md](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/
 
 ## Related Examples
 
-- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send a single outbound SMS
-- [sms-chatbot-with-conversation-memory-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-chatbot-with-conversation-memory-python/README.md) — AI-powered SMS chatbot with memory
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - send a single outbound SMS
+- [sms-chatbot-with-conversation-memory-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-chatbot-with-conversation-memory-python/README.md) - AI-powered SMS chatbot with memory
 
 ## Resources
 

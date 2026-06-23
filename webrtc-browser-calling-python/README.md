@@ -13,16 +13,16 @@ Enable browser-based calling with WebRTC.
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` — [API reference](https://developers.telnyx.com/api/call-control/answer-call)
+- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` - [API reference](https://developers.telnyx.com/api/call-control/answer-call)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.answered` — Call connected — app begins interaction
-- `call.dtmf.received` — DTMF tone detected during call
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.initiated` — New inbound or outbound call detected
+- `call.answered` - Call connected - app begins interaction
+- `call.dtmf.received` - DTMF tone detected during call
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.initiated` - New inbound or outbound call detected
 
 ## Architecture
 
@@ -47,9 +47,9 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Single-vendor voice stack** — call control, STT, TTS, and recording from one API. No multi-vendor coordination.
+- **Single-vendor voice stack** - call control, STT, TTS, and recording from one API. No multi-vendor coordination.
 
 ## Environment Variables
 
@@ -58,9 +58,9 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `TELNYX_PHONE_NUMBER` | `string` | `your_value` | **yes** | Telnyx phone number | — |
-| `TELNYX_CONNECTION_ID` | `string` | `your_value` | **yes** | Telnyx connection id | — |
-| `WEBHOOK_URL` | `string` | `https://your-server.example.com` | no | Public URL for receiving webhooks | — |
+| `TELNYX_PHONE_NUMBER` | `string` | `your_value` | **yes** | Telnyx phone number | - |
+| `TELNYX_CONNECTION_ID` | `string` | `your_value` | **yes** | Telnyx connection id | - |
+| `WEBHOOK_URL` | `string` | `https://your-server.example.com` | no | Public URL for receiving webhooks | - |
 
 ## Setup
 

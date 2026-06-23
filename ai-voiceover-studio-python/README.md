@@ -36,7 +36,7 @@ Upload a script, select voice/style/pacing, AI adds professional direction cues 
 
 - **AI Inference (direction)**: `POST /v2/ai/chat/completions` -- [ref](https://developers.telnyx.com/api/inference/chat-completions)
 - **TTS Generate**: `POST /v2/ai/generate` -- [ref](https://developers.telnyx.com/api/inference/generate)
-- **Cloud Storage**: S3-compatible — boto3 `put_object` against `https://{region}.telnyxcloudstorage.com` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
+- **Cloud Storage**: S3-compatible - boto3 `put_object` against `https://{region}.telnyxcloudstorage.com` -- [docs](https://developers.telnyx.com/docs/cloud-storage)
 
 ## How It Works
 
@@ -46,10 +46,10 @@ Upload a script, select voice/style/pacing, AI adds professional direction cues 
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Co-located inference** — LLM runs on the same network as voice traffic. Sub-200ms round trips.
-- **Integrated storage** — S3-compatible storage co-located with voice and AI infrastructure. Use any AWS S3 SDK (boto3) against the Telnyx S3 endpoint and serve assets with presigned URLs.
+- **Co-located inference** - LLM runs on the same network as voice traffic. Sub-200ms round trips.
+- **Integrated storage** - S3-compatible storage co-located with voice and AI infrastructure. Use any AWS S3 SDK (boto3) against the Telnyx S3 endpoint and serve assets with presigned URLs.
 
 ## Environment Variables
 

@@ -14,16 +14,16 @@ Send and receive SMS messages with Telnyx using Node.js and Express, with signat
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
-- **Signed webhooks** — every inbound event is signed with your public key so you can reject spoofed traffic.
-- **One SDK** — the same `telnyx` Node.js client handles outbound sends and inbound webhook verification.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
+- **Signed webhooks** - every inbound event is signed with your public key so you can reject spoofed traffic.
+- **One SDK** - the same `telnyx` Node.js client handles outbound sends and inbound webhook verification.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
-- **Inbound message webhook**: `message.received`, `message.sent`, `message.finalized` events delivered to your `/webhooks/sms` route — [Messaging webhooks](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- **Inbound message webhook**: `message.received`, `message.sent`, `message.finalized` events delivered to your `/webhooks/sms` route - [Messaging webhooks](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 
 ## Architecture
 
@@ -48,8 +48,8 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key, used to send messages | [Portal → API Keys](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `o0V...base64...` | **yes** | Public key used to verify inbound webhook signatures | [Portal → API Keys → Public Key](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Your Telnyx number in E.164 format (the `from` address) | [Portal → My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
-| `WEBHOOK_URL` | `string` | `https://abc123.ngrok.io` | no | Public base URL, logged on startup for convenience | — |
-| `PORT` | `number` | `5000` | no | Port the Express server listens on (default `3000`) | — |
+| `WEBHOOK_URL` | `string` | `https://abc123.ngrok.io` | no | Public base URL, logged on startup for convenience | - |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (default `3000`) | - |
 
 ## Setup
 
@@ -150,8 +150,8 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — minimal one-way SMS send
-- [sms-chatbot-with-conversation-memory-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-chatbot-with-conversation-memory-python/README.md) — AI SMS chatbot with memory
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - minimal one-way SMS send
+- [sms-chatbot-with-conversation-memory-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-chatbot-with-conversation-memory-python/README.md) - AI SMS chatbot with memory
 
 ## Resources
 

@@ -14,16 +14,16 @@ Enable (activate) a Telnyx IoT SIM card by ID using the Telnyx PHP SDK over a va
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT SIM management on one private, global network. The IoT SIM API lets you provision, activate, and manage cellular connectivity programmatically with the same API key and SDK you use for everything else.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT SIM management on one private, global network. The IoT SIM API lets you provision, activate, and manage cellular connectivity programmatically with the same API key and SDK you use for everything else.
 
-- **Programmable IoT SIMs** — enable, disable, and inspect SIM cards over a simple REST API.
-- **One platform** — IoT connectivity sits next to voice, messaging, and AI under a single API key.
-- **Developer-first SDKs** — the Telnyx PHP SDK ships typed services, native Ed25519 webhook verification, and pluggable PSR-18 transport.
+- **Programmable IoT SIMs** - enable, disable, and inspect SIM cards over a simple REST API.
+- **One platform** - IoT connectivity sits next to voice, messaging, and AI under a single API key.
+- **Developer-first SDKs** - the Telnyx PHP SDK ships typed services, native Ed25519 webhook verification, and pluggable PSR-18 transport.
 
 ## Telnyx API Endpoints Used
 
-- **Get SIM Card**: `GET /v2/sim_cards/{id}` — via `$client->simCards->retrieve($id)` — [API reference](https://developers.telnyx.com/api-reference/sim-cards/get-sim-card)
-- **Enable (Activate) SIM Card**: `POST /v2/sim_cards/{id}/actions/enable` — via `$client->simCards->actions->enable(id: $id)` — [API reference](https://developers.telnyx.com/api-reference/sim-cards/enable-sim-card)
+- **Get SIM Card**: `GET /v2/sim_cards/{id}` - via `$client->simCards->retrieve($id)` - [API reference](https://developers.telnyx.com/api-reference/sim-cards/get-sim-card)
+- **Enable (Activate) SIM Card**: `POST /v2/sim_cards/{id}/actions/enable` - via `$client->simCards->actions->enable(id: $id)` - [API reference](https://developers.telnyx.com/api-reference/sim-cards/enable-sim-card)
 - **Webhook verification**: `$client->webhooks->unwrap($body, $headers)` verifies the Telnyx Ed25519 signature and parses the event.
 
 ## Architecture

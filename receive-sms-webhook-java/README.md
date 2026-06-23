@@ -14,14 +14,14 @@ Receive inbound SMS via Telnyx webhooks with a JDK `HttpServer`. Verifies the Te
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. Inbound SMS is delivered over the Telnyx-owned network with a webhook event model built for low-latency, reliable delivery.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. Inbound SMS is delivered over the Telnyx-owned network with a webhook event model built for low-latency, reliable delivery.
 
-- **Signed webhooks** — every delivery is signed with Ed25519 so you can cryptographically prove it came from Telnyx before acting on it.
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
+- **Signed webhooks** - every delivery is signed with Ed25519 so you can cryptographically prove it came from Telnyx before acting on it.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
 
 ## Telnyx API Endpoints Used
 
-This example does not call the Telnyx REST API — it receives webhook events that Telnyx sends to your server when an SMS arrives.
+This example does not call the Telnyx REST API - it receives webhook events that Telnyx sends to your server when an SMS arrives.
 
 - **Inbound Message webhook**: `POST /webhooks/sms` (your endpoint, called by Telnyx; event type `message.received`) -- [Webhook reference](https://developers.telnyx.com/docs/messaging/messages/receive-message)
 
@@ -51,13 +51,13 @@ The signed string is `"<telnyx-timestamp>|<raw body>"`. The handler reads the ra
 
 ## Environment Variables
 
-The Telnyx SDK reads these from the process environment via `TelnyxOkHttpClient.fromEnv()`. There is no `.env` auto-loading in Java — export the variables (see Setup) or copy `.env.example` and source it.
+The Telnyx SDK reads these from the process environment via `TelnyxOkHttpClient.fromEnv()`. There is no `.env` auto-loading in Java - export the variables (see Setup) or copy `.env.example` and source it.
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key used to initialize the SDK client. | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `Pq3...base64...=` | **yes** | Ed25519 public key for webhook signature verification. The SDK rejects webhooks if this is unset. | [Portal → Keys & Credentials](https://portal.telnyx.com) |
-| `PORT` | `number` | `8080` | no | Port the HttpServer listens on (defaults to `8080`). | — |
+| `PORT` | `number` | `8080` | no | Port the HttpServer listens on (defaults to `8080`). | - |
 
 ## Setup
 

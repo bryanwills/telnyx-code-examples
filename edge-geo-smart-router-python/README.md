@@ -1,7 +1,7 @@
 ---
 name: edge-geo-smart-router
 title: "Edge Geo Smart Router"
-description: "Route calls by geography at the edge."
+description: "Route calls by geography at the edge using Telnyx Voice, AI Inference, and Edge Compute."
 language: python
 framework: flask
 telnyx_products: [Edge Compute, Voice, AI Inference, Call Recording]

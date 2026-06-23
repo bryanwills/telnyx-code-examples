@@ -14,15 +14,15 @@ Production-ready OTP 2FA system with Node.js and Express. Generates one-time pas
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. For SMS OTP delivery that means high deliverability, low latency, and a single API for everything from one-time passcodes to voice fallback.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. For SMS OTP delivery that means high deliverability, low latency, and a single API for everything from one-time passcodes to voice fallback.
 
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
-- **Global private network** — OTP messages traverse the Telnyx-owned IP backbone for lower latency than the public internet.
-- **Developer-first SDKs** — the official `telnyx` Node.js SDK is used here for sending messages and typed error handling.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
+- **Global private network** - OTP messages traverse the Telnyx-owned IP backbone for lower latency than the public internet.
+- **Developer-first SDKs** - the official `telnyx` Node.js SDK is used here for sending messages and typed error handling.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 
 Called by the app via the Node.js SDK as `client.messages.send({ from, to, text })`.
 
@@ -55,9 +55,9 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number that sends the OTP (E.164) | [My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
-| `OTP_EXPIRY_SECONDS` | `integer` | `300` | no | OTP lifetime in seconds (default `300`) | — |
-| `OTP_LENGTH` | `integer` | `6` | no | Number of digits in the OTP (default `6`) | — |
-| `PORT` | `integer` | `5000` | no | Port the Express server listens on (default `3000`) | — |
+| `OTP_EXPIRY_SECONDS` | `integer` | `300` | no | OTP lifetime in seconds (default `300`) | - |
+| `OTP_LENGTH` | `integer` | `6` | no | Number of digits in the OTP (default `6`) | - |
+| `PORT` | `integer` | `5000` | no | Port the Express server listens on (default `3000`) | - |
 
 ## Setup
 
@@ -69,7 +69,7 @@ npm install
 node server.js          # starts on http://localhost:5000 (or $PORT)
 ```
 
-There are no webhooks to configure — this example only sends outbound SMS and verifies codes against in-memory storage.
+There are no webhooks to configure - this example only sends outbound SMS and verifies codes against in-memory storage.
 
 ## API Reference
 
@@ -149,16 +149,16 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [sms-two-factor-auth-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-two-factor-auth-python/README.md) — same OTP 2FA flow in Python
-- [verify-phone-number-otp-flow-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/verify-phone-number-otp-flow-python/README.md) — OTP using the Telnyx Verify API
-- [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md) — minimal outbound SMS in Node.js
-- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) — handle inbound SMS webhooks
+- [sms-two-factor-auth-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-two-factor-auth-python/README.md) - same OTP 2FA flow in Python
+- [verify-phone-number-otp-flow-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/verify-phone-number-otp-flow-python/README.md) - OTP using the Telnyx Verify API
+- [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md) - minimal outbound SMS in Node.js
+- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) - handle inbound SMS webhooks
 
 ## Resources
 
 - [Messaging Overview](https://developers.telnyx.com/docs/messaging)
-- [Send an SMS — Quickstart](https://developers.telnyx.com/docs/messaging/messages/send-message)
-- [Send a Message — API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Send an SMS - Quickstart](https://developers.telnyx.com/docs/messaging/messages/send-message)
+- [Send a Message - API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)
 - [Messaging Pricing](https://telnyx.com/pricing/messaging)

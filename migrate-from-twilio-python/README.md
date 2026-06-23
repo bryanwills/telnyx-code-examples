@@ -1,7 +1,7 @@
 ---
 name: migrate-from-twilio
 title: "Migrate from Twilio"
-description: "Migrate from Twilio — complete Twilio-to-Telnyx migration tool: numbers, messaging profiles, voice apps, and webhook configs."
+description: "Migrate from Twilio - complete Twilio-to-Telnyx migration tool: numbers, messaging profiles, voice apps, and webhook configs."
 language: python
 framework: flask
 telnyx_products: [Migration, Number Porting, SMS/MMS, Voice]
@@ -10,16 +10,16 @@ channel: [sms]
 
 # Migrate from Twilio
 
-Migrate from Twilio — complete Twilio-to-Telnyx migration tool: numbers, messaging profiles, voice apps, and webhook configs.
+Migrate from Twilio - complete Twilio-to-Telnyx migration tool: numbers, messaging profiles, voice apps, and webhook configs.
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` — [API reference](https://developers.telnyx.com/api/call-control/answer-call)
-- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` — [API reference](https://developers.telnyx.com/api/call-control/speak)
+- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` - [API reference](https://developers.telnyx.com/api/call-control/answer-call)
+- **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` - [API reference](https://developers.telnyx.com/api/call-control/speak)
 
 ## External Service Integrations
 
-- **Twilio (migration source)** — Source platform being migrated from ([docs](https://www.twilio.com/docs))
+- **Twilio (migration source)** - Source platform being migrated from ([docs](https://www.twilio.com/docs))
 
 ## Architecture
 
@@ -67,9 +67,9 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `TWILIO_ACCOUNT_SID` | `string` | `your_value` | **yes** | Twilio account sid | — |
-| `TWILIO_AUTH_TOKEN` | `string` | `your_value` | **yes** | Twilio auth token | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `TWILIO_ACCOUNT_SID` | `string` | `your_value` | **yes** | Twilio account sid | - |
+| `TWILIO_AUTH_TOKEN` | `string` | `your_value` | **yes** | Twilio auth token | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -268,4 +268,4 @@ Receives Telnyx webhook events for `/migrate/webhook-map`.
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

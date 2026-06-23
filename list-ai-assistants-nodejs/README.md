@@ -14,10 +14,10 @@ List all AI assistants in your Telnyx account using the Telnyx Node.js SDK and a
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. AI Assistants are managed through the same API surface as the rest of your communications stack, so listing, creating, and operating assistants happens with a single SDK and a single API key.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. AI Assistants are managed through the same API surface as the rest of your communications stack, so listing, creating, and operating assistants happens with a single SDK and a single API key.
 
-- **One platform** — build, list, and run AI assistants alongside voice and messaging without stitching together multiple vendors.
-- **Developer-first SDKs** — the Node.js SDK exposes typed errors so you can map Telnyx failures to clean HTTP responses.
+- **One platform** - build, list, and run AI assistants alongside voice and messaging without stitching together multiple vendors.
+- **Developer-first SDKs** - the Node.js SDK exposes typed errors so you can map Telnyx failures to clean HTTP responses.
 
 ## Telnyx API Endpoints Used
 
@@ -50,7 +50,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | — |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | - |
 
 ## Setup
 

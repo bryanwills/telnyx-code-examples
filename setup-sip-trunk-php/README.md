@@ -14,17 +14,17 @@ Create, list, and retrieve a Telnyx credential (SIP) connection using the Telnyx
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT SIM management on one private, global network. SIP trunking connects your PBX, SBC, or softphone to the PSTN over the Telnyx-owned network, configured programmatically with the same API key and SDK you use for everything else.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT SIM management on one private, global network. SIP trunking connects your PBX, SBC, or softphone to the PSTN over the Telnyx-owned network, configured programmatically with the same API key and SDK you use for everything else.
 
-- **Elastic SIP trunking** — provision credential, FQDN, and IP connections over a simple REST API; scale concurrent calls without per-channel contracts.
-- **One platform** — SIP trunking sits next to voice, messaging, and AI under a single API key.
-- **Developer-first SDKs** — the Telnyx PHP SDK ships typed services, native Ed25519 webhook verification, and pluggable PSR-18 transport.
+- **Elastic SIP trunking** - provision credential, FQDN, and IP connections over a simple REST API; scale concurrent calls without per-channel contracts.
+- **One platform** - SIP trunking sits next to voice, messaging, and AI under a single API key.
+- **Developer-first SDKs** - the Telnyx PHP SDK ships typed services, native Ed25519 webhook verification, and pluggable PSR-18 transport.
 
 ## Telnyx API Endpoints Used
 
-- **Create Credential Connection**: `POST /v2/credential_connections` — via `$client->credentialConnections->create(connectionName: ..., userName: ..., password: ...)` — [API reference](https://developers.telnyx.com/api-reference/credential-connections/create-credential-connection)
-- **List Credential Connections**: `GET /v2/credential_connections` — via `$client->credentialConnections->list()` — [API reference](https://developers.telnyx.com/api-reference/credential-connections/list-credential-connections)
-- **Get Credential Connection**: `GET /v2/credential_connections/{id}` — via `$client->credentialConnections->retrieve($id)` — [API reference](https://developers.telnyx.com/api-reference/credential-connections/get-credential-connection)
+- **Create Credential Connection**: `POST /v2/credential_connections` - via `$client->credentialConnections->create(connectionName: ..., userName: ..., password: ...)` - [API reference](https://developers.telnyx.com/api-reference/credential-connections/create-credential-connection)
+- **List Credential Connections**: `GET /v2/credential_connections` - via `$client->credentialConnections->list()` - [API reference](https://developers.telnyx.com/api-reference/credential-connections/list-credential-connections)
+- **Get Credential Connection**: `GET /v2/credential_connections/{id}` - via `$client->credentialConnections->retrieve($id)` - [API reference](https://developers.telnyx.com/api-reference/credential-connections/get-credential-connection)
 - **Webhook verification**: `$client->webhooks->unwrap($body, $headers)` verifies the Telnyx Ed25519 signature and parses the event.
 
 ## Architecture

@@ -14,17 +14,17 @@ Receive inbound MMS messages with a Telnyx webhook, verify the signature, and do
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Signed webhooks** — every inbound event is signed with Ed25519 so you can prove it came from Telnyx before you trust it.
-- **Native MMS** — inbound media arrives as short-lived signed URLs you download directly, no extra carrier integration.
-- **Developer-first** — first-party SDKs verify signatures, parse events, and call the API from one client.
+- **Signed webhooks** - every inbound event is signed with Ed25519 so you can prove it came from Telnyx before you trust it.
+- **Native MMS** - inbound media arrives as short-lived signed URLs you download directly, no extra carrier integration.
+- **Developer-first** - first-party SDKs verify signatures, parse events, and call the API from one client.
 
 ## Telnyx API Endpoints Used
 
-This example does not call the Telnyx REST API — it receives events Telnyx sends to your server. The webhook it consumes is:
+This example does not call the Telnyx REST API - it receives events Telnyx sends to your server. The webhook it consumes is:
 
-- **`message.received`** — delivered to your Messaging Profile's inbound webhook URL when an MMS (or SMS) arrives. See the [inbound message webhook reference](https://developers.telnyx.com/api-reference/messages/receive-a-message).
+- **`message.received`** - delivered to your Messaging Profile's inbound webhook URL when an MMS (or SMS) arrives. See the [inbound message webhook reference](https://developers.telnyx.com/api-reference/messages/receive-a-message).
 
 Media attachments are fetched over plain HTTPS from the signed `media[].url` values Telnyx includes in the event.
 
@@ -57,7 +57,7 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `Ms1aN...` | **yes** | Public key used to verify inbound webhook signatures | [Portal](https://portal.telnyx.com/api-keys) |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug mode | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug mode | - |
 
 ## Setup
 
@@ -89,7 +89,7 @@ python app.py           # starts on http://localhost:5000
 
 Receives the Telnyx `message.received` event. The request is rejected with `401` unless its Ed25519 signature verifies against `TELNYX_PUBLIC_KEY`. On a valid `message.received` event, any media attachments are downloaded to `./media/`.
 
-Telnyx sends this request — you do not call it yourself. A representative payload:
+Telnyx sends this request - you do not call it yourself. A representative payload:
 
 ```json
 {
@@ -122,7 +122,7 @@ You can replay a signed event by re-sending one Telnyx already delivered (signed
 
 ### `GET /messages`
 
-Lists the media files downloaded so far (demonstration only — use a database in production).
+Lists the media files downloaded so far (demonstration only - use a database in production).
 
 ```bash
 curl http://localhost:5000/messages
@@ -157,13 +157,13 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) — receive inbound SMS webhooks.
-- [mms-photo-inventory-tracker-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/mms-photo-inventory-tracker-python/README.md) — act on inbound MMS images.
-- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send an outbound message.
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) - receive inbound SMS webhooks.
+- [mms-photo-inventory-tracker-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/mms-photo-inventory-tracker-python/README.md) - act on inbound MMS images.
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - send an outbound message.
 
 ## Resources
 
-- [Receive a message — API reference](https://developers.telnyx.com/api-reference/messages/receive-a-message)
+- [Receive a message - API reference](https://developers.telnyx.com/api-reference/messages/receive-a-message)
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
 - [Webhook signing & verification](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)

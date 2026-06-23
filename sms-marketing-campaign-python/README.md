@@ -1,7 +1,7 @@
 ---
 name: sms-marketing-campaign
 title: "SMS Marketing Campaign"
-description: "Run bulk SMS marketing campaigns with Flask and the Telnyx Messaging API — create campaigns, send rate-limited batches, and track delivery via webhooks."
+description: "Run bulk SMS marketing campaigns with Flask and the Telnyx Messaging API - create campaigns, send rate-limited batches, and track delivery via webhooks."
 language: python
 framework: flask
 telnyx_products: [Messaging]
@@ -10,20 +10,20 @@ channel: [sms]
 
 # SMS Marketing Campaign
 
-Run bulk SMS marketing campaigns with Flask and the Telnyx Messaging API — create campaigns, send rate-limited batches, and track delivery via signed webhooks.
+Run bulk SMS marketing campaigns with Flask and the Telnyx Messaging API - create campaigns, send rate-limited batches, and track delivery via signed webhooks.
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Deliverability built in** — number reputation, 10DLC brand/campaign registration, and deliverability monitoring are included, which matters for high-volume marketing sends.
-- **Throughput control** — per-number and per-profile message rate limits let you scale bulk campaigns predictably.
-- **Signed webhooks** — every delivery receipt is Ed25519-signed so your status tracking can trust the source.
+- **Deliverability built in** - number reputation, 10DLC brand/campaign registration, and deliverability monitoring are included, which matters for high-volume marketing sends.
+- **Throughput control** - per-number and per-profile message rate limits let you scale bulk campaigns predictably.
+- **Signed webhooks** - every delivery receipt is Ed25519-signed so your status tracking can trust the source.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — sends each campaign message. [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **Outbound Message Delivery Receipts** (inbound webhook to your app) — Telnyx posts `message.sent` / `message.finalized` events with per-recipient delivery status. [Webhook reference](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
+- **Send Message**: `POST /v2/messages` - sends each campaign message. [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **Outbound Message Delivery Receipts** (inbound webhook to your app) - Telnyx posts `message.sent` / `message.finalized` events with per-recipient delivery status. [Webhook reference](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 
 ## Architecture
 
@@ -52,7 +52,7 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key, used to send messages | [Portal → API Keys](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `eXaMpLe...base64` | **yes** | Public key used to verify inbound webhook signatures | [Portal → API Keys → Public Key](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number (E.164) used as the campaign sender | [Portal → My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
-| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode | - |
 
 ## Setup
 
@@ -186,13 +186,13 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send a single SMS, the building block this campaign sender batches.
-- [sms-chatbot-with-conversation-memory-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-chatbot-with-conversation-memory-python/README.md) — handle inbound SMS replies with an AI chatbot.
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - send a single SMS, the building block this campaign sender batches.
+- [sms-chatbot-with-conversation-memory-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-chatbot-with-conversation-memory-python/README.md) - handle inbound SMS replies with an AI chatbot.
 
 ## Resources
 
 - [Messaging Overview](https://developers.telnyx.com/docs/messaging)
-- [Send an SMS — Quickstart](https://developers.telnyx.com/docs/messaging/messages/send-message)
+- [Send an SMS - Quickstart](https://developers.telnyx.com/docs/messaging/messages/send-message)
 - [Receive Webhooks](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Messaging API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)

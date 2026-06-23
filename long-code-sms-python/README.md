@@ -14,15 +14,15 @@ Send A2P SMS over a long code with a rate-limited queue, delivery tracking, and 
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
-- **Signed webhooks** — every inbound event is Ed25519-signed so you can verify it came from Telnyx before acting on it.
-- **One API, one network** — outbound sends and inbound delivery receipts traverse the Telnyx-owned IP network for lower latency and higher reliability.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
+- **Signed webhooks** - every inbound event is Ed25519-signed so you can verify it came from Telnyx before acting on it.
+- **One API, one network** - outbound sends and inbound delivery receipts traverse the Telnyx-owned IP network for lower latency and higher reliability.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 
 Inbound `message.received` and `message.finalized` (delivery receipt) events are delivered to this app's `/webhooks/message` route by your Telnyx Messaging Profile.
 
@@ -58,7 +58,7 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_PUBLIC_KEY` | `string` | `e5f6...` | **yes** | Public key used to verify inbound webhook signatures | [Portal → API Keys](https://portal.telnyx.com/api-keys) |
 | `TELNYX_LONG_CODE` | `string` | `+15551234567` | **yes** | Your Telnyx long code (E.164) used as the `from` number | [Portal → My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
 | `WEBHOOK_URL` | `string` | `https://your-domain.com/webhooks/message` | **yes** | Public URL Telnyx posts inbound events to | Your deployment / ngrok |
-| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode | — |
+| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode | - |
 
 ## Setup
 
@@ -181,7 +181,7 @@ curl http://localhost:5000/sms/status/40385fa2-1234-5678-9abc-def012345678
 
 ### `POST /webhooks/message`
 
-Receives inbound SMS (`message.received`) and delivery receipts (`message.finalized`) from Telnyx. The Ed25519 signature is verified before the body is parsed. Configure this URL in your Messaging Profile — you do not call it yourself.
+Receives inbound SMS (`message.received`) and delivery receipts (`message.finalized`) from Telnyx. The Ed25519 signature is verified before the body is parsed. Configure this URL in your Messaging Profile - you do not call it yourself.
 
 **Response `200`:**
 
@@ -217,13 +217,13 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — minimal single-message send.
-- [sms-chatbot-with-conversation-memory-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-chatbot-with-conversation-memory-python/README.md) — AI SMS chatbot.
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - minimal single-message send.
+- [sms-chatbot-with-conversation-memory-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-chatbot-with-conversation-memory-python/README.md) - AI SMS chatbot.
 
 ## Resources
 
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
-- [Send a Message — API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Send a Message - API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Webhook signing & verification](https://developers.telnyx.com/docs/messaging/messages/receive-webhooks)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)

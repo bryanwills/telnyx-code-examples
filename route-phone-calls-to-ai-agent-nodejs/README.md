@@ -42,7 +42,7 @@ Receive inbound call webhooks from the Telnyx Voice API and answer calls program
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform that puts voice, messaging, SIP, AI, and IoT on one private, global network — so inbound calls reach your Call Control webhook with low latency and you answer them programmatically through a single API instead of stitching together multiple vendors.
+Telnyx is an **AI Communications Infrastructure** platform that puts voice, messaging, SIP, AI, and IoT on one private, global network - so inbound calls reach your Call Control webhook with low latency and you answer them programmatically through a single API instead of stitching together multiple vendors.
 
 ## Environment Variables
 
@@ -51,7 +51,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY_your_telnyx_api_key_here` | **yes** | Telnyx API v2 key used to authenticate Call Control actions | [Portal](https://portal.telnyx.com/api-keys) |
-| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | — |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | - |
 
 ## Setup
 

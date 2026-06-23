@@ -1,7 +1,7 @@
 ---
 name: ai-assistant-knowledge-base
 title: "AI Assistant Knowledge Base"
-description: "AI Assistant Knowledge Base — AI Assistant with document knowledge base for context-aware Q&A over uploaded documents."
+description: "AI Assistant Knowledge Base - AI Assistant with document knowledge base for context-aware Q&A over uploaded documents."
 language: python
 framework: flask
 telnyx_products: [AI Inference]
@@ -9,11 +9,11 @@ telnyx_products: [AI Inference]
 
 # AI Assistant Knowledge Base
 
-AI Assistant Knowledge Base — AI Assistant with document knowledge base for context-aware Q&A over uploaded documents.
+AI Assistant Knowledge Base - AI Assistant with document knowledge base for context-aware Q&A over uploaded documents.
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
@@ -39,7 +39,7 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -158,4 +158,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

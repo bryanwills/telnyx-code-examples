@@ -14,15 +14,15 @@ Retrieve and activate a Telnyx IoT SIM card by ID using the Telnyx Node.js SDK o
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT SIM management on one private, global network. The IoT SIM API lets you provision, activate, and manage cellular connectivity programmatically with the same key and SDK you use for everything else.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT SIM management on one private, global network. The IoT SIM API lets you provision, activate, and manage cellular connectivity programmatically with the same key and SDK you use for everything else.
 
-- **Programmable IoT SIMs** — activate, deactivate, and inspect SIM cards over a simple REST API.
-- **One platform** — IoT connectivity sits next to voice, messaging, and AI under a single API key.
+- **Programmable IoT SIMs** - activate, deactivate, and inspect SIM cards over a simple REST API.
+- **One platform** - IoT connectivity sits next to voice, messaging, and AI under a single API key.
 
 ## Telnyx API Endpoints Used
 
-- **Get SIM Card**: `GET /v2/sim_cards/{id}` — via `client.simCards.retrieve()` — [API reference](https://developers.telnyx.com/api-reference/sim-cards/get-sim-card)
-- **Activate SIM Card**: `POST /v2/sim_cards/{id}/actions/enable` — via `client.simCards.actions.enable()` — [API reference](https://developers.telnyx.com/api-reference/sim-cards/enable-sim-card)
+- **Get SIM Card**: `GET /v2/sim_cards/{id}` - via `client.simCards.retrieve()` - [API reference](https://developers.telnyx.com/api-reference/sim-cards/get-sim-card)
+- **Activate SIM Card**: `POST /v2/sim_cards/{id}/actions/enable` - via `client.simCards.actions.enable()` - [API reference](https://developers.telnyx.com/api-reference/sim-cards/enable-sim-card)
 
 ## Architecture
 
@@ -51,7 +51,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | — |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000` if unset) | - |
 
 ## Setup
 

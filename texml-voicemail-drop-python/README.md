@@ -8,27 +8,27 @@ telnyx_products: [Voice]
 channel: [voice]
 ---
 
-# TeXML Voicemail Drop — leave pre-recorded voicemails at scale via TeXML.
+# TeXML Voicemail Drop - leave pre-recorded voicemails at scale via TeXML.
 
-TeXML Voicemail Drop — leave pre-recorded voicemails at scale via TeXML.
+TeXML Voicemail Drop - leave pre-recorded voicemails at scale via TeXML.
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Hangup**: `POST /v2/calls/{id}/actions/hangup` — [API reference](https://developers.telnyx.com/api/call-control/hangup)
-- **Call Control: Start Playback**: `POST /v2/calls/{id}/actions/playback_start` — [API reference](https://developers.telnyx.com/api/call-control/start-playback)
-- **Create Call**: `POST /v2/calls` — [API reference](https://developers.telnyx.com/api/call-control/create-call)
+- **Call Control: Hangup**: `POST /v2/calls/{id}/actions/hangup` - [API reference](https://developers.telnyx.com/api/call-control/hangup)
+- **Call Control: Start Playback**: `POST /v2/calls/{id}/actions/playback_start` - [API reference](https://developers.telnyx.com/api/call-control/start-playback)
+- **Create Call**: `POST /v2/calls` - [API reference](https://developers.telnyx.com/api/call-control/create-call)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.machine.detection.ended` — Answering machine detection completed — human or machine result
-- `call.playback.ended` — Audio file playback completed
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.machine.detection.ended` - Answering machine detection completed - human or machine result
+- `call.playback.ended` - Audio file playback completed
 
 ## External Service Integrations
 
-- **Email / SMTP** — Email notifications and alerts
+- **Email / SMTP** - Email notifications and alerts
 
 ## Architecture
 
@@ -55,8 +55,8 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `FROM_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
 | `CONNECTION_ID` | `string` | `1494404757140276705` | **yes** | Call Control connection/app ID | [Portal](https://portal.telnyx.com/call-control/applications) |
-| `VOICEMAIL_AUDIO_URL` | `string` | `https://example.com/voicemail.mp3` | no | Voicemail audio url | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `VOICEMAIL_AUDIO_URL` | `string` | `https://example.com/voicemail.mp3` | no | Voicemail audio url | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -203,4 +203,4 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

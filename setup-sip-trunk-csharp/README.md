@@ -14,13 +14,13 @@ Create, list, and retrieve credential-authenticated SIP connections using the of
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. Credential SIP connections authenticate with a username and password and route calls over the Telnyx-owned IP backbone instead of the public internet, giving you lower latency, higher call quality, and full programmatic provisioning through the API.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. Credential SIP connections authenticate with a username and password and route calls over the Telnyx-owned IP backbone instead of the public internet, giving you lower latency, higher call quality, and full programmatic provisioning through the API.
 
 ## Telnyx API Endpoints Used
 
-- **Create credential connection**: `POST /v2/credential_connections` — [API reference](https://developers.telnyx.com/api/sip-trunking/create-credential-connection)
-- **List credential connections**: `GET /v2/credential_connections` — [API reference](https://developers.telnyx.com/api/sip-trunking/list-credential-connections)
-- **Retrieve credential connection**: `GET /v2/credential_connections/{id}` — [API reference](https://developers.telnyx.com/api/sip-trunking/retrieve-credential-connection)
+- **Create credential connection**: `POST /v2/credential_connections` - [API reference](https://developers.telnyx.com/api/sip-trunking/create-credential-connection)
+- **List credential connections**: `GET /v2/credential_connections` - [API reference](https://developers.telnyx.com/api/sip-trunking/list-credential-connections)
+- **Retrieve credential connection**: `GET /v2/credential_connections/{id}` - [API reference](https://developers.telnyx.com/api/sip-trunking/retrieve-credential-connection)
 
 ## Architecture
 
@@ -52,7 +52,7 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal > API Keys](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `o2D5...base64` | **yes** (for webhooks) | Account base64 Ed25519 public key, used to verify inbound webhook signatures | [Portal > Account > Public Key](https://portal.telnyx.com) |
-| `TELNYX_API_BASE_URL` | `string` | `https://api.telnyx.com/v2` | no | Override the API base URL (defaults to `https://api.telnyx.com/v2`) | — |
+| `TELNYX_API_BASE_URL` | `string` | `https://api.telnyx.com/v2` | no | Override the API base URL (defaults to `https://api.telnyx.com/v2`) | - |
 
 ## Setup
 
@@ -132,10 +132,10 @@ Receives inbound Telnyx webhooks, verifies the Ed25519 signature, and reads `dat
 
 ## Related Examples
 
-- [setup-sip-trunk-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-python/README.md) — Same SIP trunk setup in Python
-- [setup-sip-trunk-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/README.md) — Same SIP trunk setup in Node.js
-- [setup-sip-trunk-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-go/README.md) — Same SIP trunk setup in Go
-- [inbound-sip-routing-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/inbound-sip-routing-nodejs/README.md) — Route inbound SIP calls in Node.js
+- [setup-sip-trunk-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-python/README.md) - Same SIP trunk setup in Python
+- [setup-sip-trunk-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/README.md) - Same SIP trunk setup in Node.js
+- [setup-sip-trunk-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-go/README.md) - Same SIP trunk setup in Go
+- [inbound-sip-routing-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/inbound-sip-routing-nodejs/README.md) - Route inbound SIP calls in Node.js
 
 ## Resources
 

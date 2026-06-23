@@ -30,9 +30,9 @@ Send an MMS message with image attachments using the Telnyx Messaging API.
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
 
 ## Environment Variables
 
@@ -41,8 +41,8 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `TELNYX_PHONE_NUMBER` | `string` | `your_value` | **yes** | Telnyx phone number | — |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
+| `TELNYX_PHONE_NUMBER` | `string` | `your_value` | **yes** | Telnyx phone number | - |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | - |
 
 ## Setup
 

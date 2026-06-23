@@ -47,10 +47,10 @@ Upload audio with existing voice-over. STT extracts the script, AI rewrites/impr
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Co-located inference** — LLM runs on the same network as voice traffic. Sub-200ms round trips.
-- **Integrated storage** — S3-compatible Cloud Storage co-located with voice and AI infrastructure. Talk to it with the AWS SDK (boto3) and hand out time-limited presigned URLs.
+- **Co-located inference** - LLM runs on the same network as voice traffic. Sub-200ms round trips.
+- **Integrated storage** - S3-compatible Cloud Storage co-located with voice and AI infrastructure. Talk to it with the AWS SDK (boto3) and hand out time-limited presigned URLs.
 
 ## Environment Variables
 

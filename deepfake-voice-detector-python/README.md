@@ -15,17 +15,17 @@ Real-time synthetic speech detection on live phone calls. Captures audio via med
 
 ## Telnyx API Endpoints Used
 
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events ([Call Control docs](https://developers.telnyx.com/docs/api/v2/call-control)):
 
-- `call.answered` — Call connected — app begins interaction
-- `call.hangup` — Call ended — app cleans up session, triggers post-call processing
-- `call.initiated` — New inbound or outbound call detected
-- `call.streaming.started` — Event handled by application
-- `call.streaming.stopped` — Event handled by application
+- `call.answered` - Call connected - app begins interaction
+- `call.hangup` - Call ended - app cleans up session, triggers post-call processing
+- `call.initiated` - New inbound or outbound call detected
+- `call.streaming.started` - Event handled by application
+- `call.streaming.stopped` - Event handled by application
 
 ## Architecture
 
@@ -67,10 +67,10 @@ Copy `.env.example` to `.env` and fill in:
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
 | `MAIN_NUMBER` | `string` | `+18005551234` | **yes** | Telnyx phone number (E.164) | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
 | `CONNECTION_ID` | `string` | `1494404757140276705` | **yes** | Call Control connection/app ID | [Portal](https://portal.telnyx.com/call-control/applications) |
-| `ALERT_WEBHOOK` | `string` | `your_value` | **yes** | Alert webhook | — |
-| `DETECTION_THRESHOLD` | `string` | `0.75` | no | Detection threshold | — |
-| `MEDIA_STREAM_URL` | `string` | `request.url_root.rstrip("/` | no | Media stream url | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `ALERT_WEBHOOK` | `string` | `your_value` | **yes** | Alert webhook | - |
+| `DETECTION_THRESHOLD` | `string` | `0.75` | no | Detection threshold | - |
+| `MEDIA_STREAM_URL` | `string` | `request.url_root.rstrip("/` | no | Media stream url | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -227,4 +227,4 @@ Receives Telnyx webhook events for `/webhooks/media`.
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""sync_readme.py — generate (or verify) the root README.md from mapping + frontmatter.
+"""sync_readme.py - generate (or verify) the root README.md from mapping + frontmatter.
 
-Single source of truth — never hand-edit README.md:
+Single source of truth - never hand-edit README.md:
   - which examples exist + their category  ← scripts/examples_mapping.yaml (product)
   - each example's title + one-liner        ← that folder's README.md frontmatter
 
@@ -34,19 +34,19 @@ OUTPUT = REPO_ROOT / "README.md"
 CATEGORY_META: dict[str, tuple[str, str]] = {
     "Voice AI": (
         "https://telnyx.com/products/voice-ai-agents",
-        "Build voice applications with [Telnyx Voice AI]({url}) — IVR menus, call recording, conferencing, WebRTC, and AI-powered call routing.",
+        "Build voice applications with [Telnyx Voice AI]({url}) - IVR menus, call recording, conferencing, WebRTC, and AI-powered call routing.",
     ),
     "SMS & MMS": (
         "https://telnyx.com/products/sms-api",
-        "Send and receive text messages with the [Telnyx SMS API]({url}) — build autoresponders, implement 2FA, and manage bulk messaging campaigns.",
+        "Send and receive text messages with the [Telnyx SMS API]({url}) - build autoresponders, implement 2FA, and manage bulk messaging campaigns.",
     ),
     "AI Assistants": (
         "https://telnyx.com/ai-assistants",
-        "Create, manage, and chat with [Telnyx AI Assistants]({url}) — LLM-powered agents for voice and messaging automation.",
+        "Create, manage, and chat with [Telnyx AI Assistants]({url}) - LLM-powered agents for voice and messaging automation.",
     ),
     "SIP Trunking": (
         "https://telnyx.com/products/sip-trunks",
-        "Connect your PBX or SBC to [Telnyx SIP Trunking]({url}) — trunk setup, inbound routing, failover, and codec configuration.",
+        "Connect your PBX or SBC to [Telnyx SIP Trunking]({url}) - trunk setup, inbound routing, failover, and codec configuration.",
     ),
     "IoT & SIM Management": (
         "https://telnyx.com/products/iot-sim-card",
@@ -93,12 +93,12 @@ def build(mapping: dict) -> str:
     lines: list[str] = []
 
     # ── Header ──────────────────────────────────────────────────────────
-    lines.append("# Telnyx Code Examples — AI Communications Infrastructure")
+    lines.append("# Telnyx Code Examples - AI Communications Infrastructure")
     lines.append("")
     lines.append(
         "Production-ready code examples for the Telnyx platform. Each example is a "
         "self-contained project with working code, documentation, and environment "
-        "configuration — clone, configure, and run in minutes."
+        "configuration - clone, configure, and run in minutes."
     )
     lines.append("")
 
@@ -138,7 +138,7 @@ def build(mapping: dict) -> str:
         url, intro_template = CATEGORY_META[cat]
         intro = intro_template.format(url=url)
 
-        lines.append("<details>")
+        lines.append("<details open>")
         lines.append(f"<summary><h2>{cat}</h2> <em>({count} examples)</em></summary>")
         lines.append("")
         lines.append(intro)
@@ -172,23 +172,23 @@ def build(mapping: dict) -> str:
     )
     lines.append("")
     lines.append(
-        "- **[Voice AI](https://telnyx.com/products/voice-ai-agents)** — Programmable "
+        "- **[Voice AI](https://telnyx.com/products/voice-ai-agents)** - Programmable "
         "voice with Call Control, IVR, recording, conferencing, and WebRTC."
     )
     lines.append(
-        "- **[SMS & MMS](https://telnyx.com/products/sms-api)** — Send and receive "
+        "- **[SMS & MMS](https://telnyx.com/products/sms-api)** - Send and receive "
         "messages globally with delivery receipts and webhook events."
     )
     lines.append(
-        "- **[SIP Trunking](https://telnyx.com/products/sip-trunks)** — Connect your "
+        "- **[SIP Trunking](https://telnyx.com/products/sip-trunks)** - Connect your "
         "existing PBX with elastic SIP trunks, failover routing, and codec control."
     )
     lines.append(
-        "- **[AI Assistants](https://telnyx.com/ai-assistants)** — Deploy LLM-powered "
+        "- **[AI Assistants](https://telnyx.com/ai-assistants)** - Deploy LLM-powered "
         "voice and messaging agents with built-in telephony."
     )
     lines.append(
-        "- **[IoT & SIM](https://telnyx.com/products/iot-sim-card)** — Global IoT "
+        "- **[IoT & SIM](https://telnyx.com/products/iot-sim-card)** - Global IoT "
         "connectivity with SIM management, eSIM provisioning, and data monitoring."
     )
     lines.append("")
@@ -229,8 +229,9 @@ def build(mapping: dict) -> str:
     lines.append(
         "Telnyx is an AI Communications Infrastructure platform with a private global "
         "network. It offers integrated voice, messaging, AI, SIP, and IoT under one "
-        "API — no need to stitch together multiple vendors. Telnyx also offers "
-        "significantly lower pricing with no per-seat fees or contracts."
+        "API - no need to stitch together multiple vendors. Telnyx also offers "
+        "significantly lower pricing with no per-seat fees or contracts. "
+        "See a [detailed Telnyx vs Twilio comparison](https://telnyx.com/resources/telnyx-vs-twilio-which-voice-api-is-better)."
     )
     lines.append("")
     lines.append("**Q: Do I need multiple vendors for voice, SMS, and AI?**")
@@ -294,12 +295,12 @@ def main() -> int:
         current = OUTPUT.read_text() if OUTPUT.exists() else ""
         if current != content:
             print(
-                "FAIL — README.md is out of date. Regenerate with: "
+                "FAIL - README.md is out of date. Regenerate with: "
                 "python scripts/sync_readme.py"
             )
             return 1
         n = content.count("\n| [")
-        print(f"PASS — README.md is in sync ({n} examples listed).")
+        print(f"PASS - README.md is in sync ({n} examples listed).")
         return 0
 
     OUTPUT.write_text(content)

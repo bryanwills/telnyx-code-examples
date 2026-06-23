@@ -1,7 +1,7 @@
 ---
 name: merge-deal-desk-alerts
 title: "Merge Deal Desk Alerts"
-description: "CRM webhook fires when a deal moves to negotiation or exceeds a revenue threshold."
+description: "CRM webhook fires when a deal moves to negotiation, triggering Telnyx Voice and AI Inference alerts with Merge CRM."
 language: python
 framework: flask
 telnyx_products: [Voice, AI Inference]
@@ -181,10 +181,10 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 
 ## Related Examples
 
-- [merge-pipeline-briefing-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-pipeline-briefing-python/README.md) — pull a CRM pipeline summary and deliver it as a spoken briefing.
-- [warm-transfer-ai-briefing-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/warm-transfer-ai-briefing-python/README.md) — AI-generated briefing on a live warm transfer between agents.
-- [transfer-live-phone-calls-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/transfer-live-phone-calls-python/README.md) — Call Control transfer mechanics used to connect the VP to the rep.
-- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) — route inbound calls into an AI voice agent with gather/speak.
+- [merge-pipeline-briefing-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-pipeline-briefing-python/README.md) - pull a CRM pipeline summary and deliver it as a spoken briefing.
+- [warm-transfer-ai-briefing-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/warm-transfer-ai-briefing-python/README.md) - AI-generated briefing on a live warm transfer between agents.
+- [transfer-live-phone-calls-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/transfer-live-phone-calls-python/README.md) - Call Control transfer mechanics used to connect the VP to the rep.
+- [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) - route inbound calls into an AI voice agent with gather/speak.
 
 ## Resources
 

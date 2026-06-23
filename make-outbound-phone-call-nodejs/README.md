@@ -38,7 +38,7 @@ Initiate an outbound phone call using the Telnyx Call Control API. Exposes an Ex
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT delivered over one private, global network. The Call Control API used here links each outbound call to your Call Control Application via a connection ID, giving you programmatic control over the call lifecycle with low latency and predictable, pay-as-you-go pricing.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT delivered over one private, global network. The Call Control API used here links each outbound call to your Call Control Application via a connection ID, giving you programmatic control over the call lifecycle with low latency and predictable, pay-as-you-go pricing.
 
 ## Environment Variables
 
@@ -49,7 +49,7 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY_your_telnyx_api_key_here` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number to dial from (E.164) | [My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
 | `TELNYX_CONNECTION_ID` | `string` | `your_connection_id_here` | **yes** | Call Control Application (connection) ID | [Call Control Apps](https://portal.telnyx.com/call-control/applications) |
-| `PORT` | `number` | `5000` | no | Port the Express server listens on | — |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on | - |
 
 ## Setup
 

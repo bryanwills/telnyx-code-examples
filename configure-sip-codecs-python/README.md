@@ -13,9 +13,9 @@ Voice application. Built with Telnyx Migration, Number Porting, SIP Trunking.
 
 ## Telnyx API Endpoints Used
 
-- **Create SIP Connection**: `POST /v2/sip_connections` — [API reference](https://developers.telnyx.com/api/sip-connections/create-sip-connection)
-- **Retrieve SIP Connection**: `GET /v2/sip_connections/{id}` — [API reference](https://developers.telnyx.com/api/sip-connections/get-sip-connection)
-- **List SIP Connections**: `GET /v2/sip_connections` — [API reference](https://developers.telnyx.com/api/sip-connections/list-sip-connections)
+- **Create SIP Connection**: `POST /v2/sip_connections` - [API reference](https://developers.telnyx.com/api/sip-connections/create-sip-connection)
+- **Retrieve SIP Connection**: `GET /v2/sip_connections/{id}` - [API reference](https://developers.telnyx.com/api/sip-connections/get-sip-connection)
+- **List SIP Connections**: `GET /v2/sip_connections` - [API reference](https://developers.telnyx.com/api/sip-connections/list-sip-connections)
 
 ## Architecture
 
@@ -39,10 +39,10 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `SIP_USERNAME` | `string` | `your_value` | **yes** | Sip username | — |
-| `SIP_PASSWORD` | `string` | `your_value` | **yes** | Sip password | — |
-| `SIP_ENDPOINT` | `string` | `your_value` | **yes** | Sip endpoint | — |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
+| `SIP_USERNAME` | `string` | `your_value` | **yes** | Sip username | - |
+| `SIP_PASSWORD` | `string` | `your_value` | **yes** | Sip password | - |
+| `SIP_ENDPOINT` | `string` | `your_value` | **yes** | Sip endpoint | - |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | - |
 
 ## Setup
 
@@ -150,4 +150,4 @@ curl http://localhost:5000/sip/connections/example-id
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

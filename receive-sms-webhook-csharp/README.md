@@ -14,17 +14,17 @@ Receive inbound SMS messages via Telnyx webhooks with a minimal ASP.NET (net8.0)
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. Inbound SMS is delivered over the Telnyx-owned network with a webhook event model built for low-latency, reliable delivery.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. Inbound SMS is delivered over the Telnyx-owned network with a webhook event model built for low-latency, reliable delivery.
 
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
-- **Signed webhooks** — every event is signed with Ed25519 so your endpoint can cryptographically prove it came from Telnyx.
-- **Developer-first** — official SDKs (including the `Telnyx.net` .NET SDK), a comprehensive webhook event model, and a portal for testing.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
+- **Signed webhooks** - every event is signed with Ed25519 so your endpoint can cryptographically prove it came from Telnyx.
+- **Developer-first** - official SDKs (including the `Telnyx.net` .NET SDK), a comprehensive webhook event model, and a portal for testing.
 
 ## Telnyx API Endpoints Used
 
-This example does not call the Telnyx REST API — it receives webhook events that Telnyx sends to your server when an SMS arrives.
+This example does not call the Telnyx REST API - it receives webhook events that Telnyx sends to your server when an SMS arrives.
 
-- **Inbound Message webhook**: `POST /webhooks/sms` (your endpoint, called by Telnyx) — [Webhook reference](https://developers.telnyx.com/docs/messaging/messages/receive-message)
+- **Inbound Message webhook**: `POST /webhooks/sms` (your endpoint, called by Telnyx) - [Webhook reference](https://developers.telnyx.com/docs/messaging/messages/receive-message)
 
 ## Architecture
 
@@ -58,7 +58,7 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key used to configure the SDK | [Portal → API Keys](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `o4i...base64...=` | **yes** | Base64 account public key used to verify the Ed25519 webhook signature | [Portal → Account → Public Key](https://portal.telnyx.com) |
-| `ASPNETCORE_URLS` | `string` | `http://localhost:5000` | no | Bind address/port for the server (ASP.NET default is `http://localhost:5000`) | — |
+| `ASPNETCORE_URLS` | `string` | `http://localhost:5000` | no | Bind address/port for the server (ASP.NET default is `http://localhost:5000`) | - |
 
 ## Setup
 
@@ -126,19 +126,19 @@ curl http://localhost:5000/health
 
 | Issue | Cause | Fix |
 |-------|-------|-----|
-| `401 Unauthorized` on every webhook | `TELNYX_PUBLIC_KEY` is wrong, or the body was altered before verification. | Copy the public key from Portal → Account → Public Key into `.env`. The signed message is `"<telnyx-timestamp>|<raw body>"`, so do not put a JSON/body parser ahead of the route — this example reads the raw stream directly. |
+| `401 Unauthorized` on every webhook | `TELNYX_PUBLIC_KEY` is wrong, or the body was altered before verification. | Copy the public key from Portal → Account → Public Key into `.env`. The signed message is `"<telnyx-timestamp>|<raw body>"`, so do not put a JSON/body parser ahead of the route - this example reads the raw stream directly. |
 | `503 Service Unavailable` on webhook | `TELNYX_PUBLIC_KEY` is not set. | Set `TELNYX_PUBLIC_KEY` in `.env`; the server fails closed rather than trusting unverifiable requests. |
 | `400 {"error":"Invalid webhook payload structure"}` | Body passed verification but has no `data.payload`. | Confirm the Messaging Profile sends `message.received`; message fields are nested under `data.payload`. |
-| `400 {"error":"Missing sender or recipient phone number"}` | `from.phone_number` or `to[0].phone_number` is absent. | Inspect the payload — `from` is at `data.payload.from.phone_number`, `to` at `data.payload.to[0].phone_number`. |
+| `400 {"error":"Missing sender or recipient phone number"}` | `from.phone_number` or `to[0].phone_number` is absent. | Inspect the payload - `from` is at `data.payload.from.phone_number`, `to` at `data.payload.to[0].phone_number`. |
 | No webhook requests arrive | Webhook URL not reachable or not assigned. | Verify the HTTPS URL (use ngrok locally), confirm it ends in `/webhooks/sms`, and assign your number to the Messaging Profile. Check Portal webhook delivery logs. |
 | `dotnet` command not found | .NET SDK not installed. | Install the [.NET 8 SDK](https://dotnet.microsoft.com/download). |
 
 ## Related Examples
 
-- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) — Same webhook receiver in Node.js
-- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) — Same webhook receiver in Python
-- [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md) — Send an SMS with Node.js
-- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — Send an SMS with Python
+- [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md) - Same webhook receiver in Node.js
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) - Same webhook receiver in Python
+- [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md) - Send an SMS with Node.js
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - Send an SMS with Python
 
 ## Resources
 

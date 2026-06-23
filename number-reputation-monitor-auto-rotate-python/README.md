@@ -1,7 +1,7 @@
 ---
 name: number-reputation-monitor-auto-rotate
 title: "Number Reputation Monitor"
-description: "Number Reputation Monitor — track outbound number reputation, auto-rotate flagged numbers."
+description: "Number Reputation Monitor - track outbound number reputation, auto-rotate flagged numbers."
 language: python
 framework: flask
 telnyx_products: [AI Inference]
@@ -9,12 +9,12 @@ telnyx_products: [AI Inference]
 
 # Number Reputation Monitor
 
-Number Reputation Monitor — track outbound number reputation, auto-rotate flagged numbers.
+Number Reputation Monitor - track outbound number reputation, auto-rotate flagged numbers.
 
 ## Telnyx API Endpoints Used
 
-- **List Phone Numbers**: `GET /v2/phone_numbers` — [API reference](https://developers.telnyx.com/api/numbers/list-phone-numbers)
-- **AI Inference**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/api/inference/chat-completions)
+- **List Phone Numbers**: `GET /v2/phone_numbers` - [API reference](https://developers.telnyx.com/api/numbers/list-phone-numbers)
+- **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
 
@@ -43,8 +43,8 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx AI Inference model name | [Portal](https://developers.telnyx.com/docs/inference/models) |
-| `ALERT_NUMBER` | `string` | `your_value` | **yes** | Alert number | — |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `ALERT_NUMBER` | `string` | `your_value` | **yes** | Alert number | - |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -144,4 +144,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

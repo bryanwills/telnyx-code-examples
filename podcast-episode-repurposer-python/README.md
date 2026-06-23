@@ -48,9 +48,9 @@ Upload a recorded episode, STT transcribes, AI Inference extracts key quotes and
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Co-located inference** — LLM runs on the same network as voice traffic. Sub-200ms round trips.
+- **Co-located inference** - LLM runs on the same network as voice traffic. Sub-200ms round trips.
 
 ## Environment Variables
 

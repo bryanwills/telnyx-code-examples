@@ -1,7 +1,7 @@
 ---
 name: missions-workflow-orchestrator
 title: "Missions Workflow Orchestrator"
-description: "Missions Workflow Orchestrator — create and manage multi-step mission workflows using the Telnyx Missions API."
+description: "Missions Workflow Orchestrator - create and manage multi-step mission workflows using the Telnyx Missions API."
 language: python
 framework: flask
 telnyx_products: [Missions, Number Porting, SMS/MMS, Verify, Voice]
@@ -9,14 +9,14 @@ telnyx_products: [Missions, Number Porting, SMS/MMS, Verify, Voice]
 
 # Missions Workflow Orchestrator
 
-Missions Workflow Orchestrator — create and manage multi-step mission workflows using the Telnyx Missions API.
+Missions Workflow Orchestrator - create and manage multi-step mission workflows using the Telnyx Missions API.
 
 ## Telnyx API Endpoints Used
 
-- **Create Number Order**: `POST /v2/number_orders` — [API reference](https://developers.telnyx.com/api/numbers/create-number-order)
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
-- **Create Call**: `POST /v2/calls` — [API reference](https://developers.telnyx.com/api/call-control/create-call)
-- **Create Porting Order**: `POST /v2/porting_orders` — [API reference](https://developers.telnyx.com/api/porting/create-porting-order)
+- **Create Number Order**: `POST /v2/number_orders` - [API reference](https://developers.telnyx.com/api/numbers/create-number-order)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **Create Call**: `POST /v2/calls` - [API reference](https://developers.telnyx.com/api/call-control/create-call)
+- **Create Porting Order**: `POST /v2/porting_orders` - [API reference](https://developers.telnyx.com/api/porting/create-porting-order)
 
 ## Architecture
 
@@ -43,7 +43,7 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `PORT` | `integer` | `5000` | no | HTTP server port | — |
+| `PORT` | `integer` | `5000` | no | HTTP server port | - |
 
 ## Setup
 
@@ -247,4 +247,4 @@ curl http://localhost:5000/health
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

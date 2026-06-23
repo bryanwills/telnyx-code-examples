@@ -13,7 +13,7 @@ Implement SMS-based two-factor authentication.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message (OTP)**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **Send Message (OTP)**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api/messaging/send-message)
 
 ## Architecture
 
@@ -36,9 +36,9 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `OTP_EXPIRY_SECONDS` | `string` | `300` | no | Otp expiry seconds | — |
-| `TELNYX_PHONE_NUMBER` | `string` | `your_value` | **yes** | Telnyx phone number | — |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
+| `OTP_EXPIRY_SECONDS` | `string` | `300` | no | Otp expiry seconds | - |
+| `TELNYX_PHONE_NUMBER` | `string` | `your_value` | **yes** | Telnyx phone number | - |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | - |
 
 ## Setup
 
@@ -141,4 +141,4 @@ curl http://localhost:5000/auth/otp-status
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

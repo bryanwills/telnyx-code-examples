@@ -14,12 +14,12 @@ Initiate an outbound voice call and play a text-to-speech (TTS) message on answe
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network. Voice calls traverse the Telnyx-owned IP backbone for lower latency and higher reliability, with Call Control commands like TTS playback exposed through a single REST API and webhook event model.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network. Voice calls traverse the Telnyx-owned IP backbone for lower latency and higher reliability, with Call Control commands like TTS playback exposed through a single REST API and webhook event model.
 
 ## Telnyx API Endpoints Used
 
-- **Dial (initiate call)**: `POST /v2/calls` — via `client.calls.dial()` — [API reference](https://developers.telnyx.com/api-reference/call-commands/dial)
-- **Speak text (TTS)**: `POST /v2/calls/{call_control_id}/actions/speak` — via `client.calls.actions.speak()` — [API reference](https://developers.telnyx.com/api-reference/call-commands/speak-text)
+- **Dial (initiate call)**: `POST /v2/calls` - via `client.calls.dial()` - [API reference](https://developers.telnyx.com/api-reference/call-commands/dial)
+- **Speak text (TTS)**: `POST /v2/calls/{call_control_id}/actions/speak` - via `client.calls.actions.speak()` - [API reference](https://developers.telnyx.com/api-reference/call-commands/speak-text)
 
 ## Architecture
 
@@ -48,8 +48,8 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number used as caller ID (E.164) | [My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
 | `TELNYX_CONNECTION_ID` | `string` | `your_connection_id_here` | **yes** | Call Control App connection ID | [Call Control Apps](https://portal.telnyx.com/call-control/applications) |
-| `PORT` | `string` | `5000` | no | Port the server listens on (defaults to `3000`) | — |
-| `WEBHOOK_URL` | `string` | `https://your-domain.com/webhook` | no | Public webhook URL logged on startup | — |
+| `PORT` | `string` | `5000` | no | Port the server listens on (defaults to `3000`) | - |
+| `WEBHOOK_URL` | `string` | `https://your-domain.com/webhook` | no | Public webhook URL logged on startup | - |
 
 ## Setup
 
@@ -173,10 +173,10 @@ curl http://localhost:5000/health
 
 ## Related Examples
 
-- [text-to-speech-phone-call-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/text-to-speech-phone-call-python/README.md) — same example in Python
-- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) — initiate outbound calls
-- [record-phone-calls-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-nodejs/README.md) — record call audio
-- [build-ivr-phone-menu-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-ivr-phone-menu-nodejs/README.md) — interactive voice menus
+- [text-to-speech-phone-call-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/text-to-speech-phone-call-python/README.md) - same example in Python
+- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) - initiate outbound calls
+- [record-phone-calls-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-nodejs/README.md) - record call audio
+- [build-ivr-phone-menu-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-ivr-phone-menu-nodejs/README.md) - interactive voice menus
 
 ## Resources
 

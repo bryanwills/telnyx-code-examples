@@ -14,10 +14,10 @@ Send bulk SMS messages to many recipients with rate limiting and per-message err
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Deliverability built in** — number reputation, 10DLC registration, and deliverability monitoring included.
-- **Pay-as-you-go** — no minimums, contracts, or per-seat fees.
+- **Deliverability built in** - number reputation, 10DLC registration, and deliverability monitoring included.
+- **Pay-as-you-go** - no minimums, contracts, or per-seat fees.
 
 ## Telnyx API Endpoints Used
 
@@ -50,8 +50,8 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number to send from (E.164) | [My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
-| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000`) | — |
-| `RATE_LIMIT_DELAY_MS` | `number` | `100` | no | Delay in milliseconds between each send (defaults to `100`) | — |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000`) | - |
+| `RATE_LIMIT_DELAY_MS` | `number` | `100` | no | Delay in milliseconds between each send (defaults to `100`) | - |
 
 ## Setup
 
@@ -153,7 +153,7 @@ curl http://localhost:3000/health
 | `400 Phone number must be in E.164 format` | A `to` value does not start with `+`. | Use E.164: `+` then country code and number, no spaces or dashes (e.g. `+15551234567`). |
 | `429 {"error": "Rate limit exceeded. Please slow down."}` | Messages are being sent faster than Telnyx allows. | Increase `RATE_LIMIT_DELAY_MS` in `.env` (try `200`–`500`) and restart. |
 | `TELNYX_PHONE_NUMBER environment variable not set` | `.env` missing or not loaded before `process.env` is read. | Confirm `.env` exists in this folder and is named exactly `.env`; restart `node server.js`. |
-| Some recipients fail while others succeed | One or more entries had an invalid number or were rejected by Telnyx. | Inspect the `failed` array — each entry has the `to`, `index`, and `error`. Re-submit just those recipients. |
+| Some recipients fail while others succeed | One or more entries had an invalid number or were rejected by Telnyx. | Inspect the `failed` array - each entry has the `to`, `index`, and `error`. Re-submit just those recipients. |
 
 ## Related Examples
 
@@ -165,7 +165,7 @@ curl http://localhost:3000/health
 ## Resources
 
 - [Messaging Guide](https://developers.telnyx.com/docs/messaging)
-- [Send a Message — API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- [Send a Message - API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Node.js SDK](https://developers.telnyx.com/development/sdk/node)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)
 - [Messaging Pricing](https://telnyx.com/pricing/messaging)

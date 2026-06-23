@@ -40,11 +40,11 @@ Send SMS messages with a branded alphanumeric sender ID (e.g. `ACME Corp`) inste
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Global reach** — alphanumeric sender IDs are supported across many non-US/Canada regions for branded messaging.
-- **Deliverability built in** — number reputation, sender registration, and deliverability monitoring included.
-- **Developer-first** — typed SDKs, a comprehensive webhook event model, and a sandbox for testing.
+- **Global reach** - alphanumeric sender IDs are supported across many non-US/Canada regions for branded messaging.
+- **Deliverability built in** - number reputation, sender registration, and deliverability monitoring included.
+- **Developer-first** - typed SDKs, a comprehensive webhook event model, and a sandbox for testing.
 
 ## Environment Variables
 
@@ -54,8 +54,8 @@ Copy `.env.example` to `.env` and fill in:
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_MESSAGING_PROFILE_ID` | `string` | `40000000-0000-0000-0000-000000000000` | **yes** | Messaging Profile UUID configured for alphanumeric sending | [Portal → Messaging → Profiles](https://portal.telnyx.com/messaging/profiles) |
-| `ALPHANUMERIC_SENDER_ID` | `string` | `ACME Corp` | no | Default sender ID (1–11 alphanumeric chars); used when the request omits `sender_id` | — |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug flag | — |
+| `ALPHANUMERIC_SENDER_ID` | `string` | `ACME Corp` | no | Default sender ID (1–11 alphanumeric chars); used when the request omits `sender_id` | - |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug flag | - |
 
 ## Setup
 
@@ -119,21 +119,21 @@ curl -X POST http://localhost:5000/sms/validate-sender-id \
 
 - **400 Invalid sender ID**: The sender ID must be 1–11 characters and contain only letters, numbers, and spaces. Remove hyphens, underscores, and punctuation. Validate first with `POST /sms/validate-sender-id`.
 - **400 Alphanumeric not supported for US/Canada**: Alphanumeric sender IDs are not allowed for `+1` recipients. Use a phone number as the sender for US/Canada, or send to a supported region (e.g. UK `+447700900123`).
-- **400 Invalid recipient number**: Recipients must be in E.164 format — start with `+`, country code, then the number with no spaces or dashes.
+- **400 Invalid recipient number**: Recipients must be in E.164 format - start with `+`, country code, then the number with no spaces or dashes.
 - **401 Invalid API key**: Confirm `TELNYX_API_KEY` matches the key in the [Telnyx Portal](https://portal.telnyx.com/api-keys); check for trailing spaces or quotes.
 - **API request failed (404)**: Verify `TELNYX_MESSAGING_PROFILE_ID` matches a valid, active Messaging Profile UUID configured for alphanumeric sending.
 - **429 Rate limit exceeded**: Slow down request volume; retry with backoff.
 
 ## Related Examples
 
-- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) — send a single SMS from a phone number
-- [send-bulk-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-python/README.md) — send messages to many recipients
-- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) — receive inbound SMS via webhooks
+- [send-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-python/README.md) - send a single SMS from a phone number
+- [send-bulk-sms-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-python/README.md) - send messages to many recipients
+- [receive-sms-webhook-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-python/README.md) - receive inbound SMS via webhooks
 
 ## Resources
 
 - [Messaging Overview](https://developers.telnyx.com/docs/messaging)
-- [Send an SMS — Quickstart](https://developers.telnyx.com/docs/messaging/messages/send-message)
+- [Send an SMS - Quickstart](https://developers.telnyx.com/docs/messaging/messages/send-message)
 - [Messaging API Reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 - [Python SDK](https://developers.telnyx.com/development/sdk/python)
 - [Telnyx SMS API](https://telnyx.com/products/sms-api)

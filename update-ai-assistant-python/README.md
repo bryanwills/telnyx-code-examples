@@ -38,9 +38,9 @@ Update an existing Telnyx AI Assistant's configuration, model, system prompt, an
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Managed AI agents** — Telnyx handles conversation state, tool calling, and telephony integration.
+- **Managed AI agents** - Telnyx handles conversation state, tool calling, and telephony integration.
 
 ## Environment Variables
 

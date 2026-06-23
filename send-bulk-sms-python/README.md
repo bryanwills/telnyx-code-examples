@@ -14,7 +14,7 @@ Production-ready Flask application for sending bulk SMS via Telnyx.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api/messaging/send-message)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api/messaging/send-message)
 
 ## Architecture
 
@@ -36,10 +36,10 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `TELNYX_PHONE_NUMBER` | `string` | `your_value` | **yes** | Telnyx phone number | — |
-| `BULK_SMS_RATE_LIMIT` | `string` | `10` | no | Bulk sms rate limit | — |
-| `BULK_SMS_DELAY` | `string` | `0.1` | no | Bulk sms delay | — |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
+| `TELNYX_PHONE_NUMBER` | `string` | `your_value` | **yes** | Telnyx phone number | - |
+| `BULK_SMS_RATE_LIMIT` | `string` | `10` | no | Bulk sms rate limit | - |
+| `BULK_SMS_DELAY` | `string` | `0.1` | no | Bulk sms delay | - |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | - |
 
 ## Setup
 
@@ -134,4 +134,4 @@ curl http://localhost:5000/sms/bulk/status
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

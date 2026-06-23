@@ -41,10 +41,10 @@ Initiate outbound calls and control call recording using the Telnyx Voice API wi
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT delivered over one private, global network. Programmable call control and recording run on Telnyx-owned infrastructure for lower latency and higher reliability than the public internet.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT delivered over one private, global network. Programmable call control and recording run on Telnyx-owned infrastructure for lower latency and higher reliability than the public internet.
 
-- **Call Control** — initiate, answer, record, and tear down calls programmatically with a full webhook event model.
-- **Recording built in** — start and stop recordings on a live call and receive a download URL when the file is saved.
+- **Call Control** - initiate, answer, record, and tear down calls programmatically with a full webhook event model.
+- **Recording built in** - start and stop recordings on a live call and receive a download URL when the file is saved.
 
 ## Environment Variables
 
@@ -55,8 +55,8 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number used as the caller ID (E.164) | [My Numbers](https://portal.telnyx.com/numbers/my-numbers) |
 | `TELNYX_CONNECTION_ID` | `string` | `1234567890` | **yes** | Call Control Application (connection) ID | [Call Control Apps](https://portal.telnyx.com/call-control/applications) |
-| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000`) | — |
-| `WEBHOOK_URL` | `string` | `https://your-domain.com/webhook` | no | Public URL Telnyx posts call events to (logged on startup) | — |
+| `PORT` | `number` | `5000` | no | Port the Express server listens on (defaults to `3000`) | - |
+| `WEBHOOK_URL` | `string` | `https://your-domain.com/webhook` | no | Public URL Telnyx posts call events to (logged on startup) | - |
 
 ## Setup
 
@@ -186,10 +186,10 @@ Receives Telnyx call lifecycle events (`call.answered`, `call.hangup`, `call.rec
 
 ## Related Examples
 
-- [record-phone-calls-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-python/README.md) — same example in Python
-- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) — initiate outbound calls
-- [text-to-speech-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/text-to-speech-phone-call-nodejs/README.md) — speak text on a call
-- [call-recording-ai-summarizer-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/call-recording-ai-summarizer-python/README.md) — summarize recordings with AI
+- [record-phone-calls-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-python/README.md) - same example in Python
+- [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md) - initiate outbound calls
+- [text-to-speech-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/text-to-speech-phone-call-nodejs/README.md) - speak text on a call
+- [call-recording-ai-summarizer-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/call-recording-ai-summarizer-python/README.md) - summarize recordings with AI
 
 ## Resources
 

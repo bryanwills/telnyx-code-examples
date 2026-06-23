@@ -13,14 +13,14 @@ Production-ready Flask application for monitoring SIM card data usage via Telnyx
 
 ## Telnyx API Endpoints Used
 
-- **SIM Cards**: `GET /v2/sim_cards` — [API reference](https://developers.telnyx.com/api/sim-cards/list-sim-cards)
+- **SIM Cards**: `GET /v2/sim_cards` - [API reference](https://developers.telnyx.com/api/sim-cards/list-sim-cards)
 
 ## Telnyx Webhook Events
 
 This app handles these webhook events:
 
-- `sim_card.data_limit.reached` — SIM card data usage limit reached
-- `sim_card.status.changed` — SIM card status changed (active, suspended, etc.)
+- `sim_card.data_limit.reached` - SIM card data usage limit reached
+- `sim_card.status.changed` - SIM card status changed (active, suspended, etc.)
 
 ## Architecture
 
@@ -47,8 +47,8 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `DATA_LIMIT_THRESHOLD_MB` | `string` | `500` | no | Data limit threshold mb | — |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | — |
+| `DATA_LIMIT_THRESHOLD_MB` | `string` | `500` | no | Data limit threshold mb | - |
+| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | - |
 
 ## Setup
 
@@ -231,4 +231,4 @@ Receives Telnyx webhook events for `/webhooks/sim-events`.
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.

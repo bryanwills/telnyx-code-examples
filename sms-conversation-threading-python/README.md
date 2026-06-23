@@ -14,21 +14,21 @@ Group inbound and outbound SMS by contact into persistent conversation threads w
 
 ## Why Telnyx
 
-Telnyx is an **AI Communications Infrastructure** platform — voice, messaging, SIP, AI, and IoT on one private, global network.
+Telnyx is an **AI Communications Infrastructure** platform - voice, messaging, SIP, AI, and IoT on one private, global network.
 
-- **Two-way messaging built in** — send with `POST /v2/messages` and receive inbound SMS through a single signed webhook.
-- **Deliverability included** — number reputation, 10DLC registration, and delivery receipts on every message.
-- **Developer-first** — typed SDKs for Python, Node.js, Go, and Ruby, plus a consistent webhook event model.
+- **Two-way messaging built in** - send with `POST /v2/messages` and receive inbound SMS through a single signed webhook.
+- **Deliverability included** - number reputation, 10DLC registration, and delivery receipts on every message.
+- **Developer-first** - typed SDKs for Python, Node.js, Go, and Ruby, plus a consistent webhook event model.
 
 ## Telnyx API Endpoints Used
 
-- **Send Message**: `POST /v2/messages` — [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
+- **Send Message**: `POST /v2/messages` - [API reference](https://developers.telnyx.com/api-reference/messages/send-a-message)
 
 ## Telnyx Webhook Events
 
 This app handles these inbound webhook events ([Messaging docs](https://developers.telnyx.com/docs/messaging/messages/receiving-messages)):
 
-- `message.received` — Inbound SMS/MMS received from a contact; stored against their conversation thread.
+- `message.received` - Inbound SMS/MMS received from a contact; stored against their conversation thread.
 
 Every inbound webhook is signature-verified with the Telnyx Ed25519 public key before processing.
 
@@ -68,8 +68,8 @@ Copy `.env.example` to `.env` and fill in:
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PUBLIC_KEY` | `string` | `your_public_key` | **yes** | Public key used to verify inbound webhook signatures | [Portal → Keys & Credentials](https://portal.telnyx.com/api-keys) |
 | `TELNYX_PHONE_NUMBER` | `string` | `+15551234567` | **yes** | Telnyx number messages are sent from | [Portal → Numbers](https://portal.telnyx.com/numbers/my-numbers) |
-| `DATABASE_URL` | `string` | `sqlite:///conversations.db` | no | SQLAlchemy connection URL (Postgres for production) | — |
-| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode | — |
+| `DATABASE_URL` | `string` | `sqlite:///conversations.db` | no | SQLAlchemy connection URL (Postgres for production) | - |
+| `FLASK_DEBUG` | `string` | `false` | no | Enable Flask debug mode | - |
 
 ## Setup
 
@@ -173,7 +173,7 @@ curl http://localhost:5000/conversations/b2c3d4e5-6f70-4819-a2b3-c4d5e6f70819
 
 ### `POST /webhooks/sms`
 
-Receives Telnyx inbound messaging webhook events. Called automatically by Telnyx — do not call directly. The Ed25519 signature is verified before the body is parsed; an inbound `message.received` event is stored against the sender's conversation thread.
+Receives Telnyx inbound messaging webhook events. Called automatically by Telnyx - do not call directly. The Ed25519 signature is verified before the body is parsed; an inbound `message.received` event is stored against the sender's conversation thread.
 
 **Example payload:**
 
