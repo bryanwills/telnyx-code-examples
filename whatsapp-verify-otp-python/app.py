@@ -77,7 +77,7 @@ def verify_webhook():
         return jsonify({"status": "ignored"}), 200
     event_type = payload.get("data", {}).get("event_type", "")
     phone = payload.get("data", {}).get("payload", {}).get("phone_number", "")
-    app.logger.info("Webhook received: %s for %s", event_type, phone)
+    app.logger.info("Webhook received: %s for %s", event_type, phone[-4:].rjust(len(phone), "*") if phone else "")
     webhook_events.append({"event": event_type, "phone": phone, "received_at": time.time(), "_ts": time.time()})
     if phone and phone in verifications:
         if event_type == "verify.sent":
