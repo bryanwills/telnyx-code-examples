@@ -1437,6 +1437,12 @@ examples:
     framework: flask
     folder: verify-phone-number-otp-flow-python
 
+  - product: verify
+    use_case: whatsapp-verify-otp
+    language: python
+    framework: flask
+    folder: whatsapp-verify-otp-python
+
   - product: sms
     use_case: whatsapp-order-tracking-notifications
     language: python
