@@ -79,14 +79,28 @@ def _headers() -> dict:
 
 def create_embeddings(inputs: str | list[str]) -> list[list[float]]:
     _require_api_key()
+    input_values = [inputs] if isinstance(inputs, str) else inputs
     response = requests.post(
-        f"{API_BASE}/embeddings",
+        f"{API_BASE}/openai/embeddings",
         headers=_headers(),
-        json={"model": EMBEDDING_MODEL, "input": inputs},
+        json={
+            "model": EMBEDDING_MODEL,
+            "input": input_values,
+        },
         timeout=60,
     )
     response.raise_for_status()
-    return [item["embedding"] for item in response.json()["data"]]
+    payload = response.json()
+    data = payload.get("data")
+    if not isinstance(data, list):
+        raise RuntimeError("Unexpected embeddings response shape.")
+
+    embeddings = []
+    for item in data:
+        if not isinstance(item, dict) or not isinstance(item.get("embedding"), list):
+            raise RuntimeError("Unexpected embeddings response shape.")
+        embeddings.append(item["embedding"])
+    return embeddings
 
 
 def cosine_similarity(left: Iterable[float], right: Iterable[float]) -> float:
@@ -183,6 +197,8 @@ def rag_ask():
         }), 200
     except requests.HTTPError as exc:
         status = exc.response.status_code if exc.response is not None else 502
+        if exc.response is not None:
+            app.logger.warning("Telnyx AI Inference request failed with status %s", status)
         return jsonify({"error": "Telnyx AI Inference request failed.", "status": status}), status
     except RuntimeError as exc:
         app.logger.exception("Runtime error while processing /rag/ask request")

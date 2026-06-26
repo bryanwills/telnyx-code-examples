@@ -13,7 +13,7 @@ Build a retrieval-augmented generation API with Telnyx embeddings and chat compl
 
 ## Telnyx API Endpoints Used
 
-- **Embeddings**: `POST /v2/ai/embeddings` - create vectors for documents and questions
+- **Embeddings**: `POST /v2/ai/openai/embeddings` - create vectors for documents and questions
 - **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Architecture
