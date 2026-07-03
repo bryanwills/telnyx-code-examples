@@ -7,14 +7,17 @@ framework: flask
 telnyx_products: [AI Assistants, SMS/MMS, Voice, Call Recording]
 ---
 
-# Production-ready Flask application for Whisper-based call prompts via Telnyx.
+# Post-Call Monitoring with Telnyx STT, Inference, and Call Control
 
-Voice application. Built with Telnyx AI Assistants, Migration, Number Porting, SMS/MMS.
+Post-call analysis application. Triggers an outbound call, records the audio, transcribes it with Telnyx Speech-to-Text, generates an AI response with Telnyx Inference, and displays everything in a web dashboard. Built with Telnyx AI Assistants, Call Control, Call Recording, and AI Inference — no external AI provider required.
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` - [API reference](https://developers.telnyx.com/api/call-control/answer-call)
+- **Call Control: Dial**: `POST /v2/calls` - [API reference](https://developers.telnyx.com/api/call-control/create-call)
+- **Call Control: Start Recording**: `POST /v2/calls/{id}/actions/start_recording` - [API reference](https://developers.telnyx.com/api/call-control/start-recording)
 - **Call Control: Speak (TTS)**: `POST /v2/calls/{id}/actions/speak` - [API reference](https://developers.telnyx.com/api/call-control/speak)
+- **AI Speech-to-Text**: `POST /v2/ai/audio/transcriptions` - [API reference](https://developers.telnyx.com/docs/ai/speech-to-text)
+- **AI Inference (Chat)**: `POST /v2/ai/openai/chat/completions` - [API reference](https://developers.telnyx.com/docs/ai/inference)
 
 ## Telnyx Webhook Events
 
@@ -27,20 +30,32 @@ This app handles these webhook events ([Call Control docs](https://developers.te
 ## Architecture
 
 ```
-  Inbound Phone Call
+  POST /calls/initiate
         │
         ▼
-  ┌──────────────────┐
-  │ Call Control      │
-  └────────┬─────────┘
-           │
-           ├──► TTS
-           ├──► STT
-           ├──► Call Recording
-           │
-           ▼
-     Voice response
+  ┌──────────────────────┐
+  │  Telnyx Call Control  │  ──► outbound call rings
+  └──────────┬───────────┘
+             │  call.answered → start recording
+             │  call.hangup
+             ▼
+  ┌──────────────────────┐
+  │  Flask app            │
+  │  in-memory call_state │
+  └──────────┬───────────┘
+             │  call.recording.saved webhook
+             ▼
+  ┌──────────────────────┐
+  │  download audio       │
+  │  → Telnyx STT         │
+  │  → Telnyx Inference   │
+  │  → Telnyx TTS (speak) │
+  └──────────────────────┘
+             │
+             └──► dashboard shows transcript + AI response
 ```
+
+This is **post-call analysis**: the transcript and AI response appear in the web dashboard seconds after the call ends. TTS is attempted on the live call but gracefully skipped if the call has already hung up (the recording webhook arrives ~5 seconds after hangup).
 
 ## Environment Variables
 
@@ -49,10 +64,9 @@ Copy `.env.example` to `.env` and fill in:
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
 | `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
-| `OPENAI_API_KEY` | `string` | `your_value` | **yes** | Openai api key | - |
-| `TELNYX_PHONE_NUMBER` | `string` | `your_value` | **yes** | Telnyx phone number | - |
-| `TELNYX_CONNECTION_ID` | `string` | `your_value` | **yes** | Telnyx connection id | - |
-| `FLASK_DEBUG` | `string` | `false` | no | Flask debug | - |
+| `TELNYX_PHONE_NUMBER` | `string` | `+13125551234` | **yes** | Telnyx phone number | [Portal](https://portal.telnyx.com/numbers) |
+| `TELNYX_CONNECTION_ID` | `string` | `2771215234625439469` | **yes** | Call Control Application ID | [Portal](https://portal.telnyx.com/call-control) |
+| `TELNYX_PUBLIC_KEY` | `string` | `URQCA17ti...` | **yes** | Telnyx public key (for webhook signature verification) | [Portal](https://portal.telnyx.com/api-keys) |
 
 ## Setup
 
@@ -74,7 +88,16 @@ python app.py           # starts on http://localhost:5000
 
 2. Copy the HTTPS URL and configure in [Telnyx Portal](https://portal.telnyx.com):
 
-   - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/voice`
+   - **Call Control Application** → Webhook URL → `https://<id>.ngrok.io/webhooks/call`
+
+### Web Dashboard
+
+Open `http://localhost:5000` in your browser after starting the server. The dashboard lets you:
+
+- Enter a phone number and trigger a call with one click
+- Watch a live event timeline as webhooks arrive (call initiated → answered → recording → hangup → transcript → AI response)
+- View the transcript and AI response in cards after the call ends
+- Phone numbers are masked in the UI for privacy
 
 ## API Reference
 
@@ -103,7 +126,7 @@ curl -X POST http://localhost:5000/calls/initiate \
 
 ### `GET /calls/<call_control_id>/status`
 
-Retrieve call status and transcript.
+Retrieve call status, transcript, and AI response.
 
 ```bash
 curl http://localhost:5000/calls/example-id/status
@@ -113,15 +136,12 @@ curl http://localhost:5000/calls/example-id/status
 
 ```json
 {
-  "calls": [
-    {
-      "call_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
-      "from": "+18005551234",
-      "to": "+12125559876",
-      "duration_seconds": 145,
-      "status": "completed"
-    }
-  ]
+  "call_control_id": "v3:uMi2qMWHT-mLFGkEm4t9tA",
+  "is_alive": false,
+  "state": "hangup",
+  "transcript": "Hello, this is Harpreet. Who am I talking to today?",
+  "ai_response": "Good morning, Harpreet. I'm an AI assistant. How can I help you today?",
+  "spoken": false
 }
 ```
 
@@ -168,6 +188,8 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 | `401 Unauthorized` | Invalid or missing API key | Verify `TELNYX_API_KEY` in `.env` matches your key in the [Portal](https://portal.telnyx.com/api-keys) |
 | Webhook not received | Local server not publicly reachable | Expose it with a tunnel (e.g. ngrok) and set the webhook URL in the [Telnyx Portal](https://portal.telnyx.com) |
 | `422 Unprocessable Entity` | Missing or malformed request fields | Check the request body against the API Reference above |
+| TTS skipped (`spoken: false`) | Call already hung up before recording was processed | Expected behavior — `call.recording.saved` arrives ~5s after hangup. The transcript and AI response are still captured for post-call analysis. |
+| Recording webhook never fires | Recording not enabled on the Call Control Application | Enable recording on the Call Control Application in the [Portal](https://portal.telnyx.com/call-control), or the app starts recording programmatically on `call.answered` |
 
 ## Related Examples
 
@@ -180,6 +202,11 @@ Receives [Telnyx Call Control](https://developers.telnyx.com/docs/voice/call-con
 ## Resources
 
 - [Call Control Guide](https://developers.telnyx.com/docs/voice/call-control)
+- [Call Recording Webhooks](https://developers.telnyx.com/docs/voice/call-control/recording)
+- [Telnyx Speech-to-Text](https://developers.telnyx.com/docs/ai/speech-to-text)
+- [Telnyx AI Inference](https://developers.telnyx.com/docs/ai/inference)
+- [Telnyx Speak (TTS) API](https://developers.telnyx.com/api-reference/call-commands/speak-text)
+- [Telnyx Python SDK](https://github.com/team-telnyx/telnyx-python)
 - [Telnyx Developer Docs](https://developers.telnyx.com)
 - [Telnyx Portal](https://portal.telnyx.com)
 
