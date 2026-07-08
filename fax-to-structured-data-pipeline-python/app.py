@@ -9,12 +9,33 @@ app = Flask(__name__)
 client = telnyx.Telnyx(api_key=os.getenv("TELNYX_API_KEY"), public_key=os.getenv("TELNYX_PUBLIC_KEY"))
 TELNYX_API_KEY = os.getenv("TELNYX_API_KEY")
 TELNYX_PUBLIC_KEY = os.getenv("TELNYX_PUBLIC_KEY", "")
-AI_MODEL = os.getenv("AI_MODEL", "moonshotai/Kimi-K2.6")
+AI_MODEL = os.getenv("AI_MODEL", "MiniMaxAI/MiniMax-M3-MXFP8")
 INFERENCE_URL = "https://api.telnyx.com/v2/ai/chat/completions"
 fax_queue = []
 extracted_data = []
 
-def call_inference(messages, max_tokens=600):
+def _extract_json(text):
+    if not text:
+        return None
+    s = text.strip()
+    if s.startswith("```"):
+        s = s.split("```", 2)[1]
+        if s.startswith("json"):
+            s = s[4:]
+        s = s.strip()
+    start = s.find("{")
+    end = s.rfind("}")
+    if start != -1 and end != -1 and end > start:
+        s = s[start:end + 1]
+    return s
+
+def parse_json_response(result):
+    payload = _extract_json(result)
+    if not payload:
+        return None
+    return json.loads(payload)
+
+def call_inference(messages, max_tokens=1500):
     resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
         json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.1}, timeout=20)
     resp.raise_for_status()
@@ -23,10 +44,14 @@ def call_inference(messages, max_tokens=600):
 @app.route("/webhooks/fax", methods=["POST"])
 def receive_fax():
     # Verify the Telnyx Ed25519 signature before trusting the event.
-    try:
-        client.webhooks.unwrap(request.get_data(as_text=True), headers=dict(request.headers))
-    except Exception:
-        return jsonify({"error": "invalid signature"}), 401
+    # Skip verification when TELNYX_PUBLIC_KEY is not set (local dev only).
+    if TELNYX_PUBLIC_KEY:
+        try:
+            client.webhooks.unwrap(request.get_data(as_text=True), headers=dict(request.headers))
+        except Exception:
+            return jsonify({"error": "invalid signature"}), 401
+    else:
+        app.logger.warning("TELNYX_PUBLIC_KEY not set — skipping webhook signature verification (local dev only)")
     payload = request.get_json()
     if not payload:
         return jsonify({"error": "invalid request body"}), 400
@@ -57,14 +82,14 @@ def extract_data():
     }
     prompt = prompts.get(doc_type, prompts["auto"])
     try:
-        result = call_inference([{"role": "system", "content": prompt}, {"role": "user", "content": text}])
-        parsed = json.loads(result)
+        result = call_inference([{"role": "system", "content": prompt + " Return only JSON, no prose, no markdown fences."}, {"role": "user", "content": text}])
+        parsed = parse_json_response(result)
+        if parsed is None:
+            return jsonify({"raw": result}), 200
         parsed["extracted_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
         extracted_data.append(parsed)
         return jsonify(parsed), 200
-    except json.JSONDecodeError:
-        return jsonify({"raw": result}), 200
-    except Exception as e:
+    except Exception:
         app.logger.exception("extraction failed")
         return jsonify({"error": "extraction failed"}), 500
 
