@@ -351,7 +351,7 @@ Send and receive text messages with the [Telnyx SMS API](https://telnyx.com/prod
 </details>
 
 <details open>
-<summary><h2>AI Assistants</h2> <em>(109 examples)</em></summary>
+<summary><h2>AI Assistants</h2> <em>(110 examples)</em></summary>
 
 Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assistants) - LLM-powered agents for voice and messaging automation.
 
@@ -409,6 +409,7 @@ Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assis
 | [build-voice-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-voice-ai-agent-nodejs/README.md) | Node.js | Build a complete voice AI agent with Telnyx - answer inbound calls, transcribe speech, generate replies with Telnyx Inference, and speak them back via Call Control. |
 | [build-voice-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-voice-ai-agent-python/README.md) | Python | Build a complete voice AI agent with Telnyx - inbound call handling, AI conversation, and call control. |
 | [call-recording-ai-summarizer-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/call-recording-ai-summarizer-python/README.md) | Python | Call Recording AI Summarizer - record calls, then summarize and extract action items with AI. |
+[changelog-generator-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/changelog-generator-python/README.md) | Python | AI Changelog Generator - turns git commits and diffs into a structured, human-readable changelog via Telnyx AI Inference. |
 | [chat-with-ai-assistant-csharp](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-csharp/README.md) | C# | --- |
 | [chat-with-ai-assistant-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-go/README.md) | Go | Send messages to a Telnyx AI assistant and maintain multi-turn context with a conversation id, using a Go + Gin server. |
 | [chat-with-ai-assistant-java](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-java/README.md) | Java | Chat with a Telnyx AI Assistant and thread a multi-turn conversation using the Telnyx Java SDK over a JDK HttpServer endpoint. |

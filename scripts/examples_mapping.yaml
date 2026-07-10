@@ -682,6 +682,12 @@ examples:
     folder: ai-customer-churn-predictor-python
 
   - product: ai
+    use_case: changelog-generator
+    language: python
+    framework: flask
+    folder: changelog-generator-python
+
+  - product: ai
     use_case: ai-customer-winback-caller
     language: python
     framework: flask
