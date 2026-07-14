@@ -688,6 +688,12 @@ examples:
     folder: changelog-generator-python
 
   - product: ai
+    use_case: error-explainer
+    language: python
+    framework: flask
+    folder: error-explainer-python
+
+  - product: ai
     use_case: ai-customer-winback-caller
     language: python
     framework: flask
