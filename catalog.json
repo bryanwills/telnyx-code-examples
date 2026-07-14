@@ -1024,6 +1024,15 @@
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/error-explainer-python"
     },
     {
+      "folder": "sql-natural-language-python",
+      "title": "AI SQL Natural Language",
+      "description": "AI SQL Natural Language — turn plain-English questions into validated SQL with schema context via Telnyx AI Inference. Includes a sample dataset for live execution.",
+      "product": "ai",
+      "language": "python",
+      "framework": "flask",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/sql-natural-language-python"
+    },
+    {
       "folder": "ai-customer-winback-caller-python",
       "title": "AI Customer Winback Caller",
       "description": "AI Customer Winback Caller - AI calls churned customers with personalized re-engagement offers.",
