@@ -51,15 +51,24 @@ def get_sample_schema_ddl():
     return ";\n".join(statements) + ";"
 
 def is_safe_readonly_sql(sql):
-    s = (sql or "").strip()
-    if not s:
+    """Validate that sql is a single read-only SELECT statement. Rejects multiple statements, comments, and write/dangerous keywords."""
+    if not sql or not sql.strip():
         return False
+    s = sql.strip().rstrip(";").strip()
     if ";" in s:
         return False
-    if not re.match(r"(?is)^\s*select\b", s):
+    if "--" in s or "/*" in s:
         return False
-    if re.search(r"(?is)\b(insert|update|delete|drop|alter|truncate|attach|detach|pragma|vacuum|reindex|create|replace)\b", s):
+    upper = s.upper()
+    if not upper.startswith("SELECT") and not upper.startswith("WITH"):
         return False
+    forbidden = ["INSERT", "UPDATE", "DELETE", "DROP", "ALTER", "TRUNCATE",
+                "ATTACH", "DETACH", "PRAGMA", "CREATE", "REPLACE", "VACUUM",
+                "REINDEX", "LOAD", "SAVEPOINT", "COMMIT", "ROLLBACK", "BEGIN"]
+    tokens = s.upper().replace("(", " ").replace(")", " ").split()
+    for kw in forbidden:
+        if kw in tokens:
+            return False
     return True
 
 def run_sample_sql(sql):
