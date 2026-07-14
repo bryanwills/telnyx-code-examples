@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """AI SQL Natural Language — turn natural-language questions into SQL with schema context and validation via Telnyx AI Inference."""
-import os, json, time, sqlite3, requests
+import os, json, time, sqlite3, requests, re
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 load_dotenv()
@@ -50,10 +50,24 @@ def get_sample_schema_ddl():
     statements = [s.strip() for s in text.split(";") if s.strip() and s.strip().upper().startswith("CREATE TABLE")]
     return ";\n".join(statements) + ";"
 
+def is_safe_readonly_sql(sql):
+    s = (sql or "").strip()
+    if not s:
+        return False
+    if ";" in s:
+        return False
+    if not re.match(r"(?is)^\s*select\b", s):
+        return False
+    if re.search(r"(?is)\b(insert|update|delete|drop|alter|truncate|attach|detach|pragma|vacuum|reindex|create|replace)\b", s):
+        return False
+    return True
+
 def run_sample_sql(sql):
     conn = sqlite3.connect(":memory:")
     conn.row_factory = sqlite3.Row
     try:
+        if not is_safe_readonly_sql(sql):
+            return {"error": "only a single read-only SELECT statement is allowed"}
         conn.executescript(get_sample_schema_text())
         cursor = conn.execute(sql)
         columns = [d[0] for d in cursor.description]
@@ -141,9 +155,10 @@ def validate_sql():
     sql = data.get("sql", "").strip()
     if not sql:
         return jsonify({"error": "sql field is required"}), 400
+    normalized_sql = sql.rstrip(";").strip()
     use_sample = data.get("sample", True)
     if use_sample:
-        exec_result = run_sample_sql(sql.rstrip(";").strip())
+        exec_result = run_sample_sql(normalized_sql)
     else:
         return jsonify({"error": "custom schema validation not supported in this endpoint; use /query/sample"}), 400
     is_valid = "error" not in exec_result
