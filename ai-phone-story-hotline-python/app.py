@@ -9,7 +9,7 @@ app = Flask(__name__)
 client = telnyx.Telnyx(api_key=os.getenv("TELNYX_API_KEY"), public_key=os.getenv("TELNYX_PUBLIC_KEY"))
 TELNYX_PUBLIC_KEY = os.getenv("TELNYX_PUBLIC_KEY", "")
 TELNYX_API_KEY = os.getenv("TELNYX_API_KEY")
-AI_MODEL = os.getenv("AI_MODEL", "moonshotai/Kimi-K2.6")
+AI_MODEL = os.getenv("AI_MODEL", "meta-llama/Llama-3.3-70B-Instruct")
 STORY_NUMBER = os.getenv("STORY_NUMBER")
 INFERENCE_URL = "https://api.telnyx.com/v2/ai/chat/completions"
 active_calls = {}
@@ -31,11 +31,8 @@ _start_ttl_cleanup(active_calls)
 GENRES = {"1": "mystery", "2": "sci-fi", "3": "fantasy", "4": "horror", "5": "romance"}
 
 def call_inference(messages, max_tokens=250):
-    try:
-        resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
+    resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
         json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.9}, timeout=20)
-    except Exception as e:
-        app.logger.error("Request failed: %s", e)
     resp.raise_for_status()
     return resp.json()["choices"][0]["message"]["content"]
 
