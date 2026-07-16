@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-07-14T21:46:10Z",
-  "example_count": 488,
+  "generated_at": "2026-07-16T00:40:36Z",
+  "example_count": 490,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -2633,6 +2633,15 @@
       "language": "python",
       "framework": "flask",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-webhook-aggregator-python"
+    },
+    {
+      "folder": "edge-ai-assistant-backend-go",
+      "title": "Edge Compute Backend for AI Assistant",
+      "description": "Use a Telnyx Edge Compute function as the backend for AI Assistant dynamic variables and webhook tool calls — no separate server required.",
+      "product": "voice",
+      "language": "go",
+      "framework": "edge-compute",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-ai-assistant-backend-go"
     },
     {
       "folder": "merge-deal-desk-alerts-python",
