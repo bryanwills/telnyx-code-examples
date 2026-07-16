@@ -1776,6 +1776,11 @@ examples:
     framework: flask
     folder: edge-webhook-aggregator-python
   - product: voice
+    use_case: edge-ai-assistant-backend
+    language: go
+    framework: edge-compute
+    folder: edge-ai-assistant-backend-go
+  - product: voice
     use_case: merge-deal-desk-alerts
     language: python
     framework: flask
