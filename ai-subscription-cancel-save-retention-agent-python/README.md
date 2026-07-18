@@ -122,15 +122,16 @@ resource id.
 
 1. Provision the assistant.
 2. Assign a Telnyx phone number.
-3. Call that number.
-4. Speak naturally:
+3. Open `/workflow` if you want to show the configured assistant behavior.
+4. Call that number.
+5. Speak naturally:
 
 ```text
 i think i need to cancel. i am barely using this and it is getting expensive.
 ```
 
-5. The assistant asks a natural follow-up or makes one save offer.
-6. Accept, decline, ask for a human, or change your mind.
+6. The assistant asks a natural follow-up or makes one save offer.
+7. Accept, decline, ask for a human, or change your mind.
 
 ## Subscription Workflow
 
