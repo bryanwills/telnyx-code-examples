@@ -724,6 +724,12 @@ examples:
     folder: sql-natural-language-python
 
   - product: ai
+    use_case: semantic-search
+    language: python
+    framework: flask
+    folder: semantic-search-python
+
+  - product: ai
     use_case: ai-customer-winback-caller
     language: python
     framework: flask

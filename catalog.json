@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-07-18T00:06:01Z",
-  "example_count": 491,
+  "generated_at": "2026-07-20T19:54:59Z",
+  "example_count": 492,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -1040,6 +1040,15 @@
       "language": "python",
       "framework": "flask",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/sql-natural-language-python"
+    },
+    {
+      "folder": "semantic-search-python",
+      "title": "Semantic Search for Support Tickets",
+      "description": "Semantic Search — index support tickets via Telnyx embeddings API and find similar issues by meaning, not keywords. Includes a bundled sample ticket dataset.",
+      "product": "ai",
+      "language": "python",
+      "framework": "flask",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/semantic-search-python"
     },
     {
       "folder": "ai-customer-winback-caller-python",
