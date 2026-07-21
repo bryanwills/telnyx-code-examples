@@ -35,21 +35,25 @@ function requiredConfig() {
   };
 }
 
-async function telnyxPost(path, body) {
-  const { telnyxApiKey } = requiredConfig();
-  const response = await fetch(`https://api.telnyx.com/v2${path}`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${telnyxApiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
+function assertCallControlId(value) {
+  if (typeof value !== "string" || !/^[A-Za-z0-9_-]{6,128}$/.test(value)) {
+    throw new Error("Invalid call_control_id received from webhook");
+  }
+  return value;
+}
 
+function telnyxHeaders() {
+  const { telnyxApiKey } = requiredConfig();
+  return {
+    Authorization: `Bearer ${telnyxApiKey}`,
+    "Content-Type": "application/json",
+  };
+}
+
+async function parseTelnyxResponse(response) {
   if (!response.ok) {
     throw new Error(`Telnyx request failed ${response.status}: ${await response.text()}`);
   }
-
   return response.json();
 }
 
@@ -165,11 +169,17 @@ function buildAssistantConfig() {
 
 async function answerCallWithAssistant(callControlId) {
   const { publicUrl } = requiredConfig();
-  await telnyxPost(`/calls/${callControlId}/actions/answer`, {
-    webhook_url: `${publicUrl}/webhooks/voice`,
-    webhook_url_method: "POST",
-    assistant: buildAssistantConfig(),
+  const id = encodeURIComponent(assertCallControlId(callControlId));
+  const response = await fetch(`https://api.telnyx.com/v2/calls/${id}/actions/answer`, {
+    method: "POST",
+    headers: telnyxHeaders(),
+    body: JSON.stringify({
+      webhook_url: `${publicUrl}/webhooks/voice`,
+      webhook_url_method: "POST",
+      assistant: buildAssistantConfig(),
+    }),
   });
+  await parseTelnyxResponse(response);
 }
 
 async function dialSpecialist(session) {
@@ -178,16 +188,21 @@ async function dialSpecialist(session) {
     "base64",
   );
 
-  const response = await telnyxPost("/calls", {
-    connection_id: connectionId,
-    from: telnyxNumber,
-    to: specialistNumber,
-    webhook_url: `${publicUrl}/webhooks/voice`,
-    webhook_url_method: "POST",
-    client_state: clientState,
+  const response = await fetch("https://api.telnyx.com/v2/calls", {
+    method: "POST",
+    headers: telnyxHeaders(),
+    body: JSON.stringify({
+      connection_id: connectionId,
+      from: telnyxNumber,
+      to: specialistNumber,
+      webhook_url: `${publicUrl}/webhooks/voice`,
+      webhook_url_method: "POST",
+      client_state: clientState,
+    }),
   });
+  const call = await parseTelnyxResponse(response);
 
-  session.specialistCallControlId = response.data.call_control_id;
+  session.specialistCallControlId = call.data.call_control_id;
   session.status = "dialing_specialist";
   recordEvent(session, {
     type: "specialist_dialed",
@@ -200,15 +215,21 @@ async function joinSpecialistToAiConversation(session, specialistCallControlId) 
     throw new Error("Missing AI conversation_id. Wait for an ai.* webhook before joining a participant.");
   }
 
-  await telnyxPost(`/calls/${specialistCallControlId}/actions/ai_assistant_join`, {
-    conversation_id: session.conversationId,
-    participant: {
-      id: specialistCallControlId,
-      role: "user",
-      name: "support specialist",
-      on_hangup: "continue_conversation",
-    },
+  const id = encodeURIComponent(assertCallControlId(specialistCallControlId));
+  const response = await fetch(`https://api.telnyx.com/v2/calls/${id}/actions/ai_assistant_join`, {
+    method: "POST",
+    headers: telnyxHeaders(),
+    body: JSON.stringify({
+      conversation_id: session.conversationId,
+      participant: {
+        id: specialistCallControlId,
+        role: "user",
+        name: "support specialist",
+        on_hangup: "continue_conversation",
+      },
+    }),
   });
+  await parseTelnyxResponse(response);
 
   session.status = "multiparticipant_active";
   recordEvent(session, {
