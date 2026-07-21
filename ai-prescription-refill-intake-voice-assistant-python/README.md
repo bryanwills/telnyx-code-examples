@@ -177,6 +177,23 @@ Checks server status.
 - Avoid sending raw PHI to Slack, logs, or non-healthcare systems unless your compliance program allows it.
 - Review HIPAA obligations, BAAs, and security safeguards with your legal/compliance team.
 
+## Why Telnyx
+
+Telnyx provides the AI Communications Infrastructure for this workflow: programmable voice, Call Control webhooks, AI Assistants, webhook tools, and optional Messaging API confirmations in one platform. That lets the voice assistant answer the call, collect structured refill context, and hand off staff-review actions to your backend.
+
+## Troubleshooting
+
+- If inbound calls do not reach the app, confirm the phone number is assigned to the Call Control Application and the webhook URL points to `/webhooks/voice`.
+- If Telnyx webhooks return `401`, check that `TELNYX_PUBLIC_KEY` is correct or leave it unset only for local testing.
+- If assistant tools return `401`, make sure `TOOL_SECRET` matches the secret used when running `provision_assistant.py`.
+- If no refill request appears, verify the assistant has `TELNYX_ASSISTANT_ID` set and the tool URLs use your current public HTTPS URL.
+
+## Related Examples
+
+- [Prescription Refill Line](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/prescription-refill-line-python/README.md)
+- [Route Phone Calls to an AI Agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md)
+- [AI Assistant Multi-Tool](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-assistant-multi-tool-python/README.md)
+
 ## Resources
 
 - [Telnyx AI Assistant quickstart](https://developers.telnyx.com/docs/inference/ai-assistants/no-code-voice-assistant)
