@@ -1726,6 +1726,15 @@
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/after-hours-nurse-triage-python"
     },
     {
+      "folder": "ai-prescription-refill-intake-voice-assistant-python",
+      "title": "AI Prescription Refill Intake Voice Assistant",
+      "description": "Create a Telnyx AI Assistant that answers prescription refill calls, collects medication and pharmacy details, flags requests for manual review, and queues pharmacy callbacks.",
+      "product": "ai",
+      "language": "python",
+      "framework": "flask",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/ai-prescription-refill-intake-voice-assistant-python"
+    },
+    {
       "folder": "ai-appointment-booking-sms-flow-python",
       "title": "AI Appointment Booking SMS Flow",
       "description": "AI Appointment Booking SMS Flow - guided SMS booking with available slot selection.",
