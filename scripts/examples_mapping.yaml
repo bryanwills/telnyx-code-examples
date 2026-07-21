@@ -844,6 +844,12 @@ examples:
     folder: ai-powered-ivr-replacement-python
 
   - product: ai
+    use_case: ai-pre-visit-clearance-voice-agent
+    language: python
+    framework: flask
+    folder: ai-pre-visit-clearance-voice-agent-python
+
+  - product: ai
     use_case: ai-price-quote-phone-agent
     language: python
     framework: flask
@@ -1178,6 +1184,12 @@ examples:
     language: python
     framework: flask
     folder: after-hours-nurse-triage-python
+
+  - product: ai
+    use_case: ai-prescription-refill-intake-voice-assistant
+    language: python
+    framework: flask
+    folder: ai-prescription-refill-intake-voice-assistant-python
 
   - product: sms
     use_case: ai-appointment-booking-sms-flow
