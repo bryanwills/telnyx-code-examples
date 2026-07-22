@@ -91,8 +91,14 @@ def create_ticket(patient, cls, caller, transcript):
     slack_alert(f"{emoji} Pre-Visit Clearance {t['ticket_id']}: {t['patient_name']} — {t['procedure']} — {t['insurance']} — {t['urgency']}")
     return t
 
+def _command_id(prefix):
+    return f"{prefix}-{uuid.uuid4().hex}"
+
 def answer_call(ccid):
-    _post(f"{API}/calls/{ccid}/actions/answer", {"send_silence_when_idle": True})
+    _post(f"{API}/calls/{ccid}/actions/answer", {
+        "send_silence_when_idle": True,
+        "command_id": _command_id("answer"),
+    })
 
 def prompt_and_collect(ccid, text):
     """Play a prompt and collect one spoken caller response."""
@@ -120,6 +126,7 @@ def prompt_and_collect(ccid, text):
         },
         "transcription": {"language": "en"},
         "user_response_timeout_ms": 15000,
+        "command_id": _command_id("ai-gather"),
     })
 
 def speak_only(ccid, text):
@@ -128,6 +135,7 @@ def speak_only(ccid, text):
         "payload": text,
         "voice": TTS_VOICE,
         "language_code": TTS_LANGUAGE,
+        "command_id": _command_id("speak"),
     })
 
 def _ai_gather_speech(p):
