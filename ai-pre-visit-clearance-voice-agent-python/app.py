@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""AI Pre-Visit Clearance Voice Agent."""
+"""AI Pre-Visit Clearance Voice Agent — speak + gather approach."""
 from __future__ import annotations
 import json, os, re, threading, time, uuid
 from datetime import datetime, timezone
@@ -44,9 +44,13 @@ def _verify():
 def _post(url, body, timeout=10):
     try:
         r = requests.post(url, headers=HEADERS, json=body, timeout=timeout)
-        if r.status_code >= 400: app.logger.warning("POST %s -> %d: %s", url, r.status_code, r.text[:300])
+        app.logger.info("POST %s -> %d", url, r.status_code)
+        if r.status_code >= 400:
+            app.logger.error("POST %s -> %d: %s", url, r.status_code, r.text[:500])
         r.raise_for_status(); return r.json()
-    except Exception as e: app.logger.warning("POST %s failed: %s", url, e); return None
+    except Exception as e:
+        app.logger.error("POST %s failed: %s", url, e)
+        return None
 
 def send_sms(to, text):
     if not to: return False
@@ -67,7 +71,7 @@ def lookup_patient(phone):
 def classify(text):
     fb = {"procedure":"unknown","urgency":"routine","is_medication":False,"is_imaging":False,"is_surgery":False,"summary":text[:120]}
     try:
-        r = requests.post(INFERENCE_URL, headers=HEADERS, json={"model":AI_MODEL,"messages":[{"role":"system","content":"Classify this healthcare clearance request. Return ONLY JSON: procedure (string), urgency (urgent|routine), is_medication (bool), is_imaging (bool), is_surgery (bool), summary (<=100 chars). No medical advice."},{"role":"user","content":text}],"max_tokens":300,"temperature":0.1}, timeout=15)
+        r = requests.post(INFERENCE_URL, headers=HEADERS, json={"model":AI_MODEL,"messages":[{"role":"system","content":"Classify this healthcare clearance request. Return ONLY JSON: procedure, urgency (urgent|routine), is_medication (bool), is_imaging (bool), is_surgery (bool), summary (<=100 chars). No medical advice."},{"role":"user","content":text}],"max_tokens":300,"temperature":0.1}, timeout=15)
         r.raise_for_status()
         c = r.json()["choices"][0]["message"]["content"].strip()
         c = re.sub(r"^```(?:json)?\s*","",c).strip("`").strip()
@@ -87,6 +91,29 @@ def create_ticket(patient, cls, caller, transcript):
     slack_alert(f"{emoji} Pre-Visit Clearance {t['ticket_id']}: {t['patient_name']} — {t['procedure']} — {t['insurance']} — {t['urgency']}")
     return t
 
+def answer_call(ccid):
+    _post(f"{API}/calls/{ccid}/actions/answer", {"send_silence_when_idle": True})
+
+def speak_and_gather(ccid, text):
+    """Speak text, then gather speech when Telnyx sends call.speak.ended."""
+    if ccid in calls:
+        calls[ccid]["should_gather"] = True
+    _post(f"{API}/calls/{ccid}/actions/speak", {
+        "payload": text,
+        "voice": TTS_VOICE,
+        "language_code": TTS_LANGUAGE,
+    })
+
+def speak_only(ccid, text):
+    """Speak without collecting another caller response."""
+    if ccid in calls:
+        calls[ccid]["should_gather"] = False
+    _post(f"{API}/calls/{ccid}/actions/speak", {
+        "payload": text,
+        "voice": TTS_VOICE,
+        "language_code": TTS_LANGUAGE,
+    })
+
 @app.route("/webhooks/voice", methods=["POST"])
 def handle_voice():
     if not _verify(): return jsonify({"error":"invalid signature"}), 401
@@ -96,10 +123,16 @@ def handle_voice():
     if _already_processed(eid): return jsonify({"status":"duplicate"}), 200
     data = payload.get("data",{}); p = data.get("payload",{}); event = data.get("event_type")
     ccid = p.get("call_control_id",""); caller = p.get("from","")
-    calls.setdefault(ccid, {"caller":caller,"patient":None,"step":"greeting","transcript":[],"classification":None,"last_seen":time.time()})
-    calls[ccid]["last_seen"] = time.time(); call = calls[ccid]
+
+    app.logger.info("EVENT: %s | ccid=%s | from=%s", event, ccid[:20] if ccid else "?", caller)
+
+    calls.setdefault(ccid, {"caller":caller,"patient":None,"step":"greeting","transcript":[],"classification":None,"should_gather":False,"last_seen":time.time()})
+    calls[ccid]["last_seen"] = time.time()
+    call = calls[ccid]
+
     if event == "call.initiated" and p.get("direction")=="incoming":
-        _post(f"{API}/calls/{ccid}/actions/answer", {})
+        answer_call(ccid)
+
     elif event == "call.answered":
         patient = lookup_patient(caller)
         if patient:
@@ -108,15 +141,40 @@ def handle_voice():
         else:
             call["step"] = "awaiting_dob"
             greeting = "Hello, this is the pre-visit clearance line. Could you please tell me your date of birth?"
-        _post(f"{API}/calls/{ccid}/actions/speak", {"payload":greeting,"voice":TTS_VOICE,"language_code":TTS_LANGUAGE,"service_level":"premium"})
+        speak_and_gather(ccid, greeting)
+
     elif event == "call.speak.ended":
-        _post(f"{API}/calls/{ccid}/actions/gather", {"input_type":"speech","end_silence_timeout_secs":2,"timeout_secs":20,"language_code":"en-US"})
+        if not call.get("should_gather") or call["step"] == "done":
+            app.logger.info("Speak ended without gather. step=%s", call["step"])
+            return jsonify({"status":"speak_ended"}), 200
+        call["should_gather"] = False
+        app.logger.info("Speak ended, starting gather. step=%s", call["step"])
+        # Immediately fire gather after speak ends
+        gather_result = _post(f"{API}/calls/{ccid}/actions/gather", {
+            "input_type": "speech",
+            "end_silence_timeout_secs": 3,
+            "timeout_secs": 30,
+            "language_code": "en-US",
+        })
+        if gather_result is None:
+            app.logger.error("Gather failed after speak.ended! Trying speak-only fallback.")
+            # If gather fails, just hang up gracefully
+            if call["step"] != "done":
+                speak_only(ccid, "I'm having trouble hearing you. Please call back later.")
+
     elif event == "call.gather.ended":
         speech = (p.get("speech") or {}).get("result","").strip()
+        app.logger.info("Gathered: %r (step=%s)", speech, call["step"])
+
         if not speech:
-            _post(f"{API}/calls/{ccid}/actions/speak", {"payload":"Sorry, I didn't catch that. Could you say it again?","voice":TTS_VOICE,"language_code":TTS_LANGUAGE,"service_level":"premium"})
+            if call["step"] == "awaiting_dob":
+                speak_and_gather(ccid, "Sorry, I didn't catch that. Could you tell me your date of birth?")
+            else:
+                speak_and_gather(ccid, "Sorry, I didn't catch that. Could you say that again?")
             return jsonify({"status":"reprompt"}), 200
+
         call["transcript"].append({"role":"user","content":speech})
+
         if call["step"] == "awaiting_dob":
             dob = speech.strip().replace(" ","")
             matched = None
@@ -124,30 +182,34 @@ def handle_voice():
                 if pd.get("dob","").replace("/","") == dob.replace("/",""): matched = pd; break
             if matched:
                 call["patient"] = matched; call["step"] = "awaiting_request"
-                _post(f"{API}/calls/{ccid}/actions/speak", {"payload":f"Thank you, {matched['name']}. I see you're with {matched['insurance']}. What procedure, test, or medication would you like clearance for?","voice":TTS_VOICE,"language_code":TTS_LANGUAGE,"service_level":"premium"})
+                speak_and_gather(ccid, f"Thank you, {matched['name']}. I see you're with {matched['insurance']}. What procedure, test, or medication would you like clearance for?")
             else:
-                _post(f"{API}/calls/{ccid}/actions/speak", {"payload":"I couldn't find a patient with that date of birth. Could you repeat it?","voice":TTS_VOICE,"language_code":TTS_LANGUAGE,"service_level":"premium"})
+                speak_and_gather(ccid, "I couldn't find a patient with that date of birth. Could you repeat it?")
+
         elif call["step"] == "awaiting_request":
             cls = classify(speech)
             if any(k in speech.lower() for k in URGENT_KW) and cls["urgency"]!="urgent": cls["urgency"]="urgent"
             call["classification"] = cls; call["step"] = "confirming"
-            _post(f"{API}/calls/{ccid}/actions/speak", {"payload":f"I've got that as: {cls['procedure']}. Your provider is {call['patient'].get('provider','on file')}, insurance is {call['patient'].get('insurance','on file')}. Is that correct? Please say yes or no.","voice":TTS_VOICE,"language_code":TTS_LANGUAGE,"service_level":"premium"})
+            speak_and_gather(ccid, f"I've got that as: {cls['procedure']}. Your provider is {call['patient'].get('provider','on file')}, insurance is {call['patient'].get('insurance','on file')}. Is that correct? Please say yes or no.")
+
         elif call["step"] == "confirming":
             low = speech.lower()
             if any(w in low for w in ("yes","yeah","correct","right","yep","sure")):
                 t = create_ticket(call["patient"], call["classification"], caller, call["transcript"])
                 call["step"] = "done"
                 msg = "Your request has been flagged as urgent and will be reviewed immediately." if t["urgency"]=="urgent" else "Your request will be reviewed within 2 business days."
-                _post(f"{API}/calls/{ccid}/actions/speak", {"payload":f"Perfect. Your clearance request has been submitted. Ticket number {t['ticket_id']}. {msg} You'll receive a text confirmation shortly.","voice":TTS_VOICE,"language_code":TTS_LANGUAGE,"service_level":"premium"})
+                speak_only(ccid, f"Perfect. Your clearance request has been submitted. Ticket number {t['ticket_id']}. {msg} You'll receive a text confirmation shortly.")
             elif any(w in low for w in ("no","wrong","incorrect","not right")):
                 call["step"] = "awaiting_request"; call["classification"] = None
-                _post(f"{API}/calls/{ccid}/actions/speak", {"payload":"Let's try again. What would you like to get clearance for?","voice":TTS_VOICE,"language_code":TTS_LANGUAGE,"service_level":"premium"})
+                speak_and_gather(ccid, "Let's try again. What would you like to get clearance for?")
             else:
-                _post(f"{API}/calls/{ccid}/actions/speak", {"payload":"Could you say yes if that's correct, or no if something needs to be changed?","voice":TTS_VOICE,"language_code":TTS_LANGUAGE,"service_level":"premium"})
+                speak_and_gather(ccid, "Could you say yes if that's correct, or no if something needs to be changed?")
+
     elif event == "call.hangup":
         if call["step"] not in ("done","greeting") and call.get("classification"):
             create_ticket(call["patient"] or {"name":"Unknown","phone":caller}, call["classification"], caller, call["transcript"])
         calls.pop(ccid, None)
+
     return jsonify({"status":"ok"}), 200
 
 @app.route("/webhooks/sms", methods=["POST"])
