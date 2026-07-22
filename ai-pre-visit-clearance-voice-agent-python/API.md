@@ -2,6 +2,14 @@
 
 Receives Telnyx Call Control webhook events.
 
+Handled voice events:
+
+- `call.initiated` answers the inbound call.
+- `call.answered` starts one-turn speech capture with `gather_using_ai`.
+- `call.ai_gather.ended` routes the captured `utterance` through the Flask state machine.
+- `call.speak.ended` is observed for final speak completion.
+- `call.hangup` cleans up call state and can create a partial ticket after classification.
+
 ## `POST /webhooks/sms`
 
 Receives Telnyx Messaging webhook events.

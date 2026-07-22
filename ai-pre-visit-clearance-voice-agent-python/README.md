@@ -17,7 +17,7 @@ Inbound voice and SMS agent for healthcare pre-visit insurance clearance. Patien
 
 - **Call Control: Answer**: `POST /v2/calls/{id}/actions/answer` - [API reference](https://developers.telnyx.com/api/call-control/answer-call)
 - **Call Control: Speak**: `POST /v2/calls/{id}/actions/speak` - [API reference](https://developers.telnyx.com/api/call-control/speak)
-- **Call Control: Gather**: `POST /v2/calls/{id}/actions/gather` - [API reference](https://developers.telnyx.com/api/call-control/gather)
+- **Call Control: Gather Using AI**: `POST /v2/calls/{id}/actions/gather_using_ai` - [API reference](https://developers.telnyx.com/api/call-control/gather-using-ai)
 - **AI Inference**: `POST /v2/ai/chat/completions` - [API reference](https://developers.telnyx.com/api/inference/chat-completions)
 
 ## Setup

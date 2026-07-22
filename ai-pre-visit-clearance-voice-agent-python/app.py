@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""AI Pre-Visit Clearance Voice Agent — speak + gather approach."""
+"""AI Pre-Visit Clearance Voice Agent."""
 from __future__ import annotations
 import json, os, re, threading, time, uuid
 from datetime import datetime, timezone
@@ -94,25 +94,94 @@ def create_ticket(patient, cls, caller, transcript):
 def answer_call(ccid):
     _post(f"{API}/calls/{ccid}/actions/answer", {"send_silence_when_idle": True})
 
-def speak_and_gather(ccid, text):
-    """Speak text, then gather speech when Telnyx sends call.speak.ended."""
-    if ccid in calls:
-        calls[ccid]["should_gather"] = True
+def prompt_and_collect(ccid, text):
+    """Play a prompt and collect one spoken caller response."""
+    _post(f"{API}/calls/{ccid}/actions/gather_using_ai", {
+        "greeting": text,
+        "voice": TTS_VOICE,
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "utterance": {
+                    "type": "string",
+                    "description": "The caller's spoken answer, transcribed verbatim.",
+                }
+            },
+            "required": ["utterance"],
+        },
+        "assistant": {
+            "model": AI_MODEL,
+            "instructions": (
+                "You are a one-turn speech capture component. Ask no follow-up "
+                "questions unless the caller is silent. Do not make decisions, "
+                "give advice, or continue the conversation. Capture exactly what "
+                "the caller says in the utterance field."
+            ),
+        },
+        "transcription": {"language": "en"},
+        "user_response_timeout_ms": 15000,
+    })
+
+def speak_only(ccid, text):
+    """Speak without collecting another caller response."""
     _post(f"{API}/calls/{ccid}/actions/speak", {
         "payload": text,
         "voice": TTS_VOICE,
         "language_code": TTS_LANGUAGE,
     })
 
-def speak_only(ccid, text):
-    """Speak without collecting another caller response."""
-    if ccid in calls:
-        calls[ccid]["should_gather"] = False
-    _post(f"{API}/calls/{ccid}/actions/speak", {
-        "payload": text,
-        "voice": TTS_VOICE,
-        "language_code": TTS_LANGUAGE,
-    })
+def _ai_gather_speech(p):
+    result = p.get("result") or {}
+    if isinstance(result, dict) and result.get("utterance"):
+        return str(result["utterance"]).strip()
+    for msg in reversed(p.get("message_history") or []):
+        if msg.get("role") == "user" and msg.get("content"):
+            return str(msg["content"]).strip()
+    return ""
+
+def handle_speech(ccid, caller, call, speech):
+    app.logger.info("Gathered: %r (step=%s)", speech, call["step"])
+
+    if not speech:
+        if call["step"] == "awaiting_dob":
+            prompt_and_collect(ccid, "Sorry, I didn't catch that. Could you tell me your date of birth?")
+        else:
+            prompt_and_collect(ccid, "Sorry, I didn't catch that. Could you say that again?")
+        return "reprompt"
+
+    call["transcript"].append({"role":"user","content":speech})
+
+    if call["step"] == "awaiting_dob":
+        dob = speech.strip().replace(" ","")
+        matched = None
+        for pd in PATIENTS.values():
+            if pd.get("dob","").replace("/","") == dob.replace("/",""): matched = pd; break
+        if matched:
+            call["patient"] = matched; call["step"] = "awaiting_request"
+            prompt_and_collect(ccid, f"Thank you, {matched['name']}. I see you're with {matched['insurance']}. What procedure, test, or medication would you like clearance for?")
+        else:
+            prompt_and_collect(ccid, "I couldn't find a patient with that date of birth. Could you repeat it?")
+
+    elif call["step"] == "awaiting_request":
+        cls = classify(speech)
+        if any(k in speech.lower() for k in URGENT_KW) and cls["urgency"]!="urgent": cls["urgency"]="urgent"
+        call["classification"] = cls; call["step"] = "confirming"
+        prompt_and_collect(ccid, f"I've got that as: {cls['procedure']}. Your provider is {call['patient'].get('provider','on file')}, insurance is {call['patient'].get('insurance','on file')}. Is that correct? Please say yes or no.")
+
+    elif call["step"] == "confirming":
+        low = speech.lower()
+        if any(w in low for w in ("yes","yeah","correct","right","yep","sure")):
+            t = create_ticket(call["patient"], call["classification"], caller, call["transcript"])
+            call["step"] = "done"
+            msg = "Your request has been flagged as urgent and will be reviewed immediately." if t["urgency"]=="urgent" else "Your request will be reviewed within 2 business days."
+            speak_only(ccid, f"Perfect. Your clearance request has been submitted. Ticket number {t['ticket_id']}. {msg} You'll receive a text confirmation shortly.")
+        elif any(w in low for w in ("no","wrong","incorrect","not right")):
+            call["step"] = "awaiting_request"; call["classification"] = None
+            prompt_and_collect(ccid, "Let's try again. What would you like to get clearance for?")
+        else:
+            prompt_and_collect(ccid, "Could you say yes if that's correct, or no if something needs to be changed?")
+
+    return "ok"
 
 @app.route("/webhooks/voice", methods=["POST"])
 def handle_voice():
@@ -126,7 +195,7 @@ def handle_voice():
 
     app.logger.info("EVENT: %s | ccid=%s | from=%s", event, ccid[:20] if ccid else "?", caller)
 
-    calls.setdefault(ccid, {"caller":caller,"patient":None,"step":"greeting","transcript":[],"classification":None,"should_gather":False,"last_seen":time.time()})
+    calls.setdefault(ccid, {"caller":caller,"patient":None,"step":"greeting","transcript":[],"classification":None,"last_seen":time.time()})
     calls[ccid]["last_seen"] = time.time()
     call = calls[ccid]
 
@@ -141,69 +210,18 @@ def handle_voice():
         else:
             call["step"] = "awaiting_dob"
             greeting = "Hello, this is the pre-visit clearance line. Could you please tell me your date of birth?"
-        speak_and_gather(ccid, greeting)
+        prompt_and_collect(ccid, greeting)
 
     elif event == "call.speak.ended":
-        if not call.get("should_gather") or call["step"] == "done":
-            app.logger.info("Speak ended without gather. step=%s", call["step"])
-            return jsonify({"status":"speak_ended"}), 200
-        call["should_gather"] = False
-        app.logger.info("Speak ended, starting gather. step=%s", call["step"])
-        # Immediately fire gather after speak ends
-        gather_result = _post(f"{API}/calls/{ccid}/actions/gather", {
-            "input_type": "speech",
-            "end_silence_timeout_secs": 3,
-            "timeout_secs": 30,
-            "language_code": "en-US",
-        })
-        if gather_result is None:
-            app.logger.error("Gather failed after speak.ended! Trying speak-only fallback.")
-            # If gather fails, just hang up gracefully
-            if call["step"] != "done":
-                speak_only(ccid, "I'm having trouble hearing you. Please call back later.")
+        app.logger.info("Speak ended. status=%s step=%s", p.get("status"), call["step"])
 
     elif event == "call.gather.ended":
         speech = (p.get("speech") or {}).get("result","").strip()
-        app.logger.info("Gathered: %r (step=%s)", speech, call["step"])
+        return jsonify({"status":handle_speech(ccid, caller, call, speech)}), 200
 
-        if not speech:
-            if call["step"] == "awaiting_dob":
-                speak_and_gather(ccid, "Sorry, I didn't catch that. Could you tell me your date of birth?")
-            else:
-                speak_and_gather(ccid, "Sorry, I didn't catch that. Could you say that again?")
-            return jsonify({"status":"reprompt"}), 200
-
-        call["transcript"].append({"role":"user","content":speech})
-
-        if call["step"] == "awaiting_dob":
-            dob = speech.strip().replace(" ","")
-            matched = None
-            for pd in PATIENTS.values():
-                if pd.get("dob","").replace("/","") == dob.replace("/",""): matched = pd; break
-            if matched:
-                call["patient"] = matched; call["step"] = "awaiting_request"
-                speak_and_gather(ccid, f"Thank you, {matched['name']}. I see you're with {matched['insurance']}. What procedure, test, or medication would you like clearance for?")
-            else:
-                speak_and_gather(ccid, "I couldn't find a patient with that date of birth. Could you repeat it?")
-
-        elif call["step"] == "awaiting_request":
-            cls = classify(speech)
-            if any(k in speech.lower() for k in URGENT_KW) and cls["urgency"]!="urgent": cls["urgency"]="urgent"
-            call["classification"] = cls; call["step"] = "confirming"
-            speak_and_gather(ccid, f"I've got that as: {cls['procedure']}. Your provider is {call['patient'].get('provider','on file')}, insurance is {call['patient'].get('insurance','on file')}. Is that correct? Please say yes or no.")
-
-        elif call["step"] == "confirming":
-            low = speech.lower()
-            if any(w in low for w in ("yes","yeah","correct","right","yep","sure")):
-                t = create_ticket(call["patient"], call["classification"], caller, call["transcript"])
-                call["step"] = "done"
-                msg = "Your request has been flagged as urgent and will be reviewed immediately." if t["urgency"]=="urgent" else "Your request will be reviewed within 2 business days."
-                speak_only(ccid, f"Perfect. Your clearance request has been submitted. Ticket number {t['ticket_id']}. {msg} You'll receive a text confirmation shortly.")
-            elif any(w in low for w in ("no","wrong","incorrect","not right")):
-                call["step"] = "awaiting_request"; call["classification"] = None
-                speak_and_gather(ccid, "Let's try again. What would you like to get clearance for?")
-            else:
-                speak_and_gather(ccid, "Could you say yes if that's correct, or no if something needs to be changed?")
+    elif event == "call.ai_gather.ended":
+        speech = _ai_gather_speech(p)
+        return jsonify({"status":handle_speech(ccid, caller, call, speech)}), 200
 
     elif event == "call.hangup":
         if call["step"] not in ("done","greeting") and call.get("classification"):

@@ -9,7 +9,7 @@ patient calls
   -> telnyx voice webhook
   -> flask app
   -> verify by caller ID or DOB
-  -> ask: what do you need clearance for?
+  -> gather spoken answers with one-turn AI speech capture
   -> ai inference: classify procedure + urgency + type
   -> confirm with patient (yes/no)
   -> create ticket + SMS to patient + Slack to staff
@@ -49,7 +49,7 @@ Set webhook URL in [Telnyx Portal](https://portal.telnyx.com):
 curl -X POST http://localhost:5000/patients -H "Content-Type: application/json" -d '{"patient_id":"P001","name":"Jordan","phone":"+15551112233","dob":"03/15/1990","insurance":"Blue Cross","provider":"Dr. Smith"}'
 ```
 
-Call the number, say "I need clearance for an MRI on my lower back", confirm with "yes".
+Call the number, answer the DOB prompt, say "I need clearance for an MRI on my lower back", confirm with "yes".
 
 ## Resources
 
