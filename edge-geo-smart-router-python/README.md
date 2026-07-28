@@ -41,7 +41,7 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY0123456789` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/api-keys) · [CLI: `telnyx auth`](https://developers.telnyx.com/development/cli) |
 | `TELNYX_PUBLIC_KEY` | `string` | _(base64 Ed25519)_ | **yes** | Webhook signature verification key | [Portal > Keys & Credentials](https://portal.telnyx.com/api-keys) |
 | `STORAGE_ACCESS_KEY` | `string` | `AKIAIOSFODNN7EXAMPLE` | for recording archival | Telnyx Storage S3 access key (separate from API key) | [Portal > Storage](https://portal.telnyx.com/storage) |
 | `STORAGE_SECRET_KEY` | `string` | _(secret)_ | for recording archival | Telnyx Storage S3 secret key | [Portal > Storage](https://portal.telnyx.com/storage) |
@@ -62,6 +62,24 @@ cp .env.example .env
 pip install -r requirements.txt
 python app.py
 ```
+
+<details>
+<summary>Programmatic / CLI setup</summary>
+
+```bash
+# Install CLI — https://developers.telnyx.com/development/cli
+go install github.com/team-telnyx/telnyx-cli/cmd/telnyx@latest
+telnyx auth login
+
+# Provision resources
+telnyx available-phone-numbers list --country US --features sms
+telnyx number-orders create --phone-number +15551234567
+```
+
+For full API discovery, point your agent at [`llms-full.txt`](https://developers.telnyx.com/llms-full.txt).
+
+</details>
+
 
 ### Webhook Configuration
 
@@ -157,12 +175,33 @@ Telnyx sends call events here. Your app processes them and responds with the nex
 | Recordings not archived | EU caller pressed 2 (no consent), `recording_url` not on a Telnyx host, OR `STORAGE_ACCESS_KEY`/`STORAGE_SECRET_KEY` not set | EU recording only starts after consent (digit `1`); non-Telnyx URLs are skipped (SSRF guard); Storage archival is skipped if Storage credentials are missing — set them in `.env` (these are separate from the Telnyx API key; created under Portal > Storage > Credentials). |
 | `400 invalid voice` / `language` ignored | Voice id is bare (`"female"`) for a non-`en-US` language | Bare `female`/`male` only work with `service_level: "basic"` (en-US). Use a full voice id like `AWS.Polly.Lupe-Neural` for `es-MX` — the defaults in `REGION_CONFIG` already do this. |
 
+> **Agent / CLI access** — provision resources programmatically with the [Telnyx CLI](https://developers.telnyx.com/development/cli):
+>
+> ```bash
+> telnyx auth login
+> ```
+>
+> Full API discovery: [llms-full.txt](https://developers.telnyx.com/llms-full.txt) · [CLI docs](https://developers.telnyx.com/development/cli)
+
+
 ## Related Examples
 
 - [ai-powered-ivr-replacement-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-powered-ivr-replacement-python/README.md) -- AI-driven IVR that replaces menu trees with natural language.
 - [route-phone-calls-to-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/route-phone-calls-to-ai-agent-python/README.md) -- Connect inbound calls to a Telnyx AI voice agent.
 - [record-phone-calls-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/record-phone-calls-python/README.md) -- Start and retrieve Call Control recordings.
 - [edge-compliance-monitor-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-compliance-monitor-python/README.md) -- Edge-based compliance and consent monitoring for calls.
+
+## Agent Discovery
+
+This example is part of the [Telnyx Code Examples](https://github.com/team-telnyx/telnyx-code-examples) catalog.
+
+- **Agent signup**: [telnyx.com/agent-signup.md](https://telnyx.com/agent-signup.md) — automated account provisioning via agent mail; get an API key with no human intervention
+- **Agent CLI**: [github.com/team-telnyx/ai/tree/main/cli](https://github.com/team-telnyx/ai/tree/main/cli) — composite commands for agents ([commands reference](https://github.com/team-telnyx/ai/tree/main/cli/src/commands))
+- **Agent skills**: [github.com/team-telnyx/ai/tree/main/skills](https://github.com/team-telnyx/ai/tree/main/skills)
+- **Telnyx AI repo**: [github.com/team-telnyx/ai](https://github.com/team-telnyx/ai)
+- **LLM-optimized docs**: [`llms-full.txt`](https://developers.telnyx.com/llms-full.txt)
+- **Example index**: [`llms.txt`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/llms.txt)
+- **Telnyx CLI (human)**: [developers.telnyx.com/development/cli](https://developers.telnyx.com/development/cli) — `go install github.com/team-telnyx/telnyx-cli/cmd/telnyx@latest`
 
 ## Resources
 

@@ -52,8 +52,8 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/app/api-keys) |
-| `TELNYX_PUBLIC_KEY` | `string` | `o0Yv...base64...` | no | Base64 Ed25519 public key for verifying inbound webhook signatures (only if you extend this example to receive webhooks) | [Portal](https://portal.telnyx.com/app/api-keys) |
+| `TELNYX_API_KEY` | `string` | `KEY0123456789ABCDEF` | **yes** | Telnyx API v2 key | [Portal](https://portal.telnyx.com/app/api-keys) · [CLI: `telnyx auth`](https://developers.telnyx.com/development/cli) |
+| `TELNYX_PUBLIC_KEY` | `string` | `o0Yv...base64...` | no | Base64 Ed25519 public key for verifying inbound webhook signatures (only if you extend this example to receive webhooks) | [Portal](https://portal.telnyx.com/app/api-keys) · [CLI: `telnyx auth`](https://developers.telnyx.com/development/cli) |
 | `PORT` | `integer` | `8080` | no | Local HTTP server port (defaults to `8080`) | - |
 
 > Only `TELNYX_API_KEY` is required to start the server. The Telnyx SDK reads `TELNYX_API_KEY` (and the optional `TELNYX_PUBLIC_KEY` / `TELNYX_BASE_URL`) directly from the environment via `TelnyxOkHttpClient.fromEnv()`.
@@ -73,6 +73,24 @@ set -a && . ./.env && set +a
 mvn -q compile                # compile against the Telnyx SDK
 mvn -q exec:java              # starts on http://localhost:8080
 ```
+
+<details>
+<summary>Programmatic / CLI setup</summary>
+
+```bash
+# Install CLI — https://developers.telnyx.com/development/cli
+go install github.com/team-telnyx/telnyx-cli/cmd/telnyx@latest
+telnyx auth login
+
+# Provision resources
+telnyx available-phone-numbers list --country US --features sms
+telnyx number-orders create --phone-number +15551234567
+```
+
+For full API discovery, point your agent at [`llms-full.txt`](https://developers.telnyx.com/llms-full.txt).
+
+</details>
+
 
 ## API Reference
 
@@ -173,12 +191,33 @@ See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-example
 | `KeyFactory.getInstance("Ed25519")` failure (only if you add webhooks) | Running on a JDK older than 15 without an Ed25519 provider. | Use JDK 17+ (the SDK's webhook verification path needs JDK-native Ed25519). |
 | Build cannot resolve `com.telnyx.sdk:telnyx` | The artifactId is `telnyx`, not `telnyx-java`. | Confirm `pom.xml` pins `com.telnyx.sdk:telnyx:6.76.0` and re-run `mvn -q compile`. |
 
+> **Agent / CLI access** — provision resources programmatically with the [Telnyx CLI](https://developers.telnyx.com/development/cli):
+>
+> ```bash
+> telnyx auth login
+> ```
+>
+> Full API discovery: [llms-full.txt](https://developers.telnyx.com/llms-full.txt) · [CLI docs](https://developers.telnyx.com/development/cli)
+
+
 ## Related Examples
 
 - [setup-sip-trunk-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-python/README.md) - same SIP trunk setup in Python/Flask
 - [setup-sip-trunk-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-nodejs/README.md) - same SIP trunk setup in Node.js/Express
 - [setup-sip-trunk-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-sip-trunk-go/README.md) - same SIP trunk setup in Go/Gin
 - [inbound-sip-routing-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/inbound-sip-routing-nodejs/README.md) - route inbound SIP calls
+
+## Agent Discovery
+
+This example is part of the [Telnyx Code Examples](https://github.com/team-telnyx/telnyx-code-examples) catalog.
+
+- **Agent signup**: [telnyx.com/agent-signup.md](https://telnyx.com/agent-signup.md) — automated account provisioning via agent mail; get an API key with no human intervention
+- **Agent CLI**: [github.com/team-telnyx/ai/tree/main/cli](https://github.com/team-telnyx/ai/tree/main/cli) — composite commands for agents ([commands reference](https://github.com/team-telnyx/ai/tree/main/cli/src/commands))
+- **Agent skills**: [github.com/team-telnyx/ai/tree/main/skills](https://github.com/team-telnyx/ai/tree/main/skills)
+- **Telnyx AI repo**: [github.com/team-telnyx/ai](https://github.com/team-telnyx/ai)
+- **LLM-optimized docs**: [`llms-full.txt`](https://developers.telnyx.com/llms-full.txt)
+- **Example index**: [`llms.txt`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/llms.txt)
+- **Telnyx CLI (human)**: [developers.telnyx.com/development/cli](https://developers.telnyx.com/development/cli) — `go install github.com/team-telnyx/telnyx-cli/cmd/telnyx@latest`
 
 ## Resources
 
