@@ -748,6 +748,12 @@ examples:
     folder: moderation-classifier-python
 
   - product: ai
+    use_case: quiz-generator
+    language: python
+    framework: flask
+    folder: quiz-generator-python
+
+  - product: ai
     use_case: ai-customer-winback-caller
     language: python
     framework: flask
