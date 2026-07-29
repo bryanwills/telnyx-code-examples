@@ -1,18 +1,18 @@
 ---
-name: ai-past-due-payment-collection-voice
-title: "AI Past-Due Payment Collection Voice Assistant"
-description: "A PCI-aware inbound payment collection demo using Telnyx Voice API, AI Assistants, webhook tools, and Pay over Voice."
+name: ai-pci-protected-payment-collection
+title: "AI PCI Protected Payment Collection"
+description: "A PCI-protected inbound payment collection demo using Telnyx Voice API, AI Assistants, webhook tools, and Pay over Voice."
 language: python
 framework: flask
 telnyx_products: [Voice API, AI Assistants, Pay over Voice]
 channel: [voice]
 ---
 
-# AI Past-Due Payment Collection Voice Assistant
+# AI PCI Protected Payment Collection
 
 This demo answers an inbound billing call, verifies the caller, negotiates a payment plan, and starts a Telnyx Pay over Voice session for secure card collection.
 
-Use this example to build AI Communications Infrastructure for PCI-aware voice payment workflows.
+Use this example to build AI Communications Infrastructure for PCI-protected voice payment workflows.
 
 The important PCI point is that the app does **not** gather card digits itself. Telnyx Pay over Voice handles the payment IVR and automatically masks recording, transcription, assistant audio, and DTMF logging while payment details are entered.
 
@@ -43,7 +43,7 @@ The assistant uses two webhook tools:
 ## Setup
 
 ```bash
-cd ai-past-due-payment-collection-voice-python
+cd ai-pci-protected-payment-collection-python
 cp .env.example .env
 python3 -m venv .venv
 source .venv/bin/activate
@@ -67,7 +67,7 @@ Update `.env`:
 ```text
 TELNYX_API_KEY=KEY...
 PUBLIC_BASE_URL=https://<ngrok-id>.ngrok-free.app
-PAY_CONNECTOR_NAME=secure-payment-demo
+PAY_CONNECTOR_NAME=pci-protected-payment-demo
 TOOL_SECRET=<generate-a-random-secret>
 ```
 
@@ -218,7 +218,7 @@ This demo is designed to show a compliant architecture pattern, not to certify y
 - The app starts Telnyx Pay over Voice for the sensitive card-entry step.
 - The local dashboard logs only high-level payment status.
 - The local dashboard and assistant tool responses do not log PAN, CVV, expiration date, postal code, or raw DTMF.
-- This sample demonstrates a PCI-aware integration pattern. It does not certify your production environment by itself.
+- This sample demonstrates a PCI-protected integration pattern. It does not certify your production environment by itself.
 
 ## Troubleshooting
 

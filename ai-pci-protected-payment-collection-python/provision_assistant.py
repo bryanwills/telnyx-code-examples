@@ -16,8 +16,8 @@ load_dotenv()
 
 API = "https://api.telnyx.com/v2"
 DEFAULT_MODEL = "openai/gpt-4o"
-DEFAULT_ASSISTANT_NAME = "pci payment collection voice assistant"
-DEFAULT_PAY_CONNECTOR_NAME = "secure-payment-demo"
+DEFAULT_ASSISTANT_NAME = "ai pci protected payment collection assistant"
+DEFAULT_PAY_CONNECTOR_NAME = "pci-protected-payment-demo"
 DATA_DIR = Path(__file__).parent / "data"
 CUSTOMERS = json.loads((DATA_DIR / "customers.json").read_text())
 
@@ -194,7 +194,7 @@ def main() -> None:
         "model": os.getenv("AI_MODEL", DEFAULT_MODEL),
         "instructions": instructions(customer),
         "greeting": "hi, this is the automated billing line. i can help with your past-due account and set up a payment plan. to protect your account, can you tell me your date of birth?",
-        "description": "pci-aware payment collection assistant that starts telnyx pay over voice for keypad card entry.",
+        "description": "pci-protected payment collection assistant that starts telnyx pay over voice for keypad card entry.",
         "enabled_features": ["telephony"],
         "tool_ids": tool_ids,
     }
