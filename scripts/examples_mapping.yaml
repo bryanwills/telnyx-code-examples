@@ -754,6 +754,12 @@ examples:
     folder: quiz-generator-python
 
   - product: ai
+    use_case: call-recording-redactor
+    language: python
+    framework: flask
+    folder: call-recording-redactor-python
+
+  - product: ai
     use_case: ai-customer-winback-caller
     language: python
     framework: flask
