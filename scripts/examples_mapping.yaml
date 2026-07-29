@@ -760,6 +760,12 @@ examples:
     folder: call-recording-redactor-python
 
   - product: ai
+    use_case: voicemail-smart-router
+    language: python
+    framework: flask
+    folder: voicemail-smart-router-python
+
+  - product: ai
     use_case: ai-customer-winback-caller
     language: python
     framework: flask
