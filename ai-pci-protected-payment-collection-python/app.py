@@ -32,7 +32,7 @@ app = Flask(__name__)
 TELNYX_API_KEY = os.getenv("TELNYX_API_KEY", "")
 TELNYX_PUBLIC_KEY = os.getenv("TELNYX_PUBLIC_KEY", "")
 PAY_CONNECTOR_NAME = os.getenv("PAY_CONNECTOR_NAME", "Default")
-PAYMENT_DESCRIPTION = os.getenv("PAYMENT_DESCRIPTION", "past-due payment plan")
+PAYMENT_DESCRIPTION = os.getenv("PAYMENT_DESCRIPTION", "pci protected payment collection")
 TELNYX_ASSISTANT_ID = os.getenv("TELNYX_ASSISTANT_ID", "")
 TOOL_SECRET = os.getenv("TOOL_SECRET", "")
 DEMO_CUSTOMER_ID = os.getenv("DEMO_CUSTOMER_ID", "acct_1042")
@@ -202,10 +202,10 @@ def start_pay_session(
             "demo": "ai-pci-protected-payment-collection-python",
         },
         "prompts": {
-            "payment-card-number": "please enter your card number using the keypad.",
-            "expiration-date": "please enter the expiration date as four digits, month first.",
-            "postal-code": "please enter your billing zip code.",
-            "security-code": "please enter your security code.",
+            "payment-card-number": "please enter your card number now using the keypad.",
+            "expiration-date": "please enter the expiration date as four digits, month first. for example, zero eight two seven for august twenty twenty seven.",
+            "postal-code": "please enter your billing zip code using the keypad.",
+            "security-code": "please enter the three digit security code from the back of your card.",
         },
         "client_state": encode_state({"call_control_id": call_control_id, "phase": "pay"}),
     }
