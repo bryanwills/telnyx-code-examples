@@ -3,7 +3,7 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-07-29T21:44:26Z",
+  "generated_at": "2026-07-29T23:46:49Z",
   "example_count": 502,
   "examples": [
     {
@@ -122,15 +122,6 @@
       "language": "nodejs",
       "framework": "express",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/build-conversational-workflow-nodejs"
-    },
-    {
-      "folder": "ai-assistant-client-side-tools-nextjs",
-      "title": "AI Assistant Client-Side Tools",
-      "description": "Build a browser-based Next.js dashboard where a Telnyx AI Assistant invokes client-side JavaScript tools to navigate the UI, change theme, open a modal, and update React form state.",
-      "product": "voice",
-      "language": "nodejs",
-      "framework": "nextjs",
-      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/ai-assistant-client-side-tools-nextjs"
     },
     {
       "folder": "ai-assistant-multiparticipant-calling-nodejs",
@@ -437,6 +428,15 @@
       "language": "ruby",
       "framework": "sinatra",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/setup-sip-trunk-ruby"
+    },
+    {
+      "folder": "ai-assistant-client-side-tools-nextjs",
+      "title": "AI Assistant Client-Side Tools",
+      "description": "Build a browser-based Next.js dashboard where a Telnyx AI Assistant invokes client-side JavaScript tools to navigate the UI, change theme, open a modal, and update React form state.",
+      "product": "voice",
+      "language": "nodejs",
+      "framework": "nextjs",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/ai-assistant-client-side-tools-nextjs"
     },
     {
       "folder": "send-sms-python",

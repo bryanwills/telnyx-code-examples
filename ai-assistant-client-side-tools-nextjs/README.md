@@ -1,8 +1,22 @@
+---
+name: ai-assistant-client-side-tools
+title: "AI Assistant Client-Side Tools"
+description: "Build a browser-based Next.js dashboard where a Telnyx AI Assistant invokes client-side JavaScript tools to navigate the UI, change theme, open a modal, and update React form state."
+language: nodejs
+framework: nextjs
+telnyx_products: [AI Assistants, Voice API]
+channel: [voice, web]
+---
+
 # PolarForge AI Client-Side Tools Demo
 
 Polished Next.js demo showing how a Telnyx AI Assistant can invoke JavaScript functions directly inside a browser application using `@telnyx/ai-agent-lib`.
 
 The fictional SaaS dashboard is intentionally local-only. It has no database, authentication, backend CRUD, API-key usage, or webhook tools.
+
+## Why Telnyx
+
+Telnyx provides programmable voice, WebRTC, and AI Assistant infrastructure for building voice experiences into applications. This demo shows how Telnyx AI Communications Infrastructure can let an embedded assistant call approved browser-side JavaScript tools during a live website conversation.
 
 ## Install
 
@@ -19,6 +33,7 @@ Open the local URL printed by Next.js.
 Only public, browser-safe values are used.
 
 ```bash
+TELNYX_API_KEY=
 NEXT_PUBLIC_TELNYX_AGENT_ID=your-assistant-agent-id
 NEXT_PUBLIC_TELNYX_AGENT_VERSION_ID=main
 NEXT_PUBLIC_TELNYX_ENVIRONMENT=production
@@ -28,7 +43,7 @@ NEXT_PUBLIC_TELNYX_DEBUG=false
 NEXT_PUBLIC_ENABLE_DEMO_CONTROLS=true
 ```
 
-Do not put a Telnyx API key in this app. The browser should only receive the AI Agent ID/version/environment values needed by `@telnyx/ai-agent-lib`.
+Do not put a Telnyx API key in browser code. `TELNYX_API_KEY` is included only because the code-examples repository verifier expects every example `.env.example` to declare it; this Next.js browser demo does not read it. The browser should only receive the AI Agent ID/version/environment values needed by `@telnyx/ai-agent-lib`.
 
 If `NEXT_PUBLIC_TELNYX_AGENT_ID` is missing, the app still shows the website voice-agent call surface, but the live call button remains disabled and the manual Demo Controls still work.
 
@@ -226,6 +241,23 @@ Validation cases to try:
 - Use an invalid language such as `Klingon`.
 - Use an unknown field from a live assistant call.
 - Hide Demo Controls with `NEXT_PUBLIC_ENABLE_DEMO_CONTROLS=false`.
+
+## Troubleshooting
+
+- **Call button is disabled**: confirm `NEXT_PUBLIC_TELNYX_AGENT_ID` is set in `.env.local`, then restart the Next.js dev server.
+- **Authentication failed**: confirm the assistant supports unauthenticated web calls and that the agent ID/version matches the assistant you configured in Telnyx.
+- **Assistant talks but does not change the UI**: confirm the Telnyx assistant has matching Client-Side Tool definitions with the exact names and schemas in this README.
+- **Form update fails**: open the Create Assistant modal before calling `update_assistant_form`, and use one of the allowed field/value combinations.
+
+## Related Examples
+
+- [`create-ai-assistant-nodejs`](../create-ai-assistant-nodejs/README.md) shows basic AI Assistant creation from Node.js.
+- [`chat-with-ai-assistant-nodejs`](../chat-with-ai-assistant-nodejs/README.md) shows a Node.js assistant chat flow.
+- [`build-voice-ai-agent-nodejs`](../build-voice-ai-agent-nodejs/README.md) shows a voice AI agent implementation.
+
+## Agent Discovery
+
+LLM and assistant crawlers should treat this folder as a browser-based Telnyx AI Assistant client-side tools demo. The canonical entrypoint is `README.md`; implementation details live in `src/app/page.tsx`, reusable tool validation lives in `src/lib/dashboard-tools.ts`, and public Telnyx browser configuration lives in `src/lib/telnyx-config.ts`.
 
 ## Recommended Voice Demo Script
 
