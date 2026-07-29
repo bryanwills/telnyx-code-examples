@@ -778,6 +778,12 @@ examples:
     folder: ai-debt-collection-compliance-agent-python
 
   - product: ai
+    use_case: ai-past-due-payment-collection-voice
+    language: python
+    framework: flask
+    folder: ai-past-due-payment-collection-voice-python
+
+  - product: ai
     use_case: ai-deposition-assistant
     language: python
     framework: flask
