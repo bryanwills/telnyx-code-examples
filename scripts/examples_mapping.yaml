@@ -300,6 +300,13 @@ examples:
     framework: sinatra
     folder: setup-sip-trunk-ruby
 
+
+  - product: voice
+    use_case: ai-assistant-client-side-tools
+    language: nodejs
+    framework: nextjs
+    folder: ai-assistant-client-side-tools-nextjs
+
   # ─────────────────────────────────────────────────────────────────────
   # SMS / MMS (30 examples)
   # ─────────────────────────────────────────────────────────────────────
