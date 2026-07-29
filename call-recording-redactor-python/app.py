@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify
 load_dotenv()
 app = Flask(__name__)
 TELNYX_API_KEY = os.getenv("TELNYX_API_KEY")
-AI_MODEL = os.getenv("AI_MODEL", "moonshotai/Kimi-K2.6")
+AI_MODEL = os.getenv("AI_MODEL", "meta-llama/Llama-3.3-70B-Instruct")
 INFERENCE_URL = "https://api.telnyx.com/v2/ai/chat/completions"
 STT_URL = "https://api.telnyx.com/v2/ai/audio/transcriptions"
 redactions = {}
@@ -44,9 +44,9 @@ Rules:
 - List each unique PII instance in the redactions array.
 - If no PII is found, return the transcript unchanged with items_redacted: 0."""
 
-def call_inference(messages, max_tokens=6000):
+def call_inference(messages, max_tokens=4000):
     resp = requests.post(INFERENCE_URL, headers={"Authorization": f"Bearer {TELNYX_API_KEY}", "Content-Type": "application/json"},
-        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.2}, timeout=120)
+        json={"model": AI_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": 0.2}, timeout=90)
     resp.raise_for_status()
     content = resp.json()["choices"][0]["message"].get("content")
     if content is None:
