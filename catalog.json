@@ -3,7 +3,7 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-07-29T21:35:35Z",
+  "generated_at": "2026-07-29T21:44:26Z",
   "example_count": 501,
   "examples": [
     {
@@ -1123,13 +1123,13 @@
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/ai-debt-collection-compliance-agent-python"
     },
     {
-      "folder": "ai-past-due-payment-collection-voice-python",
-      "title": "AI Past-Due Payment Collection Voice Assistant",
-      "description": "A PCI-aware inbound payment collection demo using Telnyx Voice API, AI Assistants, webhook tools, and Pay over Voice.",
+      "folder": "ai-pci-protected-payment-collection-python",
+      "title": "AI PCI Protected Payment Collection",
+      "description": "A PCI-protected inbound payment collection demo using Telnyx Voice API, AI Assistants, webhook tools, and Pay over Voice.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
-      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/ai-past-due-payment-collection-voice-python"
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/ai-pci-protected-payment-collection-python"
     },
     {
       "folder": "ai-deposition-assistant-python",

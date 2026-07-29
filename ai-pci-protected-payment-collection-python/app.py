@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PCI-aware past-due payment collection voice demo.
+"""PCI-protected payment collection voice demo.
 
 Inbound calls are handled with Telnyx Voice API. The app verifies the caller,
 starts a Telnyx AI Assistant for the conversation, then exposes a webhook tool
@@ -199,7 +199,7 @@ def start_pay_session(
         "metadata": {
             "customer_id": customer_id,
             "plan_summary": plan_summary,
-            "demo": "ai-past-due-payment-collection-voice-python",
+            "demo": "ai-pci-protected-payment-collection-python",
         },
         "prompts": {
             "payment-card-number": "please enter your card number using the keypad.",
@@ -504,7 +504,7 @@ def dashboard() -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PCI Payment Collection Demo</title>
+  <title>AI PCI Protected Payment Collection</title>
   <style>
     :root {
       color-scheme: light;
@@ -562,7 +562,7 @@ def dashboard() -> str:
 <body>
   <header>
     <div>
-      <h1>PCI Payment Collection Demo</h1>
+      <h1>AI PCI Protected Payment Collection</h1>
       <div class="subtle">AI negotiates the plan. Telnyx Pay over Voice collects keypad payment details outside the assistant transcript.</div>
     </div>
     <div id="clock" class="subtle"></div>
