@@ -1,7 +1,7 @@
 ---
 name: ai-pci-protected-payment-collection
 title: "AI PCI Protected Payment Collection"
-description: "A PCI-protected inbound payment collection demo using Telnyx Voice API, AI Assistants, webhook tools, and Pay over Voice."
+description: "A PCI-protected inbound payment collection demo using Telnyx Voice API, AI Assistants, the native Pay tool, and Pay over Voice."
 language: python
 framework: flask
 telnyx_products: [Voice API, AI Assistants, Pay over Voice]
@@ -10,35 +10,31 @@ channel: [voice]
 
 # AI PCI Protected Payment Collection
 
-This demo answers an inbound billing call, verifies the caller, negotiates a payment plan, and starts a Telnyx Pay over Voice session for secure card collection.
+This demo answers an inbound billing call, starts a Telnyx AI Assistant, lets the assistant negotiate a payment plan, and uses the native Telnyx `Pay (BETA)` tool to start Pay over Voice for secure card collection.
 
 Use this example to build AI Communications Infrastructure for PCI-protected voice payment workflows.
 
-The important PCI point is that the app does **not** gather card digits itself. Telnyx Pay over Voice handles the payment IVR and automatically masks recording, transcription, assistant audio, and DTMF logging while payment details are entered.
-
-The assistant uses two webhook tools:
-
-- `start_secure_payment` starts Telnyx Pay over Voice after the caller agrees to a payment plan.
-- `record_secure_payment_complete` records a sanitized completion marker that is visible in Conversation Analysis without exposing card details.
+The important PCI point is that the app and assistant do **not** gather raw card digits. Telnyx Pay over Voice handles the keypad payment IVR and sends sanitized progress/completion webhooks back to the app.
 
 ## Telnyx DevDocs Used
 
 - [Voice API Commands and Resources](https://developers.telnyx.com/docs/voice/programmable-voice/voice-api-commands-and-resources)
 - [Attach an AI Assistant to a Call](https://developers.telnyx.com/docs/voice/programmable-voice/ai-assistant-start)
 - [Pay over Voice](https://developers.telnyx.com/docs/voice/programmable-voice/pay)
+- [AI Assistants](https://developers.telnyx.com/docs/inference/ai-assistants)
 
 ## Flow
 
 1. Caller dials the Telnyx billing number.
-2. App answers with Voice API.
-3. App starts a Telnyx AI Assistant with `ai_assistant_start`.
-4. The assistant verifies DOB and negotiates the payment plan naturally.
-5. Caller confirms consent to secure card collection.
-6. The assistant calls the `start_secure_payment` webhook tool.
-7. The Flask tool starts `POST /v2/calls/{call_control_id}/actions/pay`.
-8. Telnyx Pay over Voice collects card number, expiration, zip, and security code.
-9. Telnyx sends payment progress/completed webhooks to the app.
-10. The assistant calls `record_secure_payment_complete` to create a PCI-safe completion marker for the portal and dashboard.
+2. The Flask app answers with Voice API.
+3. The app starts a Telnyx AI Assistant with `ai_assistant_start`.
+4. The assistant verifies the caller and negotiates a payment plan.
+5. The caller confirms consent to secure card collection.
+6. The assistant invokes the native `Pay (BETA)` tool.
+7. Telnyx Pay over Voice prompts for card number, expiration date, postal code, and security code by keypad.
+8. Telnyx posts the authorization request to `/webhooks/payment-processor`.
+9. Telnyx sends `call.payment.progress` and `call.payment.completed` webhooks to `/webhooks/voice`.
+10. The local dashboard shows sanitized payment events without raw card digits.
 
 ## Setup
 
@@ -68,16 +64,10 @@ Update `.env`:
 TELNYX_API_KEY=KEY...
 PUBLIC_BASE_URL=https://<ngrok-id>.ngrok-free.app
 PAY_CONNECTOR_NAME=pci-protected-payment-demo
-TOOL_SECRET=<generate-a-random-secret>
+AI_MODEL=moonshotai/Kimi-K2.6
 ```
 
-Generate a local tool secret:
-
-```bash
-python3 -c "import secrets; print(secrets.token_urlsafe(24))"
-```
-
-Provision the Pay Connector and AI Assistant:
+Provision the Pay Connector, native Pay tool, and AI Assistant:
 
 ```bash
 python provision_assistant.py
@@ -95,20 +85,20 @@ Open the local dashboard:
 http://127.0.0.1:5000
 ```
 
-Configure your Telnyx Voice API application to send inbound call webhooks to:
-
-```text
-https://<ngrok-id>.ngrok-free.app/webhooks/voice
-```
-
-Assign a Telnyx voice-capable phone number to that Voice API application, then call the number.
+Assign a Telnyx voice-capable phone number to the Voice API application, then call the number.
 
 ## Pay over Voice Setup
 
-`provision_assistant.py` creates a test-mode generic Pay Connector that points to the local mock processor:
+`provision_assistant.py` creates:
+
+- a test-mode generic Pay Connector pointed at `/webhooks/payment-processor`
+- a native `Pay (BETA)` AI tool that uses that connector
+- an AI Assistant with only that Pay tool attached
+
+The default assistant model is:
 
 ```text
-https://<ngrok-id>.ngrok-free.app/webhooks/payment-processor
+moonshotai/Kimi-K2.6
 ```
 
 For test mode, use one of the Pay over Voice test card numbers from the Telnyx docs. A common Visa test card is:
@@ -119,10 +109,6 @@ For test mode, use one of the Pay over Voice test card numbers from the Telnyx d
 
 Use any future expiration date in `MMYY` format, a postal code, and a 3-digit security code for local testing.
 
-## Why Telnyx
-
-Telnyx combines programmable voice, AI Assistants, and Pay over Voice in one workflow. The assistant can handle natural-language account verification and plan negotiation, while Pay over Voice moves sensitive card entry into a PCI-focused Telnyx-controlled flow.
-
 ## Environment Variables
 
 | Variable | Required | Description |
@@ -131,9 +117,9 @@ Telnyx combines programmable voice, AI Assistants, and Pay over Voice in one wor
 | `TELNYX_PUBLIC_KEY` | recommended | Public key for webhook signature verification. |
 | `PUBLIC_BASE_URL` | yes for provisioning | Public HTTPS URL for this Flask app. |
 | `PAY_CONNECTOR_NAME` | yes | Name of the Telnyx Pay Connector. |
-| `PAYMENT_DESCRIPTION` | no | Description passed to Pay over Voice. |
+| `PAYMENT_DESCRIPTION` | no | Description used by the native Pay tool. |
+| `AI_MODEL` | no | Assistant model. Defaults to `moonshotai/Kimi-K2.6`. |
 | `TELNYX_ASSISTANT_ID` | yes | AI Assistant ID printed by `provision_assistant.py`. |
-| `TOOL_SECRET` | recommended | Shared secret used by assistant webhook tools. |
 | `DEMO_CUSTOMER_ID` | no | Customer id from `data/customers.json`, default `acct_1042`. |
 | `PORT` | no | Flask port, default `5000`. |
 
@@ -150,11 +136,13 @@ For Jordan Lee:
 Suggested call:
 
 ```text
+caller: jordan lee
+ai: thanks. what is your date of birth?
 caller: march fifteenth nineteen ninety
 ai: your account is 45 days past due with a balance of $342.50...
 caller: can i do forty dollars a week
 ai: i can set that up as 8 weekly payments of $40.00 plus a final payment of $22.50...
-caller: yes
+caller: yes, i'd like to make the first payment now
 pay over voice: enter card details on the keypad
 ```
 
@@ -177,10 +165,10 @@ Handled events include:
 
 - `call.initiated`
 - `call.answered`
+- `call.payment.progress`
+- `call.payment.completed`
 - `call.conversation.ended`
 - `call.conversation_insights.generated`
-- `call_payment_progress`
-- `call_payment_completed`
 - `call.hangup`
 
 ### `POST /webhooks/payment-processor`
@@ -201,31 +189,23 @@ Returns sanitized local audit events for the dashboard.
 
 Returns completed payment sessions.
 
-### `POST /tools/start-secure-payment`
-
-Assistant webhook tool that starts Pay over Voice and returns `secure_payment_event: started`.
-
-### `POST /tools/record-payment-complete`
-
-Assistant webhook tool that records `secure_payment_event: completed` without storing card details.
-
 ## PCI Notes
 
-This demo is designed to show a compliant architecture pattern, not to certify your production environment.
+This demo is designed to show a PCI-conscious architecture pattern, not to certify your production environment.
 
 - The app never asks the caller to speak card data.
 - The app never uses raw `gather_using_audio` to receive the PAN.
-- The app starts Telnyx Pay over Voice for the sensitive card-entry step.
-- The local dashboard logs only high-level payment status.
-- The local dashboard and assistant tool responses do not log PAN, CVV, expiration date, postal code, or raw DTMF.
-- This sample demonstrates a PCI-protected integration pattern. It does not certify your production environment by itself.
+- The assistant uses the native Telnyx Pay tool for the sensitive card-entry step.
+- The local dashboard logs only high-level payment status and masked payment fields.
+- The local dashboard does not log PAN, CVV, expiration date, postal code, or raw DTMF.
 
 ## Troubleshooting
 
 - If the assistant does not answer, confirm `TELNYX_ASSISTANT_ID` is set and the Voice API application webhook points to `/webhooks/voice`.
-- If the assistant tool fails with `unauthorized tool request`, make sure `TOOL_SECRET` in `.env` matches the value used by `provision_assistant.py`.
-- If Pay over Voice does not start, confirm `PAY_CONNECTOR_NAME` matches the connector created by `provision_assistant.py`.
-- If card digits appear in your app logs, stop and review the integration. This sample should only log sanitized payment status, masked payment fields, or assistant tool markers.
+- If the Pay tool is not available, confirm your Telnyx org has AI Assistant Pay tool access.
+- If Pay over Voice does not start, confirm the assistant has the native `Pay (BETA)` tool attached and that `PAY_CONNECTOR_NAME` matches the connector created by `provision_assistant.py`.
+- If the processor webhook returns `Method Not Allowed` in a browser, that is expected. The endpoint only accepts `POST`.
+- If card digits appear in your app logs, stop and review the integration. This sample should only log sanitized payment status or masked payment fields.
 
 ## Related Examples
 
@@ -235,4 +215,4 @@ This demo is designed to show a compliant architecture pattern, not to certify y
 
 ## Agent Discovery
 
-Agents should start with `README.md`, then inspect `API.md` for endpoint contracts and `provision_assistant.py` for assistant/tool provisioning. The primary runtime entrypoint is `app.py`.
+Agents should start with `README.md`, then inspect `API.md` for endpoint contracts and `provision_assistant.py` for assistant, Pay Connector, and native Pay tool provisioning. The primary runtime entrypoint is `app.py`.

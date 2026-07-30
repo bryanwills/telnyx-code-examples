@@ -12,47 +12,17 @@ The endpoint validates Telnyx webhook signatures when `TELNYX_PUBLIC_KEY` is set
 |---|---|
 | `call.initiated` | Stores sanitized call state and answers inbound calls. |
 | `call.answered` | Starts the configured AI Assistant with `ai_assistant_start`. |
-| `call.conversation.messages_added` | Records high-level assistant progress for the dashboard. |
 | `call.payment.progress` / `call_payment_progress` | Records Pay over Voice progress with masked payment fields only. |
 | `call.payment.completed` / `call_payment_completed` | Records payment completion with masked payment fields only. |
+| `call.conversation.ended` | Records high-level assistant lifecycle status. |
+| `call.conversation_insights.generated` | Records high-level assistant lifecycle status. |
 | `call.hangup` | Cleans up active call state. |
-
-## `POST /tools/start-secure-payment`
-
-Assistant webhook tool that starts Telnyx Pay over Voice on the active call.
-
-The endpoint accepts the optional `X-Demo-Tool-Secret` header when `TOOL_SECRET` is configured.
-
-### Response
-
-```json
-{
-  "ok": true,
-  "secure_payment_event": "started",
-  "pci_scope": "telnyx pay over voice is now collecting payment details by keypad outside the assistant transcript.",
-  "amount_now": "40.00"
-}
-```
-
-## `POST /tools/record-payment-complete`
-
-Assistant webhook tool that records a sanitized completion marker for Conversation Analysis and the local dashboard.
-
-### Response
-
-```json
-{
-  "ok": true,
-  "secure_payment_event": "completed",
-  "pci_scope": "payment completion was recorded without card number, expiration date, cvv, zip, or raw dtmf."
-}
-```
 
 ## `POST /webhooks/payment-processor`
 
-Mock Pay Connector processor endpoint.
+Mock Pay Connector processor endpoint. Telnyx Pay over Voice calls this endpoint after collecting card details through the protected keypad flow.
 
-### Response
+### Success Response
 
 ```json
 {
@@ -74,7 +44,7 @@ Cards ending in `0002` simulate a decline:
 
 ## `GET /health`
 
-Returns runtime configuration state.
+Returns runtime configuration state and dashboard milestones.
 
 ## `GET /events`
 

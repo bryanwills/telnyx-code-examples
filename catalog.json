@@ -1134,7 +1134,7 @@
     {
       "folder": "ai-pci-protected-payment-collection-python",
       "title": "AI PCI Protected Payment Collection",
-      "description": "A PCI-protected inbound payment collection demo using Telnyx Voice API, AI Assistants, webhook tools, and Pay over Voice.",
+      "description": "A PCI-protected inbound payment collection demo using Telnyx Voice API, AI Assistants, the native Pay tool, and Pay over Voice.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
