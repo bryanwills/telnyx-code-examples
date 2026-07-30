@@ -1,21 +1,19 @@
 #!/usr/bin/env python3
 """PCI-protected payment collection voice demo.
 
-Inbound calls are handled with Telnyx Voice API. The app verifies the caller,
-starts a Telnyx AI Assistant for the conversation, then exposes a webhook tool
-the assistant can call to start Telnyx Pay over Voice.
+Inbound calls are handled with Telnyx Voice API. The app answers the call,
+starts a Telnyx AI Assistant, receives Pay over Voice progress/completion
+webhooks, and exposes a mock processor endpoint for the Telnyx Pay Connector.
+The AI Assistant starts payment collection with a native Telnyx Pay tool.
 """
 
 from __future__ import annotations
 
-import base64
 import json
 import os
 import re
 import threading
 import time
-from dataclasses import dataclass
-from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -31,11 +29,7 @@ app = Flask(__name__)
 
 TELNYX_API_KEY = os.getenv("TELNYX_API_KEY", "")
 TELNYX_PUBLIC_KEY = os.getenv("TELNYX_PUBLIC_KEY", "")
-PAY_CONNECTOR_NAME = os.getenv("PAY_CONNECTOR_NAME", "Default")
-PAYMENT_DESCRIPTION = os.getenv("PAYMENT_DESCRIPTION", "pci protected payment collection")
 TELNYX_ASSISTANT_ID = os.getenv("TELNYX_ASSISTANT_ID", "")
-TOOL_SECRET = os.getenv("TOOL_SECRET", "")
-DEMO_CUSTOMER_ID = os.getenv("DEMO_CUSTOMER_ID", "acct_1042")
 HOST = os.getenv("HOST", "127.0.0.1")
 PORT = int(os.getenv("PORT", "5000"))
 
@@ -52,23 +46,13 @@ processed_events: dict[str, float] = {}
 active_calls: dict[str, dict[str, Any]] = {}
 completed_sessions: list[dict[str, Any]] = []
 demo_events: list[dict[str, Any]] = []
-
-
-@dataclass(frozen=True)
-class PaymentPlan:
-    installment_amount: Decimal
-    weekly_payments: int
-    final_amount: Decimal
-
-    @property
-    def first_charge(self) -> Decimal:
-        return self.installment_amount
-
-    def summary(self) -> str:
-        amount = money(self.installment_amount)
-        if self.final_amount > Decimal("0.00"):
-            return f"{self.weekly_payments} weekly payments of {amount} plus a final payment of {money(self.final_amount)}"
-        return f"{self.weekly_payments} weekly payments of {amount}"
+demo_state: dict[str, bool] = {
+    "call_answered": False,
+    "assistant_started": False,
+    "secure_payment_tool_called": False,
+    "pay_over_voice_started": False,
+    "payment_event_received": False,
+}
 
 
 def _cleanup_loop() -> None:
@@ -86,13 +70,12 @@ def _cleanup_loop() -> None:
 threading.Thread(target=_cleanup_loop, daemon=True).start()
 
 
-def money(value: Decimal | float | str) -> str:
-    amount = Decimal(str(value)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-    return f"${amount}"
-
-
 def now_iso() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+
+def mark_state(**values: bool) -> None:
+    demo_state.update(values)
 
 
 def event(label: str, detail: str, call_control_id: str | None = None, pii: bool = False) -> None:
@@ -129,16 +112,16 @@ def _verify_webhook() -> bool:
         return False
 
 
-def _verify_tool_request() -> bool:
-    if not TOOL_SECRET:
-        return True
-    return request.headers.get("X-Demo-Tool-Secret") == TOOL_SECRET
-
-
 def _validate_call_control_id(call_control_id: str) -> str:
     if isinstance(call_control_id, str) and re.fullmatch(r"[A-Za-z0-9_:\-]{1,180}", call_control_id):
         return call_control_id
     return ""
+
+
+def phone_from_payload(value: Any) -> str:
+    if isinstance(value, dict):
+        value = value.get("phone_number") or value.get("number") or value.get("sip_uri") or ""
+    return str(value or "")
 
 
 def _telnyx_post(path: str, body: dict[str, Any], timeout: int = 15) -> dict[str, Any] | None:
@@ -146,22 +129,21 @@ def _telnyx_post(path: str, body: dict[str, Any], timeout: int = 15) -> dict[str
         app.logger.error("TELNYX_API_KEY is required before calling Telnyx")
         return None
     url = f"{API}{path}"
+    call_match = re.search(r"/calls/([^/]+)(?:/|$)", path)
+    call_control_id = call_match.group(1) if call_match else None
+    event_path = re.sub(r"/calls/([^/]+)", "/calls/current", path)
     try:
         response = requests.post(url, headers=HEADERS, json=body, timeout=timeout)
-        call_match = re.search(r"/calls/([^/]+)/", path)
-        call_control_id = call_match.group(1) if call_match else None
         if response.status_code >= 400:
             app.logger.error("Telnyx command failed: %s -> %s", url, response.text[:800])
-            event("telnyx command failed", f"{path} -> {response.status_code}: {response.text[:220]}", call_control_id)
+            event("telnyx command failed", f"{event_path} -> {response.status_code}: {response.text[:220]}", call_control_id)
         response.raise_for_status()
         result = response.json()
-        event("telnyx command sent", f"{path} -> {response.status_code}", call_control_id)
+        event("telnyx command sent", f"{event_path} -> {response.status_code}", call_control_id)
         return result
     except Exception as exc:
         app.logger.error("Telnyx command error: %s -> %s", url, exc)
-        call_match = re.search(r"/calls/([^/]+)/", path)
-        call_control_id = call_match.group(1) if call_match else None
-        event("telnyx command error", f"{path}: {exc}", call_control_id)
+        event("telnyx command error", f"{event_path}: {exc}", call_control_id)
         return None
 
 
@@ -181,59 +163,6 @@ def start_ai_assistant(call_control_id: str) -> dict[str, Any] | None:
             "send_message_history_updates": True,
         },
     )
-
-
-def start_pay_session(
-    call_control_id: str,
-    amount: Decimal,
-    plan_summary: str,
-    customer_id: str = "acct_1042",
-) -> bool:
-    body = {
-        "connector_name": PAY_CONNECTOR_NAME,
-        "amount": str(amount.quantize(Decimal("0.01"))),
-        "currency": "USD",
-        "payment_method": "credit-card",
-        "transaction_type": "charge",
-        "description": PAYMENT_DESCRIPTION,
-        "metadata": {
-            "customer_id": customer_id,
-            "plan_summary": plan_summary,
-            "demo": "ai-pci-protected-payment-collection-python",
-        },
-        "prompts": {
-            "payment-card-number": "please enter your card number now using the keypad.",
-            "expiration-date": "please enter the expiration date as four digits, month first. for example, zero eight two seven for august twenty twenty seven.",
-            "postal-code": "please enter your billing zip code using the keypad.",
-            "security-code": "please enter the three digit security code from the back of your card.",
-        },
-        "client_state": encode_state({"call_control_id": call_control_id, "phase": "pay"}),
-    }
-    response = _telnyx_post(f"/calls/{call_control_id}/actions/pay", body)
-    if response:
-        event("pci pause", "pay over voice started; telnyx now masks recording, transcription, assistant audio, and dtmf logging.", call_control_id)
-        active_calls.setdefault(call_control_id, {"last_seen": time.time(), "history": []})
-        active_calls[call_control_id]["step"] = "pay"
-        active_calls[call_control_id]["payment_started_at"] = now_iso()
-        active_calls[call_control_id]["plan_summary"] = plan_summary
-        active_calls[call_control_id]["first_charge"] = str(amount.quantize(Decimal("0.01")))
-        return True
-    return False
-
-
-def encode_state(value: dict[str, Any]) -> str:
-    return base64.b64encode(json.dumps(value).encode()).decode()
-
-
-def decode_state(value: str | None) -> dict[str, Any]:
-    if not value:
-        return {}
-    try:
-        decoded = base64.b64decode(value).decode()
-        parsed = json.loads(decoded)
-    except Exception:
-        return {}
-    return parsed if isinstance(parsed, dict) else {}
 
 
 def payment_event_detail(values: dict[str, Any]) -> str:
@@ -259,49 +188,6 @@ def payment_event_detail(values: dict[str, Any]) -> str:
     return ", ".join(parts) or "pay over voice event received"
 
 
-def parse_amount(value: Any) -> Decimal | None:
-    if value is None:
-        return None
-    match = re.search(r"\d+(?:\.\d{1,2})?", str(value).replace(",", ""))
-    if not match:
-        return None
-    return Decimal(match.group(0)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-
-
-def build_plan(balance: Decimal, requested: Decimal | None) -> PaymentPlan:
-    minimum = Decimal("20.00")
-    weekly = requested or Decimal("50.00")
-    if weekly < minimum:
-        weekly = minimum
-    if weekly > balance:
-        weekly = balance
-    count = int(balance // weekly)
-    remainder = (balance - (weekly * count)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-    if count == 0:
-        count = 1
-        remainder = Decimal("0.00")
-    if count > 12:
-        count = 12
-        weekly = (balance / Decimal("12")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-        remainder = (balance - (weekly * 12)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-    return PaymentPlan(weekly, count, remainder)
-
-
-def active_call_id_from_request(body: dict[str, Any]) -> str:
-    explicit = _validate_call_control_id(str(body.get("call_control_id") or ""))
-    if explicit:
-        return explicit
-    active = [
-        (call_control_id, call)
-        for call_control_id, call in active_calls.items()
-        if call.get("step") not in {"paid", "hangup"}
-    ]
-    if not active:
-        return ""
-    active.sort(key=lambda item: item[1].get("last_seen", 0), reverse=True)
-    return active[0][0]
-
-
 @app.route("/webhooks/voice", methods=["POST"])
 def handle_voice() -> tuple[Any, int]:
     if not _verify_webhook():
@@ -321,41 +207,37 @@ def handle_voice() -> tuple[Any, int]:
 
     event("webhook received", event_type or "unknown", call_control_id)
 
-    if call_control_id:
+    if call_control_id and (call_control_id in active_calls or event_type == "call.initiated"):
         active_calls.setdefault(call_control_id, {"last_seen": time.time(), "history": []})
         active_calls[call_control_id]["last_seen"] = time.time()
 
     if event_type == "call.initiated" and event_payload.get("direction") == "incoming" and call_control_id:
         caller = phone_from_payload(event_payload.get("from", ""))
-        active_calls[call_control_id].update({"step": "answering", "caller": caller, "attempts": 0})
+        active_calls[call_control_id].update({"step": "answering", "caller": caller})
         event("call started", "inbound billing call received", call_control_id)
         answer_call(call_control_id)
         return jsonify({"status": "answering"}), 200
 
     if event_type == "call.answered" and call_control_id:
+        mark_state(call_answered=True)
         active_calls[call_control_id]["step"] = "assistant"
         response = start_ai_assistant(call_control_id)
         conversation_id = (response or {}).get("data", {}).get("conversation_id")
         if conversation_id:
             active_calls[call_control_id]["conversation_id"] = conversation_id
-            event("assistant started", f"conversation {conversation_id}", call_control_id)
+        mark_state(assistant_started=True)
+        event("assistant started", "conversation started", call_control_id)
         return jsonify({"status": "assistant_started" if response else "assistant_failed"}), 200
-
-    if event_type in {"call.conversation.ended", "call.conversation_insights.generated"} and call_control_id:
-        event("assistant event", event_type, call_control_id)
-        return jsonify({"status": "assistant_event"}), 200
 
     if event_type in {"call_payment_progress", "call.payment.progress"}:
         payment_values = {**data, **event_payload}
-        if not call_control_id:
-            call_control_id = _validate_call_control_id(decode_state(payment_values.get("client_state")).get("call_control_id", ""))
+        mark_state(secure_payment_tool_called=True, pay_over_voice_started=True, payment_event_received=True)
         event("payment progress", payment_event_detail(payment_values), call_control_id)
         return jsonify({"status": "payment_progress"}), 200
 
     if event_type in {"call_payment_completed", "call.payment.completed"}:
         payment_values = {**data, **event_payload}
-        if not call_control_id:
-            call_control_id = _validate_call_control_id(decode_state(payment_values.get("client_state")).get("call_control_id", ""))
+        mark_state(secure_payment_tool_called=True, pay_over_voice_started=True, payment_event_received=True)
         call = active_calls.get(call_control_id, {})
         status = payment_values.get("status") or payment_values.get("result") or "completed"
         call["step"] = "paid"
@@ -364,7 +246,7 @@ def handle_voice() -> tuple[Any, int]:
             {
                 "time": now_iso(),
                 "customer": call.get("customer", "jordan lee"),
-                "plan": call.get("plan_summary", ""),
+                "plan": call.get("plan_summary", "payment plan"),
                 "payment_status": status,
                 "payment_proof": payment_event_detail(payment_values),
                 "sms": {"sent": False, "reason": "sms disabled"},
@@ -372,6 +254,10 @@ def handle_voice() -> tuple[Any, int]:
         )
         event("payment complete", payment_event_detail(payment_values), call_control_id)
         return jsonify({"status": "payment_completed"}), 200
+
+    if event_type in {"call.conversation.ended", "call.conversation_insights.generated"} and call_control_id:
+        event("assistant event", event_type, call_control_id)
+        return jsonify({"status": "assistant_event"}), 200
 
     if event_type == "call.hangup" and call_control_id:
         active_calls.pop(call_control_id, None)
@@ -395,94 +281,17 @@ def mock_payment_processor() -> tuple[Any, int]:
     return jsonify({"charge_id": charge_id, "amount": amount, "error_code": None, "error_message": None}), 200
 
 
-@app.route("/tools/record-payment-complete", methods=["POST"])
-def tool_record_payment_complete() -> tuple[Any, int]:
-    if not _verify_tool_request():
-        return jsonify({"ok": False, "error": "unauthorized tool request"}), 401
-    body = request.get_json(silent=True) or {}
-    call_control_id = active_call_id_from_request(body)
-    call = active_calls.get(call_control_id, {}) if call_control_id else {}
-    plan_summary = str(body.get("plan_summary") or call.get("plan_summary") or "payment plan").lower()
-    status = str(body.get("status") or "completed").lower()
-    if call_control_id:
-        call["step"] = "paid"
-        call["payment_status"] = status
-    completed_sessions.append(
-        {
-            "time": now_iso(),
-            "customer": call.get("customer", "jordan lee"),
-            "plan": plan_summary,
-            "payment_status": status,
-            "payment_proof": "assistant recorded secure payment completion. sensitive keypad details were not logged.",
-            "sms": {"sent": False, "reason": "sms disabled"},
-        }
-    )
-    event("secure payment complete", "assistant recorded completion. sensitive keypad details were not logged.", call_control_id)
-    return jsonify(
-        {
-            "ok": True,
-            "secure_payment_event": "completed",
-            "pci_scope": "payment completion was recorded without card number, expiration date, cvv, zip, or raw dtmf.",
-            "message": "secure payment completion has been recorded for the demo. do not mention or expose card details.",
-            "plan_summary": plan_summary,
-        }
-    ), 200
-
-
-@app.route("/tools/start-secure-payment", methods=["POST"])
-def tool_start_secure_payment() -> tuple[Any, int]:
-    if not _verify_tool_request():
-        return jsonify({"ok": False, "error": "unauthorized tool request"}), 401
-    body = request.get_json(silent=True) or {}
-    call_control_id = active_call_id_from_request(body)
-    if not call_control_id:
-        return jsonify({"ok": False, "error": "no active call found"}), 400
-
-    requested = parse_amount(body.get("amount_now") or body.get("weekly_amount"))
-    if requested is None:
-        requested = Decimal("40.00")
-    customer_id = str(body.get("customer_id") or DEMO_CUSTOMER_ID)
-    customer = CUSTOMERS.get(customer_id) or next(iter(CUSTOMERS.values()))
-    balance = Decimal(str(customer["balance_usd"]))
-    plan = build_plan(balance, requested)
-    plan_summary = str(body.get("plan_summary") or plan.summary()).lower()
-
-    active_calls.setdefault(call_control_id, {"last_seen": time.time(), "history": []})
-    active_calls[call_control_id]["customer"] = str(customer["name"]).lower()
-    active_calls[call_control_id]["plan_summary"] = plan_summary
-    active_calls[call_control_id]["first_charge"] = str(plan.first_charge)
-
-    started = start_pay_session(
-        call_control_id,
-        amount=plan.first_charge,
-        plan_summary=plan_summary,
-        customer_id=str(customer["id"]),
-    )
-    if not started:
-        return jsonify({"ok": False, "error": "could not start telnyx pay over voice"}), 502
-
-    return jsonify(
-        {
-            "ok": True,
-            "secure_payment_event": "started",
-            "pci_scope": "telnyx pay over voice is now collecting payment details by keypad outside the assistant transcript.",
-            "message": "secure payment collection has started. tell the caller to use the keypad and do not ask them to speak card details.",
-            "plan_summary": plan_summary,
-            "amount_now": str(plan.first_charge),
-        }
-    ), 200
-
-
 @app.route("/health", methods=["GET"])
 def health() -> tuple[Any, int]:
     return jsonify(
         {
             "status": "ok",
             "telnyx_configured": bool(TELNYX_API_KEY),
-            "pay_connector": "secure payment connector",
+            "pay_connector": "native pay tool",
             "assistant_configured": bool(TELNYX_ASSISTANT_ID),
             "active_calls": len(active_calls),
             "completed_sessions": len(completed_sessions),
+            "milestones": demo_state,
         }
     ), 200
 
@@ -506,22 +315,7 @@ def dashboard() -> str:
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AI PCI Protected Payment Collection</title>
   <style>
-    :root {
-      color-scheme: light;
-      --ink: #182026;
-      --muted: #66717d;
-      --line: #dfe5ea;
-      --panel: #ffffff;
-      --wash: #f5f7f8;
-      --green: #168a5b;
-      --green-bg: #e8f6ef;
-      --blue: #2563b8;
-      --blue-bg: #eaf1fb;
-      --amber: #9a6500;
-      --amber-bg: #fff4dc;
-      --red: #ba312b;
-      --red-bg: #feecec;
-    }
+    :root { color-scheme: light; --ink: #182026; --muted: #66717d; --line: #dfe5ea; --panel: #ffffff; --wash: #f5f7f8; --green: #168a5b; --green-bg: #e8f6ef; --blue: #2563b8; --blue-bg: #eaf1fb; --red: #ba312b; --red-bg: #feecec; }
     * { box-sizing: border-box; }
     body { margin: 0; font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); background: var(--wash); }
     header { padding: 18px 28px; color: white; background: #101820; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
@@ -550,7 +344,6 @@ def dashboard() -> str:
     .pill { display: inline-block; border-radius: 999px; padding: 3px 8px; font-size: 12px; background: #edf1f4; color: #4d5964; }
     .pci { background: var(--green-bg); color: var(--green); }
     .voice { background: var(--blue-bg); color: var(--blue); }
-    .warn { background: var(--amber-bg); color: var(--amber); }
     .error { background: var(--red-bg); color: var(--red); }
     .detail { color: #33404a; overflow-wrap: anywhere; }
     .bar { height: 9px; overflow: hidden; border-radius: 999px; background: #e9edf1; margin-top: 12px; }
@@ -580,16 +373,16 @@ def dashboard() -> str:
       <div class="steps">
         <div class="step" id="s-call"><div class="dot">1</div><div>call answered</div></div>
         <div class="step" id="s-assistant"><div class="dot">2</div><div>assistant started</div></div>
-        <div class="step" id="s-tool"><div class="dot">3</div><div>secure payment tool called</div></div>
+        <div class="step" id="s-tool"><div class="dot">3</div><div>native pay tool called</div></div>
         <div class="step" id="s-pay"><div class="dot">4</div><div>pay over voice started</div></div>
-        <div class="step" id="s-complete"><div class="dot">5</div><div>secure payment completion recorded</div></div>
+        <div class="step" id="s-complete"><div class="dot">5</div><div>payment event received</div></div>
       </div>
     </section>
     <section>
       <h2>Live PCI Proof</h2>
       <div class="proof">
-        <div><span>secure tool</span><strong id="proof-tool">waiting</strong></div>
-        <div><span>pay command</span><strong id="proof-pay">waiting</strong></div>
+        <div><span>pay tool</span><strong id="proof-tool">waiting</strong></div>
+        <div><span>payment events</span><strong id="proof-pay">waiting</strong></div>
         <div><span>sensitive digits</span><strong>not logged</strong></div>
       </div>
       <div class="stream" id="events"><div class="empty">No events yet.</div></div>
@@ -608,11 +401,12 @@ def dashboard() -> str:
       const events = await fetch('/events').then(r => r.json());
       const sessions = await fetch('/sessions').then(r => r.json());
       const items = events.events || [];
-      const hasCall = items.some(e => e.label === 'call started' || e.detail === 'call.answered');
-      const hasAssistant = items.some(e => e.label === 'assistant started' || e.detail === 'call.conversation.messages_added');
-      const hasTool = items.some(e => e.label === 'pci pause' || e.detail.includes('/actions/pay'));
-      const hasPay = items.some(e => e.label === 'pci pause' || e.label === 'payment progress' || e.label === 'payment complete');
-      const hasComplete = items.some(e => e.label === 'payment complete' || e.label === 'secure payment complete');
+      const milestones = health.milestones || {};
+      const hasCall = Boolean(milestones.call_answered) || items.some(e => e.label === 'call started' || e.detail === 'call.answered');
+      const hasAssistant = Boolean(milestones.assistant_started) || items.some(e => e.label === 'assistant started' || e.detail === 'call.conversation.messages_added');
+      const hasTool = Boolean(milestones.secure_payment_tool_called) || items.some(e => e.label === 'payment progress' || e.label === 'payment complete');
+      const hasPay = Boolean(milestones.pay_over_voice_started) || items.some(e => e.label === 'payment progress' || e.label === 'payment complete');
+      const hasComplete = Boolean(milestones.payment_event_received) || items.some(e => e.label === 'payment progress' || e.label === 'payment complete');
       const progress = [hasCall, hasAssistant, hasTool, hasPay, hasComplete].filter(Boolean).length;
       document.getElementById('clock').textContent = new Date().toLocaleTimeString();
       document.getElementById('status').textContent = health.status;
@@ -628,8 +422,8 @@ def dashboard() -> str:
       document.getElementById('proof-pay').textContent = hasPay ? 'active' : 'waiting';
       document.getElementById('events').innerHTML = items.slice(-35).reverse().map(e => {
         const label = String(e.label || '');
-        const detail = String(e.detail || '');
-        const klass = label.includes('pci') || label.includes('payment') || label.includes('processor') ? 'pci' : (label.includes('failed') || label.includes('error') ? 'error' : (label.includes('webhook') || label.includes('assistant') || label.includes('call') ? 'voice' : (e.pii ? 'warn' : '')));
+        const detail = String(e.detail || '').replace(/v3:[A-Za-z0-9_:-]+/g, 'current call').replace(/conversation [0-9a-f-]{20,}/gi, 'conversation started');
+        const klass = label.includes('pci') || label.includes('payment') || label.includes('processor') ? 'pci' : (label.includes('failed') || label.includes('error') ? 'error' : (label.includes('webhook') || label.includes('assistant') || label.includes('call') ? 'voice' : ''));
         const time = new Date(e.time).toLocaleTimeString([], {hour: 'numeric', minute: '2-digit', second: '2-digit'});
         return `<div class="event"><div class="time">${esc(time)}</div><div><span class="pill ${klass}">${esc(label)}</span></div><div class="detail">${esc(detail)}</div></div>`;
       }).join('') || '<div class="empty">No events yet.</div>';
