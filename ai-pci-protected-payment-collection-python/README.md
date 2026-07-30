@@ -109,6 +109,10 @@ For test mode, use one of the Pay over Voice test card numbers from the Telnyx d
 
 Use any future expiration date in `MMYY` format, a postal code, and a 3-digit security code for local testing.
 
+## Why Telnyx
+
+Telnyx combines programmable voice, AI Assistants, the native Pay tool, and Pay over Voice in one workflow. The assistant can handle natural-language account verification and plan negotiation, while Pay over Voice moves sensitive card entry into a PCI-conscious Telnyx-controlled flow.
+
 ## Environment Variables
 
 | Variable | Required | Description |
