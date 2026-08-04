@@ -1,0 +1,18 @@
+name = "edge-prompt-ab-tester"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+[[actors]]
+binding = "AB_TESTER"
+type = "ABTester"
+
+[[secrets]]
+binding = "TELNYX_API_KEY"
+name = "TELNYX_API_KEY"
+
+[edge_compute]
+func_id = "3368a067-c704-41d2-8421-ecb908131a6a"
+func_name = "edge-prompt-ab-tester"
+
+[env_vars]
+AI_MODEL = "zai-org/GLM-5.2"

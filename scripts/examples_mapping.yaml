@@ -1313,6 +1313,12 @@ examples:
     folder: edge-agri-crop-advisory
 
   - product: sms
+    use_case: edge-prompt-ab-tester
+    language: nodejs
+    framework: edge
+    folder: edge-prompt-ab-tester
+
+  - product: sms
     use_case: elearning-course-narrator
     language: python
     framework: flask
