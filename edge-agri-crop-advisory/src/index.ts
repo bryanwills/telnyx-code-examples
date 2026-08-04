@@ -43,18 +43,13 @@ async function fetchUrlText(url: string): Promise<string> {
   const contentType = resp.headers.get("content-type") || "";
   let text = await resp.text();
 
-  // Strip HTML tags if it's HTML. Loop until stable (CodeQL: incomplete sanitization).
+  // Strip HTML-like markup if it's HTML.
+  // Use single-character neutralization to avoid incomplete multi-character sanitization.
   if (contentType.includes("html") || text.toLowerCase().startsWith("<!doctype") || text.startsWith("<html")) {
-    let prev: string;
-    do {
-      prev = text;
-      text = text
-        .replace(/<script\b[^>]*>[\s\S]*?<\/script\b[^>]*>/gi, "")
-        .replace(/<style\b[^>]*>[\s\S]*?<\/style\b[^>]*>/gi, "")
-        .replace(/[<>]/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-    } while (text !== prev);
+    text = text
+      .replace(/[<>]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
   }
   return text;
 }
