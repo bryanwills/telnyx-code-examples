@@ -1,0 +1,17 @@
+{
+  "name": "edge-prompt-ab-tester",
+  "version": "1.0.0",
+  "description": "Prompt A/B tester on Telnyx Edge Compute Stateful Actors — run two prompt variants against the same task, collect user votes, and track which prompt wins.",
+  "main": "src/index.ts",
+  "scripts": {
+    "deploy": "telnyx-edge ship",
+    "types": "telnyx-edge types"
+  },
+  "dependencies": {
+    "@telnyx/edge-runtime": "^0.8.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "license": "MIT"
+}

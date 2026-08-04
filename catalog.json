@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-08-04T19:33:40Z",
-  "example_count": 505,
+  "generated_at": "2026-08-04T21:53:08Z",
+  "example_count": 506,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -1922,6 +1922,15 @@
       "language": "nodejs",
       "framework": "edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-agri-crop-advisory"
+    },
+    {
+      "folder": "edge-prompt-ab-tester",
+      "title": "Edge Prompt A/B Tester",
+      "description": "Prompt A/B tester on Telnyx Edge Compute Stateful Actors — run two prompt variants against the same task, collect user votes, and track which prompt wins.",
+      "product": "sms",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-prompt-ab-tester"
     },
     {
       "folder": "elearning-course-narrator-python",
