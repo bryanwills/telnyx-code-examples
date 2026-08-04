@@ -1,0 +1,17 @@
+{
+  "name": "edge-agri-crop-advisory",
+  "version": "1.0.0",
+  "description": "Agriculture crop advisory on Telnyx Edge Compute Stateful Actors — classify crop issues (disease, pest, nutrient, water, weather) and recommend treatment via AI Inference.",
+  "main": "src/index.ts",
+  "scripts": {
+    "deploy": "telnyx-edge ship",
+    "types": "telnyx-edge types"
+  },
+  "dependencies": {
+    "@telnyx/edge-runtime": "^0.8.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "license": "MIT"
+}
