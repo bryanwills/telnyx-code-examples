@@ -105,7 +105,7 @@ For full API discovery, point your agent at [`llms-full.txt`](https://developers
 
 ## API Reference
 
-See [`API.md`](API.md) for the full typed endpoint reference. Quick start:
+See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/multi-character-narrator-python/API.md) for the full typed endpoint reference. Quick start:
 
 ```bash
 curl -X POST http://localhost:5000/narrate \
