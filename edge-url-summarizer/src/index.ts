@@ -48,15 +48,20 @@ async function fetchUrlText(url: string): Promise<string> {
   const contentType = resp.headers.get("content-type") || "";
   let text = await resp.text();
 
-  // Strip HTML tags if it's HTML
+  // Strip HTML tags if it's HTML. Run each strip in a loop until stable —
+  // a single-pass regex can re-form tags like `<scr<script>ipt>` and slip through
+  // (CodeQL: incomplete-multi-character-sanitization).
   if (contentType.includes("html") || text.toLowerCase().startsWith("<!doctype") || text.startsWith("<html")) {
-    // Remove script and style tags
-    text = text.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "");
-    text = text.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "");
-    // Remove HTML tags
-    text = text.replace(/<[^>]+>/g, " ");
-    // Collapse whitespace
-    text = text.replace(/\s+/g, " ").trim();
+    let prev: string;
+    do {
+      prev = text;
+      text = text
+        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    } while (text !== prev);
   }
   return text;
 }
