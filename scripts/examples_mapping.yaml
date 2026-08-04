@@ -1720,6 +1720,12 @@ examples:
     framework: flask
     folder: multilingual-voiceover-kit-python
 
+  - product: ai
+    use_case: multi-character-narrator
+    language: python
+    framework: flask
+    folder: multi-character-narrator-python
+
   - product: voice
     use_case: number-lookup-fraud-screener
     language: python
