@@ -53,8 +53,8 @@ async function fetchUrlText(url: string): Promise<string> {
   // multi-character sanitization issues.
   if (contentType.includes("html") || text.toLowerCase().startsWith("<!doctype") || text.startsWith("<html")) {
     text = text
-      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, " ")
-      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, " ")
+      .replace(/<script\b[^>]*>[\s\S]*?<\/script\b[^>]*>/gi, " ")
+      .replace(/<style\b[^>]*>[\s\S]*?<\/style\b[^>]*>/gi, " ")
       .replace(/[<>]/g, " ");
   }
   return text;
