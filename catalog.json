@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-08-04T16:58:54Z",
-  "example_count": 504,
+  "generated_at": "2026-08-04T19:33:40Z",
+  "example_count": 505,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -1913,6 +1913,15 @@
       "language": "nodejs",
       "framework": "edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-url-summarizer"
+    },
+    {
+      "folder": "edge-agri-crop-advisory",
+      "title": "Edge Agri Crop Advisory",
+      "description": "Agriculture crop advisory on Telnyx Edge Compute Stateful Actors — classify crop issues (disease, pest, nutrient, water, weather) and recommend treatment via AI Inference. Escalates critical cases.",
+      "product": "sms",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-agri-crop-advisory"
     },
     {
       "folder": "elearning-course-narrator-python",

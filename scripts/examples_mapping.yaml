@@ -1307,6 +1307,12 @@ examples:
     folder: edge-url-summarizer
 
   - product: sms
+    use_case: edge-agri-crop-advisory
+    language: nodejs
+    framework: edge
+    folder: edge-agri-crop-advisory
+
+  - product: sms
     use_case: elearning-course-narrator
     language: python
     framework: flask
