@@ -51,7 +51,7 @@ async function fetchUrlText(url: string): Promise<string> {
       text = text
         .replace(/<script\b[^>]*>[\s\S]*?<\/script\b[^>]*>/gi, "")
         .replace(/<style\b[^>]*>[\s\S]*?<\/style\b[^>]*>/gi, "")
-        .replace(/<[^>]+>/g, " ")
+        .replace(/[<>]/g, " ")
         .replace(/\s+/g, " ")
         .trim();
     } while (text !== prev);
