@@ -1301,6 +1301,12 @@ examples:
     folder: edge-mcp-server-deploy-python
 
   - product: sms
+    use_case: edge-url-summarizer
+    language: nodejs
+    framework: edge
+    folder: edge-url-summarizer
+
+  - product: sms
     use_case: elearning-course-narrator
     language: python
     framework: flask

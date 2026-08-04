@@ -1,0 +1,18 @@
+name = "edge-url-summarizer"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+[[actors]]
+binding = "SUMMARIZER"
+type = "Summarizer"
+
+[[secrets]]
+binding = "TELNYX_API_KEY"
+name = "TELNYX_API_KEY"
+
+[edge_compute]
+func_id = "8585aaaa-cf1e-4f44-9f4d-eccd7526f8f0"
+func_name = "edge-url-summarizer"
+
+[env_vars]
+AI_MODEL = "zai-org/GLM-5.2"
