@@ -1,5 +1,5 @@
 ---
-name: voice-to-text-note-taker
+name: language-learning-flashcards
 title: "Voice Flashcards"
 description: "Listen to a phrase, repeat it back, and get instant pronunciation feedback. TTS speaks, you repeat, STT transcribes, Inference scores — interactive language learning powered by all three Telnyx AI primitives."
 language: python
@@ -75,7 +75,7 @@ Telnyx AI Communications Infrastructure exposes TTS, STT, and Inference as REST 
 
 ```bash
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/voice-to-text-note-taker-python
+cd telnyx-code-examples/language-learning-flashcards-python
 cp .env.example .env    # ← fill in your TELNYX_API_KEY
 pip install -r requirements.txt
 python app.py           # starts on http://127.0.0.1:5050
@@ -83,7 +83,7 @@ python app.py           # starts on http://127.0.0.1:5050
 
 ## API Reference
 
-See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/voice-to-text-note-taker-python/API.md) for the full endpoint reference.
+See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/language-learning-flashcards-python/API.md) for the full endpoint reference.
 
 ## Flashcard Decks
 

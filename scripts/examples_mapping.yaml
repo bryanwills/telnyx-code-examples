@@ -1154,7 +1154,7 @@ examples:
     use_case: telnyx-speech-translator
     language: python
     framework: flask
-    folder: voice-to-text-note-taker-python
+    folder: language-learning-flashcards-python
 
   - product: ai
     use_case: warm-transfer-ai-briefing

@@ -3,7 +3,7 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-08-05T21:29:45Z",
+  "generated_at": "2026-08-05T22:07:09Z",
   "example_count": 509,
   "examples": [
     {
@@ -1681,13 +1681,13 @@
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/voice-journal-daily-log-python"
     },
     {
-      "folder": "voice-to-text-note-taker-python",
+      "folder": "language-learning-flashcards-python",
       "title": "Voice Flashcards",
       "description": "Listen to a phrase, repeat it back, and get instant pronunciation feedback. TTS speaks, you repeat, STT transcribes, Inference scores — interactive language learning powered by all three Telnyx AI primitives.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
-      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/voice-to-text-note-taker-python"
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/language-learning-flashcards-python"
     },
     {
       "folder": "warm-transfer-ai-briefing-python",
