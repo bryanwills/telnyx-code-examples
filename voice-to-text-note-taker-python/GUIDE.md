@@ -1,46 +1,43 @@
-# Build a Voice-to-Text Note Taker with Telnyx STT
+# Build a Telnyx Speech Translator
 
-Speak into a browser mic, click stop, and get a downloadable .txt file with your transcription. The simplest possible STT demo — no phone, no LLM, no streaming.
+Record your voice, transcribe it, translate it, and hear it in another language. STT → AI Inference → TTS on one platform.
 
 ## How It Works
 
 ```
-  Browser (mic)
-        │  (MediaRecorder → Blob)
-        ▼
-  POST /transcribe  (multipart file upload)
-        │
-        ▼
-  ┌──────────────────────┐
-  │ Telnyx STT REST      │  POST /v2/ai/audio/transcriptions
-  │ (Whisper)            │  model=openai/whisper-large-v3-turbo
-  └────────┬─────────────┘
-           │
-           ▼
-  Save transcript as .txt in memory
-           │
-           ▼
-  Return: note_id, transcript, download_url
-  GET /notes/<id>/download → .txt file
+Browser microphone or audio upload
+              ↓
+       POST /transcribe
+              ↓
+ Telnyx Speech-to-Text REST API
+              ↓
+      Editable transcript
+              ↓
+        POST /translate
+              ↓
+     Telnyx Inference API
+              ↓
+      Editable translation
+              ↓
+        POST /synthesize
+              ↓
+ Telnyx Text-to-Speech API
+              ↓
+   Audio playback and download
 ```
 
 ## Telnyx Products Used
 
-- **Speech-to-Text** — REST endpoint at `POST /v2/ai/audio/transcriptions` with multipart file upload. Returns JSON with a `text` field containing the transcript. No streaming, no WebSocket, no SDK required.
-
-## API Endpoints
-
-- **Speech-to-Text**: `POST /v2/ai/audio/transcriptions` — [API reference](https://developers.telnyx.com/api/inference/transcribe)
-  - Multipart form: `file` (audio bytes), `model` (e.g. `openai/whisper-large-v3-turbo`)
-  - Optional: `language` field for source language hint
-  - Response: JSON with `text` field
+- **Speech-to-Text** — `POST /v2/ai/audio/transcriptions` (Whisper, multipart upload)
+- **AI Inference** — `POST /v2/ai/chat/completions` (Kimi-K2.6, OpenAI-compatible)
+- **Text-to-Speech** — `POST /v2/text-to-speech/speech` (Ultra voice with `language_boost`)
 
 ## Prerequisites
 
 - Python 3.8+
 - [Telnyx account](https://portal.telnyx.com/sign-up) with funded balance
 - A Telnyx API v2 key from the [Portal](https://portal.telnyx.com/api-keys)
-- A browser with microphone access (Chrome, Firefox, Safari, Edge)
+- A browser with microphone access
 
 No phone number, TeXML application, or webhook endpoint is required.
 
@@ -48,7 +45,11 @@ No phone number, TeXML application, or webhook endpoint is required.
 
 ```bash
 cp .env.example .env
-# Edit .env and set TELNYX_API_KEY
+# Edit .env:
+#   TELNYX_API_KEY=your_key
+#   STT_MODEL=openai/whisper-large-v3-turbo
+#   TRANSLATION_MODEL=moonshotai/Kimi-K2.6
+#   TTS_VOICE=Telnyx.Ultra.01eaafa9-308a-4276-a017-6ab0cf061b1f
 ```
 
 ## Step 2 — Install dependencies
@@ -64,56 +65,85 @@ python app.py
 # * Running on http://127.0.0.1:5050
 ```
 
-The app defaults to port 5050 to avoid conflicts with macOS AirPlay Receiver on port 5000. Override with `PORT=xxxx python app.py`.
-
-## Step 4 — Record a note
+## Step 4 — Record or upload audio
 
 1. Open `http://127.0.0.1:5050/` in your browser.
-2. Click **Record** — the browser asks for microphone permission.
-3. Speak your note.
-4. Click **Stop** — the audio is sent to Telnyx STT for transcription.
-5. The transcript appears on screen.
-6. Click **Download .txt** to save the transcript as a text file.
+2. Click **Record** to use your microphone, or **Upload audio file** to use an existing file.
+3. The audio preview appears.
+4. Click **Transcribe with Telnyx** to send it to STT.
 
-## Step 5 — Transcribe via curl
+## Step 5 — Review and translate
 
-You can also transcribe any audio file without the browser UI:
+1. The transcript appears in the left panel (editable).
+2. Pick a target language from the dropdown (Spanish is default).
+3. Click **Translate to Spanish** (or your selected language).
+4. The translation appears in the right panel (editable).
 
-```bash
-# Transcribe an audio file
-curl -X POST http://localhost:5050/transcribe \
-  -F audio=@my-note.mp3
+## Step 6 — Generate translated speech
 
-# Response:
-# {"note_id": "note-a1b2c3d4", "transcript": "...", "download_url": "/notes/note-a1b2c3d4/download"}
+1. Click **Generate Spanish audio** (or your selected language).
+2. The audio player appears with the translated speech.
+3. Click download to save the audio as an MP3.
 
-# Download the transcript
-curl -OJ http://localhost:5050/notes/note-a1b2c3d4/download
+## Step 7 — Download everything
+
+- **Original transcript** — click "Download original .txt"
+- **Translation** — click "Download translation .txt"
+- **Audio** — click "Download {language} audio"
+
+Filenames include the language and date:
+```
+original-transcript-2026-08-05.txt
+spanish-translation-2026-08-05.txt
+spanish-audio-2026-08-05.mp3
 ```
 
-## How the browser audio capture works
+## How translation works
 
-The browser UI uses the standard Web Audio API:
+The backend calls Telnyx Inference (`POST /v2/ai/chat/completions`) with:
 
-1. `navigator.mediaDevices.getUserMedia({audio: true})` — request mic access
-2. `MediaRecorder` — record audio as the user speaks
-3. On stop, the recorded chunks are combined into a `Blob` with `type: 'audio/webm'`
-4. The Blob is POSTed to `/transcribe` as a multipart form upload
-5. Flask forwards it to Telnyx STT and returns the transcript
+```python
+system_prompt = (
+    f"You are a professional translator.\n\n"
+    f"Translate the supplied text from its original language into {target_language}.\n\n"
+    f"Requirements:\n"
+    f"- Preserve the original meaning.\n"
+    f"- Preserve names, numbers, technical terms, and formatting.\n"
+    f"- Do not summarize.\n"
+    f"- Do not explain the translation.\n"
+    f"- Return only the translated text."
+)
+# temperature=0.1, max_tokens=2000
+```
 
-No audio processing happens in the browser — the raw WebM/Opus recording is sent directly to Telnyx. Whisper handles the format natively.
+The model is `moonshotai/Kimi-K2.6` (native Telnyx, no external API key). Low temperature ensures consistent translations. `max_tokens=2000` accounts for the model's reasoning tokens.
+
+## How TTS voice selection works
+
+The app uses a single Ultra voice (Clara by default) with `voice_settings.language_boost` set to the target language. Ultra supports 36+ languages, so one voice covers all 8 target languages.
+
+To use a different voice:
+
+```bash
+curl -H "Authorization: Bearer $TELNYX_API_KEY" \
+  https://api.telnyx.com/v2/text-to-speech/voices \
+  | jq '.voices[] | select(.id | startswith("Telnyx.Ultra."))'
+```
+
+Set the UUID in `TTS_VOICE` in your `.env`.
 
 ## Notes and caveats
 
-- **One env var.** Only `TELNYX_API_KEY` is required. No phone, no connection, no webhook.
-- **In-memory store with 1-hour TTL.** Transcripts are held in process memory and expire after one hour. Use a database or Cloud Storage for production.
-- **Whisper model.** The default model is `openai/whisper-large-v3-turbo`. Override via `STT_MODEL` env var if you want to use a different model.
-- **Audio formats.** The browser records in WebM/Opus. Whisper also accepts mp3, wav, m4a, ogg, and flac when uploading via curl.
-- **No streaming.** This is a batch transcribe — the full audio is uploaded, then the full transcript is returned. For real-time captions, see the Caption Studio example (planned).
+- **One env var required.** `TELNYX_API_KEY`. The rest have sensible defaults.
+- **In-memory storage.** Everything expires after `TEMP_FILE_TTL_MINUTES` (default 30 min).
+- **API key never reaches the browser.** All Telnyx calls are server-side.
+- **Audio file limits.** Max 25 MB upload, validated by extension and size.
+- **Translation limits.** Max 10,000 characters. TTS max 3,000 characters per call.
+- **Port 5050.** Defaults to 5050 to avoid macOS AirPlay on 5000.
 
 ## Next steps
 
-- Add a `language` field to the form data for non-English audio.
-- Add a `response_format` field to get JSON with word-level timestamps.
-- Add Cloud Storage to persist transcripts as files with shareable URLs.
-- Add a UI to list and re-download past notes.
+- Add more target languages by updating `TARGET_LANGUAGES` and `LANGUAGE_BOOST_MAP` in `app.py`.
+- Add a language detection display from the STT response.
+- Add chunked TTS for translations longer than 3,000 characters.
+- Replace in-memory store with Telnyx Cloud Storage for persistent, shareable URLs.

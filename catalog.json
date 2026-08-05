@@ -3,7 +3,7 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-08-05T16:35:37Z",
+  "generated_at": "2026-08-05T20:29:01Z",
   "example_count": 509,
   "examples": [
     {
@@ -1682,8 +1682,8 @@
     },
     {
       "folder": "voice-to-text-note-taker-python",
-      "title": "Voice-to-Text Note Taker",
-      "description": "Speak into a browser mic, Telnyx STT transcribes the recording, and you get a downloadable .txt file. No phone, no LLM, no streaming. The simplest possible STT demo.",
+      "title": "Telnyx Speech Translator",
+      "description": "Record your voice, transcribe it, translate it, and hear it in another language. STT → AI Inference → TTS on one platform. No phone, no database, no Cloud Storage.",
       "product": "ai",
       "language": "python",
       "framework": "flask",
