@@ -39,8 +39,19 @@ INFERENCE_ENDPOINT = "https://api.telnyx.com/v2/ai/chat/completions"
 INFERENCE_MODEL = os.getenv("TRANSLATION_MODEL", "moonshotai/Kimi-K2.6")
 
 TTS_ENDPOINT = "https://api.telnyx.com/v2/text-to-speech/speech"
-TTS_VOICE = os.getenv("TTS_VOICE", "Telnyx.Ultra.01eaafa9-308a-4276-a017-6ab0cf061b1f")
 TTS_AUDIO_FORMAT = os.getenv("TTS_AUDIO_FORMAT", "mp3")
+
+LANGUAGE_VOICE_MAP = {
+    "Spanish": "Telnyx.Ultra.30212483-5c20-479c-8121-f93cd24e30a6",
+    "French": "Telnyx.Ultra.0d09e991-5763-406e-b637-02bc431ef72d",
+    "English": "Telnyx.Ultra.01eaafa9-308a-4276-a017-6ab0cf061b1f",
+    "German": "Telnyx.Ultra.01eaafa9-308a-4276-a017-6ab0cf061b1f",
+    "Italian": "Telnyx.Ultra.01eaafa9-308a-4276-a017-6ab0cf061b1f",
+    "Portuguese": "Telnyx.Ultra.01eaafa9-308a-4276-a017-6ab0cf061b1f",
+    "Japanese": "Telnyx.Ultra.01eaafa9-308a-4276-a017-6ab0cf061b1f",
+    "Hindi": "Telnyx.Ultra.01eaafa9-308a-4276-a017-6ab0cf061b1f",
+}
+TTS_VOICE = os.getenv("TTS_VOICE", LANGUAGE_VOICE_MAP["Spanish"])
 
 MAX_AUDIO_SIZE_MB = int(os.getenv("MAX_AUDIO_SIZE_MB", "25"))
 MAX_AUDIO_SIZE_BYTES = MAX_AUDIO_SIZE_MB * 1024 * 1024
@@ -145,13 +156,14 @@ def _safe_filename(name):
 
 
 def _call_tts(text, language):
+    voice = LANGUAGE_VOICE_MAP.get(language, TTS_VOICE)
     voice_settings = {}
     boost = LANGUAGE_BOOST_MAP.get(language)
     if boost:
         voice_settings["language_boost"] = boost
     body = {
         "text": text,
-        "voice": TTS_VOICE,
+        "voice": voice,
         "output_type": "binary_output",
     }
     if voice_settings:
@@ -210,7 +222,7 @@ def _call_check(target_phrase, spoken_text, language):
             {"role": "user", "content": user_content},
         ],
         "temperature": 0.1,
-        "max_tokens": 200,
+        "max_tokens": 1000,
     }
     resp = requests.post(
         INFERENCE_ENDPOINT,
@@ -290,11 +302,12 @@ def speak():
         return jsonify({"error": "TTS returned empty audio"}), 502
 
     audio_id = f"audio-{uuid.uuid4().hex[:8]}"
+    voice = LANGUAGE_VOICE_MAP.get(language, TTS_VOICE)
     _store[audio_id] = {
         "id": audio_id,
         "audio": audio_bytes,
         "language": language,
-        "voice": TTS_VOICE,
+        "voice": voice,
         "created_at": time.time(),
         "_ts": time.time(),
     }
@@ -303,6 +316,7 @@ def speak():
         {
             "audio_id": audio_id,
             "audio_url": f"/audio/{audio_id}",
+            "voice": voice,
         }
     ), 200
 
