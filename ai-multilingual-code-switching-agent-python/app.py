@@ -275,87 +275,49 @@ INDEX_HTML = """<!doctype html>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #000; --panel: #0d0d0d; --border: #1f1f1f; --border-2: #2a2a2a;
-    --text: #fafafa; --muted: #8a8a8a; --green: #00E3AA; --cream: #F5F0E8;
+    --bg: #000; --text: #fafafa; --muted: #8a8a8a; --green: #00E3AA; --cream: #F5F0E8;
   }
   * { box-sizing: border-box; }
   body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif;
     font-size: 17px; line-height: 1.55; margin: 0; min-height: 100vh;
-    -webkit-font-smoothing: antialiased; }
-  .wrap { max-width: 700px; margin: 0 auto; padding: 56px 24px 96px; }
-  .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 48px; }
+    -webkit-font-smoothing: antialiased; display: flex; align-items: center; justify-content: center; }
+  .card { text-align: center; max-width: 500px; padding: 40px; }
+  .brand { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 40px; }
   .brand img { height: 32px; }
   .brand .tag { color: var(--muted); font-size: 14px; }
-  .brand .tag::before { content: '\\00b7'; margin: 0 10px; color: var(--muted); }
-  h1 { font-size: 36px; font-weight: 700; letter-spacing: -0.03em; margin: 0 0 16px; color: var(--cream); }
-  .lede { font-size: 18px; color: var(--muted); margin: 0 0 40px; line-height: 1.5; }
-  .lede strong { color: var(--text); font-weight: 500; }
-  .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 28px; }
-  .label { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green); margin: 0 0 12px; }
-  input { width: 100%; box-sizing: border-box; font-family: inherit; font-size: 16px; padding: 14px; background: var(--bg); color: var(--text); border: 1px solid var(--border-2); border-radius: 10px; outline: none; }
-  input:focus { border-color: var(--green); }
-  input::placeholder { color: var(--muted); }
-  button { background: var(--green); color: #000; border: none; padding: 14px 28px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 16px; font-family: inherit; transition: transform 0.1s ease; }
-  button:hover { background: #1BFFC2; }
-  button:active { transform: translateY(1px); }
-  button:disabled { background: #2a2a2a; color: #5a5a5a; cursor: default; }
-  .status { font-size: 15px; color: var(--muted); margin-top: 20px; }
-  .status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); display: inline-block; margin-right: 8px; }
-  .status.ok .dot { background: var(--green); }
-  .status.err .dot { background: #ff5a5a; }
-  .languages { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
-  .lang { background: var(--panel); border: 1px solid var(--border-2); color: var(--muted); padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; }
-  .footer { margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--border); }
-  .footer a { color: var(--green); text-decoration: none; font-size: 15px; font-weight: 500; }
+  .brand .tag::before { content: '\\00b7'; margin: 0 10px; }
+  h1 { font-size: 32px; font-weight: 700; margin: 0 0 12px; color: var(--cream); }
+  .sub { font-size: 16px; color: var(--muted); margin: 0 0 32px; }
+  .phone-number { font-size: 28px; font-weight: 700; color: var(--green); margin: 24px 0 8px; }
+  .hint { font-size: 14px; color: var(--muted); margin: 0 0 24px; }
+  .langs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 32px; }
+  .lang { color: var(--muted); font-size: 14px; }
+  .lang:not(:last-child)::after { content: ', '; color: var(--muted); }
+  .footer { margin-top: 40px; }
+  .footer a { color: var(--green); text-decoration: none; font-size: 14px; }
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="card">
   <div class="brand">
     <img src="/telnyx-logo.svg" alt="Telnyx">
     <span class="tag">Voice AI</span>
   </div>
   <h1>Multilingual Code-Switching Agent</h1>
-  <p class="lede">
-    Call this agent and speak in <strong>English, Spanish, Portuguese, Hindi, or Mandarin</strong>.
-    Switch languages mid-conversation and the agent follows you. One phone number, one assistant,
-    five languages — no stitching separate STT, LLM, and TTS vendors.
-  </p>
-  <div class="panel">
-    <p class="label">Supported languages</p>
-    <div class="languages">
-      <span class="lang">English</span>
-      <span class="lang">Spanish</span>
-      <span class="lang">Portuguese</span>
-      <span class="lang">Hindi</span>
-      <span class="lang">Mandarin</span>
-    </div>
-    <p class="label">Trigger an outbound call</p>
-    <input id="phone" type="tel" placeholder="+1 555 123 4567">
-    <button id="call" onclick="triggerCall()">Call me</button>
-    <div class="status" id="status"><span class="dot"></span>Ready</div>
+  <p class="sub">Call the number below and speak in any language. Switch mid-conversation and the agent follows you.</p>
+  <p class="phone-number">__PHONE_NUMBER__</p>
+  <p class="hint">Available now — call from any phone</p>
+  <div class="langs">
+    <span class="lang">English</span>
+    <span class="lang">Spanish</span>
+    <span class="lang">Portuguese</span>
+    <span class="lang">Hindi</span>
+    <span class="lang">Mandarin</span>
   </div>
   <div class="footer">
     <a href="https://github.com/team-telnyx/telnyx-code-examples/tree/main/ai-multilingual-code-switching-agent-python" target="_blank">View source &rarr;</a>
   </div>
 </div>
-<script>
-async function triggerCall() {
-  const btn = document.getElementById('call');
-  const phone = document.getElementById('phone').value.trim();
-  const status = document.getElementById('status');
-  if (!phone) { status.className = 'status err'; status.innerHTML = '<span class="dot"></span>Enter a phone number'; return; }
-  btn.disabled = true;
-  status.className = 'status'; status.innerHTML = '<span class="dot"></span>Calling...';
-  try {
-    const r = await fetch('/call/trigger', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({to: phone}) });
-    const j = await r.json();
-    if (!r.ok) { status.className = 'status err'; status.innerHTML = '<span class="dot"></span>' + (j.error || 'error'); return; }
-    status.className = 'status ok'; status.innerHTML = '<span class="dot"></span>Call triggered. Pick up your phone.';
-  } catch (e) { status.className = 'status err'; status.innerHTML = '<span class="dot"></span>Network error'; }
-  finally { btn.disabled = false; }
-}
-</script>
 </body>
 </html>
 """
@@ -363,7 +325,9 @@ async function triggerCall() {
 
 @app.route("/", methods=["GET"])
 def index():
-    return INDEX_HTML
+    return INDEX_HTML.replace(
+        "__PHONE_NUMBER__", TELNYX_PHONE_NUMBER or "Not configured"
+    )
 
 
 @app.route("/telnyx-logo.svg", methods=["GET"])
