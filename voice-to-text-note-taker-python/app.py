@@ -235,13 +235,9 @@ def transcribe():
     try:
         result = _call_stt(audio_bytes, filename)
     except requests.HTTPError as e:
-        return jsonify(
-            {
-                "error": f"STT failed: HTTP {e.response.status_code}: {e.response.text[:300]}"
-            }
-        ), 502
+        return jsonify({"error": f"STT failed: HTTP {e.response.status_code}"}), 502
     except requests.RequestException as e:
-        return jsonify({"error": f"STT network error: {str(e)[:200]}"}), 502
+        return jsonify({"error": "STT network error"}), 502
 
     duration_ms = int((time.time() - started) * 1000)
     transcript = result.get("text", "").strip()
@@ -299,14 +295,12 @@ def translate():
         translated_text = _call_translate(source_text, target_language)
     except requests.HTTPError as e:
         return jsonify(
-            {
-                "error": f"Translation failed: HTTP {e.response.status_code}: {e.response.text[:300]}"
-            }
+            {"error": f"Translation failed: HTTP {e.response.status_code}"}
         ), 502
     except requests.RequestException as e:
-        return jsonify({"error": f"Translation network error: {str(e)[:200]}"}), 502
+        return jsonify({"error": "Translation network error"}), 502
     except ValueError as e:
-        return jsonify({"error": f"Translation model error: {str(e)[:200]}"}), 502
+        return jsonify({"error": "Translation model error"}), 502
 
     translation_id = f"trans-{uuid.uuid4().hex[:8]}"
     _store[translation_id] = {
@@ -352,13 +346,9 @@ def synthesize():
     try:
         audio_bytes = _call_tts(text, target_language)
     except requests.HTTPError as e:
-        return jsonify(
-            {
-                "error": f"TTS failed: HTTP {e.response.status_code}: {e.response.text[:300]}"
-            }
-        ), 502
+        return jsonify({"error": f"TTS failed: HTTP {e.response.status_code}"}), 502
     except requests.RequestException as e:
-        return jsonify({"error": f"TTS network error: {str(e)[:200]}"}), 502
+        return jsonify({"error": "TTS network error"}), 502
 
     if not audio_bytes:
         return jsonify({"error": "TTS returned empty audio"}), 502
