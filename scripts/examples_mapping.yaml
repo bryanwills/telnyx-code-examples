@@ -827,6 +827,12 @@ examples:
     folder: ai-language-learning-phone-tutor-python
 
   - product: ai
+    use_case: ai-multilingual-code-switching-agent
+    language: python
+    framework: flask
+    folder: ai-multilingual-code-switching-agent-python
+
+  - product: ai
     use_case: ai-live-call-participant
     language: python
     framework: flask

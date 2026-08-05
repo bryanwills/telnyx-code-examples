@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-08-04T23:58:42Z",
-  "example_count": 507,
+  "generated_at": "2026-08-05T00:58:58Z",
+  "example_count": 508,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -1193,6 +1193,15 @@
       "language": "python",
       "framework": "flask",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/ai-language-learning-phone-tutor-python"
+    },
+    {
+      "folder": "ai-multilingual-code-switching-agent-python",
+      "title": "Multilingual Code-Switching Voice Agent",
+      "description": "A phone-based Voice AI agent that detects the caller's language on every turn and replies in the same language. Switch mid-conversation and the agent follows. One assistant, five languages, no stitching separate STT, LLM, and TTS vendors.",
+      "product": "ai",
+      "language": "python",
+      "framework": "flask",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/ai-multilingual-code-switching-agent-python"
     },
     {
       "folder": "ai-live-call-participant-python",
