@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-08-04T21:53:08Z",
-  "example_count": 506,
+  "generated_at": "2026-08-04T23:58:42Z",
+  "example_count": 507,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -2534,6 +2534,15 @@
       "language": "python",
       "framework": "flask",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/multilingual-voiceover-kit-python"
+    },
+    {
+      "folder": "multi-character-narrator-python",
+      "title": "Multi-Character Narrator",
+      "description": "Paste a dialogue script with speaker labels, assign each speaker a distinct Telnyx Ultra voice, render every line in parallel, and stitch the per-line audio into one continuous MP3.",
+      "product": "ai",
+      "language": "python",
+      "framework": "flask",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/multi-character-narrator-python"
     },
     {
       "folder": "number-lookup-fraud-screener-python",
