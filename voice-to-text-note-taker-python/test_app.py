@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for the Telnyx Speech Translator app. Uses Flask test client
-with mocked Telnyx API responses."""
+"""Tests for Voice Flashcards. Uses Flask test client with mocked Telnyx API."""
 
 import io
 import os
@@ -27,184 +26,169 @@ class TestHealth(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
         data = r.get_json()
         self.assertEqual(data["status"], "ok")
-        self.assertIn("target_languages", data)
+        self.assertIn("decks", data)
 
 
-class TestTranscribe(unittest.TestCase):
+class TestDecks(unittest.TestCase):
     def setUp(self):
         app.config["TESTING"] = True
         self.client = app.test_client()
-        _store.clear()
 
-    def test_no_audio_file(self):
-        r = self.client.post("/transcribe")
-        self.assertEqual(r.status_code, 400)
-        self.assertIn("audio", r.get_json()["error"].lower())
-
-    def test_empty_audio(self):
-        data = {"audio": (io.BytesIO(b""), "test.webm")}
-        r = self.client.post(
-            "/transcribe", data=data, content_type="multipart/form-data"
-        )
-        self.assertEqual(r.status_code, 400)
-        self.assertIn("empty", r.get_json()["error"].lower())
-
-    def test_unsupported_format(self):
-        data = {"audio": (io.BytesIO(b"fake"), "test.xyz")}
-        r = self.client.post(
-            "/transcribe", data=data, content_type="multipart/form-data"
-        )
-        self.assertEqual(r.status_code, 400)
-        self.assertIn("unsupported", r.get_json()["error"].lower())
-
-    @patch("app._call_stt")
-    def test_successful_transcription(self, mock_stt):
-        mock_stt.return_value = {"text": "Hello world", "language": "English"}
-        data = {"audio": (io.BytesIO(b"fake-audio-data"), "test.webm")}
-        r = self.client.post(
-            "/transcribe", data=data, content_type="multipart/form-data"
-        )
+    def test_list_decks(self):
+        r = self.client.get("/decks")
         self.assertEqual(r.status_code, 200)
-        result = r.get_json()
-        self.assertEqual(result["transcript"], "Hello world")
-        self.assertEqual(result["detected_language"], "English")
-        self.assertIn("note_id", result)
-        self.assertIn("download_url", result)
+        decks = r.get_json()["decks"]
+        self.assertTrue(len(decks) > 0)
 
-    @patch("app._call_stt")
-    def test_empty_transcript_from_stt(self, mock_stt):
-        mock_stt.return_value = {"text": "", "language": "English"}
-        data = {"audio": (io.BytesIO(b"fake"), "test.webm")}
-        r = self.client.post(
-            "/transcribe", data=data, content_type="multipart/form-data"
-        )
-        self.assertEqual(r.status_code, 502)
-        self.assertIn("empty transcript", r.get_json()["error"].lower())
-
-    @patch("app._call_stt")
-    def test_stt_http_error(self, mock_stt):
-        import requests
-
-        mock_resp = MagicMock()
-        mock_resp.status_code = 401
-        mock_resp.text = "Unauthorized"
-        mock_stt.side_effect = requests.HTTPError(response=mock_resp)
-        data = {"audio": (io.BytesIO(b"fake"), "test.webm")}
-        r = self.client.post(
-            "/transcribe", data=data, content_type="multipart/form-data"
-        )
-        self.assertEqual(r.status_code, 502)
-
-
-class TestTranslate(unittest.TestCase):
-    def setUp(self):
-        app.config["TESTING"] = True
-        self.client = app.test_client()
-        _store.clear()
-
-    def test_no_source_text(self):
-        r = self.client.post("/translate", json={"target_language": "Spanish"})
-        self.assertEqual(r.status_code, 400)
-
-    def test_unsupported_language(self):
-        r = self.client.post(
-            "/translate", json={"source_text": "Hello", "target_language": "Korean"}
-        )
-        self.assertEqual(r.status_code, 400)
-        self.assertIn("unsupported", r.get_json()["error"].lower())
-
-    @patch("app._call_translate")
-    def test_successful_translation(self, mock_translate):
-        mock_translate.return_value = "Hola mundo"
-        r = self.client.post(
-            "/translate",
-            json={"source_text": "Hello world", "target_language": "Spanish"},
-        )
+    def test_get_deck(self):
+        r = self.client.get("/deck/Spanish%20%E2%80%94%20Greetings")
         self.assertEqual(r.status_code, 200)
-        result = r.get_json()
-        self.assertEqual(result["translated_text"], "Hola mundo")
-        self.assertEqual(result["target_language"], "Spanish")
-        self.assertIn("translation_id", result)
+        data = r.get_json()
+        self.assertEqual(data["language"], "Spanish")
+        self.assertTrue(len(data["cards"]) > 0)
 
-    @patch("app._call_translate")
-    def test_translation_model_failure(self, mock_translate):
-        mock_translate.side_effect = ValueError("empty content")
-        r = self.client.post(
-            "/translate", json={"source_text": "Hello", "target_language": "Spanish"}
-        )
-        self.assertEqual(r.status_code, 502)
+    def test_nonexistent_deck(self):
+        r = self.client.get("/deck/Nonexistent")
+        self.assertEqual(r.status_code, 404)
 
 
-class TestSynthesize(unittest.TestCase):
+class TestSpeak(unittest.TestCase):
     def setUp(self):
         app.config["TESTING"] = True
         self.client = app.test_client()
         _store.clear()
 
     def test_no_text(self):
-        r = self.client.post("/synthesize", json={"target_language": "Spanish"})
+        r = self.client.post("/speak", json={"language": "Spanish"})
         self.assertEqual(r.status_code, 400)
 
     def test_unsupported_language(self):
-        r = self.client.post(
-            "/synthesize", json={"text": "Hola", "target_language": "Korean"}
-        )
+        r = self.client.post("/speak", json={"text": "Hola", "language": "Korean"})
         self.assertEqual(r.status_code, 400)
 
     @patch("app._call_tts")
-    def test_successful_synthesis(self, mock_tts):
-        mock_tts.return_value = b"fake-audio-bytes"
-        r = self.client.post(
-            "/synthesize", json={"text": "Hola mundo", "target_language": "Spanish"}
-        )
+    def test_successful_speak(self, mock_tts):
+        mock_tts.return_value = b"fake-audio"
+        r = self.client.post("/speak", json={"text": "Hola", "language": "Spanish"})
         self.assertEqual(r.status_code, 200)
         result = r.get_json()
         self.assertIn("audio_id", result)
         self.assertIn("audio_url", result)
-        self.assertIn("download_url", result)
 
     @patch("app._call_tts")
     def test_tts_empty_audio(self, mock_tts):
         mock_tts.return_value = b""
-        r = self.client.post(
-            "/synthesize", json={"text": "Hola", "target_language": "Spanish"}
-        )
+        r = self.client.post("/speak", json={"text": "Hola", "language": "Spanish"})
         self.assertEqual(r.status_code, 502)
 
 
-class TestDownloads(unittest.TestCase):
+class TestCheck(unittest.TestCase):
     def setUp(self):
         app.config["TESTING"] = True
         self.client = app.test_client()
         _store.clear()
 
-    def test_download_nonexistent_note(self):
-        r = self.client.get("/notes/nonexistent-id/download")
-        self.assertEqual(r.status_code, 404)
+    def test_no_audio(self):
+        r = self.client.post(
+            "/check", data={"target_phrase": "Hola", "language": "Spanish"}
+        )
+        self.assertEqual(r.status_code, 400)
 
-    def test_download_nonexistent_audio(self):
-        r = self.client.get("/audio/nonexistent-id/download")
-        self.assertEqual(r.status_code, 404)
+    def test_no_target_phrase(self):
+        data = {"audio": (io.BytesIO(b"fake"), "test.webm")}
+        r = self.client.post("/check", data=data, content_type="multipart/form-data")
+        self.assertEqual(r.status_code, 400)
+
+    def test_empty_audio(self):
+        data = {
+            "audio": (io.BytesIO(b""), "test.webm"),
+            "target_phrase": "Hola",
+            "language": "Spanish",
+        }
+        r = self.client.post("/check", data=data, content_type="multipart/form-data")
+        self.assertEqual(r.status_code, 400)
+
+    def test_unsupported_format(self):
+        data = {
+            "audio": (io.BytesIO(b"fake"), "test.xyz"),
+            "target_phrase": "Hola",
+            "language": "Spanish",
+        }
+        r = self.client.post("/check", data=data, content_type="multipart/form-data")
+        self.assertEqual(r.status_code, 400)
 
     @patch("app._call_stt")
-    def test_download_transcript_after_transcription(self, mock_stt):
-        mock_stt.return_value = {"text": "Test transcript", "language": "English"}
-        data = {"audio": (io.BytesIO(b"fake"), "test.webm")}
-        r = self.client.post(
-            "/transcribe", data=data, content_type="multipart/form-data"
-        )
-        note_id = r.get_json()["note_id"]
-        r2 = self.client.get(f"/notes/{note_id}/download")
-        self.assertEqual(r2.status_code, 200)
+    @patch("app._call_check")
+    def test_successful_check_correct(self, mock_check, mock_stt):
+        mock_stt.return_value = {"text": "Hola, como estas?"}
+        mock_check.return_value = {"score": "correct", "feedback": "Perfect!"}
+        data = {
+            "audio": (io.BytesIO(b"fake"), "test.webm"),
+            "target_phrase": "Hola, como estas?",
+            "language": "Spanish",
+        }
+        r = self.client.post("/check", data=data, content_type="multipart/form-data")
+        self.assertEqual(r.status_code, 200)
+        result = r.get_json()
+        self.assertEqual(result["score"], "correct")
+        self.assertEqual(result["feedback"], "Perfect!")
+        self.assertEqual(result["target_phrase"], "Hola, como estas?")
+
+    @patch("app._call_stt")
+    @patch("app._call_check")
+    def test_check_wrong(self, mock_check, mock_stt):
+        mock_stt.return_value = {"text": "Hello there"}
+        mock_check.return_value = {"score": "wrong", "feedback": "Try again"}
+        data = {
+            "audio": (io.BytesIO(b"fake"), "test.webm"),
+            "target_phrase": "Hola",
+            "language": "Spanish",
+        }
+        r = self.client.post("/check", data=data, content_type="multipart/form-data")
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.get_json()["score"], "wrong")
+
+    @patch("app._call_stt")
+    def test_empty_transcript(self, mock_stt):
+        mock_stt.return_value = {"text": ""}
+        data = {
+            "audio": (io.BytesIO(b"fake"), "test.webm"),
+            "target_phrase": "Hola",
+            "language": "Spanish",
+        }
+        r = self.client.post("/check", data=data, content_type="multipart/form-data")
+        self.assertEqual(r.status_code, 502)
+
+    @patch("app._call_stt")
+    @patch("app._call_check")
+    def test_inference_failure(self, mock_check, mock_stt):
+        mock_stt.return_value = {"text": "Hola"}
+        mock_check.side_effect = ValueError("invalid JSON")
+        data = {
+            "audio": (io.BytesIO(b"fake"), "test.webm"),
+            "target_phrase": "Hola",
+            "language": "Spanish",
+        }
+        r = self.client.post("/check", data=data, content_type="multipart/form-data")
+        self.assertEqual(r.status_code, 502)
+
+
+class TestAudio(unittest.TestCase):
+    def setUp(self):
+        app.config["TESTING"] = True
+        self.client = app.test_client()
+        _store.clear()
+
+    def test_nonexistent_audio(self):
+        r = self.client.get("/audio/nonexistent")
+        self.assertEqual(r.status_code, 404)
 
     @patch("app._call_tts")
-    def test_download_audio_after_synthesis(self, mock_tts):
+    def test_serve_audio(self, mock_tts):
         mock_tts.return_value = b"fake-audio"
-        r = self.client.post(
-            "/synthesize", json={"text": "Hola", "target_language": "Spanish"}
-        )
+        r = self.client.post("/speak", json={"text": "Hola", "language": "Spanish"})
         audio_id = r.get_json()["audio_id"]
-        r2 = self.client.get(f"/audio/{audio_id}/download")
+        r2 = self.client.get(f"/audio/{audio_id}")
         self.assertEqual(r2.status_code, 200)
 
 

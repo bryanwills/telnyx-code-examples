@@ -1,150 +1,59 @@
-## `POST /transcribe`
+## `GET /decks`
 
-Upload an audio file for transcription via Telnyx STT.
-
-### Request
-
-Multipart form data:
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `audio` | `file` | **yes** | Audio file (.webm, .mp3, .wav, .m4a, .ogg, .flac). Max 25 MB. |
+List all available flashcard decks.
 
 ### Response `200`
 
 ```json
-{
-  "note_id": "note-a1b2c3d4",
-  "transcript": "Welcome to the Telnyx developer platform.",
-  "detected_language": "English",
-  "model": "openai/whisper-large-v3-turbo",
-  "duration_ms": 1234,
-  "download_url": "/notes/note-a1b2c3d4/download"
-}
-```
-
-### Response `400`
-
-```json
-{"error": "Missing required file upload: 'audio'"}
-```
-
-```json
-{"error": "Audio file is empty"}
-```
-
-```json
-{"error": "Unsupported file format: .xyz. Supported: .flac, .m4a, .mp3, .ogg, .wav, .webm"}
-```
-
-### Response `413`
-
-```json
-{"error": "Audio file exceeds 25 MB limit"}
-```
-
-### Response `502`
-
-```json
-{"error": "STT failed: HTTP 401: ..."}
-```
-
-```json
-{"error": "STT returned empty transcript"}
-```
-
-**Try it:**
-
-```bash
-curl -X POST http://localhost:5050/transcribe -F audio=@note.webm
+{"decks": ["Spanish — Greetings", "Spanish — Numbers", "Spanish — Common phrases", "French — Greetings"]}
 ```
 
 ---
 
-## `POST /translate`
+## `GET /deck/<deck_name>`
 
-Translate text via Telnyx Inference (OpenAI-compatible chat completions).
-
-### Request
-
-```json
-{
-  "source_text": "Welcome to the Telnyx developer platform.",
-  "target_language": "Spanish"
-}
-```
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `source_text` | `string` | **yes** | Text to translate. Max 10,000 characters. |
-| `target_language` | `string` | **yes** | One of: Spanish, English, French, German, Italian, Portuguese, Hindi, Japanese. |
+Get the cards in a specific deck.
 
 ### Response `200`
 
 ```json
 {
-  "translation_id": "trans-a1b2c3d4",
-  "source_text": "Welcome to the Telnyx developer platform.",
-  "target_language": "Spanish",
-  "translated_text": "Bienvenido a la plataforma para desarrolladores de Telnyx.",
-  "download_url": "/notes/trans-a1b2c3d4/download"
+  "name": "Spanish — Greetings",
+  "language": "Spanish",
+  "cards": [
+    {"phrase": "Hola, como estas?", "translation": "Hello, how are you?"},
+    {"phrase": "Buenos dias", "translation": "Good morning"}
+  ]
 }
 ```
 
-### Response `400`
+### Response `404`
 
 ```json
-{"error": "Missing required field: 'source_text'"}
-```
-
-```json
-{"error": "Unsupported target language: Korean. Supported: Spanish, English, French, German, Italian, Portuguese, Hindi, Japanese"}
-```
-
-### Response `413`
-
-```json
-{"error": "Source text exceeds 10000 character limit"}
-```
-
-**Try it:**
-
-```bash
-curl -X POST http://localhost:5050/translate \
-  -H "Content-Type: application/json" \
-  -d '{"source_text":"Hello world","target_language":"Spanish"}'
+{"error": "deck not found"}
 ```
 
 ---
 
-## `POST /synthesize`
+## `POST /speak`
 
-Generate speech from translated text via Telnyx TTS.
+Generate speech for a flashcard phrase via Telnyx TTS.
 
 ### Request
 
 ```json
-{
-  "text": "Bienvenido a la plataforma para desarrolladores de Telnyx.",
-  "target_language": "Spanish"
-}
+{"text": "Hola, como estas?", "language": "Spanish"}
 ```
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `text` | `string` | **yes** | Text to synthesize. Max 3,000 characters. |
-| `target_language` | `string` | **yes** | Target language for `voice_settings.language_boost`. |
+| `text` | `string` | **yes** | Phrase to speak |
+| `language` | `string` | **yes** | Language for `voice_settings.language_boost` |
 
 ### Response `200`
 
 ```json
-{
-  "audio_id": "audio-a1b2c3d4",
-  "target_language": "Spanish",
-  "voice": "Telnyx.Ultra.01eaafa9-308a-4276-a017-6ab0cf061b1f",
-  "audio_url": "/audio/audio-a1b2c3d4",
-  "download_url": "/audio/audio-a1b2c3d4/download"
-}
+{"audio_id": "audio-a1b2c3d4", "audio_url": "/audio/audio-a1b2c3d4"}
 ```
 
 ### Response `400`
@@ -153,25 +62,61 @@ Generate speech from translated text via Telnyx TTS.
 {"error": "Missing required field: 'text'"}
 ```
 
-### Response `413`
+---
+
+## `POST /check`
+
+Upload your recording and get a pronunciation score.
+
+### Request
+
+Multipart form data:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `audio` | `file` | **yes** | Your recording (.webm, .mp3, etc.) |
+| `target_phrase` | `string` | **yes** | The phrase you were asked to repeat |
+| `language` | `string` | **yes** | Language of the phrase |
+
+### Response `200`
 
 ```json
-{"error": "Text exceeds 3000 character limit for TTS"}
+{
+  "target_phrase": "Hola, como estas?",
+  "spoken_text": "Hola, como estas?",
+  "language": "Spanish",
+  "score": "correct",
+  "feedback": "Perfect pronunciation!"
+}
 ```
 
-**Try it:**
+Score values: `correct`, `close`, `wrong`.
 
-```bash
-curl -X POST http://localhost:5050/synthesize \
-  -H "Content-Type: application/json" \
-  -d '{"text":"Hola mundo","target_language":"Spanish"}'
+### Response `400`
+
+```json
+{"error": "Missing required file upload: 'audio'"}
+```
+
+```json
+{"error": "Missing required field: 'target_phrase'"}
+```
+
+### Response `502`
+
+```json
+{"error": "STT failed"}
+```
+
+```json
+{"error": "Inference returned invalid response"}
 ```
 
 ---
 
 ## `GET /audio/<audio_id>`
 
-Stream generated audio.
+Stream generated TTS audio.
 
 ### Response `200`
 
@@ -185,37 +130,9 @@ Binary audio with `Content-Type: audio/mp3`.
 
 ---
 
-## `GET /audio/<audio_id>/download`
-
-Download generated audio as a file.
-
-### Response `200`
-
-Audio file with `Content-Disposition: attachment`. Filename format: `{language}-audio-{date}.mp3`.
-
----
-
-## `GET /notes/<note_id>/download`
-
-Download a transcript or translation as a .txt file.
-
-### Response `200`
-
-Text file with `Content-Disposition: attachment`. Filename format:
-- Original: `original-transcript-{date}.txt`
-- Translation: `{language}-translation-{date}.txt`
-
-### Response `404`
-
-```json
-{"error": "note not found"}
-```
-
----
-
 ## `GET /health`
 
-Liveness check with configured model info.
+Liveness check.
 
 ### Response `200`
 
@@ -224,8 +141,8 @@ Liveness check with configured model info.
   "status": "ok",
   "uptime_s": 3600,
   "stt_model": "openai/whisper-large-v3-turbo",
-  "translation_model": "moonshotai/Kimi-K2.6",
+  "inference_model": "moonshotai/Kimi-K2.6",
   "tts_voice": "Telnyx.Ultra.01eaafa9-...",
-  "target_languages": ["Spanish", "English", "French", "German", "Italian", "Portuguese", "Hindi", "Japanese"]
+  "decks": ["Spanish — Greetings", "Spanish — Numbers", "Spanish — Common phrases", "French — Greetings"]
 }
 ```
