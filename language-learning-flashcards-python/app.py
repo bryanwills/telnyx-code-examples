@@ -524,7 +524,7 @@ INDEX_HTML = """<!doctype html>
   </div>
 
   <div class="footer">
-    <a href="https://github.com/team-telnyx/telnyx-code-examples/tree/main/voice-to-text-note-taker-python" target="_blank">View source &rarr;</a>
+    <a href="https://github.com/team-telnyx/telnyx-code-examples/tree/main/language-learning-flashcards-python" target="_blank">View source &rarr;</a>
   </div>
 </div>
 
