@@ -1151,6 +1151,12 @@ examples:
     folder: voice-journal-daily-log-python
 
   - product: ai
+    use_case: telnyx-speech-translator
+    language: python
+    framework: flask
+    folder: voice-to-text-note-taker-python
+
+  - product: ai
     use_case: warm-transfer-ai-briefing
     language: python
     framework: flask
