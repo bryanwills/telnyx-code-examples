@@ -1,0 +1,14 @@
+name = "sms-support-agent"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+[[actors]]
+binding = "SUPPORT"
+type = "SupportAgent"
+
+[telnyx]
+binding = "TELNYX"
+
+[edge_compute]
+func_id = "f007f154-a032-45fb-bc0f-92c8c0584b77"
+func_name = "sms-support-agent"
