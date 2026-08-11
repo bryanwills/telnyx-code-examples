@@ -72,6 +72,20 @@ export default {
       return Response.json({ action: "queued", from, to });
     }
 
+    // ── Debug: inspect actor state ─────────────────────────────────────
+    if (url.pathname === "/debug/state" && req.method === "GET") {
+      const from = url.searchParams.get("from") || "+17177247292";
+      const stub = env.SUPPORT.idFromName(actorName(from));
+      // getState is protected — but we can call process to trigger a debug read
+      // Actually, let's just call a public debug method on the actor
+      try {
+        const result = await (stub as any).getDebugState();
+        return Response.json(result);
+      } catch (e: any) {
+        return Response.json({ error: e?.message || "failed to get state" }, { status: 500 });
+      }
+    }
+
     return new Response("not found", { status: 404 });
   },
 };

@@ -58,19 +58,32 @@ export class SupportAgent extends Agent<SupportEnv, SupportState> {
     const state = await this.getState();
     const history = await this.messages.toOpenAI();
 
-    // LLM via the [telnyx] binding — no API key in code.
-    const completion = await this.env.TELNYX.ai.openai.chat.createCompletion({
-      model: "zai-org/GLM-5.2",
-      messages: [{ role: "system", content: SYSTEM_PROMPT }, ...history],
-      max_tokens: 300,
-      temperature: 0.7,
-    });
+    let reply = "";
+    let debugInfo = "";
+    try {
+      const completion = await this.env.TELNYX.ai.openai.chat.createCompletion({
+        model: "zai-org/GLM-5.2",
+        messages: [{ role: "system", content: SYSTEM_PROMPT }, ...history],
+        max_tokens: 1000,
+        temperature: 0.7,
+      });
 
-    const reply = completion.choices[0]?.message?.content?.trim() || "Sorry, I couldn't answer that right now.";
+      // Log the raw response shape for debugging
+      debugInfo = JSON.stringify(completion).slice(0, 500);
+      reply = completion.choices[0]?.message?.content?.trim() || "";
+    } catch (e: any) {
+      debugInfo = `error: ${e?.message || String(e)}`;
+    }
+
+    if (!reply) {
+      reply = "Sorry, I couldn't answer that right now.";
+    }
+
+    // Store debug info in state so we can inspect it
+    await this.setState({ lastReply: reply, at: Date.now(), debug: debugInfo } as any);
 
     await this.messages.add("assistant", reply);
     await this.env.TELNYX.messages.send({ from: state.to, to: state.from, text: reply.slice(0, 300) });
-    await this.setState({ lastReply: reply, at: Date.now() });
 
     // Schedule the follow-up check-in 24h from now
     await this.schedule(FOLLOW_UP_SECONDS, "followup", null, { id: `followup-${state.from}` });
@@ -87,5 +100,13 @@ export class SupportAgent extends Agent<SupportEnv, SupportState> {
       to: state.from,
       text: "Did that solve your problem? Reply yes or no, or ask for a human.",
     });
+  }
+
+  /** Debug: return current state + message count for inspection. */
+  async getDebugState(): Promise<{ state: SupportState; messageCount: number; lastMessage: any }> {
+    const state = await this.getState();
+    const count = await this.messages.count();
+    const last = await this.messages.last();
+    return { state, messageCount: count, lastMessage: last };
   }
 }
