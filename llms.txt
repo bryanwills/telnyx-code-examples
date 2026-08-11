@@ -289,6 +289,7 @@
 - [SMS Marketing Campaign](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-marketing-campaign-python/README.md): Run bulk SMS marketing campaigns with Flask and the Telnyx Messaging API - create campaigns, send rate-limited batches, and track delivery via webhooks.
 - [SMS Opt-Out Management](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-opt-out-management-python/README.md): Manage SMS opt-out preferences with Telnyx. Auto-handles STOP/UNSUBSCRIBE replies via verified inbound webhooks, blocks messages to opted-out numbers, and keeps an auditable opt-out list in SQLite.
 - [SMS Poll Voting System](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-poll-voting-system-python/README.md): Text-to-vote polling with real-time results.
+- [SMS Support Agent with Follow-Up](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-support-agent-with-followup/README.md): SMS support agent on Telnyx Edge Compute + Agent SDK — answer SMS questions via LLM and schedule a 24h follow-up check-in. No API key in code.
 - [SMS Survey with C# and ASP.NET](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-survey-bot-csharp/README.md)
 - [SMS Survey with Go and Gin](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-survey-bot-go/README.md)
 - [SMS Survey with Java and Spring](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-survey-bot-java/README.md)
