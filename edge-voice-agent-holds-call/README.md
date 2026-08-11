@@ -105,7 +105,7 @@ telnyx call-control-applications create \
   --webhook-url "https://edge-voice-agent-holds-call-<id>.telnyxcompute.com/webhooks/voice"
 
 # Assign the number to the application
-telnyx numbers update +16282564655 --connection-id <call_control_app_id>
+telnyx numbers update +16244444444 --connection-id <call_control_app_id>
 ```
 
 </details>
