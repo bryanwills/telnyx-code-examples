@@ -14,7 +14,7 @@ binding = "TELNYX_API_KEY"
 name = "TELNYX_API_KEY"
 
 [edge_compute]
-func_id = "REPLACE_AFTER_CREATE"
+func_id = "2472dca9-aa6d-4a96-bec8-bda6bf98ab90"
 func_name = "edge-voice-agent-holds-call"
 
 [env_vars]
