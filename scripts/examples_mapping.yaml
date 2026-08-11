@@ -1336,6 +1336,12 @@ examples:
     framework: edge
     folder: sms-support-agent-with-followup
 
+  - product: voice
+    use_case: edge-voice-agent-holds-call
+    language: nodejs
+    framework: edge
+    folder: edge-voice-agent-holds-call
+
   - product: sms
     use_case: elearning-course-narrator
     language: python
