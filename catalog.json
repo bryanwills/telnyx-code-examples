@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-08-12T20:43:29Z",
-  "example_count": 514,
+  "generated_at": "2026-08-12T21:26:54Z",
+  "example_count": 515,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -1994,6 +1994,15 @@
       "language": "nodejs",
       "framework": "edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/sentiment-analysis-agent"
+    },
+    {
+      "folder": "multi-turn-sms-quiz-agent",
+      "title": "Multi-Turn SMS Quiz Agent",
+      "description": "Adaptive SMS quiz agent on Telnyx Edge Compute with durable per-sender state, LLM-generated questions, SQL event history, and browser demo mode.",
+      "product": "sms",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/multi-turn-sms-quiz-agent"
     },
     {
       "folder": "elearning-course-narrator-python",
