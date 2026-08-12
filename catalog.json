@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-08-11T21:08:39Z",
-  "example_count": 511,
+  "generated_at": "2026-08-12T00:52:20Z",
+  "example_count": 513,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -1960,6 +1960,15 @@
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/sms-support-agent-with-followup"
     },
     {
+      "folder": "edge-voice-agent-holds-call",
+      "title": "Edge Voice Agent That Holds a Call",
+      "description": "Voice agent on Telnyx Edge Compute + Agent SDK — answers an inbound call and runs an STT → LLM → TTS conversation loop, all in the same PoP. Zero-credential inference via the [telnyx] binding.",
+      "product": "voice",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-voice-agent-holds-call"
+    },
+    {
       "folder": "scheduled-reminder-agent",
       "title": "Scheduled Reminder Agent",
       "description": "SMS reminder agent on Telnyx Edge Compute + Agent SDK — sends scheduled reminders via zero-credential SMS, detects snooze intent via LLM, and adapts timing with exponential backoff.",
@@ -1967,6 +1976,15 @@
       "language": "nodejs",
       "framework": "edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/scheduled-reminder-agent"
+    },
+    {
+      "folder": "agent-sms-triage-bot",
+      "title": "Agent SMS Triage Bot",
+      "description": "SMS triage bot on Telnyx Edge Compute + Agent SDK — classifies inbound customer SMS by topic (billing/support/sales) via LLM and routes to the right queue using a durable route table. Zero-credential SMS and inference.",
+      "product": "sms",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/agent-sms-triage-bot"
     },
     {
       "folder": "elearning-course-narrator-python",

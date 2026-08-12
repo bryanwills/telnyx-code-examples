@@ -1,0 +1,17 @@
+{
+  "name": "agent-sms-triage-bot",
+  "version": "1.0.0",
+  "description": "SMS triage bot on Telnyx Edge Compute + Agent SDK — classifies inbound customer SMS by topic (billing/support/sales) via LLM and routes to the right queue using KV lookup. Zero-credential SMS and inference.",
+  "main": "src/index.ts",
+  "scripts": {
+    "deploy": "telnyx-edge ship",
+    "types": "telnyx-edge types"
+  },
+  "dependencies": {
+    "@telnyx/edge-runtime": "^0.9.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "license": "MIT"
+}
