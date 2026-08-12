@@ -1,0 +1,17 @@
+name = "scheduled-reminder-agent"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+[[actors]]
+binding = "REMINDER"
+type = "ReminderAgent"
+
+[telnyx]
+binding = "TELNYX"
+
+[edge_compute]
+func_id = "93fc7f09-7cb9-4b8f-a9da-61ca7b4f646b"
+func_name = "scheduled-reminder-agent"
+
+[env_vars]
+AI_MODEL = "zai-org/GLM-5.2"

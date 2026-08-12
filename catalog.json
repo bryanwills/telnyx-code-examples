@@ -1960,13 +1960,13 @@
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/sms-support-agent-with-followup"
     },
     {
-      "folder": "edge-voice-agent-holds-call",
-      "title": "Edge Voice Agent That Holds a Call",
-      "description": "Voice agent on Telnyx Edge Compute + Agent SDK — answers an inbound call and runs an STT → LLM → TTS conversation loop, all in the same PoP. Zero-credential inference via the [telnyx] binding.",
-      "product": "voice",
+      "folder": "scheduled-reminder-agent",
+      "title": "Scheduled Reminder Agent",
+      "description": "SMS reminder agent on Telnyx Edge Compute + Agent SDK — sends scheduled reminders via zero-credential SMS, detects snooze intent via LLM, and adapts timing with exponential backoff.",
+      "product": "sms",
       "language": "nodejs",
       "framework": "edge",
-      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-voice-agent-holds-call"
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/scheduled-reminder-agent"
     },
     {
       "folder": "elearning-course-narrator-python",
