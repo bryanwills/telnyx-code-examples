@@ -1355,6 +1355,12 @@ examples:
     folder: agent-sms-triage-bot
 
   - product: sms
+    use_case: multi-turn-sms-quiz-agent
+    language: nodejs
+    framework: edge
+    folder: multi-turn-sms-quiz-agent
+
+  - product: sms
     use_case: elearning-course-narrator
     language: python
     framework: flask

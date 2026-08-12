@@ -25,7 +25,7 @@ Each example's README has a Quick Start with the exact install/run commands for 
 ---
 
 <details open>
-<summary><h2>Voice AI</h2> <em>(148 examples)</em></summary>
+<summary><h2>Voice AI</h2> <em>(152 examples)</em></summary>
 
 Build voice applications with [Telnyx Voice AI](https://telnyx.com/products/voice-ai-agents) - IVR menus, call recording, conferencing, WebRTC, and AI-powered call routing.
 
@@ -85,9 +85,13 @@ Build voice applications with [Telnyx Voice AI](https://telnyx.com/products/voic
 | [edge-merge-shift-coverage-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-shift-coverage-python/README.md) | Python | Manager texts need a closer tonight using Telnyx Messaging and Edge Compute with Merge HRIS. |
 | [edge-number-masking-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-number-masking-python/README.md) | Python | Marketplace-style proxy number pool at the edge. |
 | [edge-prompt-ab-tester](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-prompt-ab-tester/README.md) | Node.js | Prompt A/B tester on Telnyx Edge Compute Stateful Actors — run two prompt variants against the same task, collect user votes, and track which prompt wins. |
+| [edge-voice-agent-holds-call](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-voice-agent-holds-call/README.md) | Node.js | Voice agent on Telnyx Edge Compute + Agent SDK - answers an inbound call and runs an STT -> LLM -> TTS conversation loop in the same PoP. |
 | [edge-voicemail-to-action-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-voicemail-to-action-python/README.md) | Python | AI-powered voicemail triage at the edge. |
 | [edge-webhook-aggregator-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-webhook-aggregator-python/README.md) | Python | Multi-tenant webhook consolidation at the edge. |
 | [edge-url-summarizer](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-url-summarizer/README.md) | Node.js | URL summarizer on Telnyx Edge Compute Stateful Actors — fetch a URL, summarize via AI Inference, cache the result for instant repeat requests. |
+| [sms-support-agent-with-followup](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-support-agent-with-followup/README.md) | Node.js | SMS support agent on Telnyx Edge Compute + Agent SDK - answer SMS questions via LLM and schedule a 24h follow-up check-in. |
+| [scheduled-reminder-agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/scheduled-reminder-agent/README.md) | Node.js | SMS reminder agent on Telnyx Edge Compute + Agent SDK - sends scheduled reminders, detects snooze intent via LLM, and adapts timing. |
+| [agent-sms-triage-bot](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/agent-sms-triage-bot/README.md) | Node.js | SMS triage bot on Telnyx Edge Compute + Agent SDK - classifies inbound customer SMS by topic via LLM and routes to the right queue. |
 | [fax-to-structured-data-pipeline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/fax-to-structured-data-pipeline-python/README.md) | Python | Fax-to-Structured-Data Pipeline - receive faxes, AI extracts structured data (invoices, orders, prescriptions) into JSON. |
 | [hold-music-csharp](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/hold-music-csharp/README.md) | C# | --- |
 | [hold-music-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/hold-music-go/README.md) | Go | --- |
@@ -188,7 +192,7 @@ Build voice applications with [Telnyx Voice AI](https://telnyx.com/products/voic
 </details>
 
 <details open>
-<summary><h2>SMS & MMS</h2> <em>(162 examples)</em></summary>
+<summary><h2>SMS & MMS</h2> <em>(163 examples)</em></summary>
 
 Send and receive text messages with the [Telnyx SMS API](https://telnyx.com/products/sms-api) - build autoresponders, implement 2FA, and manage bulk messaging campaigns.
 
@@ -230,6 +234,7 @@ Send and receive text messages with the [Telnyx SMS API](https://telnyx.com/prod
 | [mms-photo-inventory-tracker-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/mms-photo-inventory-tracker-python/README.md) | Python | MMS Photo Inventory Tracker - text a photo of inventory items with MMS, AI identifies and catalogs them automatically. |
 | [mms-receipt-scanner-expense-tracker-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/mms-receipt-scanner-expense-tracker-python/README.md) | Python | MMS Receipt Scanner & Expense Tracker - text a photo of a receipt, AI extracts data and tracks expenses. |
 | [multi-channel-appointment-confirmation-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/multi-channel-appointment-confirmation-python/README.md) | Python | Multi-Channel Appointment Confirmation - confirm appointments via SMS, voice call, and WhatsApp. Tries SMS first, escalates to voice if no response. |
+| [multi-turn-sms-quiz-agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/multi-turn-sms-quiz-agent/README.md) | Node.js | Adaptive SMS quiz agent on Telnyx Edge Compute with durable per-sender state, LLM-generated questions, SQL event history, and browser demo mode. |
 | [multi-language-customer-survey-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/multi-language-customer-survey-python/README.md) | Python | Multi-Language Customer Survey - outbound voice surveys in the caller's language with AI analysis. |
 | [patient-appointment-engine-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/patient-appointment-engine-python/README.md) | Python | AI answers calls, checks availability, books appointments, collects copay via Stripe, sends SMS confirmation. Staff reviews next-day schedule. |
 | [payment-reminder-escalation-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/payment-reminder-escalation-python/README.md) | Python | Invoice overdue: day 1 SMS, day 7 voice call with payment link, day 14 escalation to collections with full context. Integrates with Stripe/QuickBooks. |
