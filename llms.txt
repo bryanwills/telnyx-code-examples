@@ -233,6 +233,7 @@
 - [Scheduled SMS with PHP and Laravel](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/schedule-sms-messages-php/README.md)
 - [Schedule SMS Messages](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/schedule-sms-messages-python/README.md): Schedule SMS messages to be sent at a future time with the Telnyx Messaging API, backed by an APScheduler job store and a Flask job-management API.
 - [Scheduled SMS with Ruby and Sinatra](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/schedule-sms-messages-ruby/README.md)
+- [Scheduled Reminder Agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/scheduled-reminder-agent/README.md): SMS reminder agent on Telnyx Edge Compute + Agent SDK — sends scheduled reminders via zero-credential SMS, detects snooze intent via LLM, and adapts timing with exponential backoff.
 - [Send Bulk SMS with C# and ASP.NET](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-csharp/README.md)
 - [Send Bulk SMS with Go and Gin](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-go/README.md)
 - [Send Bulk SMS with Java and Spring](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-bulk-sms-java/README.md)
