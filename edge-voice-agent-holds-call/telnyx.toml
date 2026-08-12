@@ -1,0 +1,21 @@
+name = "edge-voice-agent-holds-call"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+[[actors]]
+binding = "VOICE_AGENT"
+type = "VoiceAgent"
+
+[telnyx]
+binding = "TELNYX"
+
+[[secrets]]
+binding = "TELNYX_API_KEY"
+name = "TELNYX_API_KEY"
+
+[edge_compute]
+func_id = "2472dca9-aa6d-4a96-bec8-bda6bf98ab90"
+func_name = "edge-voice-agent-holds-call"
+
+[env_vars]
+AI_MODEL = "zai-org/GLM-5.2"
