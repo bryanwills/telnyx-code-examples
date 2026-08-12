@@ -1355,6 +1355,12 @@ examples:
     folder: agent-sms-triage-bot
 
   - product: sms
+    use_case: sentiment-analysis-agent
+    language: nodejs
+    framework: edge
+    folder: sentiment-analysis-agent
+
+  - product: sms
     use_case: elearning-course-narrator
     language: python
     framework: flask

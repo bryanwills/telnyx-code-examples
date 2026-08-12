@@ -1992,7 +1992,7 @@
       "description": "Analyze inbound SMS sentiment on Telnyx Edge Compute with the Agent SDK, log results to actor-local SQL, and escalate negative sentiment by SMS.",
       "product": "sms",
       "language": "nodejs",
-      "framework": "telnyx-edge",
+      "framework": "edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/sentiment-analysis-agent"
     },
     {

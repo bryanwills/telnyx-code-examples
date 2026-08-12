@@ -14,6 +14,10 @@ Analyze inbound SMS sentiment in real time with a Telnyx Edge Compute agent. Eac
 
 The sample includes a browser simulator so you can demo the full agent loop while toll-free or 10DLC messaging compliance is still pending. In demo mode, only the carrier SMS transport is replaced; the Edge function, Agent SDK, Inference call, SQL log, and escalation decision all remain real.
 
+## Why Telnyx
+
+Telnyx is an **AI Communications Infrastructure** platform for voice, messaging, SIP, AI, and IoT on one private global network. This sample keeps sentiment classification, durable state, and escalation logic on Telnyx Edge Compute, close to the inbound message path, while using the `[telnyx]` binding for zero-credential AI inference and SMS sends.
+
 ## Telnyx APIs Used
 
 - **Edge Compute**: deploys the HTTP handler and `SentimentAgent` actor.
@@ -174,6 +178,14 @@ CREATE TABLE sentiment(
 - [send-sms-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/send-sms-nodejs/README.md)
 - [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md)
 - [run-llm-inference-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/run-llm-inference-python/README.md)
+
+## Agent Discovery
+
+- [Telnyx Agent Signup](https://telnyx.com/products/voice-ai-agents)
+- [Agent CLI](https://github.com/team-telnyx/ai)
+- [Telnyx CLI](https://github.com/team-telnyx/telnyx-cli)
+- [llms-full.txt](https://developers.telnyx.com/llms-full.txt)
+- [llms.txt](https://developers.telnyx.com/llms.txt)
 
 ## Resources
 
