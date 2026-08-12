@@ -25,7 +25,7 @@ Each example's README has a Quick Start with the exact install/run commands for 
 ---
 
 <details open>
-<summary><h2>Voice AI</h2> <em>(148 examples)</em></summary>
+<summary><h2>Voice AI</h2> <em>(153 examples)</em></summary>
 
 Build voice applications with [Telnyx Voice AI](https://telnyx.com/products/voice-ai-agents) - IVR menus, call recording, conferencing, WebRTC, and AI-powered call routing.
 
@@ -85,9 +85,14 @@ Build voice applications with [Telnyx Voice AI](https://telnyx.com/products/voic
 | [edge-merge-shift-coverage-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-merge-shift-coverage-python/README.md) | Python | Manager texts need a closer tonight using Telnyx Messaging and Edge Compute with Merge HRIS. |
 | [edge-number-masking-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-number-masking-python/README.md) | Python | Marketplace-style proxy number pool at the edge. |
 | [edge-prompt-ab-tester](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-prompt-ab-tester/README.md) | Node.js | Prompt A/B tester on Telnyx Edge Compute Stateful Actors — run two prompt variants against the same task, collect user votes, and track which prompt wins. |
+| [edge-voice-agent-holds-call](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-voice-agent-holds-call/README.md) | Node.js | Voice agent on Telnyx Edge Compute + Agent SDK — answers an inbound call and runs an STT -> LLM -> TTS conversation loop in the same PoP. |
 | [edge-voicemail-to-action-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-voicemail-to-action-python/README.md) | Python | AI-powered voicemail triage at the edge. |
 | [edge-webhook-aggregator-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-webhook-aggregator-python/README.md) | Python | Multi-tenant webhook consolidation at the edge. |
 | [edge-url-summarizer](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-url-summarizer/README.md) | Node.js | URL summarizer on Telnyx Edge Compute Stateful Actors — fetch a URL, summarize via AI Inference, cache the result for instant repeat requests. |
+| [sms-support-agent-with-followup](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-support-agent-with-followup/README.md) | Node.js | SMS support agent on Telnyx Edge Compute + Agent SDK — answer SMS questions via LLM and schedule a 24h follow-up check-in. |
+| [scheduled-reminder-agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/scheduled-reminder-agent/README.md) | Node.js | SMS reminder agent on Telnyx Edge Compute + Agent SDK — sends scheduled reminders, detects snooze intent via LLM, and adapts timing. |
+| [agent-sms-triage-bot](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/agent-sms-triage-bot/README.md) | Node.js | SMS triage bot on Telnyx Edge Compute + Agent SDK — classifies inbound customer SMS by topic via LLM and routes to the right queue. |
+| [sentiment-analysis-agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sentiment-analysis-agent/README.md) | Node.js | Analyze inbound SMS sentiment on Telnyx Edge Compute with the Agent SDK, log results to actor-local SQL, and escalate negative sentiment by SMS. |
 | [fax-to-structured-data-pipeline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/fax-to-structured-data-pipeline-python/README.md) | Python | Fax-to-Structured-Data Pipeline - receive faxes, AI extracts structured data (invoices, orders, prescriptions) into JSON. |
 | [hold-music-csharp](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/hold-music-csharp/README.md) | C# | --- |
 | [hold-music-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/hold-music-go/README.md) | Go | --- |
