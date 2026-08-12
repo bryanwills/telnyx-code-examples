@@ -1,0 +1,29 @@
+# If you are creating a fresh deployable function, scaffold first:
+# telnyx-edge new-func --actor --name=sentiment-analysis-agent
+# Then copy the bindings below into the generated telnyx.toml so func_id is assigned.
+
+name = "sentiment-analysis-agent"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+[edge_compute]
+func_name = "sentiment-analysis-agent"
+
+[[actors]]
+binding = "SENTIMENT"
+type = "SentimentAgent"
+
+[telnyx]
+binding = "TELNYX"
+
+[[secrets]]
+binding = "TELNYX_PUBLIC_KEY"
+name = "TELNYX_PUBLIC_KEY"
+
+[env_vars]
+DEMO_MODE = "true"
+PRODUCTION_MODE = "false"
+DEMO_FROM_NUMBER = "+15557654321"
+DEMO_SENDER_NUMBER = "+15551234567"
+OPS_ALERT_PHONE = "+15559876543"
+MODEL = "zai-org/GLM-5.2"
