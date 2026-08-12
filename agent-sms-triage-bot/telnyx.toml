@@ -1,0 +1,17 @@
+name = "agent-sms-triage-bot"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+[[actors]]
+binding = "TRIAGE"
+type = "TriageAgent"
+
+[telnyx]
+binding = "TELNYX"
+
+[edge_compute]
+func_id = "930109fd-45dc-46e9-8eb5-e57c30830e1f"
+func_name = "agent-sms-triage-bot"
+
+[env_vars]
+AI_MODEL = "moonshotai/Kimi-K2.6"

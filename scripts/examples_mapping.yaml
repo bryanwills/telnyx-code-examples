@@ -1349,6 +1349,12 @@ examples:
     folder: scheduled-reminder-agent
 
   - product: sms
+    use_case: agent-sms-triage-bot
+    language: nodejs
+    framework: edge
+    folder: agent-sms-triage-bot
+
+  - product: sms
     use_case: elearning-course-narrator
     language: python
     framework: flask
