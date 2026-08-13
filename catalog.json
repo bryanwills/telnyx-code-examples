@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-08-12T20:43:29Z",
-  "example_count": 514,
+  "generated_at": "2026-08-13T00:32:42Z",
+  "example_count": 515,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -1967,6 +1967,15 @@
       "language": "nodejs",
       "framework": "edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-voice-agent-holds-call"
+    },
+    {
+      "folder": "agent-with-tool-calling",
+      "title": "Agent with Tool Calling",
+      "description": "Build a Telnyx Edge Compute Agent SDK app where an LLM chooses send_sms, make_call, and check_status tools, dispatches them with toolCallId, and returns a final response.",
+      "product": "ai",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/agent-with-tool-calling"
     },
     {
       "folder": "scheduled-reminder-agent",
