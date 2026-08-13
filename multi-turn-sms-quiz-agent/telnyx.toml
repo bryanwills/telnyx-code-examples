@@ -1,0 +1,27 @@
+name = "multi-turn-sms-quiz-agent"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+[[actors]]
+binding = "QUIZ"
+type = "QuizAgent"
+
+[telnyx]
+binding = "TELNYX"
+
+[[secrets]]
+binding = "TELNYX_PUBLIC_KEY"
+name = "TELNYX_PUBLIC_KEY"
+
+[edge_compute]
+func_id = "replace-with-your-function-id"
+func_name = "multi-turn-sms-quiz-agent"
+
+[env_vars]
+DEMO_MODE = "true"
+PRODUCTION_MODE = "true"
+SMS_TRANSPORT = "production"
+DEMO_FROM_NUMBER = "+15557654321"
+DEMO_SENDER_NUMBER = "+15551234567"
+MAX_QUESTIONS = "5"
+MODEL = "zai-org/GLM-5.2"
