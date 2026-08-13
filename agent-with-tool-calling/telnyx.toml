@@ -1,0 +1,31 @@
+# If you are creating a fresh deployable function, scaffold first:
+# telnyx-edge new-func --actor --name=agent-with-tool-calling
+# Then copy the bindings below into the generated telnyx.toml so func_id is assigned.
+
+name = "agent-with-tool-calling"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+[[actors]]
+binding = "TOOLS"
+type = "ToolAgent"
+
+[telnyx]
+binding = "TELNYX"
+
+[[secrets]]
+binding = "TELNYX_PUBLIC_KEY"
+name = "TELNYX_PUBLIC_KEY"
+
+[edge_compute]
+func_id = "replace-with-your-function-id"
+func_name = "agent-with-tool-calling"
+
+[env_vars]
+DEMO_MODE = "true"
+SMS_TRANSPORT = "demo"
+DEMO_FROM_NUMBER = "+15557654321"
+DEMO_SENDER_NUMBER = "+15551234567"
+CALL_CONTROL_APP_ID = "<connection_id from Mission Control Voice API application>"
+MAX_TOOL_ITERATIONS = "3"
+MODEL = "zai-org/GLM-5.2"

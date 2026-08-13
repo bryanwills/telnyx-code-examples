@@ -1342,6 +1342,12 @@ examples:
     framework: edge
     folder: edge-voice-agent-holds-call
 
+  - product: ai
+    use_case: agent-with-tool-calling
+    language: nodejs
+    framework: edge
+    folder: agent-with-tool-calling
+
   - product: sms
     use_case: scheduled-reminder-agent
     language: nodejs

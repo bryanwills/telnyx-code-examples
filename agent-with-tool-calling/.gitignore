@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.telnyx/
+.DS_Store
+telnyx-env.d.ts
+*.log
