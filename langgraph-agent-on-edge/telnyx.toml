@@ -1,0 +1,28 @@
+# Scaffold: telnyx-edge new-func --actor --name=langgraph-agent-on-edge
+# Then copy the bindings below into the generated telnyx.toml so func_id is assigned.
+
+name = "langgraph-agent-on-edge"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+[[actors]]
+binding = "CONVOS"
+type = "Conversation"
+
+[telnyx]
+binding = "TELNYX"
+
+[[secrets]]
+binding = "TELNYX_PUBLIC_KEY"
+name = "TELNYX_PUBLIC_KEY"
+
+[edge_compute]
+func_id = "9846c6eb-be6a-4c36-b340-a28e7698b234"
+func_name = "langgraph-agent-on-edge"
+
+[env_vars]
+DEMO_MODE = "true"
+SMS_TRANSPORT = "demo"
+DEMO_FROM_NUMBER = "+15557654321"
+DEMO_SENDER_NUMBER = "+15551234567"
+MODEL = "zai-org/GLM-5.2"

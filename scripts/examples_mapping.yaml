@@ -1372,6 +1372,12 @@ examples:
     framework: edge
     folder: multi-turn-sms-quiz-agent
 
+  - product: ai
+    use_case: langgraph-agent-on-edge
+    language: nodejs
+    framework: edge
+    folder: langgraph-agent-on-edge
+
   - product: sms
     use_case: elearning-course-narrator
     language: python
