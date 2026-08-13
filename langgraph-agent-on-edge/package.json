@@ -1,0 +1,29 @@
+{
+  "name": "langgraph-agent-on-edge",
+  "version": "0.1.0",
+  "description": "LangGraph StateGraph (intent → action → response) running inside the Telnyx Agent SDK on Edge Compute, with zero-credential inference via the Telnyx API binding.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "types": "telnyx-edge types",
+    "ship": "telnyx-edge ship",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@langchain/core": "^0.3.0",
+    "@langchain/langgraph": "^0.2.0",
+    "@telnyx/edge-runtime": "^0.9.2",
+    "telnyx": "^7.13.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
