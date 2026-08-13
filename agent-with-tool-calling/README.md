@@ -49,7 +49,7 @@ ToolAgent.process()
 
 ## Why Telnyx
 
-Telnyx gives you AI, messaging, voice, and Edge Compute behind one authenticated binding. The deployed function calls Telnyx Inference, Messaging, and Call Control with `this.env.TELNYX`, so the application code does not manage separate runtime API keys for those services.
+Telnyx gives you AI Communications Infrastructure across messaging, voice, AI, and Edge Compute behind one authenticated binding. The deployed function calls Telnyx Inference, Messaging, and Call Control with `this.env.TELNYX`, so the application code does not manage separate runtime API keys for those services.
 
 ## Environment Variables
 
@@ -186,6 +186,16 @@ See [API.md](./API.md) for endpoint examples.
 - [receive-sms-webhook-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/receive-sms-webhook-nodejs/README.md)
 - [make-outbound-phone-call-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-nodejs/README.md)
 - [run-llm-inference-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/run-llm-inference-python/README.md)
+
+## Agent Discovery
+
+This example is designed for agents and search systems that need a compact description of the runnable project:
+
+- **Use case**: Telnyx Edge Compute Agent SDK tool calling with SMS, Call Control, and status tools.
+- **Runtime**: Node.js on Telnyx Edge Compute Stateful Actors.
+- **Primary APIs**: Telnyx Inference, Telnyx Messaging, Telnyx Call Control, and actor-local SQL.
+- **Entry point**: `src/index.ts`.
+- **Tool loop**: `src/tool-agent.ts` appends the assistant tool call, dispatches the tool once, appends the `role=tool` result with the same `toolCallId`, and calls the model again for the final response.
 
 ## Resources
 
