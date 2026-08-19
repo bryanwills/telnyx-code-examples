@@ -1955,6 +1955,11 @@ examples:
     framework: edge-compute
     folder: edge-customer-agent-typescript
   - product: voice
+    use_case: edge-call-transcription-agent
+    language: typescript
+    framework: edge-compute
+    folder: edge-call-transcription-agent
+  - product: voice
     use_case: merge-deal-desk-alerts
     language: python
     framework: flask

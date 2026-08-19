@@ -1,0 +1,23 @@
+name = "edge-call-transcription-agent"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+[[actors]]
+binding = "TRANSCRIBE"
+type = "TranscribeAgent"
+
+[[actors]]
+binding = "REGISTRY"
+type = "TranscriptRegistry"
+
+[telnyx]
+binding = "TELNYX"
+
+[[secrets]]
+binding = "TELNYX_API_KEY"
+name = "TELNYX_API_KEY"
+
+[env_vars]
+AI_MODEL = "zai-org/GLM-5.2"
+SMS_FROM = "+16282564655"
+SMS_TO = "+17177247292"

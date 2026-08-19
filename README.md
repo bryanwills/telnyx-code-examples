@@ -25,7 +25,7 @@ Each example's README has a Quick Start with the exact install/run commands for 
 ---
 
 <details open>
-<summary><h2>Voice AI</h2> <em>(153 examples)</em></summary>
+<summary><h2>Voice AI</h2> <em>(154 examples)</em></summary>
 
 Build voice applications with [Telnyx Voice AI](https://telnyx.com/products/voice-ai-agents) - IVR menus, call recording, conferencing, WebRTC, and AI-powered call routing.
 
@@ -76,6 +76,7 @@ Build voice applications with [Telnyx Voice AI](https://telnyx.com/products/voic
 | [deepfake-voice-detector-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/deepfake-voice-detector-python/README.md) | Python | Real-time synthetic speech detection on live phone calls. Captures audio via media streaming, extracts acoustic features, scores deepfake probability with AI Inference, alerts security team via Slack. |
 | [edge-ai-assistant-backend-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-ai-assistant-backend-go/README.md) | Go | Use a Telnyx Edge Compute function as the backend for AI Assistant dynamic variables and webhook tool calls — no separate server required. |
 | [edge-agri-crop-advisory](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-agri-crop-advisory/README.md) | Node.js | Agriculture crop advisory on Telnyx Edge Compute Stateful Actors — classify crop issues (disease, pest, nutrient, water, weather) and recommend treatment via AI Inference. Escalates critical cases. |
+| [edge-call-transcription-agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-call-transcription-agent/README.md) | TypeScript | Live call transcription agent on Telnyx Edge Compute + Agent SDK — answers an inbound call, streams STT into durable agent state, and on hangup summarizes the transcript via LLM, persists it to actor-local SQL, and texts the summary via SMS. |
 | [edge-compliance-monitor-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-compliance-monitor-python/README.md) | Python | Real-time compliance checking for regulated call centers using Telnyx Voice, AI Inference, and Edge Compute. |
 | [edge-customer-agent-typescript](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-customer-agent-typescript/README.md) | TypeScript | Durable Entity Agent on Telnyx Edge Compute — one actor per customer phone number, surviving across days, calls, SMS, and evictions. The AI Assistant is the reasoning harness inside; the Agent SDK owns the durable entity. |
 | [edge-fraud-firewall-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-fraud-firewall-python/README.md) | Python | Screen every inbound call at the edge with Telnyx Voice, Number Lookup, and AI Inference. |
