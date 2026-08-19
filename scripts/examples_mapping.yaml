@@ -1360,6 +1360,12 @@ examples:
     framework: edge
     folder: agent-sms-triage-bot
 
+  - product: ai
+    use_case: multi-model-inference-switcher
+    language: nodejs
+    framework: edge
+    folder: multi-model-inference-switcher
+
   - product: sms
     use_case: sentiment-analysis-agent
     language: nodejs

@@ -1,0 +1,21 @@
+name = "multi-model-inference-switcher"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+[[actors]]
+binding = "SWITCHER"
+type = "SwitcherAgent"
+
+[telnyx]
+binding = "TELNYX"
+
+[[secrets]]
+binding = "TELNYX_API_KEY"
+name = "TELNYX_API_KEY"
+
+[env_vars]
+KV_NAMESPACE_ID = "275462c4-0014-4f95-8444-2eecebb518fe"
+
+[edge_compute]
+func_id = "f91ba5d2-e101-44a4-a63c-9a42405364da"
+func_name = "multi-model-inference-switcher"
