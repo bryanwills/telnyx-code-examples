@@ -1,0 +1,18 @@
+{
+  "name": "edge-cache-invalidation-agent",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Edge Cache Invalidation Agent — webhook-triggered cache invalidation across edge locations via KV, Cloud Storage manifest, and SMS notification. Agent SDK on Telnyx Edge Compute.",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -b",
+    "start": "npm run build && telnyx-edge dev",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@telnyx/edge-runtime": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  }
+}
