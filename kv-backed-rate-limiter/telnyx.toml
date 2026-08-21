@@ -1,0 +1,31 @@
+name = "kv-backed-rate-limiter"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+[[actor]]
+binding = "RATE_AGENT"
+type = "RateLimitAgent"
+
+[[actor]]
+binding = "REGISTRY"
+type = "RateLimitRegistry"
+
+[telnyx]
+binding = "TELNYX"
+
+[storage.kv.RATE_KV]
+id = "<kv-namespace-uuid>"
+
+[env_vars]
+ALERT_PHONE = "+18005559876"
+SENDER_PHONE = "+18005551234"
+# Maximum requests allowed per window per key
+RATE_LIMIT = "10"
+# Window size in seconds for the sliding counter (default: 60 = 1 minute)
+WINDOW_SECONDS = "60"
+# Number of consecutive rejections before an SMS alert fires
+ALERT_THRESHOLD = "5"
+
+[[secrets]]
+binding = "TELNYX_API_KEY"
+name = "TELNYX_API_KEY"
