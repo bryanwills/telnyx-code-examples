@@ -215,10 +215,17 @@ export class FleetRegistry extends Agent<Record<string, unknown>, Record<string,
     );
   }
 
-  async listAgents(): Promise<AgentRecord[]> {
+  async listAgents(runId?: string): Promise<AgentRecord[]> {
     this.ensureSchema();
-    return this.ctx.storage.sql
-      .exec("SELECT agent_id, role, status, last_artifact, updated_at FROM agents ORDER BY agent_id")
+    const rows = runId
+      ? this.ctx.storage.sql.exec(
+          "SELECT agent_id, role, status, last_artifact, updated_at FROM agents WHERE agent_id LIKE ? ORDER BY agent_id",
+          `${runId}:%`,
+        )
+      : this.ctx.storage.sql.exec(
+          "SELECT agent_id, role, status, last_artifact, updated_at FROM agents ORDER BY agent_id",
+        );
+    return rows
       .toArray()
       .map((row) => ({
         agentId: String(row.agent_id),
@@ -229,15 +236,22 @@ export class FleetRegistry extends Agent<Record<string, unknown>, Record<string,
       }));
   }
 
-  async listFiles(limit = 100): Promise<FileMetadata[]> {
+  async listFiles(limit = 100, runId?: string): Promise<FileMetadata[]> {
     this.ensureSchema();
     const safeLimit = Math.max(1, Math.min(limit, 500));
-    return this.ctx.storage.sql
-      .exec(
-        `SELECT path, size, modified_at, agent_id, operation, recorded_at
-         FROM files ORDER BY recorded_at DESC LIMIT ?`,
-        safeLimit,
-      )
+    const rows = runId
+      ? this.ctx.storage.sql.exec(
+          `SELECT path, size, modified_at, agent_id, operation, recorded_at
+           FROM files WHERE path LIKE ? ORDER BY recorded_at DESC LIMIT ?`,
+          `runs/${runId}/%`,
+          safeLimit,
+        )
+      : this.ctx.storage.sql.exec(
+          `SELECT path, size, modified_at, agent_id, operation, recorded_at
+           FROM files ORDER BY recorded_at DESC LIMIT ?`,
+          safeLimit,
+        );
+    return rows
       .toArray()
       .map((row) => ({
         path: String(row.path),

@@ -93,12 +93,35 @@ CLOUDFS_WORKSPACE_DIR=/shared
 npm start
 ```
 
+For a local recording, CloudFS-compatible filesystem behavior can be demonstrated with a writable local mount path. Create `.env` from the example and set:
+
+```dotenv
+CLOUDFS_MOUNT_PATH=/tmp/agentfs
+CLOUDFS_WORKSPACE_DIR=/shared
+```
+
+Then open <http://localhost:3000>. The dashboard is designed for a 16:9 recording and runs the real actor workflow at a visible pace. A production CloudFS demonstration uses the same application code; only `CLOUDFS_MOUNT_PATH` changes to the JuiceFS mount.
+
 ## Demo
+
+### Guided web showcase
+
+Open the root page and select **Run agent fleet**. The UI creates a fresh run ID, then shows each actor reading and writing through the shared workspace. Agent state, SQL operation history, generated files, and artifact contents update throughout the handoff. Repeating the demo creates a separate `runs/<runId>/` workspace so every take starts cleanly without deleting earlier data.
+
+### API
 
 Run the complete five-agent handoff:
 
 ```bash
 curl -X POST http://localhost:3000/demo
+```
+
+For a paced, isolated run, provide a run ID and delay in milliseconds:
+
+```bash
+curl -X POST http://localhost:3000/demo \
+  -H 'Content-Type: application/json' \
+  -d '{"runId":"recording-take-01","paceMs":1100}'
 ```
 
 The response contains five registered agents and the read/write history. The resulting files remain in `/mnt/agentfs/shared` and are visible from every other host that mounts the same CloudFS filesystem.
@@ -121,12 +144,13 @@ curl 'http://localhost:3000/artifacts/research%2Fnotes.md?agent=agent-2'
 
 | Method | Path | Description |
 |---|---|---|
-| `POST` | `/demo` | Run the five-agent handoff |
+| `GET` | `/` | Open the guided recording dashboard |
+| `POST` | `/demo` | Run the five-agent handoff; optionally accept `runId` and `paceMs` |
 | `POST` | `/artifacts` | Initialize an agent and write an artifact |
-| `GET` | `/artifacts` | List files currently present in the shared workspace |
+| `GET` | `/artifacts` | List files; optionally scope results with `?runId=` |
 | `GET` | `/artifacts/:path` | Read an artifact as the selected `?agent=` |
 | `GET` | `/agents/:id` | Get one actor's current state |
-| `GET` | `/fleet` | List registered agents and SQL file-operation history |
+| `GET` | `/fleet` | List registered agents and SQL history; optionally scope with `?runId=` |
 | `GET` | `/health/liveness` | Liveness check |
 | `GET` | `/health/readiness` | Readiness check |
 
