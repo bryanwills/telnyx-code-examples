@@ -24,14 +24,22 @@ You need **two secrets** before running the bot. Both are in the DevRel 1Passwor
 > 1. Run `git clone https://github.com/team-telnyx/telnyx-code-examples.git ~/telnyx-code-examples` (skip if already cloned)
 > 2. `cd ~/telnyx-code-examples`
 > 3. Run `python3 -m venv .omo/bot-venv && .omo/bot-venv/bin/pip install -q pyjwt cryptography pyyaml telnyx requests`
-> 4. Verify `~/Downloads/telnyx-devrel-bot.private-key.pem` exists;
+> 4. Verify `~/Downloads/telnyx-devrel-bot.private-key.pem` exists; if not, tell me to download it from 1Password first
 > 5. Verify `$LINEAR_API_KEY` and `$TELNYX_API_KEY` are set in env; if not, tell me to set them
 > 6. Run a smoke test: `GH_APP_ID=4704723 GH_APP_PRIVATE_KEY_PATH=~/Downloads/telnyx-devrel-bot.private-key.pem .omo/bot-venv/bin/python scripts/bot/github_app_auth.py whoami`
 > 7. Report whether the bot identity shows as `telnyx-devrel-bot`
 
-## Run the bot on a ticket (agent-readable — paste into your CLI agent)
+## Run the bot — discover your tickets and process one (DEFAULT)
 
-> Run the telnyx-devrel-bot against Linear ticket **DEV-XXX**. Open a real PR (not a dry-run). Use a fresh clean clone at `/tmp/bot-run` so my working tree isn't touched:
+This is the main mode for the DevRel team. Paste this into your agentic CLI:
+
+> Run the telnyx-devrel-bot in discovery mode for me (`--mine`). It should:
+> 1. Find all my Linear tickets in `Code Samples Week 9` and later (Week 9, 10, 11, ...) on the DEV team
+> 2. Filter to tickets assigned to me that are in **Backlog** or **Todo** state with a `## Sample:` line
+> 3. Pick the first one and run the bot end-to-end on it (open a real PR as `telnyx-devrel-bot[bot]`, move Linear to "In Review")
+> 4. If I have no actionable tickets, tell me and stop. Don't re-process tickets that are "In Review" or "Done".
+>
+> Use a fresh clean clone at `/tmp/bot-run` so my working tree isn't touched:
 > ```bash
 > git clone https://github.com/team-telnyx/telnyx-code-examples.git /tmp/bot-run
 > cp -r ~/telnyx-code-examples/scripts/bot /tmp/bot-run/scripts/
@@ -41,15 +49,22 @@ You need **two secrets** before running the bot. Both are in the DevRel 1Passwor
 > export GH_APP_PRIVATE_KEY_PATH=~/Downloads/telnyx-devrel-bot.private-key.pem
 > export BOT_REPO_ROOT=/tmp/bot-run
 > export AI_MODEL=deepseek-ai/DeepSeek-V4-Flash-0731
-> ~/telnyx-code-examples/.omo/bot-venv/bin/python scripts/bot/runner.py --ticket DEV-XXX --no-dry-run
+> ~/telnyx-code-examples/.omo/bot-venv/bin/python scripts/bot/runner.py --mine --no-dry-run
 > ```
 > Report the PR URL when done. If `verify.py` fails, check whether the failures are pre-existing on main (run `verify.py` on a clean main checkout to compare) — only fix failures caused by the new sample, not pre-existing ones.
 
-## Dry-run (review generated files before opening a PR)
+### Variants
 
-Same as above, but drop `--no-dry-run`:
+- **Process all my actionable tickets at once** (one PR per ticket): add `--process-all` to the runner command.
+- **Dry-run (no PR, no Linear state change)**: drop `--no-dry-run` — generated files land in `/tmp/bot-run/<sample>/` for you to review.
+- **Target a specific teammate's tickets** (e.g. covering for someone): use `--assignee "Harpreet Singh Seehra"` instead of `--mine`.
 
-> Run the telnyx-devrel-bot against Linear ticket **DEV-XXX** in dry-run mode (no PR, no Linear state change). Use `/tmp/bot-run` as the working directory. When done, show me the contents of the generated sample folder so I can review before opening a real PR.
+## Run the bot — specific ticket (advanced)
+
+If you already know the ticket ID:
+
+> Run the telnyx-devrel-bot against Linear ticket **DEV-XXX**. Open a real PR (not a dry-run).
+> Use the clone-and-run recipe above, replacing `--mine --no-dry-run` with `--ticket DEV-XXX --no-dry-run`.
 
 ## What the bot does
 
@@ -60,6 +75,15 @@ Same as above, but drop `--no-dry-run`:
 5. Updates Linear: moves ticket to "In Review" + comments PR URL
 
 ~3 minutes per ticket.
+
+## Discovery rules (the `--mine` and `--assignee` modes)
+
+- **Weeks scanned**: Code Samples Week 9 and later (Weeks 7, 8 are skipped — done)
+- **States picked up**: Backlog, Todo, Unstarted only
+- **States skipped**: In Review, In Progress, Done, Canceled — never re-processed
+- **Per-person fallback**: if the current week has no actionable tickets for you, the bot moves to the next week (e.g. Week 9 → Week 10 → Week 11). It stops at the first week with parseable tickets for you.
+- **One week at a time**: by default processes tickets from one week only; use `--process-all` to sweep every actionable ticket across weeks.
+- **Sample name source**: must have a `## Sample: \`<name>\`` line in the ticket description. Tickets without it are reported as skipped.
 
 ## Identity & audit (what shows up where)
 
@@ -74,7 +98,7 @@ So the PR is always from the bot; the Linear ticket updates are from whoever ran
 ## Ticket requirements
 
 The Linear ticket must:
-- Be on the **DEV** team's "Code Samples Week N" project (current active week: `Code Samples Week 9`, ID `c96d42d7-bc43-45db-a4c0-2518fc63e290`)
+- Be on the **DEV** team's "Code Samples Week N" project (Week 9 or later)
 - Contain a line like `## Sample: \`<name>\`` in the description (look at [DEV-808](https://linear.app/telnyx/issue/DEV-808/sprint-2-ai-call-campaign-orchestrator) for the format)
 - Have a description that explains the architecture / key APIs / acceptance criteria — the LLM uses this as the spec
 
@@ -86,6 +110,7 @@ The Linear ticket must:
 - **Bot identity wrong (commits show your name, not `telnyx-devrel-bot[bot]`)** — the `GH_APP_ID` / `GH_APP_PRIVATE_KEY_PATH` env vars aren't being picked up. Confirm they're exported in the shell where the agent runs.
 - **"label 'code-samples' not found"** — already created on the repo, won't recur. If it does: `curl -X POST -H "Authorization: token <token>" https://api.github.com/repos/team-telnyx/telnyx-code-examples/labels -d '{"name":"code-samples","color":"0E8FB3"}'`
 - **Linear "Invalid GraphQL" error** — known cosmetic bug in `linear_client._issue_state_id` (type mismatch between `ID!` and `String!`). The ticket state usually already moves via Linear's own automation; the comment with the PR URL still lands. Fix is queued.
+- **"Folder already exists: /tmp/bot-run/<sample>"** — a previous run left a folder. Delete it (`rm -rf /tmp/bot-run/<sample>`) and re-run.
 
 ## What's already done (you don't need to redo)
 
@@ -93,6 +118,7 @@ The Linear ticket must:
 - ✅ `code-samples` label created on the repo
 - ✅ Bot tested end-to-end on DEV-808 → [PR #120](https://github.com/team-telnyx/telnyx-code-examples/pull/120)
 - ✅ All 5 bot modules in `scripts/bot/` proven working
+- ✅ `--mine` discovery mode tested — finds Sonam's 2 Week 9 tickets (DEV-840, DEV-823)
 
 ## What's deferred (separate work, not blocking usage)
 
