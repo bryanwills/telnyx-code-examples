@@ -3195,3 +3195,9 @@ examples:
     language: python
     framework: fastapi
     folder: outbound-hold-agent-python
+
+  - product: ai
+    use_case: "auto-generated-from-linear"
+    language: python
+    framework: flask
+    folder: ai-call-campaign-orchestrator
