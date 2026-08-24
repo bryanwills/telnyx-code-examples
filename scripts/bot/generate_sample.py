@@ -31,7 +31,13 @@ import urllib.request
 import urllib.error
 from pathlib import Path
 
-INFERENCE_URL = "https://api.telnyx.com/v2/ai/chat/completions"
+# Two inference backends — the bot auto-detects which one to use based on
+# which API key is available in the environment. See _resolve_inference_config()
+# below. On ACP (Hermes agent), LITELLM_API_KEY is auto-provisioned so no
+# TELNYX_API_KEY runtime secret is needed. On a laptop, TELNYX_API_KEY is
+# used with the public Telnyx API.
+TELNYX_INFERENCE_URL = "https://api.telnyx.com/v2/ai/chat/completions"
+LITELLM_DEFAULT_BASE = "http://litellm-aiswe.query.prod.telnyx.io:4000/v1"
 
 
 # ---------------------------------------------------------------------------
@@ -62,15 +68,46 @@ GUIDE.md is a standalone tutorial walking through how the example works.
 
 
 # ---------------------------------------------------------------------------
-# Inference call
+# Inference call — supports two backends:
+#   1. LiteLLM proxy (preferred on ACP): LITELLM_API_KEY + LITELLM_BASE_URL
+#   2. Telnyx public API (laptop/dev):    TELNYX_API_KEY + https://api.telnyx.com/v2/ai/chat/completions
+# The agent on ACP has LITELLM_API_KEY auto-provisioned, so no TELNYX_API_KEY
+# runtime secret is needed when running on ACP.
 # ---------------------------------------------------------------------------
+
+TELNYX_INFERENCE_URL = "https://api.telnyx.com/v2/ai/chat/completions"
+LITELLM_DEFAULT_BASE = "http://litellm-aiswe.query.prod.telnyx.io:4000/v1"
+
+
+def _resolve_inference_config() -> tuple[str, str, str]:
+    """Return (api_url, auth_token, default_model) based on which env vars are available.
+
+    Prefers LiteLLM (LITELLM_API_KEY) when set — this is the ACP path where
+    the agent has the key auto-provisioned and doesn't need TELNYX_API_KEY.
+    Falls back to the Telnyx public API (TELNYX_API_KEY) for laptop/dev use.
+
+    The default model differs between backends:
+      - LiteLLM proxy:       "DeepSeek-V4-Flash" (bare metal name, no prefix)
+      - Telnyx public API:   "deepseek-ai/DeepSeek-V4-Flash-0731" (provider-prefixed)
+    """
+    litellm_key = os.environ.get("LITELLM_API_KEY") or os.environ.get("LITELLM_KEY")
+    if litellm_key:
+        base = os.environ.get("LITELLM_BASE_URL", LITELLM_DEFAULT_BASE)
+        url = f"{base.rstrip('/')}/chat/completions"
+        return url, litellm_key, "DeepSeek-V4-Flash"
+    telnyx_key = os.environ.get("TELNYX_API_KEY")
+    if telnyx_key:
+        return TELNYX_INFERENCE_URL, telnyx_key, "deepseek-ai/DeepSeek-V4-Flash-0731"
+    raise SystemExit(
+        "No inference credentials found. Set either LITELLM_API_KEY (ACP) "
+        "or TELNYX_API_KEY (laptop/dev) in the environment."
+    )
+
 
 def call_inference(messages: list[dict], max_tokens: int = 8000,
                    temperature: float = 0.3) -> str:
-    key = os.environ.get("TELNYX_API_KEY")
-    if not key:
-        raise SystemExit("TELNYX_API_KEY env var not set")
-    model = os.environ.get("AI_MODEL", "moonshotai/Kimi-K2.6")
+    url, key, default_model = _resolve_inference_config()
+    model = os.environ.get("AI_MODEL", default_model)
     body = {
         "model": model,
         "messages": messages,
@@ -78,7 +115,7 @@ def call_inference(messages: list[dict], max_tokens: int = 8000,
         "temperature": temperature,
     }
     req = urllib.request.Request(
-        INFERENCE_URL,
+        url,
         data=json.dumps(body).encode(),
         method="POST",
         headers={
