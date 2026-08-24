@@ -32,6 +32,10 @@ CloudFS is a POSIX filesystem mounted with JuiceFS. It is not an `env` binding a
 | WebSocket communication | `AgentSocketServer` broadcasts every agent state patch to connected clients |
 | Safe shared paths | Traversal protection prevents artifacts from escaping the shared directory |
 
+## Why Telnyx
+
+Telnyx brings durable actors, embedded SQL, real-time WebSockets, and shared CloudFS storage together on its AI Communications Infrastructure. That lets a fleet coordinate close to users without operating a separate actor runtime, database, socket service, or shared filesystem.
+
 ## Prerequisites
 
 - Node.js 22+
@@ -128,9 +132,28 @@ curl 'http://localhost:3000/artifacts/research%2Fnotes.md?agent=agent-2'
 
 Agent SDK clients can connect to an individual actor's runtime WebSocket route and subscribe to state patches. The server side is implemented with `AgentSocketServer`; connected dashboards see `idle`, `reading`, `writing`, `done`, and `error` transitions in real time.
 
+## Agent discovery
+
+Each request resolves an actor by its stable `agentId`. The `FleetRegistry` records that ID, its role, and its latest status in embedded SQL, so `GET /fleet` provides the fleet-wide discovery view while `GET /agents/:id` addresses one actor directly.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| Readiness returns `503` | The CloudFS mount is missing or inaccessible | Mount CloudFS and verify `CLOUDFS_MOUNT_PATH` points to it |
+| `ENOENT` while reading | The requested artifact has not been written | Run `POST /demo` or write the artifact first |
+| A path is rejected | It is absolute or contains `..` traversal | Use a path relative to the shared workspace |
+| Changes are not visible on another host | The processes mounted different filesystems or mount points | Mount the same CloudFS filesystem for every process |
+
 ## Production notes
 
 - Mount the same CloudFS filesystem into every process that hosts fleet actors.
 - Writes use temporary files plus atomic rename, avoiding readers observing partial content.
 - Concurrent writes to the same file are last-writer-wins unless clients coordinate with CloudFS-supported `flock`/`fcntl` locks.
 - Treat `META_URL` and `TELNYX_API_KEY` as secrets. Do not commit either value.
+
+## Related examples
+
+- [Edge call transcription agent](../edge-call-transcription-agent/) combines Agent SDK state with live call transcription.
+- [Edge customer agent](../edge-customer-agent-typescript/) demonstrates one durable actor per customer.
+- [Agent with tool calling](../agent-with-tool-calling/) shows an Agent SDK actor invoking communications tools.

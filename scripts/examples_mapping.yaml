@@ -3195,3 +3195,10 @@ examples:
     language: python
     framework: fastapi
     folder: outbound-hold-agent-python
+
+  # Agent SDK + CloudFS shared workspace
+  - product: ai
+    use_case: agent-fleet-shared-workspace
+    language: nodejs
+    framework: vanilla
+    folder: agent-fleet-shared-workspace
