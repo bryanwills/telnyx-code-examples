@@ -24,7 +24,7 @@ You need **two secrets** before running the bot. Both are in the DevRel 1Passwor
 > 1. Run `git clone https://github.com/team-telnyx/telnyx-code-examples.git ~/telnyx-code-examples` (skip if already cloned)
 > 2. `cd ~/telnyx-code-examples`
 > 3. Run `python3 -m venv .omo/bot-venv && .omo/bot-venv/bin/pip install -q pyjwt cryptography pyyaml telnyx requests`
-> 4. Verify `~/Downloads/telnyx-devrel-bot.private-key.pem` exists; if not, tell me to download it from 1Password first
+> 4. Verify `~/Downloads/telnyx-devrel-bot.private-key.pem` exists;
 > 5. Verify `$LINEAR_API_KEY` and `$TELNYX_API_KEY` are set in env; if not, tell me to set them
 > 6. Run a smoke test: `GH_APP_ID=4704723 GH_APP_PRIVATE_KEY_PATH=~/Downloads/telnyx-devrel-bot.private-key.pem .omo/bot-venv/bin/python scripts/bot/github_app_auth.py whoami`
 > 7. Report whether the bot identity shows as `telnyx-devrel-bot`
