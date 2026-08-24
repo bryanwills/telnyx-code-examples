@@ -88,6 +88,90 @@ def register_in_mapping(folder_name: str, language: str, framework: str,
 
 
 # ---------------------------------------------------------------------------
+# Discovery: find tickets for an assignee across active Code Samples Week projects
+# ---------------------------------------------------------------------------
+
+# Weeks older than this are not processed — work there is done.
+MIN_WEEK_NUMBER = 9
+# Ticket states we will pick up. Anything else (In Review, Done, Canceled) is skipped.
+ACTIONABLE_STATES = {"backlog", "todo", "unstarted"}
+
+
+def _parse_with_fallback(issue: dict) -> "linear_client.SampleTicket":
+    """Use linear_client.parse_sample_ticket, then fall back to `## Sample:` in description."""
+    p = linear_client.parse_sample_ticket(issue)
+    if not p.sample_name:
+        m = re.search(r"##\s*Sample:\s*`?([a-z0-9][a-z0-9\-]+)`?",
+                      p.description or "", re.I)
+        if m:
+            p.sample_name = m.group(1)
+            p.branch = f"linear/{p.issue_id}-{m.group(1)}"
+            p.is_sample_ticket = True
+    return p
+
+
+def find_my_actionable_tickets(assignee_name: str,
+                                week_projects: list[dict] | None = None,
+                                verbose: bool = True) -> list[tuple[dict, "linear_client.SampleTicket"]]:
+    """Find backlog/todo tickets assigned to `assignee_name` in Week 9+ projects.
+
+    Returns a list of (project, parsed_ticket) tuples. Stops at the first
+    week that has parseable tickets for that person — does NOT collect
+    across multiple weeks (per design: process one week at a time).
+    """
+    if week_projects is None:
+        all_projects = linear_client.find_code_samples_week_projects()
+        # Filter: Week 9+, sorted by week number ascending
+        def wk(p):
+            m = re.search(r"Week (\d+)", p["name"])
+            return int(m.group(1)) if m else 999
+        week_projects = [p for p in all_projects
+                         if wk(p) >= MIN_WEEK_NUMBER
+                         and p["state"] in ("started", "backlog")]
+        week_projects.sort(key=wk)
+
+    for project in week_projects:
+        if verbose:
+            print(f"  scanning {project['name']} (state={project['state']})...")
+        issues = linear_client.list_tickets_for_project(project["id"])
+        actionable = []
+        for issue in issues:
+            assignee = issue["assignee"]["name"] if issue["assignee"] else None
+            if assignee != assignee_name:
+                continue
+            if issue["state"]["name"].lower() not in ACTIONABLE_STATES:
+                continue
+            parsed = _parse_with_fallback(issue)
+            if not parsed.sample_name:
+                if verbose:
+                    print(f"    skip {parsed.issue_id} [{issue['state']['name']}] — no `## Sample:` line")
+                continue
+            actionable.append((project, parsed))
+            if verbose:
+                print(f"    ✓ {parsed.issue_id} [{issue['state']['name']}] sample={parsed.sample_name}")
+        if actionable:
+            if verbose:
+                print(f"  → found {len(actionable)} actionable ticket(s) in {project['name']}")
+            return actionable
+        if verbose:
+            print(f"  → no actionable tickets for {assignee_name} in {project['name']}, moving on...")
+    return []
+
+
+def _resolve_assignee(name_or_mine: str) -> str:
+    """Resolve `--mine` to the current user's name via Linear's /me endpoint."""
+    if name_or_mine != "mine":
+        return name_or_mine
+    # Query Linear for the current user
+    q = "{ viewer { name email } }"
+    data = linear_client._gql(q)
+    name = data["data"]["viewer"]["name"]
+    if not name:
+        raise SystemExit("Could not determine your Linear username from /viewer")
+    return name
+
+
+# ---------------------------------------------------------------------------
 # Pipeline
 # ---------------------------------------------------------------------------
 
@@ -231,12 +315,56 @@ def main() -> int:
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    p.add_argument("--ticket", required=True, help="Linear ticket ID (e.g. DEV-808)")
+    # Three modes — exactly one required:
+    #   --ticket DEV-XXX        explicit ticket
+    #   --mine                  discover tickets assigned to current Linear user
+    #   --assignee <Name>       discover tickets assigned to a named person
+    group = p.add_mutually_exclusive_group(required=True)
+    group.add_argument("--ticket", help="Linear ticket ID (e.g. DEV-808)")
+    group.add_argument("--mine", action="store_true",
+                       help="Find actionable tickets assigned to me (current Linear user)")
+    group.add_argument("--assignee",
+                       help="Find actionable tickets assigned to this person (full name)")
     p.add_argument("--no-dry-run", dest="dry_run", action="store_false",
                    help="Open a real PR (default is dry-run)")
+    p.add_argument("--process-all", action="store_true",
+                   help="With --mine/--assignee, process ALL discovered tickets, not just the first")
     p.set_defaults(dry_run=True)
     args = p.parse_args()
 
+    if args.mine or args.assignee:
+        # Discovery mode
+        assignee_name = _resolve_assignee("mine" if args.mine else args.assignee)
+        print(f"=== Discovery: finding actionable tickets for {assignee_name} ===")
+        print(f"    scanning Week {MIN_WEEK_NUMBER}+ projects, states={sorted(ACTIONABLE_STATES)}")
+        tickets = find_my_actionable_tickets(assignee_name)
+        if not tickets:
+            print(f"\nNo actionable tickets found for {assignee_name} in Week {MIN_WEEK_NUMBER}+.")
+            print("Either all your tickets are In Review / Done, or no `## Sample:` line was found.")
+            return 0
+        print(f"\nFound {len(tickets)} actionable ticket(s):")
+        for project, parsed in tickets:
+            print(f"  {parsed.issue_id:10} [{parsed.state:12}]  sample={parsed.sample_name:30}  ({project['name']})")
+        if not args.process_all:
+            print(f"\nProcessing first ticket: {tickets[0][1].issue_id}")
+            print("(Use --process-all to run on every discovered ticket.)")
+            tickets = tickets[:1]
+        else:
+            print(f"\nProcessing all {len(tickets)} ticket(s) sequentially...")
+        results = []
+        for project, parsed in tickets:
+            print(f"\n{'='*60}")
+            print(f"Processing {parsed.issue_id} ({project['name']})")
+            print(f"{'='*60}")
+            result = run_pipeline(parsed.issue_id, dry_run=args.dry_run)
+            results.append(result)
+        print(f"\n=== Summary ===")
+        for r in results:
+            pr = r.get("pr_url") or "(dry-run)"
+            print(f"  {r['ticket_id']}: {r['sample_name']} → {pr}")
+        return 0
+
+    # Direct ticket mode
     result = run_pipeline(args.ticket, dry_run=args.dry_run)
     print(f"\n=== Result ===")
     for k, v in result.items():
