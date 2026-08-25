@@ -92,9 +92,9 @@ class NetworkIncidentAgent(Agent):
                 to=to_number,
                 text=message,
             )
-            app.logger.info(f"SMS sent to {to_number}")
+            app.logger.info("SMS sent successfully")
         except Exception as e:
-            app.logger.exception(f"Failed to send SMS to {to_number}")
+            app.logger.exception("Failed to send SMS")
 
     def notify_affected_customers(self, message: str):
         """Proactively notify all affected customers via SMS."""
@@ -120,7 +120,7 @@ class NetworkIncidentAgent(Agent):
         Handle an inbound customer call with incident context.
         This is called when a customer calls in about the incident.
         """
-        self._add_event("inbound_call", f"Call from {from_number}")
+        self._add_event("inbound_call", "Inbound customer call received")
         
         # Build incident context message
         context_message = (
