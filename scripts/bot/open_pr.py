@@ -159,13 +159,14 @@ def open_pr(branch: str, title: str, body: str, paths: list[str],
                 "Dirty files:\n" + dirty
             )
 
-    # Configure git to push as the bot via HTTPS basic auth
-    git_cfg = [
-        ["git", "config", "http.https://github.com/.insteadOf",
+    # Configure git to push as the bot via HTTPS. Two approaches:
+    # 1. Set the remote URL with the token embedded (most reliable in containers)
+    # 2. Also set the insteadOf config as a fallback
+    remote_url = f"https://x-access-token:{token}@github.com/{owner}/{repo}.git"
+    run(["git", "remote", "set-url", "origin", remote_url], env=env, cwd=REPO_ROOT)
+    run(["git", "config", "http.https://github.com/.insteadOf",
          f"https://x-access-token:{token}@github.com/"],
-    ]
-    for cfg in git_cfg:
-        run(cfg, env=env, cwd=REPO_ROOT)
+        env=env, cwd=REPO_ROOT)
 
     # Sync main
     run(["git", "fetch", "origin", base, "--depth=1"], env=env, cwd=REPO_ROOT)
@@ -227,7 +228,7 @@ def open_pr(branch: str, title: str, body: str, paths: list[str],
         env=env, cwd=REPO_ROOT)
     print(f"Pushed {branch}")
 
-    # Open the PR via gh CLI (uses GH_TOKEN env var)
+    # Build PR body
     pr_body = body
     if failures:
         pr_body += (
@@ -243,22 +244,55 @@ def open_pr(branch: str, title: str, body: str, paths: list[str],
     if linear_url:
         pr_body += f"\n\nLinear: {linear_url}"
 
-    pr_result = run([
-        "gh", "pr", "create",
-        "--base", base,
-        "--head", branch,
-        "--title", title,
-        "--body", pr_body,
-        "--label", "code-samples",
-    ], env=env, cwd=REPO_ROOT, check=False, capture=True)
-
-    if pr_result.returncode != 0:
-        print(pr_result.stdout)
-        print(pr_result.stderr, file=sys.stderr)
-        raise RuntimeError(f"gh pr create failed: exit {pr_result.returncode}")
-
-    pr_url = pr_result.stdout.strip().splitlines()[-1]
+    # Open the PR via GitHub REST API (no gh CLI dependency — works in
+    # containers like the ACP Hermes runtime where gh is not installed).
+    pr_url = _create_pr_via_api(token, owner, repo, base, branch, title, pr_body)
     print(f"Opened PR: {pr_url}")
+    return pr_url
+
+
+def _create_pr_via_api(token: str, owner: str, repo: str,
+                       base: str, head: str, title: str, body: str) -> str:
+    """Create a PR + add label via the GitHub REST API (no gh CLI needed)."""
+    import json as _json
+    import urllib.request as _urlreq
+    import urllib.error as _urlerr
+
+    api = f"https://api.github.com/repos/{owner}/{repo}/pulls"
+    payload = _json.dumps({
+        "title": title,
+        "head": head,
+        "base": base,
+        "body": body,
+    }).encode()
+    req = _urlreq.Request(api, data=payload, method="POST", headers={
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json",
+    })
+    try:
+        with _urlreq.urlopen(req) as resp:
+            data = _json.loads(resp.read().decode())
+    except _urlerr.HTTPError as e:
+        err = e.read().decode()
+        raise RuntimeError(f"GitHub PR create failed: {e.code} {err}") from e
+
+    pr_url = data["html_url"]
+    pr_num = data["number"]
+
+    # Add the code-samples label
+    label_api = f"https://api.github.com/repos/{owner}/{repo}/issues/{pr_num}/labels"
+    label_payload = _json.dumps({"labels": ["code-samples"]}).encode()
+    label_req = _urlreq.Request(label_api, data=label_payload, method="POST", headers={
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json",
+    })
+    try:
+        _urlreq.urlopen(label_req).read()
+    except _urlerr.HTTPError:
+        pass  # label might already exist or fail — non-fatal
+
     return pr_url
 
 
