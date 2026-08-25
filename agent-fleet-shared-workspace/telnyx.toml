@@ -2,11 +2,11 @@ name = "agent-fleet-shared-workspace"
 main = "src/index.ts"
 compatibility_date = "2026-05-01"
 
-[[actor]]
+[[actors]]
 binding = "FLEET_AGENT"
 type = "FleetAgent"
 
-[[actor]]
+[[actors]]
 binding = "REGISTRY"
 type = "FleetRegistry"
 

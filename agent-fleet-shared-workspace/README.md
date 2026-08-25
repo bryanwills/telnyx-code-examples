@@ -39,7 +39,7 @@ Telnyx brings durable actors, embedded SQL, real-time WebSockets, and shared Clo
 ## Prerequisites
 
 - Node.js 22+
-- Telnyx CLI and an authenticated Telnyx account
+- Telnyx Edge CLI v0.5.0+ and an authenticated Telnyx account
 - A Telnyx CloudFS filesystem
 - JuiceFS Community Edition on a Linux host/container with FUSE, or an existing CloudFS mount supplied to the application
 
@@ -93,6 +93,8 @@ CLOUDFS_WORKSPACE_DIR=/shared
 npm start
 ```
 
+The start script checks `TELNYX_EDGE_BIN`, then `~/bin/telnyx-edge`, then the shell `PATH`. Docker Desktop must be running, and the CLI's local actor and function runtime images must be available.
+
 For a local recording, CloudFS-compatible filesystem behavior can be demonstrated with a writable local mount path. Create `.env` from the example and set:
 
 ```dotenv
@@ -100,7 +102,7 @@ CLOUDFS_MOUNT_PATH=/tmp/agentfs
 CLOUDFS_WORKSPACE_DIR=/shared
 ```
 
-Then open <http://localhost:3000>. The dashboard is designed for a 16:9 recording and runs the real actor workflow at a visible pace. A production CloudFS demonstration uses the same application code; only `CLOUDFS_MOUNT_PATH` changes to the JuiceFS mount.
+Then open <http://localhost:8787>. The dashboard is designed for a 16:9 recording and runs the real actor workflow at a visible pace. A production CloudFS demonstration uses the same application code; only `CLOUDFS_MOUNT_PATH` changes to the JuiceFS mount.
 
 ## Demo
 
@@ -113,13 +115,13 @@ Open the root page and select **Run agent fleet**. The UI creates a fresh run ID
 Run the complete five-agent handoff:
 
 ```bash
-curl -X POST http://localhost:3000/demo
+curl -X POST http://localhost:8787/demo
 ```
 
 For a paced, isolated run, provide a run ID and delay in milliseconds:
 
 ```bash
-curl -X POST http://localhost:3000/demo \
+curl -X POST http://localhost:8787/demo \
   -H 'Content-Type: application/json' \
   -d '{"runId":"recording-take-01","paceMs":1100}'
 ```
@@ -129,7 +131,7 @@ The response contains five registered agents and the read/write history. The res
 Write an artifact as any agent:
 
 ```bash
-curl -X POST http://localhost:3000/artifacts \
+curl -X POST http://localhost:8787/artifacts \
   -H 'Content-Type: application/json' \
   -d '{"agentId":"agent-6","role":"researcher","path":"research/notes.md","content":"Shared notes"}'
 ```
@@ -137,7 +139,7 @@ curl -X POST http://localhost:3000/artifacts \
 Read it from a different agent:
 
 ```bash
-curl 'http://localhost:3000/artifacts/research%2Fnotes.md?agent=agent-2'
+curl 'http://localhost:8787/artifacts/research%2Fnotes.md?agent=agent-2'
 ```
 
 ## API

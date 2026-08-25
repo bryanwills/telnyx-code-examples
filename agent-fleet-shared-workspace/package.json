@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -b",
-    "start": "npm run build && telnyx-edge dev",
+    "start": "npm run build && node scripts/start.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
