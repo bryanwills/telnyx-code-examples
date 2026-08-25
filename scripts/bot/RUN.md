@@ -1,127 +1,143 @@
-# DevRel Code-Sample Bot — setup & usage
+# DevRel Code-Sample Bot — ACP Agent
 
 ## What this is
 
-Automation that reads a Linear ticket, generates a complete code sample via Telnyx Inference, runs the repo's quality gates, and opens a PR as `telnyx-devrel-bot[bot]`. No human writes the code; no human GitHub auth.
+An autonomous agent on the Telnyx Agent Control Plane (ACP) that reads Linear tickets, generates complete code samples via LLM inference, runs repo gates, and opens PRs as `telnyx-devrel-bot[bot]`. No laptop, no manual GitHub auth, no human-written code.
 
-Live proof: [PR #120](https://github.com/team-telnyx/telnyx-code-examples/pull/120) was generated from Linear ticket DEV-808 in ~3 minutes.
+**Agent name:** `devrel-squad-bot`
+**Runtime:** Hermes on ACP
+**Gateway:** `http://agent-devrel-squad-acp-devrel-squad-bot.query.prod.telnyx.io:18789/v1/responses`
+**Gateway key:** In the ACP UI (runtime secrets section) — ask Sonam or check the agent's config
 
-## Prerequisites (one-time, ~5 minutes)
+## How to trigger a run
 
-You need **two secrets** before running the bot. Both are in the DevRel 1Password vault — ask Sonam Gupta for access if you don't have it.
+### Option 1 — Tell your agentic CLI
 
-1. **GitHub App private key** — file named `telnyx-devrel-bot.<date>.private-key.pem`
-   - Save it to `~/Downloads/telnyx-devrel-bot.private-key.pem`
-   - This is the App's signing key (App ID `4704723`); it lets the bot authenticate as `telnyx-devrel-bot[bot]`
+Paste this into opencode / Claude Code / Codex:
 
-2. **Your Linear API key** and **your Telnyx API key** — these are personal, not shared
-   - They should already be in your shell env as `LINEAR_API_KEY` and `TELNYX_API_KEY`
-   - The bot reads them from env; you never paste them anywhere
+> Trigger the devrel-squad-bot agent on ACP. Send a POST to `http://agent-devrel-squad-acp-devrel-squad-bot.query.prod.telnyx.io:18789/v1/responses` with header `Authorization: Bearer <gateway-key>` and body `{"model":"devrel-squad-bot","input":"Run the bot. Find my actionable Linear tickets in Code Samples Week 9+ and open PRs."}`. Report back what the agent says.
 
-## Setup (agent-readable — paste the block below into your CLI agent)
+### Option 2 — Direct curl
 
-> Set up the telnyx-devrel-bot on this machine. Steps:
-> 1. Run `git clone https://github.com/team-telnyx/telnyx-code-examples.git ~/telnyx-code-examples` (skip if already cloned)
-> 2. `cd ~/telnyx-code-examples`
-> 3. Run `python3 -m venv .omo/bot-venv && .omo/bot-venv/bin/pip install -q pyjwt cryptography pyyaml telnyx requests`
-> 4. Verify `~/Downloads/telnyx-devrel-bot.private-key.pem` exists; if not, tell me to download it from 1Password first
-> 5. Verify `$LINEAR_API_KEY` and `$TELNYX_API_KEY` are set in env; if not, tell me to set them
-> 6. Run a smoke test: `GH_APP_ID=4704723 GH_APP_PRIVATE_KEY_PATH=~/Downloads/telnyx-devrel-bot.private-key.pem .omo/bot-venv/bin/python scripts/bot/github_app_auth.py whoami`
-> 7. Report whether the bot identity shows as `telnyx-devrel-bot`
+```bash
+curl -s -X POST "http://agent-devrel-squad-acp-devrel-squad-bot.query.prod.telnyx.io:18789/v1/responses" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <gateway-key>" \
+  -d '{"model":"devrel-squad-bot","input":"Run the bot. Find my actionable Linear tickets in Code Samples Week 9+ and open PRs."}'
+```
 
-## Run the bot — discover your tickets and process one (DEFAULT)
+Replace `<gateway-key>` with the actual gateway key (in the ACP UI runtime secrets).
 
-This is the main mode for the DevRel team. Paste this into your agentic CLI:
+### Option 3 — ACP UI
 
-> Run the telnyx-devrel-bot in discovery mode for me (`--mine`). It should:
-> 1. Find all my Linear tickets in `Code Samples Week 9` and later (Week 9, 10, 11, ...) on the DEV team
-> 2. Filter to tickets assigned to me that are in **Backlog** or **Todo** state with a `## Sample:` line
-> 3. Pick the first one and run the bot end-to-end on it (open a real PR as `telnyx-devrel-bot[bot]`, move Linear to "In Review")
-> 4. If I have no actionable tickets, tell me and stop. Don't re-process tickets that are "In Review" or "Done".
->
-> Use a fresh clean clone at `/tmp/bot-run` so my working tree isn't touched:
-> ```bash
-> git clone https://github.com/team-telnyx/telnyx-code-examples.git /tmp/bot-run
-> cp -r ~/telnyx-code-examples/scripts/bot /tmp/bot-run/scripts/
-> cd /tmp/bot-run
-> git switch -c bot-bootstrap && git add scripts/bot/ && git -c user.email=bot@local -c user.name=bot commit -m bootstrap
-> export GH_APP_ID=4704723
-> export GH_APP_PRIVATE_KEY_PATH=~/Downloads/telnyx-devrel-bot.private-key.pem
-> export BOT_REPO_ROOT=/tmp/bot-run
-> export AI_MODEL=deepseek-ai/DeepSeek-V4-Flash-0731
-> ~/telnyx-code-examples/.omo/bot-venv/bin/python scripts/bot/runner.py --mine --no-dry-run
-> ```
-> Report the PR URL when done. If `verify.py` fails, check whether the failures are pre-existing on main (run `verify.py` on a clean main checkout to compare) — only fix failures caused by the new sample, not pre-existing ones.
+Open http://agent-control-plane.query.prod.telnyx.io:8000/ui/agents/ae7e516a-6c23-4970-8c60-17fd1a6e6ece and use the test/send-message interface.
 
-### Variants
+## What the agent does
 
-- **Process all my actionable tickets at once** (one PR per ticket): add `--process-all` to the runner command.
-- **Dry-run (no PR, no Linear state change)**: drop `--no-dry-run` — generated files land in `/tmp/bot-run/<sample>/` for you to review.
-- **Target a specific teammate's tickets** (e.g. covering for someone): use `--assignee "Harpreet Singh Seehra"` instead of `--mine`.
+When triggered:
+1. Writes the GitHub App private key from the `APP_PRIVATE_KEY` runtime secret to `/tmp/devrel-bot.private-key.pem`
+2. Clones `team-telnyx/telnyx-code-examples` to `/tmp/bot-run`
+3. Creates a Python venv, installs deps
+4. Runs `scripts/bot/runner.py --mine --no-dry-run` which:
+   - Discovers your Linear tickets in Code Samples Week 9+ (Backlog/Todo/Unstarted state only)
+   - Falls through to the next week if current week has nothing for you
+   - For each ticket: generates code + docs via GLM-5.2-NVFP4 (LiteLLM proxy)
+   - Runs repo gates (verify.py, rewrite_repo_links, sync_readme, gen_llms_txt)
+   - Branches, commits as `telnyx-devrel-bot[bot]`, pushes, opens PR via GitHub REST API
+   - Adds `code-samples` label
+5. Reports back: tickets found, PRs opened (with URLs), errors
 
-## Run the bot — specific ticket (advanced)
+Takes ~3 min per ticket. If no actionable tickets, reports "no actionable tickets" and exits clean.
 
-If you already know the ticket ID:
+## What you need
 
-> Run the telnyx-devrel-bot against Linear ticket **DEV-XXX**. Open a real PR (not a dry-run).
-> Use the clone-and-run recipe above, replacing `--mine --no-dry-run` with `--ticket DEV-XXX --no-dry-run`.
+| Thing | Where |
+|---|---|
+| Gateway key | ACP UI → agent page → runtime secrets (ask Sonam if you don't have it) |
+| Your Linear tickets assigned to you | Already in Linear — Week 9+ on DEV team, with `## Sample: \`name\`` in description |
+| `LINEAR_API_KEY` runtime secret | Already set on the agent (Sonam's key). For your own key, ask Sonam to add yours or deploy your own agent |
+| `APP_PRIVATE_KEY` runtime secret | Already set (GitHub App private key) |
 
-## What the bot does
+## Discovery rules
 
-1. Reads Linear ticket, parses `## Sample: <name>` from the description
-2. Calls Telnyx Inference (`deepseek-ai/DeepSeek-V4-Flash-0731`, two-phase: code → docs)
-3. Runs repo gates (`verify.py`, `rewrite_repo_links`, `sync_readme`, `gen_llms_txt`) with auto-fix
-4. Branches `linear/<TICKET>-<sample>`, commits as `telnyx-devrel-bot[bot]`, opens PR with `code-samples` label
-5. Updates Linear: moves ticket to "In Review" + comments PR URL
+- **Weeks scanned:** Code Samples Week 9 and later (Weeks 7, 8 are done — skipped)
+- **States picked up:** Backlog, Todo, Unstarted only
+- **States skipped:** In Review, In Progress, Done, Canceled — never re-processed
+- **Per-person fallback:** if current week has nothing for you, bot moves to next week
+- **Stops at first week** with parseable tickets for you
+- **Sample name:** requires `## Sample: \`<name>\`` line in ticket description
 
-~3 minutes per ticket.
-
-## Discovery rules (the `--mine` and `--assignee` modes)
-
-- **Weeks scanned**: Code Samples Week 9 and later (Weeks 7, 8 are skipped — done)
-- **States picked up**: Backlog, Todo, Unstarted only
-- **States skipped**: In Review, In Progress, Done, Canceled — never re-processed
-- **Per-person fallback**: if the current week has no actionable tickets for you, the bot moves to the next week (e.g. Week 9 → Week 10 → Week 11). It stops at the first week with parseable tickets for you.
-- **One week at a time**: by default processes tickets from one week only; use `--process-all` to sweep every actionable ticket across weeks.
-- **Sample name source**: must have a `## Sample: \`<name>\`` line in the ticket description. Tickets without it are reported as skipped.
-
-## Identity & audit (what shows up where)
+## Identity & audit
 
 | Action | Identity |
 |---|---|
-| Git commits + PR author | `telnyx-devrel-bot[bot]` (shared bot account, owned by `team-telnyx` org) |
-| Linear state changes + comments | You (whichever Linear API key is in your env) |
-| Telnyx Inference API calls | You (whichever Telnyx API key is in your env) |
+| Git commits + PR author | `telnyx-devrel-bot[bot]` (shared bot, owned by `team-telnyx` org) |
+| Linear state changes + comments | Whichever `LINEAR_API_KEY` is in the agent's runtime secrets |
+| LLM inference calls | Routed through LiteLLM proxy (auto-provisioned `LITELLM_API_KEY`) |
 
-So the PR is always from the bot; the Linear ticket updates are from whoever ran it. No personal GitHub account is used.
+## Adding a teammate (for Sonam / Stephen)
 
-## Ticket requirements
+To let Harpreet or Anusha run the bot with their own Linear identity:
 
-The Linear ticket must:
-- Be on the **DEV** team's "Code Samples Week N" project (Week 9 or later)
-- Contain a line like `## Sample: \`<name>\`` in the description (look at [DEV-808](https://linear.app/telnyx/issue/DEV-808/sprint-2-ai-call-campaign-orchestrator) for the format)
-- Have a description that explains the architecture / key APIs / acceptance criteria — the LLM uses this as the spec
+1. **Option A — Deploy a per-teammate agent** (recommended):
+   - Clone the `devrel-squad-bot` config via ACP deploy with a new name (e.g. `devrel-squad-bot-harpreet`)
+   - Replace the `LINEAR_API_KEY` runtime secret with Harpreet's key
+   - Update `soul_md` to reference Harpreet's name instead of Sonam's
+   - Each teammate triggers their own agent
+
+2. **Option B — Shared agent with multiple keys** (more complex):
+   - Add `LINEAR_API_KEY_HARPREET`, `LINEAR_API_KEY_ANUSHA` as runtime secrets
+   - Modify `runner.py` to accept `--assignee "Harpreet Singh Seehra"` and use the matching key
+   - One agent, three callers
 
 ## Troubleshooting
 
-- **"Working tree is dirty"** — you ran from your real checkout instead of `/tmp/bot-run`. Use the clone command in the run recipe.
-- **Inference 524 timeout** — stick with `deepseek-ai/DeepSeek-V4-Flash-0731` (4-15s per phase). Don't use `moonshotai/Kimi-K2.6` (reasoning model, times out at the edge proxy).
-- **`verify.py` red but the new sample passes** — pre-existing unregistered folders on `main` (e.g. `ai-email-agent-python`, `audio-transcribe-summarize-sms`). Not caused by your run; merge the PR anyway or open a separate PR to register those folders.
-- **Bot identity wrong (commits show your name, not `telnyx-devrel-bot[bot]`)** — the `GH_APP_ID` / `GH_APP_PRIVATE_KEY_PATH` env vars aren't being picked up. Confirm they're exported in the shell where the agent runs.
-- **"label 'code-samples' not found"** — already created on the repo, won't recur. If it does: `curl -X POST -H "Authorization: token <token>" https://api.github.com/repos/team-telnyx/telnyx-code-examples/labels -d '{"name":"code-samples","color":"0E8FB3"}'`
-- **Linear "Invalid GraphQL" error** — known cosmetic bug in `linear_client._issue_state_id` (type mismatch between `ID!` and `String!`). The ticket state usually already moves via Linear's own automation; the comment with the PR URL still lands. Fix is queued.
-- **"Folder already exists: /tmp/bot-run/<sample>"** — a previous run left a folder. Delete it (`rm -rf /tmp/bot-run/<sample>`) and re-run.
+- **"No actionable tickets found"** — correct behavior if all your tickets are In Review/Done. Check Linear to confirm.
+- **Inference returns empty/None** — the model is overloaded. Stick with `GLM-5.2-NVFP4` (proven for code gen on ACP). Don't use DeepSeek-V4-Flash or MiniMax — they return empty content for complex code-gen prompts on ACP.
+- **`verify.py` red but sample passes** — pre-existing unregistered folders on main (ai-email-agent-python, etc.). Not your problem; merge the PR anyway.
+- **PEM key errors** — the agent normalizes the PEM automatically. If it still fails, check the `APP_PRIVATE_KEY` runtime secret has the full PEM including `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----` lines.
+- **PR creation fails** — the bot uses GitHub REST API (not `gh` CLI). If it fails, check the GitHub App installation token is valid (the agent mints a fresh one each run).
 
-## What's already done (you don't need to redo)
+## Architecture
 
-- ✅ GitHub App `telnyx-devrel-bot` created, transferred to `team-telnyx` org, installed on `telnyx-code-examples` with scoped permissions (Contents/Pull requests/Issues/Statuses = write)
-- ✅ `code-samples` label created on the repo
-- ✅ Bot tested end-to-end on DEV-808 → [PR #120](https://github.com/team-telnyx/telnyx-code-examples/pull/120)
-- ✅ All 5 bot modules in `scripts/bot/` proven working
-- ✅ `--mine` discovery mode tested — finds Sonam's 2 Week 9 tickets (DEV-840, DEV-823)
+```
+Teammate triggers agent
+        │
+        ▼
+┌──────────────────────────────────────────────────┐
+│  ACP Hermes Agent (devrel-squad-bot)             │
+│  ┌────────────────────────────────────────────┐  │
+│  │ 1. Write PEM from APP_PRIVATE_KEY secret    │  │
+│  │ 2. Clone repo to /tmp/bot-run               │  │
+│  │ 3. Create venv + install deps               │  │
+│  │ 4. Run runner.py --mine --no-dry-run        │  │
+│  │    ├─ Discover tickets (LINEAR_API_KEY)     │  │
+│  │    ├─ Generate code (LITELLM_API_KEY)       │  │
+│  │    ├─ Run gates (verify.py, etc.)           │  │
+│  │    ├─ Branch + commit + push (App token)    │  │
+│  │    └─ Open PR (GitHub REST API)             │  │
+│  │ 5. Report PR URLs                           │  │
+│  └────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────┘
+        │
+        ▼
+  PR on GitHub (telnyx-devrel-bot[bot])
+  Linear ticket → In Review + PR link comment
+```
 
-## What's deferred (separate work, not blocking usage)
+## Key files (on `main` in the repo)
 
-- Post-merge DevRel repo sync (blocked on confirming the DevRel repo URL)
-- Slack `#what-is-new-today` ingest (creating Linear tickets from Slack — deferred)
-- Fix the `linear_client._issue_state_id` GraphQL type bug (cosmetic)
+| File | Purpose |
+|---|---|
+| `scripts/bot/runner.py` | Orchestrator: Linear → LLM → gates → PR → Linear |
+| `scripts/bot/generate_sample.py` | Two-phase LLM generation (code → docs), supports LiteLLM + Telnyx public API |
+| `scripts/bot/open_pr.py` | Branch/commit/push/PR via GitHub REST API (no `gh` CLI needed) |
+| `scripts/bot/github_app_auth.py` | JWT → installation token, PEM normalization |
+| `scripts/bot/linear_client.py` | Read Linear tickets, move state, comment |
+
+## Known limitations
+
+- Agent processes one teammate's tickets per run (Sonam's key is configured)
+- No Slack integration yet (Stephen's request — deferred)
+- No cron schedule yet (triggered manually or via A2A message)
+- `linear_client._issue_state_id` has a cosmetic GraphQL type bug (state usually moves via Linear's own automation)
