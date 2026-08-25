@@ -209,7 +209,7 @@ def inbound_sms_webhook():
         to_number = payload["to"][0]["phone_number"]
         text = payload["text"]
         
-        app.logger.info(f"Inbound SMS from {from_number}: {text}")
+        app.logger.info("Received inbound SMS")
         
         # Handle the message - could be a customer response
         # For now, just acknowledge
