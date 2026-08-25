@@ -51,6 +51,47 @@ except ImportError as e:
 GITHUB_API = "https://api.github.com"
 
 
+def _normalize_pem(raw: str) -> str:
+    """Normalize a PEM private key string.
+
+    Handles common issues with PEM keys stored as runtime secrets:
+    - Whitespace/newlines stripped by secret stores → re-wrap at 64 chars
+    - Wrong header (PKCS#8 'BEGIN PRIVATE KEY' vs PKCS#1 'BEGIN RSA PRIVATE KEY')
+    - Extra whitespace within base64 body
+
+    Detects the format from the header and re-wraps correctly.
+    """
+    raw = raw.strip()
+    if not raw:
+        raise SystemExit("PEM key is empty")
+
+    # If it already has proper PEM headers and newlines, return as-is
+    if "-----BEGIN" in raw and "\n" in raw and len(raw.split("\n")) > 3:
+        return raw
+
+    # Strip any existing headers/footers and whitespace
+    import re
+    body = re.sub(r"-----[A-Z ]+-----", "", raw)
+    body = body.strip()
+
+    # If the body has spaces (e.g. from a secret store that replaced newlines
+    # with spaces), remove them
+    body = body.replace(" ", "").replace("\r", "").replace("\n", "").replace("\t", "")
+
+    if not body:
+        raise SystemExit("PEM key body is empty after stripping headers/whitespace")
+
+    # Determine the header type — PKCS#1 (RSA) is the default for GitHub Apps
+    # If the original had 'BEGIN PRIVATE KEY' (no RSA), it's PKCS#8
+    is_pkcs8 = "BEGIN PRIVATE KEY" in raw and "RSA" not in raw
+    header = "-----BEGIN PRIVATE KEY-----" if is_pkcs8 else "-----BEGIN RSA PRIVATE KEY-----"
+    footer = "-----END PRIVATE KEY-----" if is_pkcs8 else "-----END RSA PRIVATE KEY-----"
+
+    # Re-wrap at 64 chars per line
+    lines = [body[i:i+64] for i in range(0, len(body), 64)]
+    return header + "\n" + "\n".join(lines) + "\n" + footer + "\n"
+
+
 @dataclass
 class GitHubAppAuth:
     app_id: str
@@ -69,13 +110,17 @@ class GitHubAppAuth:
             raise SystemExit("GH_APP_ID env var not set")
         pem_path = os.environ.get("GH_APP_PRIVATE_KEY_PATH")
         pem_inline = os.environ.get("GH_APP_PRIVATE_KEY")
+        # Also check APP_PRIVATE_KEY (ACP runtime secret convention)
+        if not pem_inline:
+            pem_inline = os.environ.get("APP_PRIVATE_KEY")
         if pem_inline:
-            pem = pem_inline
+            pem = _normalize_pem(pem_inline)
         elif pem_path:
-            pem = pathlib.Path(pem_path).read_text()
+            raw = pathlib.Path(pem_path).read_text()
+            pem = _normalize_pem(raw)
         else:
             raise SystemExit(
-                "Set GH_APP_PRIVATE_KEY (inline PEM) or "
+                "Set GH_APP_PRIVATE_KEY or APP_PRIVATE_KEY (inline PEM) or "
                 "GH_APP_PRIVATE_KEY_PATH (path to .pem)"
             )
         inst = os.environ.get("GH_INSTALLATION_ID")
