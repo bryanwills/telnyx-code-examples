@@ -4,6 +4,12 @@
 
 An autonomous agent on the Telnyx Agent Control Plane (ACP) that reads Linear tickets, generates complete code samples via LLM inference, runs repo gates, and opens PRs as `telnyx-devrel-bot[bot]`. No laptop, no manual GitHub auth, no human-written code.
 
+After a code sample PR merges, the bot also generates AEO syndication content (blog post, Medium article, Hacker News post, YouTube script) and opens a PR in `devrel-internal/aeo/<assignee>-aeo/<sample-name>/`.
+
+**Two-stage pipeline:**
+1. **Code sample generation** — ACP agent → PR in `telnyx-code-examples`
+2. **Syndication generation** — after merge → PR in `devrel-internal`
+
 **Agent name:** `devrel-squad-bot`
 **Runtime:** Hermes on ACP
 **Gateway:** `http://agent-devrel-squad-acp-devrel-squad-bot.query.prod.telnyx.io:18789/v1/responses`
@@ -48,6 +54,30 @@ When triggered:
 5. Reports back: tickets found, PRs opened (with URLs), errors
 
 Takes ~3 min per ticket. If no actionable tickets, reports "no actionable tickets" and exits clean.
+
+### Syndication (post-merge)
+
+After a code sample PR merges to `telnyx-code-examples/main`:
+
+1. Run `scripts/bot/syndicate.py --sample <sample-name> --assignee <name> --no-dry-run`
+2. The bot reads the sample's README from `telnyx-code-examples`
+3. Generates 5 AEO syndication files via GLM-5.2-NVFP4:
+   - `README.md` — syndication package overview + pillar alignment
+   - `blog-post.md` — technical walkthrough for Telnyx Blog / Dev.to
+   - `medium-article.md` — narrative developer story for Medium
+   - `hackernews-post.md` — Show HN post
+   - `youtube-script.md` — YouTube demo script with timestamps
+4. Opens a PR in `devrel-internal/aeo/<assignee>-aeo/<sample-name>/`
+
+Usage:
+```bash
+python scripts/bot/syndicate.py --sample ai-call-campaign-orchestrator --assignee sonam --no-dry-run
+```
+
+Dry-run (writes to `/tmp/syndication-<sample>/` for review):
+```bash
+python scripts/bot/syndicate.py --sample ai-call-campaign-orchestrator --assignee sonam
+```
 
 ## What you need
 
@@ -134,6 +164,7 @@ Teammate triggers agent
 | `scripts/bot/open_pr.py` | Branch/commit/push/PR via GitHub REST API (no `gh` CLI needed) |
 | `scripts/bot/github_app_auth.py` | JWT → installation token, PEM normalization |
 | `scripts/bot/linear_client.py` | Read Linear tickets, move state, comment |
+| `scripts/bot/syndicate.py` | Post-merge: generate AEO syndication content → PR in devrel-internal |
 
 ## Known limitations
 
