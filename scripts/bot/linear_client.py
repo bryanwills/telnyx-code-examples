@@ -87,12 +87,16 @@ def find_code_samples_week_projects() -> list[dict]:
 
 
 def list_tickets_for_project(project_id: str) -> list[dict]:
-    """Return all issues in a Week project with the fields the bot needs."""
+    """Return all issues in a Week project with the fields the bot needs.
+
+    Handles pagination — Linear's default page size is 50, but Week 10
+    has 73+ issues, so we fetch with first:200 to get them all in one call.
+    """
     q = """
     query ($id: String!) {
       project(id: $id) {
         id name
-        issues { nodes {
+        issues(first: 250) { nodes {
           id identifier title url
           state { name }
           assignee { name }
