@@ -47,6 +47,7 @@ _SCRIPT_REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(_SCRIPT_REPO / "scripts" / "bot"))
 sys.path.insert(0, str(_SCRIPT_REPO / "scripts"))
 from github_app_auth import GitHubAppAuth  # noqa: E402
+from pr_body import inject_gate_status  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
@@ -228,20 +229,12 @@ def open_pr(branch: str, title: str, body: str, paths: list[str],
         env=env, cwd=REPO_ROOT)
     print(f"Pushed {branch}")
 
-    # Build PR body
-    pr_body = body
-    if failures:
-        pr_body += (
-            "\n\n---\n\n> ⚠️ **Pre-PR gate status**: This PR was opened by "
-            "`telnyx-devrel-bot[bot]` with the following gates not passing "
-            "locally. Reviewer should confirm CI below is green before merge:\n"
-            + "\n".join(f"- ❌ {f}" for f in failures)
-        )
-    else:
-        pr_body += "\n\n---\n\n> ✅ All pre-PR gates passed locally before this PR was opened."
+    # Build PR body without changing legacy caller behavior. Standardized bodies
+    # contain a gate marker; older callers receive the status as an appendix.
+    pr_body = inject_gate_status(body, failures)
 
     linear_url = os.environ.get("LINEAR_TICKET_URL")
-    if linear_url:
+    if linear_url and linear_url not in pr_body:
         pr_body += f"\n\nLinear: {linear_url}"
 
     # Open the PR via GitHub REST API (no gh CLI dependency — works in
