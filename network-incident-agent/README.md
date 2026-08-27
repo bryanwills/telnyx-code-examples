@@ -1,322 +1,131 @@
 ---
 name: network-incident-agent
-title: "Network Incident Agent"
-description: "An AI agent that acts as the incident itself, proactively notifying affected customers via SMS, handling inbound calls with incident context, and generating RCA documents."
-language: python
-framework: flask
-telnyx_products: [Messaging, Voice, CloudFS, AI Agent]
+title: "Network Incident Agent on Telnyx Edge"
+description: "A durable incident actor that assesses severity, proactively sends SMS, answers calls with incident context, writes an RCA to CloudFS, and checks for recurrence."
+language: typescript
+framework: telnyx-edge
+telnyx_products: [Edge Compute, Agent SDK, Messaging, Voice, Inference, KV, CloudFS]
 ---
 
 # Network Incident Agent
 
-An AI-powered network incident agent that acts as the incident itself — proactively notifying affected customers via SMS, answering inbound calls with real-time incident context, scheduling status checks, and generating root cause analysis (RCA) documents to CloudFS.
+The actor **is the outage**. One durable Telnyx Edge Agent owns an incident from detection through customer communication, recovery, RCA generation, and a delayed recurrence check.
+
+The included web dashboard runs a paced, recording-friendly flow. It defaults to safe demo mode and can send real SMS when explicitly enabled.
 
 ## Why Telnyx
 
-This sample demonstrates how Telnyx's **AI Communications Infrastructure** enables you to build intelligent, proactive communication agents. By combining Telnyx's Messaging, Voice, and CloudFS APIs with the Telnyx Agent framework, you can create an agent that doesn't just respond to conversations — it owns the entire incident lifecycle. The agent maintains incident state, reaches out to customers before they call you, provides context-aware voice responses, and documents the full timeline for post-incident analysis.
+Telnyx **AI Communications Infrastructure** combines durable Edge actors, inference, messaging, voice, and storage in one application. The incident remains close to the communications path while its state and scheduled work survive process restarts.
 
-## Telnyx API Endpoints Used
+## What is real
 
-| API | Method | Endpoint | Purpose |
-|-----|--------|----------|---------|
-| Messaging | POST | `/v2/messages` | Send proactive SMS notifications to affected customers |
-| Call Control | POST | `/v2/calls/{call_control_id}/actions/speak` | Speak incident context to callers |
-| CloudFS | POST | `/v2/cloudfs/files` | Upload RCA documents to CloudFS |
-| Webhooks | POST | `/webhooks/inbound-sms` | Receive inbound SMS from customers |
-| Webhooks | POST | `/webhook/call` | Receive inbound call events from Telnyx |
+- `NetworkIncidentAgent extends Agent` with durable incident state.
+- Affected customer numbers live in a Telnyx KV namespace in deployment. Local actor development falls back to the actor's durable key-value store when the CLI does not inject external KV bindings into actor processes.
+- Every lifecycle event is written to the actor's embedded SQL database.
+- Severity can be assessed through Telnyx Inference in live mode.
+- SMS uses the zero-credential `[telnyx]` binding.
+- Inbound Call Control webhooks are answered and spoken through the Telnyx API.
+- RCA JSON is written atomically to a mounted CloudFS filesystem.
+- `this.schedule()` creates a durable, delayed recurrence check.
 
-## Architecture
+Demo mode exercises the same state, KV, SQL, scheduling, and CloudFS paths, but simulates SMS delivery. Live mode makes real Telnyx Inference and Messaging calls.
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         Network Incident Agent                      │
-│                                                                     │
-│  ┌───────────────────────────────────────────────────────────────┐  │
-│  │                    NetworkIncidentAgent                       │  │
-│  │                                                               │  │
-│  │  ┌─────────────┐  ┌──────────────┐  ┌──────────────────────┐  │  │
-│  │  │ Incident    │  │ Customer     │  │ Status Check         │  │  │
-│  │  │ State       │  │ Notification │  │ Scheduler            │  │  │
-│  │  │             │  │              │  │                      │  │  │
-│  │  │ • status    │  │ • SMS via    │  │ • this.schedule()    │  │  │
-│  │  │ • severity  │  │   Telnyx     │  │ • recurring checks   │  │  │
-│  │  │ • timeline  │  │ • affected   │  │ • logs to timeline   │  │  │
-│  │  │ • root cause│  │   customers  │  │                      │  │  │
-│  │  └─────────────┘  └──────────────┘  └──────────────────────┘  │  │
-│  │                                                               │  │
-│  │  ┌─────────────┐  ┌──────────────┐  ┌──────────────────────┐  │  │
-│  │  │ Inbound     │  │ RCA          │  │ SQLite Timeline      │  │  │
-│  │  │ Call        │  │ Generation   │  │                      │  │  │
-│  │  │ Handler     │  │              │  │ • incident_timeline  │  │  │
-│  │  │             │  │ • CloudFS    │  │ • event logging      │  │  │
-│  │  │ • speak     │  │ • JSON doc   │  │ • queryable history  │  │  │
-│  │  │   context   │  │ • RCA content│  │                      │  │  │
-│  │  └─────────────┘  └──────────────┘  └──────────────────────┘  │  │
-│  └───────────────────────────────────────────────────────────────┘  │
-│                                                                     │
-│  ┌─────────────┐  ┌──────────────┐  ┌────────────────────────────┐ │
-│  │ Flask App   │  │ Telnyx SDK   │  │ SQLite Database            │ │
-│  │             │  │              │  │                            │ │
-│  │ • /health   │  │ • Messaging  │  │ • incident_timeline.db     │ │
-│  │ • /incident │  │ • Call Ctrl  │  │ • event history            │ │
-│  │ • /webhooks │  │ • CloudFS    │  │ • incident state           │ │
-│  └─────────────┘  └──────────────┘  └────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────────┘
-```
+## Prerequisites
 
-## Environment Variables
+- Node.js 20+
+- `telnyx-edge` CLI v0.5.0+
+- A Telnyx account and API key
+- For live SMS: an SMS-capable Telnyx number and verified destination numbers
+- A KV namespace and CloudFS filesystem configured for Edge Compute
 
-| Variable | Type | Example | Required | Description | Where to get it |
-|----------|------|---------|----------|-------------|-----------------|
-| `AFFECTED_CUSTOMERS` | `string` | `your_affected_customers_here` | **yes** | AFFECTED_CUSTOMERS | — |
-| `CLOUDFS_BUCKET` | `string` | `your_cloudfs_bucket_here` | **yes** | CLOUDFS_BUCKET | — |
-| `INCIDENT_DB_PATH` | `string` | `your_incident_db_path_here` | **yes** | INCIDENT_DB_PATH | — |
-| `INCIDENT_ID` | `string` | `your_incident_id_here` | **yes** | INCIDENT_ID | — |
-| `PORT` | `string` | `your_port_here` | **yes** | PORT | — |
-| `TELNYX_API_KEY` | `string` | `your_telnyx_api_key_here` | **yes** | TELNYX_API_KEY | — |
-| `TELNYX_PUBLIC_KEY` | `string` | `your_telnyx_public_key_here` | **yes** | TELNYX_PUBLIC_KEY | — |
-| `TELNYX_SMS_FROM_NUMBER` | `string` | `your_telnyx_sms_from_number_here` | **yes** | TELNYX_SMS_FROM_NUMBER | — |
-
-## Setup
-
-1. **Clone the repository**
-
-```bash
-git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/network-incident-agent
-```
-
-2. **Install dependencies**
-
-```bash
-pip install -r requirements.txt
-```
-
-3. **Configure environment variables**
+## Configure
 
 ```bash
 cp .env.example .env
-# Edit .env and fill in your Telnyx API credentials and configuration
+npm install
 ```
 
-4. **Run the application**
+Update these placeholders before using live mode:
+
+1. Replace the development UUID at `[storage.kv.INCIDENT_KV].id` in `telnyx.toml` with your KV namespace UUID.
+2. Set `TELNYX_SMS_FROM_NUMBER` to your SMS-capable Telnyx number.
+3. Set `TELNYX_API_KEY` in `.env`; deploy it as the `TELNYX_API_KEY` secret.
+4. Mount CloudFS at `CLOUDFS_MOUNT_PATH`. For local development, use a writable temporary directory.
+
+Never put real credentials or customer phone numbers in committed files.
+
+## Run locally
+
+For a safe local recording demo:
 
 ```bash
-python app.py
+npm install
+npm run build
+mkdir -p /tmp/network-incident-cloudfs
+CLOUDFS_MOUNT_PATH=/tmp/network-incident-cloudfs \
+  TELNYX_EDGE_BIN=$HOME/bin/telnyx-edge \
+  TELNYX_EDGE_PORT=8787 \
+  npm start
 ```
 
-The server will start on `http://localhost:8080` (or the port specified in your `.env` file).
+Open the URL printed by `telnyx-edge` (normally `http://localhost:8787`). Leave **Send real Telnyx SMS** unchecked.
 
-## API Reference
+With the stack running, execute the repeatable API smoke test:
 
-### GET `/health`
-
-Health check endpoint.
-
-**Response:**
-```json
-{
-  "status": "healthy"
-}
+```bash
+DEMO_BASE_URL=http://localhost:8787 npm run smoke
 ```
 
-**Status Codes:**
-- `200` — Service is healthy
+For live SMS, configure the real KV namespace and Telnyx number, provide the API-key secret, enter real opted-in destination numbers in the dashboard, and explicitly enable live mode.
 
----
+## Demo flow
 
-### GET `/incident/status`
+1. Create `NetworkIncidentAgent("INC-EDGE-042")`.
+2. Store affected customers in KV and assess severity.
+3. Notify affected customers when the incident is detected.
+4. Transition through investigating and restoring, sending each update.
+5. Expose incident-aware text for an inbound Call Control response.
+6. Resolve the incident and write the full RCA to CloudFS.
+7. Schedule a durable recurrence check; the recording demo uses 30 seconds.
 
-Get the current incident state.
+## API
 
-**Response:**
-```json
-{
-  "status": "investigating",
-  "severity": "SEV-1",
-  "description": "",
-  "affected_services": [],
-  "start_time": "2024-01-15T10:30:00Z",
-  "resolution_time": null,
-  "root_cause": null,
-  "timeline": []
-}
-```
+| Method | Path | Purpose |
+|---|---|---|
+| `POST` | `/api/demo` | Run the complete paced demo |
+| `POST` | `/api/incident` | Initialize an incident actor |
+| `GET` | `/api/incident?incidentId=...` | Read durable state, SQL timeline, and masked customers |
+| `POST` | `/api/transition` | Validate and apply a lifecycle transition |
+| `POST` | `/api/notify` | Send or simulate a customer notification |
+| `POST` | `/api/rca` | Write an RCA document to CloudFS |
+| `GET` | `/api/call-preview?incidentId=...` | Preview the incident-aware voice response |
+| `POST` | `/webhooks/call` | Handle a Telnyx `call.initiated` event |
+| `GET` | `/health/readiness` | Readiness probe |
 
-**Status Codes:**
-- `200` — Incident state retrieved successfully
+See [API.md](./API.md) for request examples and [GUIDE.md](./GUIDE.md) for production setup.
 
----
+## Production notes
 
-### POST `/incident/update`
-
-Update the incident status and notify affected customers.
-
-**Request Body:**
-```json
-{
-  "status": "monitoring",
-  "description": "Issue isolated to edge router, monitoring traffic"
-}
-```
-
-**Response:**
-```json
-{
-  "status": "updated",
-  "incident_state": {
-    "status": "monitoring",
-    "severity": "SEV-1",
-    "description": "Issue isolated to edge router, monitoring",
-    "affected_services": [],
-    "start_time": "2024-01-15T00:30:00Z",
-    "resolution_time": null,
-    "root_cause": null,
-    "timeline": []
-  }
-}
-```
-
-**Status Codes:**
-- `200` — Incident updated successfully
-- `400` — Missing required `status` field
-
----
-
-### POST `/incident/notify`
-
-Proactively notify all affected customers via SMS.
-
-**Request Body:**
-```json
-{
-  "message": "We are aware of the issue and working to resolve it."
-}
-```
-
-**Response:**
-```json
-{
-  "status": "ok",
-  "notified": 3
-}
-```
-
-**Status Codes:**
-- `200` — Notifications sent successfully
-
----
-
-### POST `/incident/rca`
-
-Generate an RCA document and upload to CloudFS.
-
-**Request Body:**
-```json
-{
-  "root_cause": "Network switch failure in data center A"
-}
-```
-
-**Response:**
-```json
-{
-  "status": "ok"
-}
-```
-
-**Status Codes:**
-- `200` — RCA generated and uploaded successfully
-- `400` — Missing required `root_cause` field
-
----
-
-### POST `/webhooks/inbound-sms`
-
-Webhook endpoint for inbound SMS messages from Telnyx.
-
-**Request Body (Telnyx webhook payload):**
-```json
-{
-  "data": {
-    "payload": {
-      "from": {"phone_number": "+1234567890"},
-      "to": [{"phone_number": "+1987654321"}],
-      "text": "What's the status of the incident?"
-    }
-  }
-}
-```
-
-**Response:**
-```json
-{
-  "status": "ok"
-}
-```
-
-**Status Codes:**
-- `200` — Webhook processed successfully
-- `500` — Internal server error
-
----
-
-### POST `/webhook/call`
-
-Webhook endpoint for inbound call events from Telnyx.
-
-**Request Body (Telnyx webhook payload):**
-```json
-{
-  "data": {
-    "payload": {
-      "call_control_id": "call_control_id_here",
-      "from": "+1234567890"
-    }
-  }
-}
-```
-
-**Response:**
-```json
-{
-  "status": "ok"
-}
-```
-
-**Status Codes:**
-- `200` — Webhook processed successfully
-- `500` — Internal server error
+- Protect operator endpoints with your authentication layer before exposing them publicly.
+- Validate Telnyx webhook signatures at your ingress or gateway.
+- Telnyx webhook delivery and scheduled tasks are at-least-once; use stable command and task IDs when extending the sample.
+- The sample masks phone numbers in all browser responses and timeline messages.
+- A failed live SMS or Call Control request produces a visible error; the application does not report false success.
 
 ## Troubleshooting
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| `TELNYX_API_KEY` not found | Environment variable not set | Ensure `.env` file exists and contains `TELNYX_API_KEY=your_api_key` |
-| SMS messages not sending | Invalid `TELNYX_SMS_FROM_NUMBER` | Verify the number is a valid Telnyx number and has SMS capabilities |
-| Webhook signature verification fails | Invalid `TELNYX_PUBLIC_KEY` | Ensure the public key matches your Telnyx account's public key |
-| RCA upload fails | Invalid `CLOUDFS_BUCKET` | Verify the bucket exists and you have write permissions |
-| Database errors | Corrupted or missing SQLite database | Delete `incident_timeline.db` and restart the application |
-| Port already in use | Another process using port 8080 | Change `PORT` in `.env` to an available port |
-| Inbound calls not speaking context | Missing call control ID | Ensure the webhook payload includes `call_control_id` |
+- `telnyx-edge was not found`: install CLI v0.5.0+ or set `TELNYX_EDGE_BIN`.
+- Port 8787 is busy: set `TELNYX_EDGE_PORT=8788` before `npm start`.
+- KV UUID is rejected: replace the development UUID with the value returned by `telnyx-edge storage kv create`.
+- RCA write fails: ensure `CLOUDFS_MOUNT_PATH` exists in the actor container and is writable.
+- Live SMS fails: verify the API key, sender number, messaging profile, destination permissions, and E.164 formatting.
 
 ## Agent Discovery
 
-- [Telnyx Agent Signup](https://telnyx.com/agent-signup.md)
-- [Telnyx AI Agent Repository](https://github.com/team-telnyx/ai)
-- [Telnyx LLM Documentation](https://llms.txt)
+The Edge runtime discovers `NetworkIncidentAgent` through the `[[actors]]` declaration in `telnyx.toml`. The function handler obtains the durable actor with `env.INCIDENT_AGENT.idFromName(incidentId)`; using the same incident ID always routes back to the same durable entity.
 
 ## Related Examples
 
-- **sms-ai-agent** — Build an AI-powered SMS assistant
-- **voice-ai-agent** — Create a voice-based AI agent
-- **call-control-basics** — Learn the fundamentals of Telnyx Call Control
-- **messaging-basics** — Get started with Telnyx Messaging APIs
-
-## Resources
-
-- [Telnyx Developer Documentation](https://developers.telnyx.com)
-- [Telnyx API Reference](https://developers.telnyx.com/api)
-- [Telnyx Python SDK](https://github.com/team-telnyx/telnyx-python)
-- [Telnyx Product Page](https://telnyx.com)
-- [Telnyx Pricing](https://telnyx.com/pricing)
+- [Agent Fleet Shared Workspace](../agent-fleet-shared-workspace/) — durable agents collaborating through CloudFS.
+- [KV-Backed Rate Limiter](../kv-backed-rate-limiter/) — Agent SDK state combined with a KV namespace.
+- [Edge Call Transcription Agent](../edge-call-transcription-agent/) — Telnyx Call Control actions from Edge Compute.
