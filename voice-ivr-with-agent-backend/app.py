@@ -428,10 +428,7 @@ def update_menu_config_api(phone_number: str):
                 return jsonify({"error": f"Missing required field: {field}"}), 400
 
         MENU_CONFIG_KV[phone_number] = config
-        masked_phone_number = (
-            f"***{phone_number[-4:]}" if isinstance(phone_number, str) and len(phone_number) >= 4 else "***"
-        )
-        app.logger.info("Updated menu config for %s", masked_phone_number)
+        app.logger.info("Updated menu config")
         return jsonify({"status": "updated", "phone_number": phone_number}), 200
     except Exception:
         app.logger.exception("Failed to update menu config")
