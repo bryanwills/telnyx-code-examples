@@ -36,7 +36,7 @@ On every Telnyx Voice API call, the webhook chooses a config and sends those det
 Prerequisite: Node.js 18 or newer.
 
 ```bash
-cd telnyx-code-examples/provisional-telnyx-voice-api-agents-nodejs
+cd telnyx-code-examples/telnyx-voice-api-agents-nodejs
 cp .env.example .env
 npm install
 ```

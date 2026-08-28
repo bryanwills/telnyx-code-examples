@@ -14,23 +14,24 @@ Autonomous inbound email reply bot on the Telnyx **Email API** and **AI Inferenc
 
 One API key. One platform. The agent that replies to email without you typing.
 
-> **Email API is in invite-only beta.** Request access at [telnyx.com/products/email-api](https://telnyx.com/products/email-api). The endpoints below are confirmed via live API probing (2026-08-18, beta access granted).
+## Why Telnyx
+
+Telnyx is AI Communications Infrastructure purpose-built for autonomous agents. The Email API, AI Inference, and Ed25519-signed webhooks are all accessible under a single API key, so an email agent can receive inbound mail, generate an AI reply, and send it back without stitching together multiple providers. Low-latency inference and programmable email on one platform means fewer integration points and faster round-trip times for real-time autonomous email workflows.
+
+> **Email API** — Request access at [telnyx.com/products/email-api](https://telnyx.com/products/email-api).
 
 ## Telnyx API Endpoints Used
 
-**Confirmed working (live-verified 2026-08-18):**
 - **Send Email**: `POST /v2/emails` — returns 202 Accepted with email ID
 - **List Emails**: `GET /v2/emails` — returns `{"data": [...], "meta": {...}}`
 - **Retrieve Email**: `GET /v2/emails/{id}` — returns full email object with events, status, from, to, subject
 - **List Domains**: `GET /v2/email_domains` — returns shared + custom domains with DNS records, verification status, DKIM config
-- **AI Inference (chat completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/docs/inference/chat-completions)
-
-**From the launch blog (not yet live-verified):**
 - **Create Domain**: `POST /v2/email_domains`
 - **Verify Domain**: `POST /v2/email_domains/{id}/verify`
 - **Domain Webhook Configuration**: `POST /v2/email_domains/{domain_id}/webhooks`
+- **AI Inference (chat completions)**: `POST /v2/ai/chat/completions` — [API reference](https://developers.telnyx.com/docs/inference/chat-completions)
 
-> **Three domain paths (confirmed via live testing 2026-08-18):**
+> **Three domain paths:**
 >
 > 1. **`shared_inbound` domain (RECOMMENDED for the demo — no DNS needed):** When you create an inbox via `POST /v2/email_inboxes` with `domain` as a string name (not `domain_id`), Telnyx auto-provisions the inbox on a Telnyx-managed `shared_inbound` subdomain (e.g. `wabsxpjb74sb.msgtelnyx.com`). Telnyx manages the MX records — no DNS verification required. The inbox can both **receive** (MX → `mx.telnyx.com`) and **send** email. This is the fastest path to a live demo.
 > 2. **Shared sandbox domain (limited):** `mail.telnyx.com`, `msgtelnyx.com`. Sandbox mode — the from-address must be `onboarding@<domain>` and recipients must be verified email addresses on your Telnyx account. Use only for quick local testing.
@@ -41,7 +42,7 @@ One API key. One platform. The agent that replies to email without you typing.
 This app handles inbound and outbound email webhook events. Webhooks are Ed25519-signed using the `telnyx-signature-ed25519` and `telnyx-timestamp` headers; verification uses the official `telnyx` Python SDK.
 
 **Inbound** (triggers the AI reply flow):
-- `email.received` / `email.inbound` / `email.inbound.received` — new inbound email arrived (the exact event name is being confirmed against the official Email API inbound docs; the handler accepts all three)
+- `email.received` / `email.inbound` / `email.inbound.received` — new inbound email arrived (the handler accepts all three variants)
 
 **Outbound** (logged to the dashboard, no action taken):
 - `email.queued`, `email.sending`, `email.sent`, `email.delivered`
@@ -202,6 +203,16 @@ The dashboard at `/` is the screen-record target — it shows every step of the 
 - **Liquid templates**: the demo sends raw AI-generated HTML (via `agent.html_wrap`) for simplicity. To use server-side Liquid rendering, create a template via `POST /v2/email_templates`, render it via `POST /v2/email_templates/{id}/render` with `{ "template_variables": { ... } }`, and send the rendered HTML as `html_body`. See `templates/reply.liquid` for the template structure.
 - **Email validation**: optionally validate the inbound sender's address via `POST /v2/email_validations` before generating a reply — free, same API key, reduces replies to malformed addresses.
 - **Suppressions**: the Email API auto-suppresses bounces, spam complaints, and unsubscribes. Replies to suppressed addresses are blocked at send time with a 422. See `/v2/suppressions` in the API reference.
+
+## Agent Discovery
+
+This folder is self-contained for coding agents. Start with `README.md` for an overview, then the code file and `GUIDE.md` for implementation details.
+
+- **Sign up**: [telnyx.com/sign-up](https://telnyx.com/sign-up)
+- **Agent CLI**: [github.com/team-telnyx/ai/tree/main/cli](https://github.com/team-telnyx/ai/tree/main/cli) — composite commands for agents ([commands reference](https://github.com/team-telnyx/ai/tree/main/cli/src/commands))
+- **Agent skills**: [github.com/team-telnyx/ai/tree/main/skills](https://github.com/team-telnyx/ai/tree/main/skills)
+- **LLM-friendly docs**: [developers.telnyx.com/llms-full.txt](https://developers.telnyx.com/llms-full.txt) · [llms.txt](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/llms.txt)
+- **Telnyx CLI** (human + agent): [developers.telnyx.com/docs/development/cli](https://developers.telnyx.com/docs/development/cli)
 
 ## References
 
