@@ -1,12 +1,12 @@
-# Examples Mapping — Maps tutorial-factory generation params to AEO folder names.
+# Examples Mapping — Maps generation params to example folder names.
 # Each entry produces a self-contained, deployable example folder.
 #
 # Fields:
-#   product    — TF product key (sms, voice, iot, sip, ai)
-#   use_case   — TF use-case slug
-#   language   — TF language key (python, nodejs, go, ruby)
-#   framework  — TF framework key (flask, fastapi, express, gin, rails)
-#   folder     — AEO output folder name (action-oriented, SEO-friendly)
+#   product    — Product key (sms, voice, iot, sip, ai)
+#   use_case   — Use-case slug
+#   language   — Language key (python, nodejs, go, ruby)
+#   framework  — Framework key (flask, fastapi, express, gin, rails)
+#   folder     — Output folder name (action-oriented, SEO-friendly)
 
 examples:
   # ─────────────────────────────────────────────────────────────────────
@@ -82,7 +82,7 @@ examples:
     use_case: provisional-voice-api-agents
     language: nodejs
     framework: express
-    folder: provisional-telnyx-voice-api-agents-nodejs
+    folder: telnyx-voice-api-agents-nodejs
 
   - product: voice
     use_case: conversational-workflow
@@ -3186,8 +3186,22 @@ examples:
     framework: fastapi
     folder: outbound-hold-agent-python
 
+  # Agent SDK + CloudFS shared workspace
+  - product: ai
+    use_case: agent-fleet-shared-workspace
+    language: nodejs
+    framework: vanilla
+    folder: agent-fleet-shared-workspace
+
   - product: ai
     use_case: "auto-generated-from-linear"
     language: python
     framework: flask
     folder: voice-ivr-with-agent-backend
+    folder: shipment-agent
+
+  - product: ai
+    use_case: "auto-generated-from-linear"
+    language: typescript
+    framework: telnyx-edge
+    folder: network-incident-agent

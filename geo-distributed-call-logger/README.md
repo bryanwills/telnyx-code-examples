@@ -2,6 +2,10 @@
 
 Log Telnyx Call Control events to a shared SQL database, track per-region call volume in Edge KV counters, and trigger SMS alerts when a region exceeds a configurable threshold — all on Telnyx Edge Compute with the Agent SDK.
 
+## Why Telnyx
+
+Telnyx is AI Communications Infrastructure that brings Call Control, edge compute, KV storage, and SMS together on a single platform. For geo-distributed call logging, this means your webhook handler, SQL database, region counters, and SMS alerting all run on Telnyx Edge Compute with no external dependencies. The zero-credential `[telnyx]` messaging binding lets the agent fire ops alerts without managing separate SMS credentials or provider integrations.
+
 ## Architecture
 
 ```
@@ -232,6 +236,16 @@ geo-distributed-call-logger/
 ├── .env.example
 └── .gitignore
 ```
+
+## Agent Discovery
+
+This folder is self-contained for coding agents. Start with `README.md` for an overview, then the code file and `GUIDE.md` for implementation details.
+
+- **Sign up**: [telnyx.com/sign-up](https://telnyx.com/sign-up)
+- **Agent CLI**: [github.com/team-telnyx/ai/tree/main/cli](https://github.com/team-telnyx/ai/tree/main/cli) — composite commands for agents ([commands reference](https://github.com/team-telnyx/ai/tree/main/cli/src/commands))
+- **Agent skills**: [github.com/team-telnyx/ai/tree/main/skills](https://github.com/team-telnyx/ai/tree/main/skills)
+- **LLM-friendly docs**: [developers.telnyx.com/llms-full.txt](https://developers.telnyx.com/llms-full.txt) · [llms.txt](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/llms.txt)
+- **Telnyx CLI** (human + agent): [developers.telnyx.com/docs/development/cli](https://developers.telnyx.com/docs/development/cli)
 
 ## License
 
