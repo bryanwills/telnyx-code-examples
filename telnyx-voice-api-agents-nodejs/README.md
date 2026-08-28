@@ -1,6 +1,6 @@
 ---
-name: provisional-telnyx-voice-api-agents
-title: "Provisional Agents with Telnyx Voice API"
+name: telnyx-voice-api-agents
+title: "Agents with Telnyx Voice API"
 description: "Start one reusable Telnyx AI Assistant on Telnyx Voice API calls with runtime business instructions selected by the called phone number."
 language: nodejs
 framework: express
@@ -73,7 +73,7 @@ Prerequisite: Node.js 18 or newer.
 
 ```bash
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
-cd telnyx-code-examples/provisional-telnyx-voice-api-agents-nodejs
+cd telnyx-code-examples/telnyx-voice-api-agents-nodejs
 cp .env.example .env
 npm install
 ```

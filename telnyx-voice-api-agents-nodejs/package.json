@@ -1,7 +1,7 @@
 {
-  "name": "provisional-telnyx-voice-api-agents-nodejs",
+  "name": "telnyx-voice-api-agents-nodejs",
   "version": "1.0.0",
-  "description": "Telnyx Voice API example for Provisional Agents with call-time AI Assistant configuration.",
+  "description": "Telnyx Voice API example for agents with call-time AI Assistant configuration.",
   "main": "server.js",
   "engines": {
     "node": ">=18"

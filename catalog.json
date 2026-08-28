@@ -106,13 +106,13 @@
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/route-phone-calls-to-ai-agent-nodejs"
     },
     {
-      "folder": "provisional-telnyx-voice-api-agents-nodejs",
-      "title": "Provisional Agents with Telnyx Voice API",
+      "folder": "telnyx-voice-api-agents-nodejs",
+      "title": "Agents with Telnyx Voice API",
       "description": "Start one reusable Telnyx AI Assistant on Telnyx Voice API calls with runtime business instructions selected by the called phone number.",
       "product": "voice",
       "language": "nodejs",
       "framework": "express",
-      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/provisional-telnyx-voice-api-agents-nodejs"
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/telnyx-voice-api-agents-nodejs"
     },
     {
       "folder": "build-conversational-workflow-nodejs",

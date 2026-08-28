@@ -2,6 +2,10 @@
 
 Export SMS conversation history from Edge SQL to Cloud Storage as chunked JSON files, with completion SMS notification via zero-credential messaging — all on Telnyx Edge Compute with the Agent SDK.
 
+## Why Telnyx
+
+Telnyx is AI Communications Infrastructure that integrates SMS messaging, edge SQL, cloud storage, and compute on a single platform. For conversation export workflows, this means your SMS history lives in Edge SQL right where the export agent runs, chunks upload directly to Telnyx Cloud Storage, and the completion notification goes out via zero-credential SMS — no external databases, object stores, or notification services required.
+
 ## Architecture
 
 ```
@@ -224,6 +228,16 @@ sms-conversation-exporter/
 - **Data migration** — Move SMS data from Edge SQL to a data warehouse via Cloud Storage
 - **Backup** — Periodic JSON exports of all conversations to Cloud Storage
 - **Analytics** — Export conversation data for offline analysis in Spark, BigQuery, or similar
+
+## Agent Discovery
+
+This folder is self-contained for coding agents. Start with `README.md` for an overview, then the code file and `GUIDE.md` for implementation details.
+
+- **Sign up**: [telnyx.com/sign-up](https://telnyx.com/sign-up)
+- **Agent CLI**: [github.com/team-telnyx/ai/tree/main/cli](https://github.com/team-telnyx/ai/tree/main/cli) — composite commands for agents ([commands reference](https://github.com/team-telnyx/ai/tree/main/cli/src/commands))
+- **Agent skills**: [github.com/team-telnyx/ai/tree/main/skills](https://github.com/team-telnyx/ai/tree/main/skills)
+- **LLM-friendly docs**: [developers.telnyx.com/llms-full.txt](https://developers.telnyx.com/llms-full.txt) · [llms.txt](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/llms.txt)
+- **Telnyx CLI** (human + agent): [developers.telnyx.com/docs/development/cli](https://developers.telnyx.com/docs/development/cli)
 
 ## License
 
