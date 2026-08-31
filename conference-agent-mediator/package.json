@@ -1,0 +1,23 @@
+{
+  "name": "conference-agent-mediator",
+  "version": "1.0.0",
+  "description": "AI meeting facilitator — joins Telnyx conferences, transcribes, mediates turn-taking, and summarizes via the Telnyx Edge SDK.",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "telnyx-edge dev",
+    "build": "tsc",
+    "test": "tsx smoke_test.ts"
+  },
+  "dependencies": {
+    "@telnyx/edge-sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "tsx": "^4.7.0",
+    "@types/node": "^20.11.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
