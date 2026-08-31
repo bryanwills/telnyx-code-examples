@@ -1,113 +1,103 @@
 ---
 name: ai-powered-call-router
 title: "AI-Powered Call Router"
-description: "Route inbound calls by analyzing caller intent with LLM classification and transferring to the correct queue."
-language: python
-framework: flask
-telnyx_products: [Call Control, AI Inference API, Agent SDK]
+description: "Route inbound calls by analyzing caller intent with the Telnyx AI Inference binding and a Telnyx KV route table. One StatefulActor per call leg; zero-credential LLM classification + global KV lookup on the Edge Runtime."
+language: typescript
+framework: telnyx-edge (Agent SDK)
+telnyx_products: [Edge Compute, Call Control, AI Inference, KV]
+channel: [voice]
 ---
 
 # AI-Powered Call Router
 
-Route inbound calls dynamically by analyzing caller intent with the Telnyx AI Inference API — "I need to pay my bill" → billing queue, "I want to upgrade" → sales queue.
+Route inbound calls dynamically by analyzing caller intent with the Telnyx AI Inference API — "I need to pay my bill" → billing queue, "I want to upgrade" → sales queue. Built on the Telnyx Edge Runtime: one `RouterAgent` (StatefulActor) per inbound call leg, intent classification via the zero-credential `this.env.TELNYX.ai.openai.chat.createCompletion()` binding, and route destinations looked up in Telnyx KV (`this.env.ROUTES.get('route:billing')`).
 
 ## Why Telnyx
 
-Telnyx provides a comprehensive AI Communications Infrastructure platform that bridges voice, messaging, and artificial intelligence. By combining Call Control for programmatic voice routing with the AI Inference API for intent classification, developers can build intelligent telephony applications that adapt to caller needs in real-time without managing separate telephony and AI providers.
+Telnyx is **AI Communications Infrastructure** — voice, messaging, SIP, AI, and edge compute on one private, global network. This example composes Call Control (answer + speech gather + transfer), AI Inference (intent classification via the `[telnyx]` binding), KV (global route table), and Stateful Actors (durable per-call lifecycle) in a single deployable edge function — the kind of full-stack voice AI workflow that only Telnyx can ship because we own the telephony network, the inference layer, and the edge runtime.
 
 ## Telnyx API Endpoints Used
 
-- **Call Control** — `telnyx.Call.answer()`, `telnyx.Call.gather_using_speech()`, `telnyx.Call.playback_start()`, `telnyx.Call.transfer()`
-- **AI Inference API** — `telnyx.ai.openai.chat.create_completion()` for intent classification
-- **Webhook Verification** — `telnyx.Webhook.unwrap()` for Ed25519 signature verification
+- **Call Control**: `POST /v2/calls/{call_control_id}/actions/answer` — answer the inbound call
+- **Call Control TTS**: `POST /v2/calls/{call_control_id}/actions/speak` — speak the greeting + the transfer announcement
+- **Call Control Gather (AI)**: `POST /v2/calls/{call_control_id}/actions/gather_using_ai` — capture the caller's spoken request (speech-to-text via the Telnyx platform)
+- **Call Control Transfer**: `POST /v2/calls/{call_control_id}/actions/transfer` — blind-bridge the call to the classified destination
+- **AI Inference**: `POST /v2/ai/openai/chat/completions` — via `this.env.TELNYX.ai.openai.chat.createCompletion()` (pre-authenticated binding, zero-credential) — intent classification
+- **KV**: `GET/PUT /v2/storage/kvs/{id}/keys/{key}` — via `this.env.ROUTES.get/put('route:<intent>')` (pre-authenticated binding) — route table
 
 ## Architecture
 
 ```
-Inbound Call
-    │
-    ▼
-Telnyx Call Control (Webhook)
-    │
-    ▼
-Flask Webhook Handler (/webhook)
-    │
-    ├─ call.initiated (incoming) ──► Answer Call
-    │
-    ├─ call.answered ──► speak() greeting ("Hello, how can I help?")
-    │
-    ├─ call.speak.ended (stage=greeting) ──► gather_using_ai (capture caller speech)
-    │
-    ├─ call.ai_gather.ended ──► Classify Intent (AI Inference API)
-    │                              │
-    │                              ▼
-    │                         speak() announcement ("Transferring you to billing…")
-    │                              │
-    │                              ▼
-    │                         call.speak.ended (stage=announcing) ──► transfer() to route destination
-    │
-    └─ call.ai_gather.failed ──► Fallback announcement + transfer to default destination
+   Inbound call → webhook → RouterAgent actor (one per call_control_id)
+         │
+         ▼
+   ┌─────────────────────────────────────────────────────────────────┐
+   │ call.initiated (incoming)  → recordStart()  + answer()         │
+   │ call.answered              → speak(greeting)                    │
+   │ call.speak.ended (greeting) → gather_using_ai()                 │
+   │ call.ai_gather.ended                                           │
+   │   → classifyAndRoute(speech)                                   │
+   │     1. this.env.TELNYX.ai.openai.chat.createCompletion()        │
+   │        → intent ∈ {billing, sales, support}                    │
+   │     2. this.env.ROUTES.get(`route:${intent}`)                   │
+   │        → destination (E.164)                                    │
+   │   → speak("Transferring you to billing. Please hold.")         │
+   │ call.speak.ended (announcement) → transfer(destination)         │
+   │ call.hangup                → onHangup()                        │
+   └─────────────────────────────────────────────────────────────────┘
 ```
 
 ### How transfers work
 
-This example uses `client.calls.actions.transfer()` — a **blind bridge**: Telnyx dials the
-destination number from `ROUTE_TABLE`, and when the destination answers, the two legs are
-connected. The caller hears the spoken announcement ("Transferring you to billing. Please
-hold.") on the **original leg**, then the bridge connects. The **transferred leg does not
-receive a greeting or TTS** — it is simply bridged to the original call. This is standard
-Call Control transfer behavior.
+`transfer()` is a **blind bridge**: Telnyx dials the destination from the KV route table, and when the destination answers, the two legs are connected. The caller hears the spoken announcement ("Transferring you to billing. Please hold.") on the **original leg**, then the bridge connects. The **transferred leg does not receive a greeting or TTS** — it is simply bridged to the original call. This is standard Call Control transfer behavior.
 
-To customize routing destinations, edit `ROUTE_TABLE` in `app.py`:
+To customize routing destinations, set keys in Telnyx KV (see Setup below):
 
-```python
-ROUTE_TABLE = {
-    "billing": "+1XXXXXXXXXX",   # replace with your billing queue number
-    "sales": "+1XXXXXXXXXX",     # replace with your sales queue number
-    "support": "+1XXXXXXXXXX",   # replace with your support queue number
-}
+```
+route:billing → +1XXXXXXXXXX
+route:sales   → +1XXXXXXXXXX
+route:support → +1XXXXXXXXXX
 ```
 
-**Tips for testing locally:**
-- Set all destinations to your own cell phone to verify the full flow end-to-end. You'll hear
-  the announcement on the original leg, then your cell rings and bridges you back to the
-  original call (you'll be talking to yourself — expected for a single-phone demo).
-- To hear a greeting on the **transferred leg** (e.g. "You've reached billing"), replace the
-  `transfer()` call with a `dial` to a Telnyx number mapped to a separate Call Control
-  application that plays its own greeting, or use `transfer()` with a `webhook_url` pointing
-  to a handler that speaks before bridging.
-- In production, destinations would be separate people, queues, or PBX extensions — not your
-  own cell. The caller hears the other end pick up naturally after the announcement.
+If a KV key is missing for a classified intent, the call transfers to `DEFAULT_DESTINATION` (set in `telnyx.toml`).
 
 ## Environment Variables
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `PORT` | `string` | `5000` | no | Port for the Flask server | — |
-| `TELNYX_API_KEY` | `string` | `your_telnyx_api_key_here` | **yes** | Telnyx API key (Mission Control → API Keys) | [API Keys](https://portal.telnyx.com/#/app/api-keys) |
-| `TELNYX_PUBLIC_KEY` | `string` | `your_telnyx_public_key_here` | **yes** | Telnyx Ed25519 public key for webhook signature verification (`GET /v2/public_key`) | [Webhooks](https://developers.telnyx.com/docs/api/v2/overview#webhooks) |
-| `TELNYX_CONNECTION_ID` | `string` | `your_call_control_application_id_here` | **yes** | Call Control Application ID (webhook events are routed here) | [Call Control Apps](https://portal.telnyx.com/#/app/call-control-applications) |
-| `AI_MODEL` | `string` | `meta-llama/Llama-3.3-70B-Instruct` | no | Telnyx-hosted AI Inference model used for intent classification (no OpenAI key needed) | [AI Inference](https://developers.telnyx.com/docs/api/ai/ai-inference) |
+| `TELNYX_API_KEY` | `string` | `your_telnyx_api_key_here` | **yes** | Telnyx API key (Call Control REST: answer, speak, gather, transfer) | [API Keys](https://portal.telnyx.com/#/app/api-keys) |
+| `AI_MODEL` | `string` | `meta-llama/Llama-3.3-70B-Instruct` | no | Telnyx-hosted AI Inference model for intent classification (no OpenAI key needed) | [AI Inference](https://developers.telnyx.com/docs/api/ai/ai-inference) |
+| `DEFAULT_DESTINATION` | `string` | `+17177247292` | no | Fallback transfer destination if KV has no entry for the classified intent (E.164) | — |
+| `KV_NAMESPACE_ID` | `string` | `550e8400-e29b-41d4-a716-446655440000` | **yes** | Telnyx KV namespace ID for the route table (also set in `telnyx.toml`) | `telnyx-edge storage kv create` |
 
 > **Agent / CLI access** — provision the resources above with the Telnyx CLI:
 >
 > ```bash
-> # API key + public key
+> # API key
 > telnyx whoami
-> curl -H "Authorization: Bearer $TELNYX_API_KEY" https://api.telnyx.com/v2/public_key | jq -r .data.public
 >
-> # Call Control Application (webhook URL → TELNYX_CONNECTION_ID)
-> telnyx connection list                                   # see existing
-> curl -X POST https://api.telnyx.com/v2/call_control_applications \
+> # KV namespace for the route table
+> telnyx-edge storage kv create --name ai-call-router-routes
+> # → paste the returned id into telnyx.toml [storage.kv.ROUTES] and .env.example
+>
+> # Seed the route table (billing/sales/support → your destinations)
+> curl -X PUT "https://api.telnyx.com/v2/storage/kvs/$KV_NAMESPACE_ID/keys/route:billing" \
 >   -H "Authorization: Bearer $TELNYX_API_KEY" \
->   -d '{"application_name":"ai-powered-call-router","active":true,"webhook_event_url":"https://YOUR-TUNNEL/webhook","webhook_api_version":"2","outbound":{"outbound_voice_profile_id":"YOUR_PROFILE_ID"}}'
+>   -H "Content-Type: text/plain" \
+>   -d "+17177247292"
 >
-> # Phone number → Call Control Application
+> # List available Telnyx-hosted LLM models (no OpenAI key needed)
+> curl -H "Authorization: Bearer $TELNYX_API_KEY" \
+>   "https://api.telnyx.com/v2/ai/openai/models" | jq '.data[] | select(.owned_by=="Telnyx") | .id'
+>
+> # Call Control Application (webhook URL → your edge function URL)
+> curl -X POST "https://api.telnyx.com/v2/call_control_applications" \
+>   -H "Authorization: Bearer $TELNYX_API_KEY" \
+>   -d '{"application_name":"ai-powered-call-router","active":true,"webhook_event_url":"https://YOUR-FUNCTION.telnyxcompute.com/webhook","webhook_api_version":"2","outbound":{"outbound_voice_profile_id":"YOUR_PROFILE_ID"}}'
+>
+> # Map a phone number to the Call Control Application
 > telnyx number list
 > telnyx number update +1XXXXXXXXXX --connection-id YOUR_CONNECTION_ID
->
-> # AI Inference models (Telnyx-hosted, no OpenAI key needed)
-> curl -H "Authorization: Bearer $TELNYX_API_KEY" https://api.telnyx.com/v2/ai/openai/models | jq '.data[] | select(.owned_by=="Telnyx") | .id'
 > ```
 
 ## Setup
@@ -119,103 +109,117 @@ git clone https://github.com/team-telnyx/telnyx-code-examples.git
 cd telnyx-code-examples/ai-powered-call-router
 ```
 
-### 2. Create a virtual environment
+### 2. Install dependencies
 
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+npm install
 ```
 
-### 3. Install dependencies
+### 3. Create the KV namespace for the route table
 
 ```bash
-pip install -r requirements.txt
+telnyx-edge storage kv create --name ai-call-router-routes
 ```
 
-### 4. Configure environment variables
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and add your Telnyx credentials:
-
-```
-TELNYX_API_KEY=your_telnyx_api_key_here
-TELNYX_PUBLIC_KEY=your_telnyx_public_key_here
-TELNYX_CONNECTION_ID=your_call_control_application_id_here
-AI_MODEL=meta-llama/Llama-3.3-70B-Instruct
-PORT=5000
-```
-
-**Provisioning the Telnyx resources** (if starting from scratch):
-
-```bash
-# 1. Get your Ed25519 public key for webhook verification
-curl -H "Authorization: Bearer $TELNYX_API_KEY" https://api.telnyx.com/v2/public_key | jq -r .data.public
-# → set as TELNYX_PUBLIC_KEY in .env
-
-# 2. Expose your local server publicly (cloudflared quick tunnel — no account needed)
-cloudflared tunnel --url http://localhost:5000
-# → note the https://*.trycloudflare.com URL
-
-# 3. Create a Call Control Application with that webhook URL
-curl -s -X POST "https://api.telnyx.com/v2/call_control_applications" \
-  -H "Authorization: Bearer $TELNYX_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "application_name": "ai-powered-call-router",
-    "active": true,
-    "webhook_event_url": "https://YOUR-TUNNEL.trycloudflare.com/webhook",
-    "webhook_api_version": "2",
-    "outbound": { "outbound_voice_profile_id": "YOUR_OUTBOUND_VOICE_PROFILE_ID" }
-  }' | jq -r .data.id
-# → set as TELNYX_CONNECTION_ID in .env
-
-# 4. Map a Telnyx phone number to the Call Control Application
-curl -s -X PATCH "https://api.telnyx.com/v2/phone_numbers/+1XXXXXXXXXX" \
-  -H "Authorization: Bearer $TELNYX_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"connection_id": "YOUR_CALL_CONTROL_APPLICATION_ID"}'
-```
+Copy the returned namespace `id` into `telnyx.toml` under `[storage.kv.ROUTES]` and into `.env.example` as `KV_NAMESPACE_ID`.
 
 <details>
 <summary>Programmatic / CLI setup</summary>
 
 ```bash
-# List existing connections / numbers / voice profiles
-telnyx connection list
-telnyx number list
-telnyx voice-profile list
+# Poll until the namespace is ready (status: provision_ok) before writing
+curl -s "https://api.telnyx.com/v2/storage/kvs/$KV_NAMESPACE_ID" \
+  -H "Authorization: Bearer $TELNYX_API_KEY" | jq -r .data.status
 
-# Get your public key (alternative to the curl call above)
-telnyx whoami   # shows account info; public key via API: curl /v2/public_key
+# Seed routes via the REST API (alternative to the binding)
+for INTENT in billing sales support; do
+  curl -X PUT "https://api.telnyx.com/v2/storage/kvs/$KV_NAMESPACE_ID/keys/route:$INTENT" \
+    -H "Authorization: Bearer $TELNYX_API_KEY" \
+    -H "Content-Type: text/plain" \
+    -d "+17177247292"
+done
 
-# Map a number to a Call Control Application (alternative to PATCH)
-telnyx number update +1XXXXXXXXXX --connection-id YOUR_CONNECTION_ID
+# Or seed via the admin endpoint after deploy:
+curl -X POST https://YOUR-FUNCTION.telnyxcompute.com/routes \
+  -H "Content-Type: application/json" \
+  -d '{"intent":"billing","destination":"+17177247292"}'
+
+# List current routes
+curl https://YOUR-FUNCTION.telnyxcompute.com/routes
 ```
 
 </details>
 
-### 5. Run the application
+### 4. Configure secrets + env
 
 ```bash
-python app.py
+# Set the API key as a secret (not in code)
+telnyx-edge secret set TELNYX_API_KEY
+
+# Copy and edit .env.example for local reference
+cp .env.example .env
+# Edit .env: set KV_NAMESPACE_ID, DEFAULT_DESTINATION, AI_MODEL
 ```
 
-### 6. Configure the webhook
-
-Point your Telnyx Call Control application's webhook URL to your public endpoint:
-
-```
-https://your-domain.com/webhook
-```
-
-Use a tool like ngrok for local development:
+### 5. Deploy the edge function
 
 ```bash
-ngrok http 5000
+npm run deploy
 ```
+
+This runs `telnyx-edge ship`, which deploys the function and prints the public URL (e.g. `https://ai-powered-call-router-<id>.telnyxcompute.com`).
+
+### 6. Configure the Call Control Application
+
+Point a Telnyx Call Control Application's webhook URL at your deployed function:
+
+```
+https://ai-powered-call-router-<id>.telnyxcompute.com/webhook
+```
+
+Create the application + map a number:
+
+```bash
+# Create the Call Control Application
+curl -X POST "https://api.telnyx.com/v2/call_control_applications" \
+  -H "Authorization: Bearer $TELNYX_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "application_name": "ai-powered-call-router",
+    "active": true,
+    "webhook_event_url": "https://YOUR-FUNCTION.telnyxcompute.com/webhook",
+    "webhook_api_version": "2",
+    "outbound": { "outbound_voice_profile_id": "YOUR_OUTBOUND_VOICE_PROFILE_ID" }
+  }'
+
+# Map a number to it
+curl -X PATCH "https://api.telnyx.com/v2/phone_numbers/+1XXXXXXXXXX" \
+  -H "Authorization: Bearer $TELNYX_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"connection_id": "YOUR_CALL_CONTROL_APPLICATION_ID"}'
+```
+
+### 7. Seed the route table in KV
+
+```bash
+# Via the admin endpoint
+curl -X POST https://YOUR-FUNCTION.telnyxcompute.com/routes \
+  -H "Content-Type: application/json" \
+  -d '{"intent":"billing","destination":"+1XXXXXXXXXX"}'
+curl -X POST https://YOUR-FUNCTION.telnyxcompute.com/routes \
+  -H "Content-Type: application/json" \
+  -d '{"intent":"sales","destination":"+1XXXXXXXXXX"}'
+curl -X POST https://YOUR-FUNCTION.telnyxcompute.com/routes \
+  -H "Content-Type: application/json" \
+  -d '{"intent":"support","destination":"+1XXXXXXXXXX"}'
+
+# Verify
+curl https://YOUR-FUNCTION.telnyxcompute.com/routes
+```
+
+### 8. Dial in
+
+Call the number you mapped. You'll hear "Hello, please tell me briefly how I can help you today.", then say something like "I need to pay my bill". The agent classifies the intent, speaks "Got it. Transferring you to billing. Please hold.", and blind-bridges the call to the destination in KV.
 
 ## API Reference
 
@@ -225,33 +229,38 @@ See [API.md](./API.md) for the full endpoint reference including request/respons
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Webhook returns 401 | Invalid or missing Telnyx public key | Verify `TELNYX_PUBLIC_KEY` matches your Telnyx account's public key (`GET /v2/public_key`) |
-| Calls not answered | Webhook URL not reachable | Ensure your server is publicly accessible (use `cloudflared tunnel` or ngrok for local dev) |
-| Gather fails with `90012 Invalid value for voice` | `gather_using_ai` uses a different voice set than `speak()` | Do not pass `voice` to `gather_using_ai` — play greetings via `speak(voice="female")` instead. See `app.py:play_greeting` vs `start_gather`. |
-| Gather times out | Caller didn't speak within timeout | Adjust `user_response_timeout_ms` in `start_gather()` or check audio settings |
-| Intent always returns "support" | AI Inference API error | Check `TELNYX_API_KEY` and verify AI Inference access on your account |
-| Transfer fails | Invalid destination number | Ensure `ROUTE_TABLE` destinations are valid E.164 phone numbers |
+| Webhook returns 400 | Malformed event payload | Ensure the Call Control Application webhook URL is `https://YOUR-FUNCTION/webhook` (not `/webhooks/voice`) |
+| Calls not answered | Call Control Application webhook URL wrong/unreachable | Verify the webhook URL in the Call Control Application points to your deployed function |
+| `gather_using_ai` returns 422 `90012 Invalid value for voice` | `gather_using_ai` uses a different voice set than `speak()` | This example does not pass `voice` to `gather_using_ai` — the greeting is played via `speak(voice="female")` separately. Don't add a `voice` to `gatherUsingAi()`. |
+| Intent always returns "support" | AI Inference binding misconfigured or model unreachable | Verify the `[telnyx]` binding in `telnyx.toml`; check `AI_MODEL` is a Telnyx-hosted model (`owned_by == 'Telnyx'`) |
+| Transfer fails | Invalid destination number | Ensure KV `route:<intent>` values are valid E.164 phone numbers; check `DEFAULT_DESTINATION` |
 | Transferred leg is silent on answer | Expected — `transfer()` is a blind bridge | The announcement plays on the original leg; the transferred leg is bridged without TTS. See "How transfers work" above. |
-| App re-answers the transfer leg (loop) | Handler not filtering outbound legs | Only `call.initiated` with `direction == "incoming"` enters `CALL_STATE`; other events are gated on `call_control_id in CALL_STATE`. |
-| Signature verification fails | Timestamp skew or replay | Ensure server time is synced (NTP) and requests arrive within the timestamp window |
+| App re-answers the transfer leg (loop) | Handler not filtering outbound legs | `call.initiated` with `direction !== "incoming"` returns `ignored_outbound` — only inbound legs enter the actor lifecycle. |
+| KV route lookup misses | Namespace not ready or key not set | Poll namespace status until `provision_ok`; seed routes via `POST /routes` or the KV REST API |
 
 ## Agent Discovery
 
 - [Agent Signup](https://telnyx.com/agent-signup.md)
 - [Team Telnyx AI on GitHub](https://github.com/team-telnyx/ai)
+- [Edge Runtime docs](https://developers.telnyx.com/docs/edge-compute)
+- [KV docs](https://developers.telnyx.com/docs/edge-compute/kv)
+- [Stateful Actors docs](https://developers.telnyx.com/docs/edge-compute/stateful-actors)
 - [llms.txt](https://telnyx.com/llms.txt)
 
 ## Related Examples
 
-- [Call Control Quickstart](https://github.com/team-telnyx/telnyx-code-examples) — Basic inbound call handling
-- [IVR Menu System](https://github.com/team-telnyx/telnyx-code-examples) — DTMF-based call routing
-- [AI Voice Assistant](https://github.com/team-telnyx/telnyx-code-examples) — Two-way AI conversation with Call Control
+- [Edge Call Transcription Agent](https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-call-transcription-agent) — same Agent SDK pattern (one actor per call), but transcribes + summarizes + SMSes instead of routing
+- [Edge Prompt A/B Tester](https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-prompt-ab-tester) — StatefulActor + `ctx.storage` (actor-local KV) for experiment state
+- [AI Voice Agent with Function Calling](https://github.com/team-telnyx/telnyx-code-examples/tree/main/ai-voice-agent-with-function-calling-python) — Python/Flask voice agent using `gather_using_ai` + AI Inference
 
 ## Resources
 
 - [Telnyx Developer Docs](https://developers.telnyx.com/docs)
 - [Call Control API Reference](https://developers.telnyx.com/docs/api/v2/call-control)
 - [AI Inference API Reference](https://developers.telnyx.com/docs/api/ai/ai-inference)
-- [Telnyx Python SDK](https://github.com/team-telnyx/telnyx-python)
+- [Edge Compute Quick Start](https://developers.telnyx.com/docs/edge-compute/quick-start)
+- [KV Quick Start](https://developers.telnyx.com/docs/edge-compute/kv/quick-start)
+- [Stateful Actors Quick Start](https://developers.telnyx.com/docs/edge-compute/stateful-actors/quick-start)
+- [Telnyx Edge Runtime SDK (npm)](https://www.npmjs.com/package/@telnyx/edge-runtime)
 - [Call Control Product Page](https://telnyx.com/products/call-control)
 - [Telnyx Pricing](https://telnyx.com/pricing)
