@@ -1342,6 +1342,12 @@ examples:
     framework: edge
     folder: edge-voice-agent-holds-call
 
+  - product: voice
+    use_case: ai-powered-call-router
+    language: typescript
+    framework: edge
+    folder: ai-powered-call-router
+
   - product: ai
     use_case: agent-with-tool-calling
     language: nodejs
