@@ -152,7 +152,13 @@ export async function handleAttendeeRegister(req: Request, env: Env): Promise<Re
   }
   const { upsertAttendee } = await import("../store");
   await upsertAttendee(env.EVENTS, phone, "web-form");
-  return json({ ok: true, phone_number: phone }, 201);
+
+  // Opt-in confirmation (also good 10DLC practice — consent receipt + opt-out).
+  const event = await getEvent(env.EVENTS);
+  const confirmation = `You're registered for ${event.event.name} updates. Schedule changes will reach you by SMS and WhatsApp. Msg freq varies. Reply STOP to opt out, HELP for help.`;
+  const send = await sendSms(envVars.TELNYX_SMS_FROM, phone, confirmation);
+
+  return json({ ok: true, phone_number: phone, confirmation_sent: send.ok }, 201);
 }
 
 /** POST /api/broadcast — schedule change → SMS + WhatsApp to all opted-in attendees. */
