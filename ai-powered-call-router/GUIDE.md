@@ -1,158 +1,126 @@
 # Guide: AI-Powered Call Router
 
-This guide walks through the `ai-powered-call-router` example, a Flask application that uses Telnyx Call Control, the Telnyx AI Inference API, and an in-memory routing table to intelligently route inbound calls based on the caller's spoken intent.
+This guide walks through the `ai-powered-call-router` example — a Telnyx Edge Runtime function that routes inbound calls by classifying the caller's spoken intent via the zero-credential AI Inference binding and looking up the destination in Telnyx KV.
 
 ## Architecture Overview
 
-When a caller dials your Telnyx number, Telnyx sends a webhook to your Flask app. The application answers the call, plays a greeting, and starts gathering speech. Once the caller speaks, the audio is transcribed and sent to the Telnyx AI Inference API to classify the intent (e.g., "billing", "sales", or "support"). The app then looks up the correct destination in a route table and transfers the call.
+When a caller dials your Telnyx number, Telnyx sends a webhook to your edge function. The function answers the call, plays a greeting, and gathers the caller's speech via `gather_using_ai`. Once the caller speaks, the transcript is sent to the Telnyx AI Inference API (via the `[telnyx]` binding — no API key in code) to classify the intent (e.g., `billing`, `sales`, `support`). The app then looks up the destination in Telnyx KV (via the `[storage.kv.ROUTES]` binding), speaks a transfer announcement, and blind-bridges the call.
 
 ```text
-Inbound Call → Telnyx Webhook → Answer Call → Gather Speech → LLM Intent Classification → KV Route Lookup → Transfer Call
+Inbound Call → Telnyx Webhook → RouterAgent actor (one per call_control_id)
+  → answer → speak(greeting) → gather_using_ai → classify intent (AI Inference)
+  → lookup destination (KV) → speak("Transferring you to billing…") → transfer
 ```
 
 ## Prerequisites
 
-* Python 3.9+
 * A Telnyx account with a Call Control Application configured
 * A Telnyx phone number mapped to your Call Control Application
-* ngrok or a similar tool to expose your local server to the internet for webhooks
+* The `telnyx-edge` CLI installed and authenticated
+* A Telnyx KV namespace for the route table
+* Node.js 18+ and `npm`
 
-## Environment Setup
+## The Four Pieces
 
-1. Clone the repository and navigate to the `ai-powered-call-router` directory.
-2. Create a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-3. Install the dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Copy the example environment file and update it with your credentials:
-   ```bash
-   cp .env.example .env
-   ```
-   * `TELNYX_API_KEY`: Your Telnyx API key.
-   * `TELNYX_PUBLIC_KEY`: Your Telnyx public key (used for webhook signature verification).
-   * `TELNYX_CONNECTION_ID`: Your Call Control Connection ID.
-   * `PORT`: The port to run the Flask app on (defaults to 5000).
+This example composes four Telnyx platform primitives:
 
-## Running the Application
+### 1. Stateful Actor — `RouterAgent` (`src/routerAgent.ts`)
 
-Start the Flask server:
-```bash
-python app.py
-```
+`class RouterAgent extends Agent<RouterEnv, RouterState>` — one actor instance per inbound call leg, keyed by `call_control_id`. Holds per-call state (phase, speech, intent, destination) in durable actor storage. The platform guarantees one instance per name, single-threaded dispatch, and durability before reply.
 
-Expose your local server using ngrok:
-```bash
-ngrok http 5000
-```
+```ts
+export class RouterAgent extends Agent<RouterEnv, RouterState> {
+  protected override initialState(): RouterState { ... }
 
-In your Telnyx Call Control Application settings, set the webhook URL to `https://<your-ngrok-url>.ngrok.io/webhook`.
-
-## How It Works
-
-### 1. Initialization and Route Table
-
-At the top of `app.py`, the application loads environment variables, initializes the Telnyx SDK with your API key, and defines the in-memory route table.
-
-```python
-ROUTE_TABLE = {
-    "billing": "+18005551234",
-    "sales": "+18005556789",
-    "support": "+18005550000",
+  async recordStart(callControlId, from, to) { ... }      // call.initiated
+  async classifyAndRoute(speech) { ... }                   // call.ai_gather.ended
+  // ... setGreeting, setGathering, setAnnouncing, setTransferring, onHangup
 }
-DEFAULT_DESTINATION = "+18005550000"
 ```
 
-This KV-like route table maps intent labels to phone numbers. In a production environment, you would replace this with Telnyx KV or a Redis database. The `DEFAULT_DESTINATION` is used as a fallback for unrecognized intents.
+### 2. Telnyx API Binding — `[telnyx]` in `telnyx.toml`
 
-### 2. Webhook Verification
+The `[telnyx]` block injects a pre-authenticated Telnyx SDK client as `env.TELNYX` (and `this.env.TELNYX` inside the actor). This example uses it for **zero-credential AI Inference** — no API key appears in the code for the LLM call:
 
-Telnyx sends call events to the `/webhook` endpoint. Security is critical, so the app verifies the Ed25519 signature of every incoming request.
-
-```python
-event = telnyx.Webhook.unwrap(
-    raw_body,
-    signature,
-    timestamp,
-    TELNYX_PUBLIC_KEY,
-)
+```ts
+const completion = await this.env.TELNYX.ai.openai.chat.createCompletion({
+  model: this.env.AI_MODEL,
+  messages: [
+    { role: "system", content: "You are an intent classifier..." },
+    { role: "user", content: `Caller said: "${speech}"\n\nIntent:` },
+  ],
+  max_tokens: 5,
+  temperature: 0.0,
+});
+const intent = completion.choices[0].message.content.trim().toLowerCase();
 ```
 
-If the signature is invalid, the app logs the error and returns a `401 Unauthorized` response without leaking exception details.
+> **Why zero-credential matters**: the runtime injects the credential at deploy time from your `telnyx-edge` auth. Your function code, bundle, and logs never contain the API key for the LLM call. The `TELNYX_API_KEY` secret is still needed for the Call Control REST calls (answer/speak/gather/transfer) because those go over plain HTTP, not the binding.
 
-### 3. Answering the Call
+### 3. KV Binding — `[storage.kv.ROUTES]` in `telnyx.toml`
 
-When a new inbound call arrives, Telnyx sends a `call.initiated` event. The app checks if the call direction is `incoming` and answers it using Call Control:
+The route table lives in Telnyx KV — globally distributed key-value storage. Keys are `route:<intent>` (e.g. `route:billing`), values are E.164 phone numbers. The binding is pre-authenticated, so the actor reads destinations with no API key in code:
 
-```python
-telnyx.Call.answer(call_control_id=call_control_id)
+```ts
+const destination = await this.env.ROUTES.get(`route:${intent}`);
 ```
 
-### 4. Gathering Speech
+This is shared across all calls and all actor instances — update a route via `POST /routes` and the next call picks it up immediately. No redeploy needed.
 
-Once the call is answered (`call.answered` event), the app plays a text-to-speech prompt and starts gathering speech from the caller.
+### 4. Call Control REST — direct `fetch()` in `src/index.ts`
 
-```python
-telnyx.Call.playback_start(
-    call_control_id=call_control_id,
-    payload={
-        "media": [
-            {
-                "type": "text",
-                "text": "Hello, please tell me briefly how I can help you today.",
-            }
-        ]
-    },
-)
-telnyx.Call.gather_using_speech(
-    call_control_id=call_control_id,
-    payload={...},
-)
-```
+The webhook handler drives the call lifecycle via the Call Control REST API (using `TELNYX_API_KEY` as a bearer token):
 
-### 5. LLM Intent Classification
+- `POST /v2/calls/{id}/actions/answer`
+- `POST /v2/calls/{id}/actions/speak` (greeting + announcement, distinguished by `client_state`)
+- `POST /v2/calls/{id}/actions/gather_using_ai` (speech capture)
+- `POST /v2/calls/{id}/actions/transfer` (blind bridge)
 
-When the gather completes (`call.gather.ended`), the transcribed speech is sent to the Telnyx AI Inference API (OpenAI binding) to classify the intent.
+## The Event Flow
 
-```python
-completion = telnyx.ai.openai.chat.create_completion(
-    model="openai/gpt-4o-mini",
-    messages=[{"role": "user", "content": prompt}],
-    max_tokens=10,
-    temperature=0.0,
-)
-```
+### 1. `call.initiated` (incoming)
 
-The prompt instructs the LLM to respond with exactly one of: `billing`, `sales`, or `support`. If the classification fails, the app safely catches the exception and defaults to the `support` intent.
+The handler filters on `direction: "incoming"` — outbound legs (transfer destinations) are ignored so the app doesn't re-answer the transferred leg. For inbound calls: `actor.recordStart()` captures the call metadata, then `answerCall()` picks up.
 
-### 6. Transferring the Call
+### 2. `call.answered`
 
-The classified intent is used to look up the destination in the `ROUTE_TABLE`. The app then transfers the call using Call Control.
+`actor.setGreeting()` marks the phase, then `speakText()` plays "Hello, please tell me briefly how I can help you today." with `client_state: { speak_stage: "greeting" }` so the next `call.speak.ended` knows which speak just finished.
 
-```python
-destination = ROUTE_TABLE.get(intent, DEFAULT_DESTINATION)
-telnyx.Call.transfer(
-    call_control_id,
-    to=destination,
-    timeout_secs=30,
-)
-```
+### 3. `call.speak.ended` (greeting)
 
-If the gather fails entirely (`call.gather.failed`), the app gracefully falls back to transferring the call to the `DEFAULT_DESTINATION`.
+`actor.setGathering()` marks the phase, then `gatherUsingAi()` starts speech capture. The gather passes a JSON schema (`parameters`) asking for an `utterance` field, an `assistant` block (model + one-turn instruction), and `transcription: { language: "en" }`. **No `voice` param** — `gather_using_ai` uses a different voice set than `speak()` and rejects `voice="female"` with `90012 Invalid value for voice`. The greeting is played separately via `speak(voice="female")` for this reason.
 
-## Telnyx Primitives Used
+### 4. `call.ai_gather.ended`
 
-* **Call Control**: Used to answer, gather speech, play audio, and transfer the call.
-* **AI Inference (OpenAI binding)**: Used to classify the caller's intent from transcribed speech.
-* **KV (In-Memory)**: A simple dictionary acting as a route table to map intents to destinations.
+`actor.classifyAndRoute(speech)` does two things in one method:
+1. **Classify** via `this.env.TELNYX.ai.openai.chat.createCompletion()` — zero-credential. The LLM returns one of `billing`/`sales`/`support`.
+2. **Look up destination** via `this.env.ROUTES.get('route:<intent>')` — zero-credential KV read.
+
+Then `speakText()` plays "Got it. Transferring you to billing. Please hold." with `client_state: { speak_stage: "announcement" }`.
+
+### 5. `call.speak.ended` (announcement)
+
+`actor.setTransferring()` marks the phase, then `transferCall()` fires the blind bridge to the destination stashed in actor state.
+
+### 6. `call.hangup`
+
+`actor.onHangup()` marks the phase as `done`.
+
+## Why the announcement is its own speak step
+
+`speak()` is asynchronous — if you call `transfer()` immediately after `speak()`, the transfer cuts off the TTS mid-sentence. By splitting the announcement into its own `speak()` call and waiting for `call.speak.ended` before transferring, the caller hears the full "Transferring you to billing. Please hold." before the bridge fires.
+
+## Why the route table is in KV (not in code)
+
+Hardcoding destinations in `app.py` requires a redeploy to change a route. Putting them in KV means:
+- **Update without redeploy**: `POST /routes` updates a destination; the next call picks it up.
+- **Shared state**: multiple function instances read the same routes.
+- **Operational visibility**: `GET /routes` shows the current routing config.
+- **Global read latency**: KV is globally distributed, so the lookup is fast from any edge region.
 
 ## Next Steps
 
-* Explore the [Telnyx Call Control API Reference](https://developers.telnyx.com/docs/api/v2/call-control) for more call commands.
-* Learn more about [Telnyx AI Inference](https://developers.telnyx.com/docs/ai-communications-infrastructure).
-* Replace the in-memory route table with a persistent store like Telnyx KV or Redis.
-* Add support for more intents and dynamic routing logic.
+- Add more intents (e.g. `retention`, `complaint`) by extending the LLM prompt's label set and seeding the new KV keys.
+- Replace the blind-bridge `transfer()` with a `dial` to a separate Call Control Application that plays its own greeting on the transferred leg.
+- Persist call records (intent, destination, duration) to actor-local SQL (`this.ctx.storage.sql`) for analytics — see `edge-call-transcription-agent` for the pattern.
+- Add rate limiting via the `[[ratelimits]]` binding to cap per-caller call volume.
