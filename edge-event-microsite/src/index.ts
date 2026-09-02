@@ -32,7 +32,7 @@ export default {
 
     // ── Microsite (server-rendered from KV) ────────────────────────────
     if (path === "/" && req.method === "GET") {
-      return html(renderMicrosite(await getEvent(env.EVENTS), url.origin));
+      return html(renderMicrosite(await getEvent(env.EVENTS)));
     }
     if (path === "/voice" && req.method === "GET") {
       return html(renderVoicePage(await getEvent(env.EVENTS)));
