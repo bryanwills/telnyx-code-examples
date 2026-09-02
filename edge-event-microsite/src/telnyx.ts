@@ -123,6 +123,10 @@ export async function upsertAssistant(
   greeting: string,
   tools: AssistantTool[],
 ): Promise<{ id: string }> {
+  // Required for in-browser (anonymous WebRTC) access — without this the
+  // signaling server rejects anonymous_login with "Login Incorrect".
+  const telephonySettings = { supports_unauthenticated_web_calls: true };
+
   // Reuse an existing assistant with the same name, else create one.
   const listResp = await fetch(`${TELNYX_API}/ai/assistants`, {
     headers: authHeaders(),
@@ -138,7 +142,7 @@ export async function upsertAssistant(
         {
           method: "POST",
           headers: authHeaders(),
-          body: JSON.stringify({ instructions, greeting, tools }),
+          body: JSON.stringify({ instructions, greeting, tools, telephony_settings: telephonySettings }),
         },
       );
       if (!putResp.ok) {
@@ -158,6 +162,7 @@ export async function upsertAssistant(
       instructions,
       greeting,
       tools,
+      telephony_settings: telephonySettings,
       model: process.env.ASSISTANT_MODEL ?? "moonshotai/Kimi-K2.6",
     }),
   });
