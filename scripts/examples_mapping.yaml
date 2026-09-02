@@ -3221,6 +3221,7 @@ examples:
     use_case: "auto-generated-from-linear"
     language: typescript
     framework: edge
+    folder: voicemail-to-sms-agent
     folder: sms-two-factor-agent
 
   - product: ai

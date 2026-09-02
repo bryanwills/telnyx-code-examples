@@ -3,6 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
+  "generated_at": "2026-08-31T22:08:00Z",
+  "example_count": 522,
   "generated_at": "2026-09-02T20:37:33Z",
   "example_count": 539,
   "examples": [
@@ -4714,6 +4716,13 @@
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/network-incident-agent"
     },
     {
+      "folder": "voicemail-to-sms-agent",
+      "title": "Voicemail-to-SMS Agent",
+      "description": "An Edge-based agent that transcribes, summarizes, and texts voicemail summaries to the mailbox owner.",
+      "product": "ai",
+      "language": "typescript",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/voicemail-to-sms-agent"
       "folder": "sms-two-factor-agent",
       "title": "SMS Two-Factor Authentication Agent",
       "description": "Agent-managed SMS two-factor authentication with code generation, KV storage, and scheduled expiry.",

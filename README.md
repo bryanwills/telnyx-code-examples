@@ -377,6 +377,7 @@ Send and receive text messages with the [Telnyx SMS API](https://telnyx.com/prod
 </details>
 
 <details open>
+<summary><h2>AI Assistants</h2> <em>(134 examples)</em></summary>
 <summary><h2>AI Assistants</h2> <em>(139 examples)</em></summary>
 
 Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assistants) - LLM-powered agents for voice and messaging automation.
@@ -515,9 +516,9 @@ Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assis
 | [update-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/update-ai-assistant-python/README.md) | Python | Update an existing Telnyx AI Assistant's configuration, model, system prompt, and tools via the API. |
 | [video-room-ai-meeting-moderator-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/video-room-ai-meeting-moderator-python/README.md) | Python | Video Room AI Meeting Moderator - create video rooms with AI-powered agenda tracking and time management. |
 | [video-room-ai-moderator-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/video-room-ai-moderator-python/README.md) | Python | Video Room AI Moderator - create video rooms with AI-powered content moderation on chat and participant management. |
-| [voice-ivr-with-agent-backend](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/voice-ivr-with-agent-backend/README.md) | Python | A natural language IVR system where the Telnyx Agent handles backend logic and an LLM powers dynamic menu options. |
 | [voice-journal-daily-log-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/voice-journal-daily-log-python/README.md) | Python | Voice Journal Daily Log - call a number, speak your daily journal entry, AI transcribes and organizes it with mood, topics, and gratitude extraction. |
 | [voicemail-smart-router-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/voicemail-smart-router-python/README.md) | Python | AI Voicemail Smart Router — transcribe voicemails, classify intent (urgent, billing, support, sales, spam, routine), and route to the right channel via Telnyx STT + AI Inference. |
+| [voicemail-to-sms-agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/voicemail-to-sms-agent/README.md) | Typescript | An Edge-based agent that transcribes, summarizes, and texts voicemail summaries to the mailbox owner. |
 | [warm-transfer-ai-briefing-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/warm-transfer-ai-briefing-python/README.md) | Python | When an agent transfers a call, AI summarizes the conversation and briefs the next agent before connecting. No cold handoffs. |
 | [webhook-aggregator-fanout](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/webhook-aggregator-fanout/README.md) | Python | Aggregate, deduplicate, and fan out Telnyx webhooks to multiple action queues (call and SMS) with SQLite event logging. |
 | [webhook-debugger-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/webhook-debugger-ai-assistant-python/README.md) | Python | Webhook Debugger AI Assistant - catch, inspect, and debug Telnyx webhooks with AI explanations. |
