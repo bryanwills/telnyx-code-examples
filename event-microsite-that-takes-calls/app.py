@@ -269,7 +269,7 @@ def webhook_sms():
         else:
             masked_from_number = "[redacted]"
 
-        app.logger.info("SMS from %s: %s", masked_from_number, message_text)
+        app.logger.info("Inbound SMS received (chars=%d)", len(message_text or ""))
 
         # AI concierge response using Inference
         response_text = get_ai_concierge_response(message_text)
