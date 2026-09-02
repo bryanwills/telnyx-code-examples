@@ -312,7 +312,7 @@ def webhook_whatsapp():
         else:
             masked_from = "[redacted]"
 
-        app.logger.info("WhatsApp from %s: %s", masked_from, message_text)
+        app.logger.info("Inbound WhatsApp received (chars=%d)", len(message_text or ""))
 
         response_text = get_ai_concierge_response(message_text)
 
@@ -499,24 +499,19 @@ def qualify_lead():
 
         if is_hot_lead:
             masked_phone = f"***-***-{phone_number[-4:]}" if len(phone_number) >= 4 else "***REDACTED***"
-            masked_rep_phone = (
-                f"***-***-{TELNYX_SALES_REP_PHONE[-4:]}"
-                if isinstance(TELNYX_SALES_REP_PHONE, str) and len(TELNYX_SALES_REP_PHONE) >= 4
-                else "***REDACTED***"
-            )
             lead_message = (
                 f"🔥 HOT LEAD: {company} ({company_size}) "
                 f"Budget: {budget} | Timeline: {timeline} | Phone: {masked_phone}"
             )
             if DEMO_MODE:
+                # Log only non-PII lead fields; the masked phone is stored in
+                # SQLDB and not needed for the demo trace.
                 app.logger.info(
-                    "[DEMO] Would SMS hot lead to sales rep %s (company=%s, size=%s, budget=%s, timeline=%s, phone=%s)",
-                    masked_rep_phone,
+                    "[DEMO] Would SMS hot lead to sales rep (company=%s, size=%s, budget=%s, timeline=%s)",
                     company,
                     company_size,
                     budget,
                     timeline,
-                    masked_phone,
                 )
             else:
                 telnyx_client.messages.send(
