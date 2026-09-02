@@ -3312,3 +3312,9 @@ examples:
     language: python
     framework: flask
     folder: event-microsite-that-takes-calls
+
+  - product: ai
+    use_case: event-microsite-edge
+    language: nodejs
+    framework: edge
+    folder: edge-event-microsite
