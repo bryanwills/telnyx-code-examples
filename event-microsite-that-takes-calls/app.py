@@ -499,7 +499,6 @@ def qualify_lead():
             lead_message = (
                 f"🔥 HOT LEAD: {company} ({company_size}) "
                 f"Budget: {budget} | Timeline: {timeline} | Phone: {phone_number}"
-            )
             if DEMO_MODE:
                 app.logger.info(
                     "[DEMO] Would SMS hot lead to sales rep %s (company=%s, size=%s, budget=%s, timeline=%s, phone=%s)",
@@ -512,7 +511,7 @@ def qualify_lead():
                 )
             else:
                 telnyx.Message.create(
-                    from_=TELNYX_SMS_FROM,
+                    "REDACTED",
                     to=TELNYX_SALES_REP_PHONE,
                     text=lead_message,
                 )
