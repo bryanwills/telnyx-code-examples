@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-09-01T22:37:42Z",
-  "example_count": 537,
+  "generated_at": "2026-09-02T19:03:01Z",
+  "example_count": 538,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -4838,6 +4838,15 @@
       "language": "nodejs",
       "framework": "edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/sms-conversation-exporter"
+    },
+    {
+      "folder": "event-microsite-that-takes-calls",
+      "title": "Event Microsite That Takes Calls",
+      "description": "A Flask event microsite backed by Telnyx KV that lets attendees text, call, or talk in-browser to an AI concierge, broadcasts schedule changes, qualifies exhibitor leads, and transcribes post-event feedback into a sponsor report.",
+      "product": "ai",
+      "language": "python",
+      "framework": "flask",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/event-microsite-that-takes-calls"
     }
   ]
 }
