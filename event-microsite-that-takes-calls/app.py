@@ -275,7 +275,12 @@ def webhook_sms():
         response_text = get_ai_concierge_response(message_text)
 
         if DEMO_MODE:
-            app.logger.info("[DEMO] Would send SMS to %s: %s", from_number, response_text)
+            masked_from = (
+                f"***{from_number[-2:]}"
+                if isinstance(from_number, str) and len(from_number) >= 2
+                else "***"
+            )
+            app.logger.info("[DEMO] Would send SMS to %s: %s", masked_from, response_text)
         else:
             telnyx.Message.create(
                 from_=TELNYX_SMS_FROM,
