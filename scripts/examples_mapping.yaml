@@ -3306,3 +3306,9 @@ examples:
     language: python
     framework: flask
     folder: voice-ivr-with-agent-backend
+
+  - product: ai
+    use_case: "auto-generated-from-linear"
+    language: python
+    framework: flask
+    folder: event-microsite-that-takes-calls
