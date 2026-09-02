@@ -21,13 +21,13 @@ This sample demonstrates how Telnyx **AI Communications Infrastructure** powers 
 |----------------|----------------------|---------|
 | KV | `telnyx.kv.Namespace.retrieve` / `create_entry` | Store and serve event schedule, speakers, venue, sponsors |
 | SQLDB | `telnyx.sqldb.Connection` | Persist exhibitor leads and post-event feedback |
-| Messaging (SMS) | `telnyx.Message.create` | Send AI concierge replies and hot-lead alerts |
-| Messaging (WhatsApp) | `telnyx.Message.create` | Broadcast schedule changes and concierge replies |
-| Voice | `telnyx.Call.answer` | Answer inbound voice calls |
-| Voice AI WebSocket | `telnyx.Call.start_voice_ai` | Connect callers to the AI concierge in real time |
-| Inference (Chat) | `telnyx.Inference.create_completion` | Generate AI concierge responses and feedback summaries |
-| Inference (Transcription) | `telnyx.Inference.create_transcription` | Transcribe post-event spoken feedback |
-| Webhooks | `telnyx.Webhook.verify_signature` / `construct_event` | Verify inbound SMS, WhatsApp, and Voice events |
+| Messaging (SMS) | `telnyx_client.messages.send` | Send AI concierge replies and hot-lead alerts |
+| Messaging (WhatsApp) | `telnyx_client.messages.whatsapp` | Broadcast schedule changes and concierge replies |
+| Voice | `telnyx_client.calls.actions.answer` | Answer inbound voice calls |
+| Voice AI | `telnyx_client.calls.actions.start_ai_assistant` | Connect callers to the AI concierge in real time |
+| AI Inference (Chat) | `telnyx_client.ai.openai.chat.create_completion` | Generate AI concierge responses and feedback summaries |
+| AI Inference (Transcription) | `telnyx_client.ai.audio.transcribe` | Transcribe post-event spoken feedback |
+| Webhooks | `unwrap_with_ed25519` (Ed25519 signature) | Verify inbound SMS, WhatsApp, and Voice events |
 
 ## Architecture
 
@@ -41,8 +41,8 @@ This sample demonstrates how Telnyx **AI Communications Infrastructure** powers 
                     │                                              │
                     │  /webhook/sms     ──► Inference (chat)       │
                     │  /webhook/whatsapp ──► Inference (chat)      │
-                    │  /webhook/voice   ──► Call.answer +           │
-                    │                        Voice AI WebSocket     │
+                    │  /webhook/voice   ──► calls.actions.answer +  │
+                    │                        start_ai_assistant     │
                     │  /webhook/voice-ai  (transcription events)    │
                     │                                              │
                     │  /api/broadcast-schedule-change              │

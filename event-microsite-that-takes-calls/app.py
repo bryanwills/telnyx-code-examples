@@ -14,6 +14,7 @@ from flask import Flask, request, jsonify, render_template_string, abort
 from dotenv import load_dotenv
 
 import telnyx
+from telnyx.lib.webhooks_ed25519 import unwrap_with_ed25519
 
 # ---------------------------------------------------------------------------
 # Configuration & initialization
@@ -23,6 +24,13 @@ load_dotenv()
 
 app = Flask(__name__)
 app.logger.setLevel(logging.INFO)
+
+# Telnyx SDK client (instance-based, telnyx >= 4.0)
+TELNYX_PUBLIC_KEY = os.getenv("TELNYX_PUBLIC_KEY", "")
+telnyx_client = telnyx.Telnyx(
+    api_key=os.getenv("TELNYX_API_KEY", ""),
+    public_key=TELNYX_PUBLIC_KEY or None,
+)
 
 # Required environment variables
 REQUIRED_ENV_VARS = [
@@ -47,7 +55,6 @@ if _missing:
     app.logger.error("Missing required environment variables: %s", ", ".join(_missing))
 
 # Telnyx SDK configuration
-telnyx.api_key = os.getenv("TELNYX_API_KEY")
 TELNYX_PUBLIC_KEY = os.getenv("TELNYX_PUBLIC_KEY")
 TELNYX_PHONE_NUMBER = os.getenv("TELNYX_PHONE_NUMBER")
 TELNYX_SMS_FROM = os.getenv("TELNYX_SMS_FROM")
@@ -58,6 +65,7 @@ TELNYX_SQLDB_CONNECTION_STRING = os.getenv("TELNYX_SQLDB_CONNECTION_STRING")
 TELNYX_INFERENCE_API_KEY = os.getenv("TELNYX_INFERENCE_API_KEY")
 TELNYX_AI_CONCIERGE_NAME = os.getenv("TELNYX_AI_CONCIERGE_NAME", "Event Concierge")
 TELNYX_AI_CONCIERGE_PROMPT = os.getenv("TELNYX_AI_CONCIERGE_PROMPT", "You are a helpful event concierge.")
+TELNYX_AI_MODEL = os.getenv("TELNYX_AI_MODEL", "moonshotai/Kimi-K2.6")
 TELNYX_SALES_REP_PHONE = os.getenv("TELNYX_SALES_REP_PHONE")
 TELNYX_EVENT_DOMAIN = os.getenv("TELNYX_EVENT_DOMAIN")
 DEMO_MODE = os.getenv("TELNYX_DEMO_MODE", "true").lower() in ("true", "1", "yes")
@@ -187,16 +195,22 @@ def init_sqldb():
 # Webhook signature verification
 # ---------------------------------------------------------------------------
 
-def verify_webhook(req):
-    """Verify Telnyx webhook signature using Ed25519."""
-    signature = req.headers.get("Telnyx-Signature")
-    if not signature:
-        abort(401, description="Missing Telnyx signature header")
+def verify_and_parse_webhook(req):
+    """Verify the Telnyx Ed25519 webhook signature and return the parsed event.
+
+    Telnyx signs webhooks with Ed25519. The signed payload is
+    ``"{timestamp}|{raw_body}"`` and the signature is in the
+    ``Telnyx-Signature-Ed25519`` header (timestamp in ``Telnyx-Timestamp``).
+    """
+    sig = req.headers.get("Telnyx-Signature-Ed25519")
+    if not sig:
+        abort(401, description="Missing Telnyx-Signature-Ed25519 header")
     try:
-        telnyx.Webhook.verify_signature(
-            payload=req.get_data(),
-            signature=signature,
-            public_key=TELNYX_PUBLIC_KEY,
+        return unwrap_with_ed25519(
+            telnyx_client,
+            req.get_data(),
+            req.headers,
+            key=TELNYX_PUBLIC_KEY,
         )
     except Exception as e:
         app.logger.exception("Webhook signature verification failed: %s", e)
@@ -252,16 +266,10 @@ def api_sponsors():
 @app.route("/webhook/sms", methods=["POST"])
 def webhook_sms():
     """Handle inbound SMS from attendees to the AI concierge."""
-    verify_webhook(request)
+    event = verify_and_parse_webhook(request)
     try:
-        event = telnyx.Webhook.construct_event(
-            payload=request.get_data(),
-            signature=request.headers.get("Telnyx-Signature"),
-            public_key=TELNYX_PUBLIC_KEY,
-        )
         payload = event.data.payload
         from_number = payload.get("from", {}).get("phone_number")
-        to_number = payload.get("to", {}).get("phone_number")
         message_text = payload.get("text", "")
 
         if isinstance(from_number, str) and from_number:
@@ -278,7 +286,7 @@ def webhook_sms():
             masked_from = "[redacted]"
             app.logger.info("[DEMO] Would send SMS to %s: %s", masked_from, response_text)
         else:
-            telnyx.Message.create(
+            telnyx_client.messages.send(
                 from_=TELNYX_SMS_FROM,
                 to=from_number,
                 text=response_text,
@@ -293,13 +301,8 @@ def webhook_sms():
 @app.route("/webhook/whatsapp", methods=["POST"])
 def webhook_whatsapp():
     """Handle inbound WhatsApp messages."""
-    verify_webhook(request)
+    event = verify_and_parse_webhook(request)
     try:
-        event = telnyx.Webhook.construct_event(
-            payload=request.get_data(),
-            signature=request.headers.get("Telnyx-Signature"),
-            public_key=TELNYX_PUBLIC_KEY,
-        )
         payload = event.data.payload
         from_number = payload.get("from", {}).get("phone_number")
         message_text = payload.get("text", {}).get("body", "")
@@ -311,7 +314,7 @@ def webhook_whatsapp():
         if DEMO_MODE:
             app.logger.info("[DEMO] Would send WhatsApp to %s: %s", from_number, response_text)
         else:
-            telnyx.Message.create(
+            telnyx_client.messages.whatsapp(
                 from_=TELNYX_WHATSAPP_FROM,
                 to=from_number,
                 text=response_text,
@@ -324,10 +327,10 @@ def webhook_whatsapp():
 
 
 def get_ai_concierge_response(user_message: str) -> str:
-    """Use Telnyx Inference to generate an AI concierge response."""
+    """Use Telnyx AI Inference to generate an AI concierge response."""
     try:
-        response = telnyx.Inference.create_completion(
-            model="gpt-3.5-turbo",
+        completion = telnyx_client.ai.openai.chat.create_completion(
+            model=TELNYX_AI_MODEL,
             messages=[
                 {"role": "system", "content": TELNYX_AI_CONCIERGE_PROMPT},
                 {"role": "user", "content": user_message},
@@ -335,7 +338,8 @@ def get_ai_concierge_response(user_message: str) -> str:
             max_tokens=256,
             temperature=0.7,
         )
-        return response.choices[0].message.content.strip()
+        # Telnyx AI Inference returns a plain dict, not a typed object.
+        return completion["choices"][0]["message"]["content"].strip()
     except Exception as e:
         app.logger.exception("Inference error: %s", e)
         return "Sorry, I'm having trouble processing your request right now. Please try again later."
@@ -347,17 +351,11 @@ def get_ai_concierge_response(user_message: str) -> str:
 
 @app.route("/webhook/voice", methods=["POST"])
 def webhook_voice():
-    """Handle inbound voice calls — connect to AI concierge via Voice AI WebSocket."""
-    verify_webhook(request)
+    """Handle inbound voice calls — connect to AI concierge via Voice AI."""
+    event = verify_and_parse_webhook(request)
     try:
-        event = telnyx.Webhook.construct_event(
-            payload=request.get_data(),
-            signature=request.headers.get("Telnyx-Signature"),
-            public_key=TELNYX_PUBLIC_KEY,
-        )
         payload = event.data.payload
         call_control_id = payload.get("call_control_id")
-        call_leg_id = payload.get("call_leg_id")
 
         app.logger.info("Inbound voice call: %s", call_control_id)
 
@@ -366,16 +364,21 @@ def webhook_voice():
             return jsonify({"status": "demo", "call_control_id": call_control_id})
 
         # Answer the call
-        telnyx.Call.answer(
-            call_control_id=call_control_id,
-        )
+        telnyx_client.calls.actions.answer(call_control_id)
 
-        # Connect to Voice AI WebSocket for real-time conversation
-        telnyx.Call.start_voice_ai(
-            call_control_id=call_control_id,
-            model="gpt-4o-mini",
-            prompt=TELNYX_AI_CONCIERGE_PROMPT,
-            voice="en-US-JennyNeural",
+        # Connect to the Telnyx AI Assistant for real-time conversation.
+        # `assistant` carries the model + instructions; Telnyx-hosted models
+        # need no OpenAI key. `voice` is intentionally omitted (the valid voice
+        # set differs per assistant backend and invalid values are rejected
+        # only after the caller is on the line — see repo memory).
+        telnyx_client.calls.actions.start_ai_assistant(
+            call_control_id,
+            assistant={
+                "model": TELNYX_AI_MODEL,
+                "instructions": TELNYX_AI_CONCIERGE_PROMPT,
+                "name": TELNYX_AI_CONCIERGE_NAME,
+            },
+            greeting="Hello, you've reached the event concierge. How can I help you today?",
         )
 
         return jsonify({"status": "ok", "call_control_id": call_control_id})
@@ -386,14 +389,9 @@ def webhook_voice():
 
 @app.route("/webhook/voice-ai", methods=["POST"])
 def webhook_voice_ai():
-    """Handle Voice AI WebSocket events (transcription, AI responses)."""
-    verify_webhook(request)
+    """Handle Voice AI events (transcription, AI responses)."""
+    event = verify_and_parse_webhook(request)
     try:
-        event = telnyx.Webhook.construct_event(
-            payload=request.get_data(),
-            signature=request.headers.get("Telnyx-Signature"),
-            public_key=TELNYX_PUBLIC_KEY,
-        )
         payload = event.data.payload
         event_type = event.type
 
@@ -443,13 +441,13 @@ def broadcast_schedule_change():
                 app.logger.info("[DEMO] Would broadcast to %s: %s", phone, message)
             else:
                 # Send via SMS
-                telnyx.Message.create(
+                telnyx_client.messages.send(
                     from_=TELNYX_SMS_FROM,
                     to=phone,
                     text=message,
                 )
                 # Send via WhatsApp
-                telnyx.Message.create(
+                telnyx_client.messages.whatsapp(
                     from_=TELNYX_WHATSAPP_FROM,
                     to=phone,
                     text=message,
@@ -498,7 +496,8 @@ def qualify_lead():
             masked_phone = f"***-***-{phone_number[-4:]}" if len(phone_number) >= 4 else "***REDACTED***"
             lead_message = (
                 f"🔥 HOT LEAD: {company} ({company_size}) "
-                f"Budget: {budget} | Timeline: {timeline} | Phone: {phone_number}"
+                f"Budget: {budget} | Timeline: {timeline} | Phone: {masked_phone}"
+            )
             if DEMO_MODE:
                 app.logger.info(
                     "[DEMO] Would SMS hot lead to sales rep %s (company=%s, size=%s, budget=%s, timeline=%s, phone=%s)",
@@ -510,8 +509,8 @@ def qualify_lead():
                     masked_phone,
                 )
             else:
-                telnyx.Message.create(
-                    "REDACTED",
+                telnyx_client.messages.send(
+                    from_=TELNYX_SMS_FROM,
                     to=TELNYX_SALES_REP_PHONE,
                     text=lead_message,
                 )
@@ -568,24 +567,27 @@ def submit_feedback():
 
 
 def transcribe_audio(audio_url: str) -> str:
-    """Transcribe audio using Telnyx Inference Whisper model."""
+    """Transcribe audio using Telnyx AI Inference (Whisper)."""
     try:
-        response = telnyx.Inference.create_transcription(
-            model="whisper-1",
-            file=audio_url,
-            prompt="Transcribe the following event feedback audio.",
+        response = telnyx_client.ai.audio.transcribe(
+            model="openai/whisper-large-v3-turbo",
+            file_url=audio_url,
         )
-        return response.text.strip()
+        # Transcription response is typed; fall back to dict access.
+        text = getattr(response, "text", None)
+        if text is None and isinstance(response, dict):
+            text = response.get("text", "")
+        return (text or "").strip()
     except Exception as e:
         app.logger.exception("Transcription error: %s", e)
         return "[Transcription failed]"
 
 
 def summarize_feedback(transcript: str) -> str:
-    """Summarize feedback transcript using Telnyx Inference."""
+    """Summarize feedback transcript using Telnyx AI Inference."""
     try:
-        response = telnyx.Inference.create_completion(
-            model="gpt-3.5-turbo",
+        completion = telnyx_client.ai.openai.chat.create_completion(
+            model=TELNYX_AI_MODEL,
             messages=[
                 {"role": "system", "content": "You are a professional event analyst. Summarize the following feedback into a concise sponsor report."},
                 {"role": "user", "content": transcript},
@@ -593,7 +595,7 @@ def summarize_feedback(transcript: str) -> str:
             max_tokens=512,
             temperature=0.5,
         )
-        return response.choices[0].message.content.strip()
+        return completion["choices"][0]["message"]["content"].strip()
     except Exception as e:
         app.logger.exception("Summarization error: %s", e)
         return "[Summarization failed]"

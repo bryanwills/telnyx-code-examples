@@ -101,7 +101,7 @@ The **`init_sqldb()`** function creates two tables on startup:
 
 ### Webhook Signature Verification
 
-The **`verify_webhook(req)`** function validates incoming Telnyx webhook signatures using Ed25519. It extracts the `Telnyx-Signature` header and calls `telnyx.Webhook.verify_signature()`. If verification fails, the request is rejected with a 401.
+The **`verify_and_parse_webhook(req)`** function validates incoming Telnyx webhook signatures using Ed25519. It reads the `Telnyx-Signature-Ed25519` and `Telnyx-Timestamp` headers and calls `unwrap_with_ed25519()` from `telnyx.lib.webhooks_ed25519`, which both verifies the signature and returns the parsed event in one step. The signed payload is `"{timestamp}|{raw_body}"`. If verification fails, the request is rejected with a 401.
 
 ### Microsite Routes
 
@@ -121,24 +121,23 @@ Additional API routes (`/api/event`, `/api/schedule`, `/api/speakers`, `/api/ven
 
 The `/webhook/sms` and `/webhook/whatsapp` endpoints handle inbound messages from attendees. Each:
 
-1. Verifies the webhook signature
-2. Constructs the Telnyx event from the payload
-3. Extracts the sender's phone number and message text
-4. Calls `get_ai_concierge_response()` to generate a reply using Telnyx Inference
-5. Sends the response back via SMS or WhatsApp (or logs it in demo mode)
+1. Verifies and parses the webhook via `unwrap_with_ed25519()` (also returns the event)
+2. Extracts the sender's phone number and message text from `event.data.payload`
+3. Calls `get_ai_concierge_response()` to generate a reply using Telnyx AI Inference
+4. Sends the response back via `telnyx_client.messages.send()` (SMS) or `telnyx_client.messages.whatsapp()` — or logs it in demo mode
 
-The **`get_ai_concierge_response(user_message)`** function uses `telnyx.Inference.create_completion()` with a GPT model, passing the concierge system prompt and user message. On failure, it returns a fallback message.
+The **`get_ai_concierge_response(user_message)`** function uses `telnyx_client.ai.openai.chat.create_completion()` with a Telnyx-hosted model (default `moonshotai/Kimi-K2.6`, no OpenAI key needed), passing the concierge system prompt and user message. The response is a plain dict; the reply text is read from `completion["choices"][0]["message"]["content"]`. On failure, it returns a fallback message.
 
-### Voice — AI Concierge via Voice AI WebSocket
+### Voice — AI Concierge via Telnyx AI Assistant
 
 The `/webhook/voice` endpoint handles inbound voice calls:
 
-1. Verifies the webhook signature
-2. Extracts `call_control_id` from the payload
-3. Answers the call using `telnyx.Call.answer()`
-4. Starts the Voice AI WebSocket using `telnyx.Call.start_voice_ai()`, passing the concierge prompt and voice settings
+1. Verifies and parses the webhook
+2. Extracts `call_control_id` from `event.data.payload`
+3. Answers the call using `telnyx_client.calls.actions.answer(call_control_id)`
+4. Connects the caller to the Telnyx AI Assistant via `telnyx_client.calls.actions.start_ai_assistant(call_control_id, assistant={...}, greeting=...)`. The `assistant` dict carries the model (`TELNYX_AI_MODEL`) and instructions (the concierge prompt); a Telnyx-hosted model needs no OpenAI key. The `voice` parameter is intentionally omitted (the valid voice set differs per assistant backend, and invalid values are rejected only after the caller is on the line).
 
-The `/webhook/voice-ai` endpoint receives real-time events from the Voice AI WebSocket, including:
+The `/webhook/voice-ai` endpoint receives real-time events from the AI Assistant, including:
 
 - `call.started` — Call has begun
 - `call.answered` — Call was answered
@@ -171,8 +170,8 @@ The `/api/qualify-lead` endpoint captures exhibitor lead information:
 The `/api/submit-feedback` endpoint accepts spoken feedback:
 
 1. Validates `phone_number` and `audio_url`
-2. Transcribes the audio using `telnyx.Inference.create_transcription()` with the Whisper model
-3. Summarizes the transcript using `telnyx.Inference.create_completion()` with a system prompt for sponsor report analysis
+2. Transcribes the audio using `telnyx_client.ai.audio.transcribe()` with the `openai/whisper-large-v3-turbo` model
+3. Summarizes the transcript using `telnyx_client.ai.openai.chat.create_completion()` with a system prompt for sponsor report analysis
 4. Stores the transcript and summary in SQLDB
 
 The `/api/sponsor-report` endpoint generates a consolidated report from all feedback entries, including timestamps and summaries.

@@ -230,7 +230,8 @@ Headers:
 
 | Header              | Type   | Required | Description                              |
 |---------------------|--------|----------|------------------------------------------|
-| Telnyx-Signature    | string | Yes      | Ed25519 signature for webhook verification. |
+| Telnyx-Signature-Ed25519 | string | Yes      | Ed25519 signature (base64) for webhook verification. |
+| Telnyx-Timestamp   | string | Yes      | Timestamp used in the signed payload `"{ts}|{body}"`. |
 | Content-Type        | string | Yes      | Must be `application/json`.              |
 
 Body: Telnyx webhook payload (raw JSON, not parsed by client).
@@ -239,7 +240,8 @@ Body: Telnyx webhook payload (raw JSON, not parsed by client).
 
 ```bash
 curl -X POST https://<your-domain>/webhook/sms \
-  -H "Telnyx-Signature: <signature>" \
+  -H "Telnyx-Signature-Ed25519: <signature>" \
+  -H "Telnyx-Timestamp: <timestamp>" \
   -H "Content-Type: application/json" \
   -d '{"data":{"payload":{"from":{"phone_number":"+15551234567"},"to":{"phone_number":"+15559999999"},"text":"What time is the keynote?"}}}'
 ```
@@ -264,7 +266,8 @@ Headers:
 
 | Header              | Type   | Required | Description                              |
 |---------------------|--------|----------|------------------------------------------|
-| Telnyx-Signature    | string | Yes      | Ed25519 signature for webhook verification. |
+| Telnyx-Signature-Ed25519 | string | Yes      | Ed25519 signature (base64) for webhook verification. |
+| Telnyx-Timestamp   | string | Yes      | Timestamp used in the signed payload `"{ts}|{body}"`. |
 | Content-Type        | string | Yes      | Must be `application/json`.              |
 
 Body: Telnyx webhook payload (raw JSON).
@@ -273,7 +276,8 @@ Body: Telnyx webhook payload (raw JSON).
 
 ```bash
 curl -X POST https://<your-domain>/webhook/whatsapp \
-  -H "Telnyx-Signature: <signature>" \
+  -H "Telnyx-Signature-Ed25519: <signature>" \
+  -H "Telnyx-Timestamp: <timestamp>" \
   -H "Content-Type: application/json" \
   -d '{"data":{"payload":{"from":{"phone_number":"+15551234567"},"text":{"body":"Where is the venue?"}}}}'
 ```
@@ -292,7 +296,7 @@ curl -X POST https://<your-domain>/webhook/whatsapp \
 
 ### POST /webhook/voice
 
-Handles inbound voice calls. Verifies the webhook signature, answers the call, and connects the caller to the Voice AI WebSocket for real-time AI conversation.
+Handles inbound voice calls. Verifies the webhook signature via `unwrap_with_ed25519`, answers the call with `telnyx_client.calls.actions.answer`, and connects the caller to the Telnyx AI Assistant via `telnyx_client.calls.actions.start_ai_assistant` for real-time AI conversation.
 
 **Request**
 
@@ -300,7 +304,8 @@ Headers:
 
 | Header              | Type   | Required | Description                              |
 |---------------------|--------|----------|------------------------------------------|
-| Telnyx-Signature    | string | Yes      | Ed25519 signature for webhook verification. |
+| Telnyx-Signature-Ed25519 | string | Yes      | Ed25519 signature (base64) for webhook verification. |
+| Telnyx-Timestamp   | string | Yes      | Timestamp used in the signed payload `"{ts}|{body}"`. |
 | Content-Type        | string | Yes      | Must be `application/json`.              |
 
 Body: Telnyx webhook payload (raw JSON).
@@ -309,7 +314,8 @@ Body: Telnyx webhook payload (raw JSON).
 
 ```bash
 curl -X POST https://<your-domain>/webhook/voice \
-  -H "Telnyx-Signature: <signature>" \
+  -H "Telnyx-Signature-Ed25519: <signature>" \
+  -H "Telnyx-Timestamp: <timestamp>" \
   -H "Content-Type: application/json" \
   -d '{"data":{"payload":{"call_control_id":"call_abc123","call_leg_id":"leg_xyz789"}}}'
 ```
@@ -335,7 +341,8 @@ Headers:
 
 | Header              | Type   | Required | Description                              |
 |---------------------|--------|----------|------------------------------------------|
-| Telnyx-Signature    | string | Yes      | Ed25519 signature for webhook verification. |
+| Telnyx-Signature-Ed25519 | string | Yes      | Ed25519 signature (base64) for webhook verification. |
+| Telnyx-Timestamp   | string | Yes      | Timestamp used in the signed payload `"{ts}|{body}"`. |
 | Content-Type        | string | Yes      | Must be `application/json`.              |
 
 Body: Telnyx webhook payload (raw JSON). Event types include: `call.started`, `call.answered`, `transcription.received`, `call.ended`.
@@ -344,7 +351,8 @@ Body: Telnyx webhook payload (raw JSON). Event types include: `call.started`, `c
 
 ```bash
 curl -X POST https://<your-domain>/webhook/voice-ai \
-  -H "Telnyx-Signature: <signature>" \
+  -H "Telnyx-Signature-Ed25519: <signature>" \
+  -H "Telnyx-Timestamp: <timestamp>" \
   -H "Content-Type: application/json" \
   -d '{"type":"transcription.received","data":{"payload":{"transcript":"Hello, I need help with the schedule"}}}'
 ```
