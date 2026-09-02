@@ -264,7 +264,12 @@ def webhook_sms():
         to_number = payload.get("to", {}).get("phone_number")
         message_text = payload.get("text", "")
 
-        app.logger.info("SMS from %s: %s", from_number, message_text)
+        if isinstance(from_number, str) and from_number:
+            masked_from_number = "*" * max(len(from_number) - 4, 0) + from_number[-4:]
+        else:
+            masked_from_number = "[redacted]"
+
+        app.logger.info("SMS from %s: %s", masked_from_number, message_text)
 
         # AI concierge response using Inference
         response_text = get_ai_concierge_response(message_text)
