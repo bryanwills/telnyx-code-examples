@@ -39,22 +39,35 @@ async function saveAndRouteLead(
   await env.EVENTS.put(`lead/${full.id}`, JSON.stringify(full));
 
   if (isHot) {
+    // The SMS body carries the masked phone — never the raw number.
+    const masked = `***-***-${lead.phone_number.slice(-4)}`;
+    const msg = `🔥 HOT LEAD: ${lead.company} (${lead.company_size}) | Budget: ${lead.budget} | Timeline: ${lead.timeline} | Phone: ${masked}`;
+
+    // Route over both channels: SMS to the rep's phone, email to the
+    // organizer inbox (EMAIL_TO). Each channel fails independently.
     const repPhone = envVars.TELNYX_SALES_REP_PHONE;
+    let smsStatus = "skipped";
     if (repPhone) {
-      // The SMS body carries the masked phone — never the raw number.
-      const masked = `***-***-${lead.phone_number.slice(-4)}`;
-      const msg = `🔥 HOT LEAD: ${lead.company} (${lead.company_size}) | Budget: ${lead.budget} | Timeline: ${lead.timeline} | Phone: ${masked}`;
       const send = await sendSms(envVars.TELNYX_SMS_FROM, repPhone, msg);
-      if (!send.ok) {
-        // Fallback: email the rep if the SMS path fails.
-        await sendEmail(
-          envVars.EMAIL_FROM,
-          process.env.EMAIL_TO ?? process.env.ORG_EMAIL ?? "",
-          `Hot lead: ${lead.company}`,
-          msg,
-        );
-      }
+      smsStatus = send.ok ? "sent" : `failed(${send.status})`;
     }
+    const emailTo = process.env.EMAIL_TO ?? "";
+    let emailStatus = "skipped";
+    if (emailTo) {
+      const mail = await sendEmail(
+        envVars.EMAIL_FROM,
+        emailTo,
+        `Hot lead: ${lead.company} (${lead.budget} budget, ${lead.timeline})`,
+        `New hot lead captured at ${lead.source}:\n\n${msg}\n\nNotes: ${lead.notes || "(none)"}\nCaptured: ${full.created_at}`,
+      );
+      emailStatus = mail.ok ? "sent" : `failed(${mail.status})`;
+    }
+
+    await env.EVENTS.put(
+      `lead/${full.id}`,
+      JSON.stringify({ ...full, notify: { sms: smsStatus, email: emailStatus } }),
+    );
+    full.notify = { sms: smsStatus, email: emailStatus };
   }
   return full;
 }
