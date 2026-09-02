@@ -307,17 +307,12 @@ def webhook_whatsapp():
         from_number = payload.get("from", {}).get("phone_number")
         message_text = payload.get("text", {}).get("body", "")
 
-        if isinstance(from_number, str) and from_number:
-            masked_from = "*" * max(len(from_number) - 4, 0) + from_number[-4:]
-        else:
-            masked_from = "[redacted]"
-
         app.logger.info("Inbound WhatsApp received (chars=%d)", len(message_text or ""))
 
         response_text = get_ai_concierge_response(message_text)
 
         if DEMO_MODE:
-            app.logger.info("[DEMO] Would send WhatsApp to %s (chars=%d)", masked_from, len(response_text or ""))
+            app.logger.info("[DEMO] Would send WhatsApp (chars=%d)", len(response_text or ""))
         else:
             telnyx_client.messages.whatsapp(
                 from_=TELNYX_WHATSAPP_FROM,
