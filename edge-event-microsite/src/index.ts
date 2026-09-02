@@ -1,5 +1,5 @@
 import type { Env } from "./types";
-import { html, json } from "./types";
+import { envVars, html, json } from "./types";
 import { getEvent } from "./store";
 import { verifyTelnyxSignature } from "./verify";
 import * as crypto from "node:crypto";
@@ -101,7 +101,7 @@ export default {
         return json({ error: "invalid webhook signature" }, verdict);
       }
 
-      let body: { data?: { payload?: Record<string, unknown> } };
+      let body: { data?: { event_type?: string; payload?: Record<string, unknown> } };
       try {
         body = JSON.parse(new TextDecoder().decode(raw));
       } catch {
@@ -109,6 +109,28 @@ export default {
       }
       const payload = body.data?.payload;
       if (!payload) return json({ error: "missing data.payload" }, 400);
+
+      // Only handle genuinely inbound messages. The profile also delivers
+      // outbound receipts (message.sent / message.finalized) whose `from` is
+      // OUR number — replying to those makes the concierge text itself,
+      // which fires another webhook: an infinite self-sustaining loop.
+      const eventType = body.data?.event_type ?? "";
+      if (eventType && eventType !== "message.received") {
+        return new Response("ok");
+      }
+      const direction = payload.direction as string | undefined;
+      if (direction && direction !== "inbound") {
+        return new Response("ok");
+      }
+      const fromSelf =
+        payload.from === envVars.TELNYX_SMS_FROM ||
+        payload.from === envVars.TELNYX_WHATSAPP_FROM ||
+        (typeof payload.from === "object" &&
+          (payload.from as { phone_number?: string } | null)?.phone_number ===
+            envVars.TELNYX_SMS_FROM);
+      if (fromSelf) {
+        return new Response("ok");
+      }
 
       // Dedupe: Telnyx redelivers webhooks (e.g. when a handler is slow).
       // Lock on the message id so each message is processed exactly once.
