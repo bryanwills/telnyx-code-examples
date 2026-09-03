@@ -3266,6 +3266,12 @@ examples:
     framework: edge
     folder: collaborative-doc-ai-copilot
 
+  - product: ai
+    use_case: rag-corpus-shared-across-agents
+    language: nodejs
+    framework: edge
+    folder: rag-corpus-shared-across-agents
+
   - product: sms
     use_case: edge-cache-invalidation-agent
     language: nodejs
