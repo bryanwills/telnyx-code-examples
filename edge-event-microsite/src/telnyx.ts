@@ -19,7 +19,7 @@ export async function complete(
   const completion = await env.TELNYX.ai.openai.chat.createCompletion({
     model: envVars.AI_MODEL,
     messages,
-    max_tokens: opts?.maxTokens ?? 500,
+    max_tokens: opts?.maxTokens ?? 4000,
     temperature: opts?.temperature ?? 0.4,
   });
   return completion.choices?.[0]?.message?.content?.trim() ?? "";
@@ -37,7 +37,7 @@ export async function completeJson<T>(
       { role: "system", content: `${system}\nRespond with JSON only.` },
       { role: "user", content: user },
     ],
-    { maxTokens: 800, temperature: 0.2 },
+    { maxTokens: 4000, temperature: 0.2 },
   );
   if (content.startsWith("```")) {
     content = content.split("\n").slice(1).join("\n").replace(/```/g, "").trim();

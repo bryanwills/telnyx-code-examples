@@ -268,7 +268,7 @@ async function summarizeTranscript(env: Env, transcript: string): Promise<string
         },
         { role: "user", content: transcript },
       ],
-      { maxTokens: 120, temperature: 0.3 },
+      { temperature: 0.3 },
     );
     return summary || "(summarization returned empty)";
   } catch {
