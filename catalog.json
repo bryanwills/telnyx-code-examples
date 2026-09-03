@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-09-03T16:49:11Z",
-  "example_count": 542,
+  "generated_at": "2026-09-03T17:46:09Z",
+  "example_count": 543,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -4757,6 +4757,15 @@
       "language": "nodejs",
       "framework": "edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/omni-channel-lab-inbox-agent"
+    },
+    {
+      "folder": "langchain-streaming-agent",
+      "title": "LangChain Streaming Agent",
+      "description": "A LangChain tool-calling agent on Telnyx Edge Compute that streams every token, tool call, and result over WebSocket — powered by the zero-credential Telnyx Inference binding.",
+      "product": "ai",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/langchain-streaming-agent"
     },
     {
       "folder": "ai-call-campaign-orchestrator",
