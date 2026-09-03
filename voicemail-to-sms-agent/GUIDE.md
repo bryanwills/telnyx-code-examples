@@ -41,6 +41,25 @@ Install dependencies and verify locally:
 npm install
 npm test          # smoke test
 npx tsc --noEmit  # typecheck
+| `TELNYX_API_KEY` | Your Telnyx API key |
+| `TELNYX_APP_ID` | Your Call Control application ID |
+| `TELNYX_PUBLIC_URL` | The public URL where Telnyx can reach this Edge app (e.g., your tunnel URL) |
+| `MAILBOX_OWNER_NUMBER` | The phone number to receive SMS summaries (e.g., `+15551234567`) |
+| `TELNYX_FROM_NUMBER` | The Telnyx number sending the SMS (e.g., `+15559876543`) |
+| `STORAGE_BUCKET` | Your Telnyx Cloud Storage bucket name |
+
+## Running the Sample
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run in development mode (with hot reloading):
+
+```bash
+npm run dev
 ```
 
 Deploy to the Telnyx Edge network:
@@ -78,6 +97,15 @@ Once the transcript is available, the agent calls the Telnyx Inference API (`POS
 ### 5. SMS Summary Delivery
 
 After generating the summary, the agent sends it via SMS to the mailbox owner using the Messaging API (`POST /v2/messages`) with the summary text, the recipient number (`MAILBOX_OWNER_NUMBER`), and the sender number (`TELNYX_SMS_NUMBER`). In demo mode the payload is logged instead of sent.
+Inside `onTask()`, the agent downloads the voicemail audio file from the Call Control recording URL. The audio is passed to the Inference binding for speech-to-text. The Telnyx Edge environment provides access to AI models via `this.env.TELNYX.ai`. The STT service transcribes the audio and returns the text transcript.
+
+### 4. LLM Summarization
+
+Once the transcript is available, the agent uses the Inference binding to generate a concise summary. This is done via `this.env.TELNYX.ai.openai.chat.createCompletion()`. The agent constructs a prompt asking the LLM to summarize the voicemail transcript into a brief, actionable message suitable for SMS.
+
+### 5. SMS Summary Delivery
+
+After generating the summary, the agent sends it via SMS to the mailbox owner. This uses the `[telnyx]` binding for messaging. The code calls `this.env.TELNYX.messages.send()` with the summary text, the recipient number (from env vars), and the sender number (from env vars).
 
 ### 6. Cloud Storage Audio Archive
 
@@ -99,6 +127,11 @@ LIVE_MODE=true
 
 In live mode:
 - The Messaging API call will send a real SMS to the number specified in `MAILBOX_OWNER_NUMBER`.
+DEMO_MODE=false
+```
+
+In live mode:
+- `this.env.TELNYX.messages.send()` will send a real SMS to the number specified in `MAILBOX_OWNER_NUMBER`.
 - The audio file will be uploaded to the Cloud Storage bucket specified in `STORAGE_BUCKET`.
 
 **Warning:** Live mode may incur charges on your Telnyx account. Ensure your phone numbers and storage bucket are correctly configured before enabling live mode.
