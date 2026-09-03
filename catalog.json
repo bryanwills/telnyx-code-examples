@@ -5,6 +5,8 @@
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
   "generated_at": "2026-08-31T22:07:04Z",
   "example_count": 522,
+  "generated_at": "2026-09-03T17:46:09Z",
+  "example_count": 543,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -1933,6 +1935,15 @@
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-url-summarizer"
     },
     {
+      "folder": "voicemail-to-sms-agent",
+      "title": "Voicemail-to-SMS Agent",
+      "description": "An Edge-based agent that transcribes, summarizes, and texts voicemail summaries to the mailbox owner.",
+      "product": "voice",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/voicemail-to-sms-agent"
+    },
+    {
       "folder": "edge-agri-crop-advisory",
       "title": "Edge Agri Crop Advisory",
       "description": "Agriculture crop advisory on Telnyx Edge Compute Stateful Actors — classify crop issues (disease, pest, nutrient, water, weather) and recommend treatment via AI Inference. Escalates critical cases.",
@@ -1967,6 +1978,15 @@
       "language": "nodejs",
       "framework": "edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-voice-agent-holds-call"
+    },
+    {
+      "folder": "ai-powered-call-router",
+      "title": "AI-Powered Call Router",
+      "description": "Route inbound calls by analyzing caller intent with the Telnyx AI Inference binding and a Telnyx KV route table. One StatefulActor per call leg; zero-credential LLM classification + global KV lookup on the Edge Runtime.",
+      "product": "voice",
+      "language": "typescript",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/ai-powered-call-router"
     },
     {
       "folder": "agent-with-tool-calling",
@@ -4678,6 +4698,15 @@
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/agent-fleet-shared-workspace"
     },
     {
+      "folder": "voice-ivr-with-agent-backend",
+      "title": "Voice IVR with Agent Backend",
+      "description": "A natural language IVR system where the Telnyx Agent handles backend logic and an LLM powers dynamic menu options.",
+      "product": "ai",
+      "language": "python",
+      "framework": "flask",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/voice-ivr-with-agent-backend"
+    },
+    {
       "folder": "shipment-agent",
       "title": "ShipmentAgent: The Actor IS the Package",
       "description": "A durable AI shipment agent that proactively communicates with customers across carriers and status changes via SMS and Voice.",
@@ -4703,6 +4732,175 @@
       "language": "typescript",
       "framework": "telnyx-edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/conference-agent-mediator"
+      "folder": "sms-two-factor-agent",
+      "title": "SMS Two-Factor Authentication Agent",
+      "description": "Agent-managed SMS two-factor authentication with code generation, KV storage, and scheduled expiry.",
+      "product": "ai",
+      "language": "typescript",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/sms-two-factor-agent"
+    },
+    {
+      "folder": "agent-message-replay",
+      "title": "Replay Agent Conversations Live — WebSocket Streaming Replays on Telnyx Edge",
+      "description": "Replay recorded agent conversations with WebSocket live streaming: messages stream through the durable MessageLog, original state changes re-enact as live state patches, and an optional LLM annotates each step.",
+      "product": "ai",
+      "language": "typescript",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/agent-message-replay"
+    },
+    {
+      "folder": "webhook-aggregator-fanout",
+      "title": "Webhook Aggregator with Fanout",
+      "description": "Aggregate, deduplicate, and fan out Telnyx webhooks to multiple action queues (call and SMS) with SQLite event logging.",
+      "product": "ai",
+      "language": "python",
+      "framework": "flask",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/webhook-aggregator-fanout"
+    },
+    {
+      "folder": "omni-channel-lab-inbox-agent",
+      "title": "Omni-Channel Lab Inbox Agent",
+      "description": "Lab-result fax intake with a human-in-the-loop inbox: fax received, operator reviews and accepts (fax deleted, only reference kept), AI drafts confirmation email, SMS appointment flow, and a voice agent that answers status questions without touching lab content.",
+      "product": "voice",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/omni-channel-lab-inbox-agent"
+    },
+    {
+      "folder": "langchain-streaming-agent",
+      "title": "LangChain Streaming Agent",
+      "description": "A LangChain tool-calling agent on Telnyx Edge Compute that streams every token, tool call, and result over WebSocket — powered by the zero-credential Telnyx Inference binding.",
+      "product": "ai",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/langchain-streaming-agent"
+    },
+    {
+      "folder": "ai-call-campaign-orchestrator",
+      "title": "AI Call Campaign Orchestrator",
+      "description": "Durable outbound call campaign with rate limiting, SQL tracking, and SMS summary using Telnyx Agent SDK, Call Control, and SMS.",
+      "product": "voice",
+      "language": "python",
+      "framework": "flask",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/ai-call-campaign-orchestrator"
+    },
+    {
+      "folder": "ai-email-agent-python",
+      "title": "AI Email Agent",
+      "description": "AI Email Agent — autonomous inbound email reply bot on the Telnyx Email API. A customer emails in, the AI drafts a reply, the Email API sends it back. One platform, one API key, one agent.",
+      "product": "sms",
+      "language": "python",
+      "framework": "flask",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/ai-email-agent-python"
+    },
+    {
+      "folder": "audio-transcribe-summarize-sms",
+      "title": "Audio Transcribe → Summarize → SMS",
+      "description": "Upload a voicemail audio file → transcribe via STT → summarize with LLM → text the summary via SMS. Agent SDK pipeline on Telnyx Edge Compute with zero-credential inference and messaging.",
+      "product": "sms",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/audio-transcribe-summarize-sms"
+    },
+    {
+      "folder": "collaborative-doc-ai-copilot",
+      "title": "Collaborative Document with AI Copilot",
+      "description": "Real-time multiplayer document editing on Telnyx Edge Compute with an AI copilot that suggests improvements via the zero-credential Telnyx Inference binding.",
+      "product": "ai",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/collaborative-doc-ai-copilot"
+    },
+    {
+      "folder": "rag-corpus-shared-across-agents",
+      "title": "RAG Corpus Shared Across Agents",
+      "description": "Multiple AI agent personalities answering over ONE shared RAG corpus on Telnyx Edge Compute — a CorpusAgent embeds documents into per-actor SQL, and PersonaAgent actors retrieve, cite, and answer with their own voice through the zero-credential Telnyx Inference binding.",
+      "product": "ai",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/rag-corpus-shared-across-agents"
+    },
+    {
+      "folder": "edge-cache-invalidation-agent",
+      "title": "Edge Cache Invalidation Agent",
+      "description": "",
+      "product": "sms",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-cache-invalidation-agent"
+    },
+    {
+      "folder": "edge-call-transcription-agent",
+      "title": "Edge Call Transcription Agent",
+      "description": "Live call transcription agent on Telnyx Edge Compute + Agent SDK — answers an inbound call, streams STT into durable agent state, and on hangup summarizes the transcript via LLM, persists it to actor-local SQL, and texts the summary via SMS. Zero-credential inference and messaging via the [telnyx] binding.",
+      "product": "voice",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-call-transcription-agent"
+    },
+    {
+      "folder": "edge-customer-agent-typescript",
+      "title": "Customer Agent — The Actor IS the Entity",
+      "description": "A durable Entity Agent on Telnyx Edge Compute. One actor per customer phone number, surviving across days, calls, SMS messages, and actor evictions. The AI Assistant is the reasoning harness inside; the agent owns the durable state.",
+      "product": "voice",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-customer-agent-typescript"
+    },
+    {
+      "folder": "geo-distributed-call-logger",
+      "title": "Geo Distributed Call Logger",
+      "description": "",
+      "product": "voice",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/geo-distributed-call-logger"
+    },
+    {
+      "folder": "kv-backed-rate-limiter",
+      "title": "Kv Backed Rate Limiter",
+      "description": "",
+      "product": "voice",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/kv-backed-rate-limiter"
+    },
+    {
+      "folder": "multi-model-inference-switcher",
+      "title": "Multi-Model Inference Switcher",
+      "description": "Switch between LLM models at runtime via a KV feature flag — no redeploy. Agent SDK + zero-credential inference + admin UI with live model switching.",
+      "product": "ai",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/multi-model-inference-switcher"
+    },
+    {
+      "folder": "sms-conversation-exporter",
+      "title": "Sms Conversation Exporter",
+      "description": "",
+      "product": "sms",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/sms-conversation-exporter"
+    },
+    {
+      "folder": "event-microsite-that-takes-calls",
+      "title": "Event Microsite That Takes Calls",
+      "description": "A Flask event microsite backed by Telnyx KV that lets attendees text, call, or talk in-browser to an AI concierge, broadcasts schedule changes, qualifies exhibitor leads, and transcribes post-event feedback into a sponsor report.",
+      "product": "ai",
+      "language": "python",
+      "framework": "flask",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/event-microsite-that-takes-calls"
+    },
+    {
+      "folder": "edge-event-microsite",
+      "title": "Event Microsite That Takes Calls",
+      "description": "Event microsite + AI concierge on Telnyx Edge Compute — one KV store powers the site, the SMS/WhatsApp concierge, lead qualification, in-browser voice AI, feedback transcription, and the sponsor report.",
+      "product": "ai",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/edge-event-microsite"
     }
   ]
 }

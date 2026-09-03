@@ -1,110 +1,145 @@
-# API Reference
+# API Reference — AI-Powered Call Router
 
-This document defines the HTTP API contract for the AI-Powered Call Router Flask application.
+Edge function endpoints exposed by the deployed `ai-powered-call-router` function.
 
-## Endpoints
+## Voice Webhook
 
-### `GET /health`
+### POST /webhook
 
-Simple health check endpoint used to verify the application is running.
+Telnyx Call Control webhook handler. Receives call lifecycle events and drives the `RouterAgent` actor (one instance per `call_control_id`).
 
-**Request Body**
+**Request body**: Telnyx Call Control event envelope (JSON). The handler reads `data.event_type` and `data.payload`.
 
-No request body required.
+**Handled events**:
 
-**Example Request**
+| Event | Action |
+|-------|--------|
+| `call.initiated` (`direction: incoming`) | `actor.recordStart()` → `POST /calls/{id}/actions/answer` |
+| `call.answered` | `actor.setGreeting()` → `POST /calls/{id}/actions/speak` (greeting, `client_state: {speak_stage: "greeting"}`) |
+| `call.speak.ended` (`speak_stage: greeting`) | `actor.setGathering()` → `POST /calls/{id}/actions/gather_using_ai` |
+| `call.speak.ended` (`speak_stage: announcement`) | `actor.setTransferring()` → `POST /calls/{id}/actions/transfer` to `actor.destination` |
+| `call.ai_gather.ended` | `actor.classifyAndRoute(speech)` → `actor.setAnnouncing()` → `POST /calls/{id}/actions/speak` (announcement) |
+| `call.ai_gather.failed` | `actor.setAnnouncing("support", DEFAULT)` → `POST /calls/{id}/actions/speak` (fallback announcement) |
+| `call.hangup` | `actor.onHangup()` |
+| `call.initiated` (`direction: outgoing`) | Ignored (transfer legs are not routed) |
 
-```bash
-curl -X GET http://localhost:5000/health
-```
+**Responses**:
 
-**Response Schema**
+| Status | Body | When |
+|--------|------|------|
+| 200 | `{"action": "answering" | "greeting" | "gathering" | "announcing" | "transferring" | "done" | "noop", ...}` | Event processed |
+| 400 | `{"error": "no event_type in payload" | "no call_control_id in payload" | "invalid json body"}` | Malformed webhook |
+| 500 | `{"error": "TELNYX_API_KEY not configured"}` | Missing secret |
+| 502 | `{"action": "error", "step": "answer" | "greeting_speak" | "gather_using_ai" | "transfer", "status": <int>, "err": <string>}` | Call Control REST call failed |
 
-| Status Code | Schema |
-|------------|--------|
-| `200` | `{ "status": "string" }` |
-
-**Example Response**
-
-```json
-{
-  "status": "ok"
-}
-```
-
-**Status Codes**
-
-| Status Code | Description |
-|------------|-------------|
-| `200` | Service is healthy and reachable. |
-| `500` | Internal server error. |
+**Speech extraction** (`call.ai_gather.ended`):
+1. `payload.result.utterance` (string) — preferred
+2. Last `payload.message_history[]` entry with `role: "user"` — fallback
 
 ---
 
-### `POST /webhook`
+## Admin: Routes (KV)
 
-Telnyx Call Control webhook receiver. Handles inbound call events, gathers speech, classifies intent via the AI Inference API, and transfers the call based on the route table.
+### GET /routes
 
-**Request Headers**
+List all route entries in the KV namespace (keys with prefix `route/`).
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `telnyx-ed25519-signature` | string | Yes | Telnyx webhook signature for verification. |
-| `telnyx-ed25519-timestamp` | string | Yes | Telnyx webhook timestamp for verification. |
-| `Content-Type` | string | Yes | Must be `application/json`. |
-
-**Request Body Schema**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `data` | object | Yes | Telnyx event payload. |
-| `data.event_type` | string | Yes | The type of call event (e.g., `call.initiated`, `call.answered`, `call.gather.ended`). |
-| `data.payload` | object | Yes | The event payload containing call details. |
-| `data.payload.call` | object | Yes | Call object containing metadata. |
-| `data.payload.call.call_control_id` | string | Yes | Unique ID used to control the call. |
-| `data.payload.call.direction` | string | Yes | Call direction (`incoming` or `outgoing`). |
-| `data.payload.speech` | object | No | Present on `call.gather.ended`. Contains gathered speech data. |
-| `data.payload.speech.result` | string | No | The transcribed text of the caller's speech. |
-
-**Example Request**
-
-```bash
-curl -X POST http://localhost:5000/webhook \
-  -H "Content-Type: application/json" \
-  -H "telnyx-ed25519-signature: $TELNYX_SIGNATURE" \
-  -H "telnyx-ed25519-timestamp: $TELNYX_TIMESTAMP" \
-  -d '{
-    "data": {
-      "event_type": "call.initiated",
-      "payload": {
-        "call": {
-          "call_control_id": "v2:...",
-          "direction": "incoming"
-        }
-      }
-    }
-  }'
-```
-
-**Response Schema**
-
-| Status Code | Schema |
-|------------|--------|
-| `200` | `{ "status": "string" }` |
-| `401` | `{ "error": "string" }` |
-
-**Example Response**
-
+**Response 200**:
 ```json
 {
-  "status": "ok"
+  "routes": {
+    "route/billing": "+17177247292",
+    "route/sales": "+18005556789",
+    "route/support": "+18005550000"
+  },
+  "count": 3
 }
 ```
 
-**Status Codes**
+**Response 500**: `{"error": "<message>"}` — KV binding error.
 
-| Status Code | Description |
-|------------|-------------|
-| `200` | Webhook received and processed successfully. |
-| `401` | Webhook signature verification failed. |
-| `500` | Internal server error. |
+### POST /routes
+
+Set a route destination for an intent in KV.
+
+**Request body**:
+```json
+{
+  "intent": "billing",
+  "destination": "+17177247292"
+}
+```
+
+**Validation**:
+- `intent` must be one of: `billing`, `sales`, `support`
+- `destination` must be a valid E.164 phone number (string)
+
+**Response 200**:
+```json
+{
+  "ok": true,
+  "key": "route/billing",
+  "destination": "+17177247292"
+}
+```
+
+**Response 400**: `{"error": "intent and destination are required"}` or `{"error": "intent must be one of: billing, sales, support"}`
+
+---
+
+## Debug
+
+### GET /debug/state?call_control_id=...
+
+Inspect the current state of a `RouterAgent` actor instance.
+
+**Query params**:
+- `call_control_id` (required) — the call control ID of the call to inspect
+
+**Response 200**:
+```json
+{
+  "callControlId": "v3:...",
+  "from": "+17177247292",
+  "to": "+16282564655",
+  "phase": "transferring",
+  "speech": "I need to pay my bill",
+  "intent": "billing",
+  "destination": "+17177247292",
+  "startedAt": 1788204010000,
+  "endedAt": 0,
+  "error": ""
+}
+```
+
+**Response 400**: `{"error": "call_control_id query param is required"}`
+
+---
+
+## Health
+
+### GET /health/liveness
+### GET /health/readiness
+
+**Response 200**: `ok` (text/plain)
+
+---
+
+## Call Control REST (invoked internally, not exposed)
+
+The function calls these Telnyx endpoints with the injected `TELNYX_API_KEY`:
+
+| Endpoint | When |
+|----------|------|
+| `POST /v2/calls/{id}/actions/answer` | `call.initiated` (incoming) |
+| `POST /v2/calls/{id}/actions/speak` | `call.answered` (greeting), `call.ai_gather.ended` (announcement) |
+| `POST /v2/calls/{id}/actions/gather_using_ai` | `call.speak.ended` (greeting) |
+| `POST /v2/calls/{id}/actions/transfer` | `call.speak.ended` (announcement) |
+
+## AI Inference (invoked via binding, not exposed)
+
+`this.env.TELNYX.ai.openai.chat.createCompletion()` — called inside `RouterAgent.classifyAndRoute()` to classify the caller's speech into one of `billing`/`sales`/`support`. Zero-credential (the `[telnyx]` binding is pre-authenticated by the runtime).
+
+## KV (invoked via binding, not exposed)
+
+`this.env.ROUTES.get('route/<intent>')` — called inside `RouterAgent.classifyAndRoute()` to look up the transfer destination for the classified intent. Zero-credential (the `[storage.kv.ROUTES]` binding is pre-authenticated by the runtime).
