@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-09-04T03:09:39Z",
-  "example_count": 543,
+  "generated_at": "2026-09-04T03:11:37Z",
+  "example_count": 544,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -4892,6 +4892,15 @@
       "language": "typescript",
       "framework": "edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/conference-agent-mediator"
+    },
+    {
+      "folder": "sms-two-factor-agent",
+      "title": "Sms Two Factor Agent",
+      "description": "",
+      "product": "sms",
+      "language": "typescript",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/sms-two-factor-agent"
     }
   ]
 }

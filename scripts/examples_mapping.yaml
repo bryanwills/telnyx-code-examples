@@ -3341,3 +3341,9 @@ examples:
     language: typescript
     framework: edge
     folder: conference-agent-mediator
+
+  - product: sms
+    use_case: sms-two-factor-agent
+    language: typescript
+    framework: edge
+    folder: sms-two-factor-agent
