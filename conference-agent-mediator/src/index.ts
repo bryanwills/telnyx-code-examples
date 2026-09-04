@@ -353,7 +353,7 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
   .turn:last-child { border-bottom: none; }
   .who { font-weight: 600; color: var(--accent); margin-right: 8px; }
   .mediator .who { color: #a63; }
-  .phase { display: inline-block; padding: 2px 10px; border-radius: 999px; background: #eef; font-size: 12px; }
+  .phase { display: inline-block; padding: 2px 10px; border-radius: 999px; background: #eef; font-size: 12px; margin-left: 8px; }
   .summary { white-space: pre-wrap; font-size: 14px; }
   button { font: inherit; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: #fff; cursor: pointer; margin-right: 8px; }
   button:hover { background: #f2f2f2; }
@@ -363,7 +363,7 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
 </head>
 <body>
 <h1>Conference Agent Mediator</h1>
-<div class="sub">AI meeting facilitator — transcribes, mediates turn-taking, summarizes. Telnyx Edge Compute.</div>
+<div class="sub">AI meeting facilitator — transcribes, mediates turn-taking, summarizes. Telnyx Edge Compute.<br>The Mediator prompts participants who have been silent for ~60 seconds.</div>
 
 <div class="card">
   <button onclick="startDemo()">Start demo conference</button>
@@ -388,38 +388,58 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
 
 <script>
 let confId = "", since = 0, timer = null;
+function status(s, isErr) {
+  const el = document.getElementById("status");
+  el.textContent = s;
+  el.style.color = isErr ? "#c33" : "";
+}
 async function api(path, body) {
-  const res = await fetch(path, body ? { method: "POST", headers: {"content-type":"application/json"}, body: JSON.stringify(body) } : undefined);
+  const res = await fetch(path, { method: "POST", headers: {"content-type":"application/json"}, body: JSON.stringify(body || {}) });
+  if (!res.ok) throw new Error("HTTP " + res.status);
   return res.json();
 }
 async function startDemo() {
-  const r = await api("/demo/conference", { name: "Demo Conference" });
-  confId = r.conference_id; document.getElementById("confId").value = confId;
-  document.getElementById("liveCard").style.display = "block";
-  document.getElementById("summaryCard").style.display = "none";
-  since = 0; poll();
-  status("Started " + confId + " — add participants, then say things.");
+  try {
+    const r = await api("/demo/conference", { name: "Demo Conference" });
+    confId = r.conference_id; document.getElementById("confId").value = confId;
+    document.getElementById("turns").innerHTML = "";
+    document.getElementById("liveCard").style.display = "block";
+    document.getElementById("summaryCard").style.display = "none";
+    since = 0; poll();
+    status("Started " + confId + " — add participants, then type what they say. Silent participants get an AI prompt after ~60s.");
+  } catch (e) { status("Start failed: " + e.message, true); }
 }
 async function join() {
   if (!conf()) return;
-  await api("/demo/conference/" + confId + "/join", { name: document.getElementById("name").value });
-  status("joined");
+  const name = document.getElementById("name").value.trim();
+  if (!name) { status("Type a participant name first.", true); return; }
+  try {
+    await api("/demo/conference/" + confId + "/join", { name });
+    status(name + " joined — type what they say in the next box, then press Say.");
+  } catch (e) { status("Join failed: " + e.message, true); }
 }
 async function say() {
   if (!conf()) return;
-  const text = document.getElementById("say").value;
-  if (!text) return;
-  await api("/demo/conference/" + confId + "/say", { speaker: document.getElementById("name").value || "participant", text });
-  document.getElementById("say").value = "";
+  const name = document.getElementById("name").value.trim() || "participant";
+  const text = document.getElementById("say").value.trim();
+  if (!text) { status("Type what they said first.", true); return; }
+  try {
+    await api("/demo/conference/" + confId + "/say", { speaker: name, text });
+    document.getElementById("say").value = "";
+    status("Recorded [" + name + "] — transcript updates below within ~2s.");
+  } catch (e) { status("Say failed: " + e.message, true); }
 }
 async function endConf() {
   if (!conf()) return;
-  await api("/demo/conference/" + confId + "/end");
-  status("Conference ending — summarizing…");
+  try {
+    await api("/demo/conference/" + confId + "/end");
+    status("Conference ending — summarizing with the LLM, usually ~10–30s…");
+    if (!timer) timer = setInterval(poll, 2000);
+  } catch (e) { status("End failed: " + e.message, true); }
 }
 function conf() {
   confId = document.getElementById("confId").value.trim() || confId;
-  if (!confId) { status("Start a demo conference or paste a conference_id first."); return false; }
+  if (!confId) { status("Start a demo conference or paste a conference_id first.", true); return false; }
   document.getElementById("liveCard").style.display = "block";
   if (!timer) timer = setInterval(poll, 2000);
   return true;
@@ -433,22 +453,25 @@ async function poll() {
       for (const t of r.turns) {
         const d = document.createElement("div");
         d.className = "turn" + (t.speaker === "mediator" ? " mediator" : "");
-        d.innerHTML = '<span class="who"></span>';
-        d.querySelector(".who").textContent = t.speaker;
+        const who = document.createElement("span");
+        who.className = "who";
+        who.textContent = t.speaker === "mediator" ? "Mediator:" : t.speaker + ":";
+        d.appendChild(who);
         d.appendChild(document.createTextNode(t.text));
         el.appendChild(d);
       }
       since = r.turns[r.turns.length - 1].at;
     }
-    document.getElementById("phase").textContent = r.phase || "";
-    if (r.summary && (r.phase === "done" || r.phase === "error")) {
-      document.getElementById("summary").textContent = r.summary || ("(error: " + (r.summary || "see logs") + ")");
+    document.getElementById("phase").textContent = r.phase ? "phase: " + r.phase : "";
+    if (r.phase === "done" || r.phase === "error") {
+      document.getElementById("summary").textContent =
+        r.summary || "(no summary generated" + (r.phase === "error" ? " — " + (r.summary || "see /events for the error") : "") + ")";
       document.getElementById("summaryCard").style.display = "block";
+      status("Done — summary is below. Start another conference any time.");
       clearInterval(timer); timer = null;
     }
-  } catch (e) { /* transient */ }
+  } catch (e) { /* transient — next tick retries */ }
 }
-function status(s) { document.getElementById("status").textContent = s; }
 </script>
 </body>
 </html>`;
