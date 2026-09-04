@@ -72,7 +72,7 @@ In live mode the app performs the full telephony orchestration:
 
 1. **Dial-in → bridge**: `call.initiated` → answer; `call.answered` → the first caller's leg **creates the conference bridge**, later callers `join_conference` onto it, and every leg gets `transcription_start` with `client_state` routing.
 2. **Agent joins**: `conference.created` spawns the agent, which **greets the bridge** via conference speak.
-3. **Live mediation**: every 30s the durable timer checks silence clocks; anyone silent > 60s gets an **LLM-crafted prompt spoken into the conference** (`voice="female"`, `en-US`).
+3. **Live mediation**: every 30s the durable timer checks silence clocks; anyone silent > 60s gets an **LLM-crafted prompt spoken into the conference** (Telnyx Ultra TTS: `Telnyx.Ultra.3e1ed423-17e5-4773-b87c-25b031106e41`).
 4. **Real summary SMS**: `conference.ended` → LLM summary → SMS via the zero-credential messaging binding.
 
 Always test in demo mode first to avoid unexpected charges.

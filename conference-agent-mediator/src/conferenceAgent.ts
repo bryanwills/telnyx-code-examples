@@ -95,6 +95,9 @@ export interface ConferenceRecord {
 }
 
 const DEFAULT_MODEL = "zai-org/GLM-5.2";
+// Telnyx Ultra TTS — premium engine; the voice id carries its own locale,
+// so speak requests omit the `language` param.
+const TTS_VOICE = "Telnyx.Ultra.3e1ed423-17e5-4773-b87c-25b031106e41";
 
 const MEDIATE_INTERVAL_S = 30; // turn-taking check cadence
 const SILENCE_THRESHOLD_MS = 60_000; // participant silent for 60s → prompt
@@ -206,8 +209,7 @@ export class ConferenceAgent extends Agent<ConferenceEnv, ConferenceState> {
         await this.env.TELNYX.conferences.actions.speak(conferenceId, {
           payload:
             "Hi, I'm your AI meeting facilitator. I'll transcribe the call, prompt anyone who's been quiet, and send a summary when we finish.",
-          voice: "female",
-          language: "en-US",
+          voice: TTS_VOICE,
           command_id: `greet-${daprSafeName(conferenceId)}-${Date.now()}`,
         });
         await this.events.emit("greeting_spoken", {});
@@ -493,8 +495,7 @@ export class ConferenceAgent extends Agent<ConferenceEnv, ConferenceState> {
     try {
       await this.env.TELNYX.conferences.actions.speak(state.conferenceId, {
         payload: prompt,
-        voice: "female",
-        language: "en-US",
+        voice: TTS_VOICE,
         command_id: `mediate-${daprSafeName(state.conferenceId)}-${now}`,
       });
       await this.events.emit("prompt_spoken", { participant, prompt });
