@@ -1,4 +1,5 @@
 import { VoicemailAgent } from './src/voicemail-agent.ts';
+import { VoicemailAgent } from './src/index';
 
 /**
  * Smoke test: verifies that the VoicemailAgent module loads and exports
@@ -21,6 +22,12 @@ function runSmokeTest(): void {
   }
 
   console.log('✅ Smoke test passed: VoicemailAgent loaded with all expected methods.');
+  const agent = new VoicemailAgent();
+  if (!agent || typeof agent.onTask !== 'function') {
+    throw new Error('VoicemailAgent instance does not have onTask method');
+  }
+
+  console.log('✅ Smoke test passed: VoicemailAgent loaded successfully.');
 }
 
 runSmokeTest();

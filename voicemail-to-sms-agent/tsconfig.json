@@ -5,6 +5,7 @@
     "moduleResolution": "bundler",
     "lib": ["ES2022", "DOM"],
     "types": ["@telnyx/edge-runtime"],
+    "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -13,5 +14,11 @@
     "noEmit": true
   },
   "include": ["src/**/*.ts", "smoke_test.ts", "telnyx-env.d.ts"],
+    "outDir": "dist",
+    "rootDir": ".",
+    "lib": ["ES2022"],
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "smoke_test.ts"],
   "exclude": ["node_modules"]
 }
