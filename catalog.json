@@ -3,7 +3,7 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-09-04T03:11:37Z",
+  "generated_at": "2026-09-04T03:13:38Z",
   "example_count": 544,
   "examples": [
     {
@@ -4895,8 +4895,8 @@
     },
     {
       "folder": "sms-two-factor-agent",
-      "title": "Sms Two Factor Agent",
-      "description": "",
+      "title": "SMS Two-Factor Authentication Agent",
+      "description": "Agent-managed SMS two-factor authentication with code generation, KV storage, and scheduled expiry.",
       "product": "sms",
       "language": "typescript",
       "framework": "edge",

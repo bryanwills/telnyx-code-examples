@@ -317,7 +317,7 @@
 - [Sms Survey Bot Python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-survey-bot-python/README.md)
 - [Sms Survey Bot Ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-survey-bot-ruby/README.md)
 - [Sms Trivia Game Tournament Python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-trivia-game-tournament-python/README.md)
-- [Sms Two Factor Agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-two-factor-agent/README.md)
+- [SMS Two-Factor Authentication Agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-two-factor-agent/README.md): Agent-managed SMS two-factor authentication with code generation, KV storage, and scheduled expiry.
 - [Sms Two Factor Auth Csharp](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-two-factor-auth-csharp/README.md)
 - [Sms Two Factor Auth Go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-two-factor-auth-go/README.md)
 - [Sms Two Factor Auth Java](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-two-factor-auth-java/README.md)
