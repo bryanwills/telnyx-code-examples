@@ -3217,3 +3217,9 @@ examples:
     language: typescript
     framework: telnyx-edge
     folder: network-incident-agent
+
+  - product: voice
+    use_case: conference-agent-mediator
+    language: typescript
+    framework: edge
+    folder: conference-agent-mediator
