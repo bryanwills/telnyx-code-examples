@@ -3224,15 +3224,6 @@ examples:
     folder: network-incident-agent
 
   - product: ai
-    use_case: "auto-generated-from-linear"
-    language: typescript
-    framework: telnyx-edge
-    folder: conference-agent-mediator
-    framework: edge
-    folder: voicemail-to-sms-agent
-    folder: sms-two-factor-agent
-
-  - product: ai
     use_case: "agent-message-replay"
     language: typescript
     framework: edge
@@ -3345,3 +3336,14 @@ examples:
     language: nodejs
     framework: edge
     folder: edge-event-microsite
+  - product: voice
+    use_case: conference-agent-mediator
+    language: typescript
+    framework: edge
+    folder: conference-agent-mediator
+
+  - product: sms
+    use_case: sms-two-factor-agent
+    language: typescript
+    framework: edge
+    folder: sms-two-factor-agent

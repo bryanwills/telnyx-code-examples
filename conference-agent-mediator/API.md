@@ -1,212 +1,198 @@
 # API Reference — Conference Agent Mediator
 
-This document defines the HTTP and WebSocket API contract for the `conference-agent-mediator` Edge application.
+Typed reference for the Edge function's HTTP surface. All routes are served from the deployed function URL: `https://conference-agent-mediator-<id>.telnyxcompute.com`.
 
-## Base URL
+## Health
 
-```
-https://<your-edge-subdomain>.telnyx.io
-```
+### `GET /health/liveness`
 
-## Authentication
+Returns `200` with body `ok`.
 
-All endpoints require a valid `TELNYX_API_KEY` passed in the `Authorization` header as a Bearer token.
+### `GET /health/readiness`
 
-```
-Authorization: Bearer <TELNYX_API_KEY>
-```
+Returns `200`:
 
----
-
-## REST Endpoints
-
-### 1. Start Conference & Agent
-
-Initiates a Call Control conference, provisions a WebSocket endpoint for observers, and triggers the `ConferenceAgent` to join the bridge.
-
-**Endpoint:** `POST /api/conferences`
-
-#### Request Body Schema
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `conference_name` | string | Yes | Unique name for the conference bridge. |
-| `phone_numbers` | string[] | No | E.164 phone numbers to dial into the conference. |
-| `observer_webhook_url` | string | No | URL to receive post-conference summary webhooks. |
-
-#### Example Request
-
-```bash
-curl -X POST https://<your-edge-subdomain>.telnyx.io/api/conferences \
-  -H "Authorization: Bearer $TELNYX_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "conference_name": "standup-sync-831",
-    "phone_numbers": ["+15551234567", "+15557654321"],
-    "observer_webhook_url": "https://example.com/webhooks/summary"
-  }'
+```json
+{ "status": "ok", "demoMode": true }
 ```
 
-#### Response Schema
+## Voice Webhook
 
-**201 Created**
+### `POST /webhooks/voice`
+
+Receiver for Telnyx Call Control voice/conference events. Body is the standard Telnyx webhook envelope:
+
 ```json
 {
-  "conference_id": "conf_3f8a...",
-  "conference_name": "standup-sync-831",
-  "websocket_url": "wss://<your-edge-subdomain>.telnyx.io/ws/transcript/conf_3f8a...",
-  "status": "initiated"
+  "data": {
+    "event_type": "conference.created",
+    "payload": { "conference_id": "...", "call_control_id": "...", "name": "..." }
+  }
 }
 ```
 
-#### Status Codes
+| `event_type` | Agent action |
+|--------------|--------------|
+| `call.initiated` | Answers the leg, records it for bridge routing |
+| `call.answered` | Creates the conference bridge (first caller) or joins the active bridge (later callers); starts `transcription_start` with `client_state` routing |
+| `call.hangup` | Drops the leg's bridge mapping |
+| `conference.created`, `conference.start` | Spawns `ConferenceAgent`, arms the 30s mediation timer; live mode greets the bridge |
+| `conference.participant.joined` | Tracks the participant (silence clock starts) |
+| `conference.participant.left` | Removes the participant (merge-delete) |
+| `call.transcription` (`is_final=true`) | Routes via `client_state.conference_id` or the registry's call→conference map, appends the utterance |
+| `conference.ended`, `conference.end` | Stops the timer, clears the bridge pointer, runs summarize → store → SMS pipeline |
 
-| Status Code | Description |
-|-------------|-------------|
-| 201 | Conference successfully initiated and Agent is joining. |
-| 400 | Bad Request. Missing required fields or invalid phone number format. |
-| 401 | Unauthorized. Missing or invalid `TELNYX_API_KEY`. |
-| 500 | Internal Server Error. Failed to provision Call Control conference. |
+Responses: `200` with `{ "action": "..." }`, `400` for malformed payloads, `502` with `{ action: "error", step, status, err }` when a Telnyx REST call fails (e.g. `answer`, `conference_create`, `join_conference`).
 
----
+## Live Transcript Stream (WebSocket)
 
-### 2. Get Conference Summary
+### `WS /agents/conference/{id}`
 
-Retrieves the transcript, turn-taking metrics, and LLM-generated summary for a completed or active conference.
+The agent socket mount (default base `/agents`, mount key `conference`, name = Dapr-safe conference id). On connect the client receives:
 
-**Endpoint:** `GET /api/conferences/:conference_id/summary`
-
-#### Path Parameters
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `conference_id` | string | Yes | The ID of the conference returned by the creation endpoint. |
-
-#### Example Request
-
-```bash
-curl -X GET https://<your-edge-subdomain>.telnyx.io/api/conferences/conf_3f8a.../summary \
-  -H "Authorization: Bearer $TELNYX_API_KEY"
+```json
+{"json": {"v": 1, "kind": "state", "snapshot": { ...full ConferenceState... }}}
+{"json": {"v": 1, "kind": "hello"}}
 ```
 
-#### Response Schema
+Every durable `setState` then pushes an incremental frame:
 
-**200 OK**
+```json
+{"json": {"v": 1, "kind": "state", "patch": { "turns": [ ... ], "phase": "active" }}}
+```
+
+Apply RFC 7396 merge-patch semantics client-side (`null` deletes; arrays replace wholesale). The stream carries transcript turns, mediator prompts, phase transitions, and the final summary — no polling needed. The dashboard uses this endpoint with polling as fallback.
+
+## Demo Simulator
+
+Drives the same agent pipeline as live webhooks with `demo=true` — no live Call Control or SMS side effects.
+
+### `POST /demo/conference`
+
+```json
+{ "name": "Sprint Planning" }
+```
+
+→ `200`:
+
+```json
+{ "conference_id": "demo-abc123", "demo": true, "next": "POST /demo/conference/{id}/join" }
+```
+
+### `POST /demo/conference/{id}/join`
+
+```json
+{ "name": "alice" }
+```
+
+→ `200` `{ "joined": "alice", "conference_id": "..." }` · `400` if `name` missing.
+
+### `POST /demo/conference/{id}/say`
+
+```json
+{ "speaker": "alice", "text": "We need to ship the billing fix by Friday." }
+```
+
+→ `200` `{ "recorded": true, "conference_id": "..." }` · `400` if `speaker`/`text` missing.
+
+### `POST /demo/conference/{id}/end`
+
+→ `200`:
+
+```json
+{ "ending": true, "conference_id": "...", "next": "GET /conferences/{id}" }
+```
+
+Ends the conference: cancels the mediation timer and runs `summarize → store → notify` asynchronously (LLM summary via the `[telnyx]` binding; SMS skipped in demo mode).
+
+## Conference Queries
+
+### `GET /conferences?limit=50`
+
+Lists finished conferences from the shared registry actor:
+
 ```json
 {
-  "conference_id": "conf_3f8a...",
-  "status": "completed",
-  "participants": 3,
-  "duration_seconds": 1840,
-  "turn_taking_metrics": {
-    "imbalances_detected": true,
-    "silent_participants": ["+15557654321"]
-  },
-  "summary": "The team discussed the Sprint 3 deliverables. Alice committed to finishing the API docs. Bob was prompted to share his update on the UI components."
-}
-```
-
-#### Status Codes
-
-| Status Code | Description |
-|-------------|-------------|
-| 200 | OK. Summary retrieved successfully. |
-| 401 | Unauthorized. Missing or invalid `TELNYX_API_KEY`. |
-| 404 | Not Found. Conference ID does not exist or has been purged. |
-| 500 | Internal Server Error. Failed to fetch summary from state. |
-
----
-
-### 3. Telnyx Webhook Receiver
-
-Receives Call Control webhooks from Telnyx to track conference state, participant join/leave events, and trigger the post-conference summary + SMS workflow.
-
-**Endpoint:** `POST /webhooks/telnyx`
-
-#### Request Body Schema
-
-Telnyx Call Control Webhook payload (varies by event). 
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `data.event_type` | string | Yes | The type of Call Control event (e.g., `conference.participant.joined`, `conference.ended`). |
-| `data.payload.conference_id` | string | Yes | The Telnyx conference ID. |
-| `data.payload.call_control_id` | string | Yes | The Call Control ID of the participant. |
-
-#### Example Request
-
-```bash
-curl -X POST https://<your-edge-subdomain>.telnyx.io/webhooks/telnyx \
-  -H "Content-Type: application/json" \
-  -d '{
-    "data": {
-      "event_type": "conference.ended",
-      "payload": {
-        "conference_id": "conf_3f8a...",
-        "call_control_id": "call_..."
-      }
+  "conferences": [
+    {
+      "conference_id": "demo-abc123",
+      "friendly_name": "Sprint Planning",
+      "participants": 2,
+      "turn_count": 4,
+      "summary": "...",
+      "started_at": 1725400000000,
+      "ended_at": 1725400200000,
+      "status": "stored"
     }
-  }'
-```
-
-#### Response Schema
-
-**200 OK**
-```json
-{
-  "status": "received"
+  ]
 }
 ```
 
-#### Status Codes
+### `GET /conferences/{id}`
 
-| Status Code | Description |
-|-------------|-------------|
-| 200 | OK. Webhook received and signature verified. |
-| 400 | Bad Request. Invalid payload or failed Ed25519 signature verification. |
-| 500 | Internal Server Error. Failed to process webhook event. |
+Full agent state snapshot:
 
----
-
-## WebSocket Endpoints
-
-### 1. Live Transcript Stream
-
-Provides a real-time stream of Speech-to-Text (STT) transcription and Agent mediation events for UI observers.
-
-**Endpoint:** `GET /ws/transcript/:conference_id`
-
-#### Connection Parameters
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `conference_id` | string | Yes | The ID of the conference to observe. |
-
-#### Message Schemas (Server → Client)
-
-**Transcription Event**
 ```json
 {
-  "type": "transcript",
-  "participant": "+15551234567",
-  "text": "I'll have the API docs done by EOD.",
-  "timestamp": 1698765432100
+  "conferenceId": "demo-abc123",
+  "friendlyName": "Sprint Planning",
+  "demo": true,
+  "phase": "done",
+  "participants": { "alice": 1725400060000, "bob": 1725400090000 },
+  "turns": [{ "speaker": "mediator", "text": "bob, ...", "at": 1725400120000 }],
+  "transcriptText": "[alice]: ...\n[mediator]: ...",
+  "promptsSent": ["bob:1725400120000"],
+  "summary": "...",
+  "startedAt": 1725400000000,
+  "endedAt": 1725400200000,
+  "model": "zai-org/GLM-5.2",
+  "smsSent": false,
+  "error": ""
 }
 ```
 
-**Agent Mediation Event**
+`404` if the conference id is unknown (`conference not found`).
+
+### `GET /conferences/{id}/transcript?since=0`
+
+Polling transcript feed — turn records with `at > since` (epoch ms):
+
 ```json
 {
-  "type": "agent_prompt",
-  "text": "Bob, we haven't heard from you on the UI components. Any updates?",
-  "timestamp": 1698765439800
+  "conference_id": "demo-abc123",
+  "turns": [{ "speaker": "alice", "text": "...", "at": 1725400050000 }],
+  "phase": "active",
+  "summary": ""
 }
 ```
 
-#### Status Codes
+### `GET /conferences/{id}/events?afterSeq=0`
 
-| Status Code | Description |
-|-------------|-------------|
-| 101 | Switching Protocols. WebSocket connection established. |
-| 401 | Unauthorized. Missing or invalid `TELNYX_API_KEY` in connection headers. |
-| 404 | Not Found. Conference ID does not exist or agent is not active. |
+Replay of the agent's durable progress-event stream (seq-ordered, exclusive cursor):
+
+```json
+{
+  "conference_id": "demo-abc123",
+  "events": [
+    { "seq": 1, "type": "conference_started", "payload": { "conferenceId": "...", "demo": true }, "at": "2026-09-04T00:30:00.000Z" },
+    { "seq": 6, "type": "prompt_sent", "payload": { "participant": "bob", "prompt": "..." }, "at": "..." }
+  ]
+}
+```
+
+Event types: `conference_started`, `participant_joined`, `participant_left`, `mediate_tick`, `mediate_skipped`, `prompt_sent`, `prompt_failed`, `prompt_spoken`, `prompt_speak_failed`, `sms_skipped_demo`, `sms_skipped_no_routing`, `sms_sent`.
+
+## Dashboard
+
+### `GET /`
+
+Single-page HTML dashboard: start/join/say/end demo controls, live transcript polling every 2s, and the rendered post-conference summary.
+
+## Status Codes
+
+| Code | Meaning |
+|------|---------|
+| `200` | Success |
+| `400` | Malformed body or missing required field |
+| `404` | Unknown route or conference id |
+| `500` | Actor/registry failure (message included in `error`) |
