@@ -3347,3 +3347,9 @@ examples:
     language: typescript
     framework: edge
     folder: sms-two-factor-agent
+
+  - product: ai
+    use_case: patient-agent
+    language: typescript
+    framework: edge
+    folder: patient-agent

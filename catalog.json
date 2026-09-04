@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-09-04T03:16:19Z",
-  "example_count": 544,
+  "generated_at": "2026-09-04T18:46:18Z",
+  "example_count": 545,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -4901,6 +4901,15 @@
       "language": "typescript",
       "framework": "edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/sms-two-factor-agent"
+    },
+    {
+      "folder": "patient-agent",
+      "title": "Patient Agent",
+      "description": "",
+      "product": "ai",
+      "language": "typescript",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/patient-agent"
     }
   ]
 }
