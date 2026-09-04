@@ -1,4 +1,18 @@
 import { Agent } from "@telnyx/edge-runtime";
+import { AgentSocketServer, type AgentServerSocket } from "@telnyx/edge-runtime/agent-socket";
+
+// Local mirror of the SDK's RFC 7396 merge-patch type (not publicly exported).
+// Arrays, Dates, Maps, etc. are atomic — replaced wholesale, never recursed.
+type Atomic = readonly unknown[] | Date | RegExp | Map<unknown, unknown> | Set<unknown> | Promise<unknown> | ArrayBuffer | DataView;
+type MergePatchOf<T> = [T] extends [Atomic]
+  ? T | null
+  : {
+      [K in keyof T]?: unknown extends T[K]
+        ? T[K] | null
+        : [NonNullable<T[K]>] extends [object]
+          ? T[K] | MergePatchOf<NonNullable<T[K]>> | null
+          : T[K] | null;
+    };
 
 // ── State ────────────────────────────────────────────────────────────────
 export type ConferencePhase =
@@ -114,6 +128,29 @@ function daprSafeName(conferenceId: string): string {
  * Control or sends real SMS — prompts and notifications are recorded in state.
  */
 export class ConferenceAgent extends Agent<ConferenceEnv, ConferenceState> {
+  /**
+   * Live transcript streaming — the agent socket server pushes a state
+   * snapshot on connect and an incremental merge-patch on every setState,
+   * so observers receive transcript turns, mediator prompts, phase, and the
+   * summary in real time over WebSocket.
+   */
+  private desk = new AgentSocketServer<ConferenceState>(this, {
+    getState: () => this.getState(),
+    // anonymous connections observe (read); a token would add rpc
+    authorize: (token: string | undefined) => (token === undefined ? ["read"] : ["read", "rpc"]),
+  });
+
+  /** Activates the connection surface — served through the /agents mount. */
+  async webSocket(ws: AgentServerSocket, req: Request): Promise<void> {
+    await this.desk.attach(ws, req);
+  }
+
+  protected override async setState(patch: MergePatchOf<ConferenceState>): Promise<ConferenceState> {
+    const next = await super.setState(patch);
+    this.desk.broadcastPatch(patch);
+    return next;
+  }
+
   protected override initialState(): ConferenceState {
     return {
       conferenceId: "",
@@ -163,6 +200,22 @@ export class ConferenceAgent extends Agent<ConferenceEnv, ConferenceState> {
     // Durable 30s mediator — stable id makes re-arming an upsert.
     await this.every(MEDIATE_INTERVAL_S, "mediate", undefined, { id: "mediate" });
     await this.events.emit("conference_started", { conferenceId, demo });
+    if (!demo) {
+      // Live bridge: introduce the facilitator so humans know the voice.
+      try {
+        await this.env.TELNYX.conferences.actions.speak(conferenceId, {
+          payload:
+            "Hi, I'm your AI meeting facilitator. I'll transcribe the call, prompt anyone who's been quiet, and send a summary when we finish.",
+          voice: "female",
+          language: "en-US",
+          command_id: `greet-${daprSafeName(conferenceId)}-${Date.now()}`,
+        });
+        await this.events.emit("greeting_spoken", {});
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e);
+        await this.events.emit("greeting_failed", { error: msg });
+      }
+    }
   }
 
   /** Webhook handler calls this on conference.participant.joined. */
@@ -178,9 +231,8 @@ export class ConferenceAgent extends Agent<ConferenceEnv, ConferenceState> {
   async removeParticipant(name: string): Promise<void> {
     const state = await this.getState();
     if (state.phase !== "active") return;
-    const participants = { ...state.participants };
-    delete participants[name];
-    await this.setState({ ...state, participants });
+    // RFC 7396 merge-delete: a null value removes the key from the map.
+    await this.setState({ participants: { [name]: null } });
     await this.events.emit("participant_left", { name });
   }
 
@@ -503,6 +555,61 @@ export class ConferenceRegistry extends Agent<Record<string, unknown>, Record<st
     return cursor.toArray();
   }
 
+  // ── Live bridge coordination (fetch env calls these) ──────────────────
+
+  /** The one conference new dial-ins should join right now ("" = none). */
+  async getActiveBridge(): Promise<string> {
+    this.ensureTables();
+    const cursor = this.ctx.storage.sql.exec<{ conference_id: string }>(
+      "SELECT conference_id FROM bridge WHERE id = 1",
+    );
+    return cursor.toArray()[0]?.conference_id ?? "";
+  }
+
+  async setActiveBridge(conferenceId: string): Promise<void> {
+    this.ensureTables();
+    this.ctx.storage.sql.exec(
+      "INSERT OR REPLACE INTO bridge (id, conference_id, updated_at) VALUES (1, ?, ?)",
+      conferenceId,
+      Date.now(),
+    );
+  }
+
+  async clearBridge(): Promise<void> {
+    this.ensureTables();
+    this.ctx.storage.sql.exec("DELETE FROM bridge WHERE id = 1");
+  }
+
+  /** Remember which conference a call leg belongs to (for transcription routing). */
+  async mapCall(callControlId: string, conferenceId: string): Promise<void> {
+    this.ensureTables();
+    this.ctx.storage.sql.exec(
+      "INSERT OR REPLACE INTO call_map (call_control_id, conference_id, joined_at) VALUES (?, ?, ?)",
+      callControlId,
+      conferenceId,
+      Date.now(),
+    );
+  }
+
+  async conferenceForCall(callControlId: string): Promise<string> {
+    this.ensureTables();
+    const cursor = this.ctx.storage.sql.exec<{ conference_id: string }>(
+      "SELECT conference_id FROM call_map WHERE call_control_id = ?",
+      callControlId,
+    );
+    return cursor.toArray()[0]?.conference_id ?? "";
+  }
+
+  async unmapCall(callControlId: string): Promise<void> {
+    this.ensureTables();
+    this.ctx.storage.sql.exec("DELETE FROM call_map WHERE call_control_id = ?", callControlId);
+  }
+
+  async unmapConference(conferenceId: string): Promise<void> {
+    this.ensureTables();
+    this.ctx.storage.sql.exec("DELETE FROM call_map WHERE conference_id = ?", conferenceId);
+  }
+
   private ensureTables(): void {
     this.ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS conferences(
@@ -518,6 +625,23 @@ export class ConferenceRegistry extends Agent<Record<string, unknown>, Record<st
     );
     this.ctx.storage.sql.exec(
       "CREATE INDEX IF NOT EXISTS idx_conferences_started_at ON conferences(started_at DESC)",
+    );
+    this.ctx.storage.sql.exec(
+      `CREATE TABLE IF NOT EXISTS bridge(
+         id            INTEGER PRIMARY KEY CHECK (id = 1),
+         conference_id TEXT NOT NULL,
+         updated_at    INTEGER NOT NULL
+       )`,
+    );
+    this.ctx.storage.sql.exec(
+      `CREATE TABLE IF NOT EXISTS call_map(
+         call_control_id TEXT PRIMARY KEY,
+         conference_id   TEXT NOT NULL,
+         joined_at       INTEGER NOT NULL
+       )`,
+    );
+    this.ctx.storage.sql.exec(
+      "CREATE INDEX IF NOT EXISTS idx_call_map_conference ON call_map(conference_id)",
     );
   }
 }

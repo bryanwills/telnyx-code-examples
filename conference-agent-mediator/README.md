@@ -17,12 +17,13 @@ Telnyx provides a unified AI Communications Infrastructure platform that bridges
 
 ## Telnyx API Endpoints Used
 
-- **Call Control: Conferences** — conference lifecycle events (`conference.created`, `conference.participant.joined/left`, `conference.ended`) drive the agent via the voice webhook.
-- **Call Control: Conference Speak** — `POST /v2/conferences/{id}/actions/speak` injects the LLM-crafted turn-taking prompt into the live conference.
+- **Call Control: Calls** — answer inbound dial-ins, `join_conference`, `transcription_start` (stream STT to the agent).
+- **Call Control: Conferences** — create the conference bridge on the first dial-in; lifecycle events (`conference.created`, `conference.participant.joined/left`, `conference.ended`) drive the agent; `conference speak` injects LLM-crafted prompts into the live bridge.
 - **Call Control: Streaming Transcription** — `call.transcription` events feed finalized utterances into the agent.
-- **Agent SDK** — `class ConferenceAgent extends Agent` — durable state, SQL storage, and crash-safe `every(30s)` mediation timers.
+- **Agent SDK** — `class ConferenceAgent extends Agent` — durable state, SQL storage, crash-safe `every(30s)` mediation timers, and the built-in **agent socket** connection surface (`AgentSocketServer`) for WebSocket observers.
 - **AI Inference** — zero-credential `[telnyx]` binding (`ai.openai.chat.createCompletion`) for prompt crafting and post-conference summaries.
 - **Programmable SMS** — zero-credential `[telnyx]` binding (`messages.send`) for the post-conference summary.
+- **WebSocket (agent socket mount)** — `wss://…/agents/conference/{id}` pushes a state snapshot on connect and an incremental merge-patch on every state change: live transcript, mediator prompts, phase, and summary stream to observers in real time.
 
 ## Architecture
 
@@ -63,7 +64,7 @@ Telnyx provides a unified AI Communications Infrastructure platform that bridges
 | `AI_MODEL` | env_var | no | Telnyx-hosted LLM for prompts + summaries (default: `zai-org/GLM-5.2`) | [Models](https://developers.telnyx.com/docs/inference/models) |
 | `SMS_FROM` | env_var | **yes** | Telnyx number the summary SMS is sent from (messaging + 10DLC campaign for US delivery) | [Portal](https://portal.telnyx.com/numbers/my-numbers) |
 | `SMS_TO` | env_var | **yes** | Recipient of the post-conference summary SMS (E.164) | your mobile number |
-| `DEMO_MODE` | env_var | no | `true` (default) = no live Call Control/SMS side effects; `false` = live conference speak + SMS | set in `telnyx.toml` |
+| `DEMO_MODE` | env_var/secret | no | `true` (default) = no live Call Control/SMS side effects; `false` = live. Flip at runtime with `telnyx-edge secrets add DEMO_MODE false` — the secret wins over the toml, no redeploy needed | set in `telnyx.toml` |
 | `[telnyx]` binding | toml | **yes** | Pre-authenticated Telnyx client for zero-credential LLM inference + SMS | `telnyx.toml` |
 
 > **Agent / CLI access**
@@ -172,7 +173,15 @@ Or open `$BASE/` in a browser — the dashboard can start a demo conference, add
 
 ### Live mode
 
-Set `DEMO_MODE = "false"` in `telnyx.toml` (or via `telnyx-edge secret set DEMO_MODE false`) and redeploy. Point a conference-enabled Call Control application's webhook at `/webhooks/voice`; the agent then tracks real `conference.*` events, streams real `call.transcription` events, speaks prompts into the live bridge, and sends real SMS on `conference.ended`. Always validate in demo mode first to avoid unexpected charges.
+Set `DEMO_MODE=false` (`telnyx-edge secrets add DEMO_MODE false` — or flip the toml and redeploy). Live wiring:
+
+1. Point a Call Control application's webhook at `<fn-url>/webhooks/voice` and attach your dial-in number.
+2. Dial the number — `call.initiated` → the app answers, **creates a conference bridge** with your leg as participant #1, and starts streaming STT. A second dial-in **joins the same bridge**.
+3. The agent greets the bridge, tracks participants and transcriptions, and every 30s **speaks an LLM-crafted prompt** into the conference for anyone silent past 60s.
+4. End the call/conference — the LLM summary is generated, stored, and **texted via SMS**.
+5. Watch it live: open `<fn-url>/` in a browser (WebSocket-driven dashboard), or connect a raw client to `wss://<fn-url-host>/agents/conference/{id}`.
+
+The demo simulator always stays safe (`demo=true` at the agent) regardless of the live-mode flag.
 
 ## API Reference
 
@@ -182,7 +191,8 @@ See [`API.md`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-example
 |-------|--------|---------|
 | `/health/liveness` | GET | Liveness probe |
 | `/health/readiness` | GET | Readiness + demo-mode flag |
-| `/webhooks/voice` | POST | Telnyx Call Control / conference webhook receiver |
+| `/webhooks/voice` | POST | Telnyx Call Control / conference webhook receiver (call + conference lifecycle) |
+| `/agents/conference/{id}` | WebSocket | Agent socket mount — live state snapshot + patches (transcript, phase, summary) |
 | `/demo/conference` | POST | Start a simulated conference |
 | `/demo/conference/{id}/join` | POST | Add a simulated participant |
 | `/demo/conference/{id}/say` | POST | Feed a transcript utterance |

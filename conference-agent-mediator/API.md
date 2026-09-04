@@ -33,13 +33,35 @@ Receiver for Telnyx Call Control voice/conference events. Body is the standard T
 
 | `event_type` | Agent action |
 |--------------|--------------|
-| `conference.created`, `conference.start` | Spawns `ConferenceAgent`, arms the 30s mediation timer |
+| `call.initiated` | Answers the leg, records it for bridge routing |
+| `call.answered` | Creates the conference bridge (first caller) or joins the active bridge (later callers); starts `transcription_start` with `client_state` routing |
+| `call.hangup` | Drops the leg's bridge mapping |
+| `conference.created`, `conference.start` | Spawns `ConferenceAgent`, arms the 30s mediation timer; live mode greets the bridge |
 | `conference.participant.joined` | Tracks the participant (silence clock starts) |
-| `conference.participant.left` | Removes the participant |
-| `call.transcription` (`is_final=true`) | Appends the utterance, refreshes the speaker's last-spoken time |
-| `conference.ended`, `conference.end` | Stops the timer; runs summarize → store → SMS pipeline |
+| `conference.participant.left` | Removes the participant (merge-delete) |
+| `call.transcription` (`is_final=true`) | Routes via `client_state.conference_id` or the registry's call→conference map, appends the utterance |
+| `conference.ended`, `conference.end` | Stops the timer, clears the bridge pointer, runs summarize → store → SMS pipeline |
 
-Responses: `200` with `{ "action": "..." }`, `400` for malformed payloads (`no event_type in payload`, `no conference_id in payload`).
+Responses: `200` with `{ "action": "..." }`, `400` for malformed payloads, `502` with `{ action: "error", step, status, err }` when a Telnyx REST call fails (e.g. `answer`, `conference_create`, `join_conference`).
+
+## Live Transcript Stream (WebSocket)
+
+### `WS /agents/conference/{id}`
+
+The agent socket mount (default base `/agents`, mount key `conference`, name = Dapr-safe conference id). On connect the client receives:
+
+```json
+{"json": {"v": 1, "kind": "state", "snapshot": { ...full ConferenceState... }}}
+{"json": {"v": 1, "kind": "hello"}}
+```
+
+Every durable `setState` then pushes an incremental frame:
+
+```json
+{"json": {"v": 1, "kind": "state", "patch": { "turns": [ ... ], "phase": "active" }}}
+```
+
+Apply RFC 7396 merge-patch semantics client-side (`null` deletes; arrays replace wholesale). The stream carries transcript turns, mediator prompts, phase transitions, and the final summary — no polling needed. The dashboard uses this endpoint with polling as fallback.
 
 ## Demo Simulator
 

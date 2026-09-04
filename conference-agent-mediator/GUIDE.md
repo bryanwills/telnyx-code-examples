@@ -61,9 +61,36 @@ By default the sample runs in **safe demo mode** (`DEMO_MODE=true`). In demo mod
 - SMS summaries are recorded in agent state (`smsSent=false`, event `sms_skipped_demo`) instead of being sent.
 - Mediator prompts are recorded as `[mediator]` turns in the transcript instead of being spoken into a bridge.
 
-To switch to **live mode**, set `DEMO_MODE=false` and redeploy. In live mode the agent reacts to real `conference.*` webhook events, streams real `call.transcription` events, speaks LLM-crafted prompts into the conference via `POST /v2/conferences/{id}/actions/speak`, and sends the summary via real SMS.
+To switch to **live mode**, set `DEMO_MODE=false`:
+
+```bash
+telnyx-edge secrets add DEMO_MODE false   # wins over the toml — no redeploy needed
+# flip back: telnyx-edge secrets delete DEMO_MODE
+```
+
+In live mode the app performs the full telephony orchestration:
+
+1. **Dial-in → bridge**: `call.initiated` → answer; `call.answered` → the first caller's leg **creates the conference bridge**, later callers `join_conference` onto it, and every leg gets `transcription_start` with `client_state` routing.
+2. **Agent joins**: `conference.created` spawns the agent, which **greets the bridge** via conference speak.
+3. **Live mediation**: every 30s the durable timer checks silence clocks; anyone silent > 60s gets an **LLM-crafted prompt spoken into the conference** (`voice="female"`, `en-US`).
+4. **Real summary SMS**: `conference.ended` → LLM summary → SMS via the zero-credential messaging binding.
 
 Always test in demo mode first to avoid unexpected charges.
+
+## Observers: WebSocket live transcript
+
+The agent exposes its state over the **agent socket mount** at `wss://<fn-host>/agents/conference/{id}`. On connect: a full state snapshot plus `hello`. On every state change: an RFC 7396 merge-patch frame. Observers — dashboards, note-takers, monitoring bots — receive the transcript, mediator prompts, phase, and summary in real time with no polling. The bundled dashboard connects with a ~20-line browser client; a raw client is equally simple:
+
+```js
+const ws = new WebSocket("wss://<fn-host>/agents/conference/demo-abc123");
+ws.onmessage = (e) => {
+  const f = (JSON.parse(e.data)).json; // mount wraps frames in {"json": ...}
+  if (f.kind === "state") {
+    if (f.snapshot) render(f.snapshot);
+    else if (f.patch) render(mergePatch(localState, f.patch));
+  }
+};
+```
 
 ## How the code is structured
 

@@ -25,6 +25,13 @@ name = "SMS_FROM"
 binding = "SMS_TO"
 name = "SMS_TO"
 
+# Optional live-mode flip without a redeploy:
+#   telnyx-edge secrets add DEMO_MODE false   → live conference speak + SMS
+#   telnyx-edge secrets delete DEMO_MODE      → back to demo mode
+[[secrets]]
+binding = "DEMO_MODE"
+name = "DEMO_MODE"
+
 [env_vars]
 AI_MODEL = "zai-org/GLM-5.2"
 DEMO_MODE = "true"

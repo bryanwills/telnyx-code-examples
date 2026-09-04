@@ -7,6 +7,7 @@ import {
   type ActorStub,
   type IdFromNameOptions,
 } from "@telnyx/edge-runtime";
+import { mountAgents } from "@telnyx/edge-runtime/mount";
 
 type ConferenceStub = ActorStub &
   Pick<
@@ -26,7 +27,19 @@ interface ConferenceNamespace extends ActorNamespace {
   idFromName(name: string, options?: IdFromNameOptions): ConferenceStub;
 }
 
-type RegistryStub = ActorStub & Pick<ConferenceRegistry, "record" | "list">;
+type RegistryStub = ActorStub &
+  Pick<
+    ConferenceRegistry,
+    | "record"
+    | "list"
+    | "getActiveBridge"
+    | "setActiveBridge"
+    | "clearBridge"
+    | "mapCall"
+    | "conferenceForCall"
+    | "unmapCall"
+    | "unmapConference"
+  >;
 
 interface RegistryNamespace extends ActorNamespace {
   idFromName(name: string, options?: IdFromNameOptions): RegistryStub;
@@ -35,21 +48,45 @@ interface RegistryNamespace extends ActorNamespace {
 interface Env {
   CONFERENCE: ConferenceNamespace;
   REGISTRY: RegistryNamespace;
-  TELNYX_API_KEY: string;
-  AI_MODEL: string;
-  SMS_FROM: string;
-  SMS_TO: string;
-  DEMO_MODE: string;
+  SECRETS: { get(handle: string): Promise<string> };
 }
 
-function isDemoMode(env: Env): boolean {
-  return (env.DEMO_MODE ?? "true").toLowerCase() !== "false";
+const TELNYX_API = "https://api.telnyx.com/v2";
+const DEFAULT_MODEL = "zai-org/GLM-5.2";
+
+function getApiKey(): string {
+  const apiKey = process.env.TELNYX_API_KEY ?? "";
+  if (!apiKey) throw new Error("TELNYX_API_KEY not configured");
+  return apiKey;
+}
+
+/**
+ * Demo mode: the DEMO_MODE secret wins when set (live-mode flip without a
+ * redeploy), then the telnyx.toml env_var, then true (safe default).
+ */
+async function isDemoMode(env: Env): Promise<boolean> {
+  try {
+    const viaSecret = await env.SECRETS.get("DEMO_MODE");
+    if (viaSecret) return viaSecret.toLowerCase() === "true";
+  } catch {
+    // secret not declared or store unavailable — fall through
+  }
+  return (process.env.DEMO_MODE ?? "true").toLowerCase() !== "false";
+}
+
+function aiModel(): string {
+  return process.env.AI_MODEL || DEFAULT_MODEL;
 }
 
 function conferenceActorName(conferenceId: string): string {
   // Dapr-safe: RFC 1123 — no "+", no special chars
   return conferenceId.replace(/[^0-9a-zA-Z.-]/g, "");
 }
+
+// ── Agent socket mount — WebSocket/SSE/RPC for observers ─────────────────
+// Addresses: /agents/conference/<conference-id> — a WebSocket upgrade lands
+// in ConferenceAgent.webSocket and receives state snapshots + patches live.
+const handleAgents = mountAgents<Env>((env) => ({ conference: env.CONFERENCE }));
 
 // ── Router ───────────────────────────────────────────────────────────────
 
@@ -60,7 +97,12 @@ export default {
     // ── Health ───────────────────────────────────────────────────────
     if (url.pathname === "/health/liveness") return new Response("ok");
     if (url.pathname === "/health/readiness") {
-      return Response.json({ status: "ok", demoMode: isDemoMode(env) });
+      return Response.json({ status: "ok", demoMode: await isDemoMode(env) });
+    }
+
+    // ── Live transcript stream (agent socket mount) ──────────────────
+    if (url.pathname.startsWith("/agents/")) {
+      return handleAgents(req, env);
     }
 
     // ── Voice webhook ────────────────────────────────────────────────
@@ -155,16 +197,108 @@ async function handleVoiceWebhook(req: Request, env: Env): Promise<Response> {
     return Response.json({ error: "no event_type in payload" }, { status: 400 });
   }
 
+  const demo = await isDemoMode(env);
   const conferenceId = (payload.conference_id as string) ?? (payload.conferenceId as string);
   const stub = env.CONFERENCE.idFromName(conferenceActorName(conferenceId || "unknown"));
+
+  // ── call.initiated — answer + remember the leg ─────────────────
+  if (eventType === "call.initiated") {
+    const ccid = payload.call_control_id as string;
+    if (!ccid) return Response.json({ error: "no call_control_id in payload" }, { status: 400 });
+    try {
+      const resp = await telnyxRest("/calls/" + encodeURIComponent(ccid) + "/actions/answer", {});
+      if (!resp.ok) return telnyxFail("answer", resp);
+    } catch (e: unknown) {
+      return Response.json({ error: e instanceof Error ? e.message : "answer failed" }, { status: 500 });
+    }
+    try {
+      await env.REGISTRY.idFromName("global").mapCall(ccid, "");
+    } catch {
+      // best-effort — mapping is re-set on answered
+    }
+    return Response.json({ action: "answering" });
+  }
+
+  // ── call.answered — create the bridge or join the active one ──
+  if (eventType === "call.answered") {
+    const ccid = payload.call_control_id as string;
+    if (!ccid) return Response.json({ error: "no call_control_id in payload" }, { status: 400 });
+    const registry = env.REGISTRY.idFromName("global");
+    let bridge = "";
+    try {
+      bridge = await registry.getActiveBridge();
+    } catch {
+      // registry unavailable — treat as no bridge
+    }
+    if (!bridge) {
+      // First caller: create the conference with this leg as participant #1.
+      try {
+        const resp = await telnyxRest("/conferences", {
+          call_control_id: ccid,
+          name: "bridge-" + Date.now().toString(36),
+        });
+        if (!resp.ok) return telnyxFail("conference_create", resp);
+        const data = (await resp.json()) as { data?: { id?: string } };
+        bridge = data?.data?.id ?? "";
+      } catch (e: unknown) {
+        return Response.json({ error: e instanceof Error ? e.message : "conference create failed" }, { status: 500 });
+      }
+      if (!bridge) return Response.json({ error: "conference created without id" }, { status: 502 });
+      try {
+        await registry.setActiveBridge(bridge);
+      } catch {
+        // best-effort — the next dial-in creates its own bridge
+      }
+    } else {
+      // Later callers join the active bridge.
+      try {
+        const resp = await telnyxRest("/calls/" + encodeURIComponent(ccid) + "/actions/join_conference", {
+          conference_id: bridge,
+        });
+        if (!resp.ok) return telnyxFail("join_conference", resp);
+      } catch (e: unknown) {
+        return Response.json({ error: e instanceof Error ? e.message : "join failed" }, { status: 500 });
+      }
+    }
+    try {
+      await registry.mapCall(ccid, bridge);
+    } catch {
+      // best-effort — client_state routing on transcription_start still applies
+    }
+    // Start STT on this leg; client_state routes transcription events back.
+    try {
+      await telnyxRest("/calls/" + encodeURIComponent(ccid) + "/actions/transcription_start", {
+        transcription_tracks: "inbound",
+        transcription_engine: "Telnyx",
+        client_state: encodeClientState({ conference_id: bridge }),
+        command_id: "transcribe-start-" + Date.now(),
+      });
+    } catch {
+      // best-effort — the call still works without STT
+    }
+    return Response.json({ action: bridge ? "joined_bridge" : "bridge_created", conference_id: bridge });
+  }
+
+  // ── call.hangup — drop the leg's mapping ──────────────────────
+  if (eventType === "call.hangup") {
+    const ccid = payload.call_control_id as string;
+    if (ccid) {
+      try {
+        await env.REGISTRY.idFromName("global").unmapCall(ccid);
+      } catch {
+        // best-effort
+      }
+    }
+    return Response.json({ action: "hangup_tracked" });
+  }
 
   // ── conference.created / conference.start ──────────────────────
   if (eventType === "conference.created" || eventType === "conference.start") {
     if (!conferenceId) return Response.json({ error: "no conference_id in payload" }, { status: 400 });
     await stub.onConferenceStart(conferenceId, {
-      demo: isDemoMode(env),
+      demo,
       friendlyName: (payload.name as string) ?? "",
-      model: env.AI_MODEL,
+      model: aiModel(),
     });
     await trackConferenceStart(env, {
       conference_id: conferenceId,
@@ -197,7 +331,6 @@ async function handleVoiceWebhook(req: Request, env: Env): Promise<Response> {
 
   // ── call.transcription ────────────────────────────────────────
   if (eventType === "call.transcription") {
-    if (!conferenceId) return Response.json({ error: "no conference_id in payload" }, { status: 400 });
     const transcriptionData = (payload.transcription_data ?? {}) as {
       transcript?: string;
       is_final?: boolean;
@@ -206,10 +339,22 @@ async function handleVoiceWebhook(req: Request, env: Env): Promise<Response> {
     if (!fragment) return Response.json({ action: "empty_transcription" });
     const isFinal = transcriptionData.is_final !== false;
     if (!isFinal) return Response.json({ action: "transcript_interim" });
-    // Speaker: prefer the call leg id; client_state may carry a friendly name.
-    const speaker = decodeClientState(payload.client_state).speaker
-      ?? ((payload.call_control_id as string) || "participant");
-    await stub.onTranscript(speaker, fragment);
+    // Route: client_state stamped on transcription_start first, then the
+    // registry's call→conference map (fetch-env actor, best-effort).
+    const ccid = (payload.call_control_id as string) || "";
+    const clientState = decodeClientState(payload.client_state);
+    let route = clientState.conference_id ?? "";
+    if (!route && ccid) {
+      try {
+        route = await env.REGISTRY.idFromName("global").conferenceForCall(ccid);
+      } catch {
+        // best-effort
+      }
+    }
+    if (!route) return Response.json({ action: "no_conference_routing", call_control_id: ccid });
+    const routeStub = env.CONFERENCE.idFromName(conferenceActorName(route));
+    const speaker = clientState.speaker ?? (ccid || "participant");
+    await routeStub.onTranscript(speaker, fragment);
     return Response.json({ action: "transcript_final", turn: fragment.slice(0, 120) });
   }
 
@@ -217,6 +362,14 @@ async function handleVoiceWebhook(req: Request, env: Env): Promise<Response> {
   if (eventType === "conference.ended" || eventType === "conference.end") {
     if (!conferenceId) return Response.json({ error: "no conference_id in payload" }, { status: 400 });
     await stub.onConferenceEnd();
+    // The bridge is over: clear the pointer + leg mappings (best-effort).
+    try {
+      const registry = env.REGISTRY.idFromName("global");
+      await registry.clearBridge();
+      await registry.unmapConference(conferenceId);
+    } catch {
+      // best-effort
+    }
     return Response.json({ action: "finalizing", conferenceId });
   }
 
@@ -254,7 +407,7 @@ async function demoStart(req: Request, env: Env): Promise<Response> {
   await stub.onConferenceStart(conferenceId, {
     demo: true,
     friendlyName: body?.name ?? "Demo Conference",
-    model: env.AI_MODEL,
+    model: aiModel(),
   });
   await trackConferenceStart(env, {
     conference_id: conferenceId,
@@ -310,6 +463,31 @@ async function safeJson(req: Request): Promise<Record<string, unknown>> {
   } catch {
     return {};
   }
+}
+
+// ── Telnyx REST helpers (fetch env — API key from the secrets store) ─────
+
+function authHeaders(apiKey: string): HeadersInit {
+  return { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" };
+}
+
+async function telnyxRest(path: string, body: Record<string, unknown>): Promise<Response> {
+  return fetch(TELNYX_API + path, {
+    method: "POST",
+    headers: authHeaders(getApiKey()),
+    body: JSON.stringify(body),
+  });
+}
+
+function telnyxFail(step: string, resp: Response): Promise<Response> {
+  return resp
+    .text()
+    .then((errBody) =>
+      Response.json(
+        { action: "error", step, status: resp.status, err: errBody.slice(0, 200) },
+        { status: 502 },
+      ),
+    );
 }
 
 function snapshotToRecord(state: {
@@ -387,7 +565,7 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
 </div>
 
 <script>
-let confId = "", since = 0, timer = null;
+let confId = "", since = 0, timer = null, sock = null, liveState = null;
 function status(s, isErr) {
   const el = document.getElementById("status");
   el.textContent = s;
@@ -398,6 +576,56 @@ async function api(path, body) {
   if (!res.ok) throw new Error("HTTP " + res.status);
   return res.json();
 }
+// ── WebSocket live transcript (agent socket mount) ──────────────────────
+function mergePatch(target, patch) {
+  if (patch === null || typeof patch !== "object" || Array.isArray(patch)) return patch;
+  if (typeof target !== "object" || target === null || Array.isArray(target)) target = {};
+  for (const k of Object.keys(patch)) {
+    if (patch[k] === null) delete target[k];
+    else target[k] = mergePatch(target[k], patch[k]);
+  }
+  return target;
+}
+function renderFromState(s) {
+  if (!s) return;
+  const el = document.getElementById("turns");
+  el.innerHTML = "";
+  for (const t of s.turns || []) {
+    const d = document.createElement("div");
+    d.className = "turn" + (t.speaker === "mediator" ? " mediator" : "");
+    const who = document.createElement("span");
+    who.className = "who";
+    who.textContent = t.speaker === "mediator" ? "Mediator:" : t.speaker + ":";
+    d.appendChild(who);
+    d.appendChild(document.createTextNode(t.text));
+    el.appendChild(d);
+  }
+  document.getElementById("phase").textContent = s.phase ? "phase: " + s.phase + " — live (WebSocket)" : "";
+  if (s.phase === "done" || s.phase === "error") {
+    document.getElementById("summary").textContent =
+      s.summary || "(no summary generated" + (s.error ? " — " + s.error : "") + ")";
+    document.getElementById("summaryCard").style.display = "block";
+  }
+}
+function connectWS() {
+  if (sock || !confId) return;
+  const name = confId.replace(/[^0-9a-zA-Z.-]/g, "");
+  const proto = location.protocol === "https:" ? "wss://" : "ws://";
+  try { sock = new WebSocket(proto + location.host + "/agents/conference/" + name); } catch { return; }
+  sock.onmessage = (e) => {
+    try {
+      const w = JSON.parse(e.data);
+      const f = w.json ?? w; // mount wraps protocol frames in a {"json": ...} envelope
+      if (f.kind === "state") {
+        if (f.snapshot !== undefined) liveState = f.snapshot;
+        else if (f.patch !== undefined) liveState = mergePatch(liveState, f.patch);
+        renderFromState(liveState);
+      }
+    } catch { /* malformed frame — ignore */ }
+  };
+  sock.onopen = () => status("Live (WebSocket) — transcript pushes in real time.");
+  sock.onclose = () => { sock = null; liveState = null; };
+}
 async function startDemo() {
   try {
     const r = await api("/demo/conference", { name: "Demo Conference" });
@@ -405,7 +633,7 @@ async function startDemo() {
     document.getElementById("turns").innerHTML = "";
     document.getElementById("liveCard").style.display = "block";
     document.getElementById("summaryCard").style.display = "none";
-    since = 0; poll();
+    since = 0; liveState = null; connectWS(); poll();
     status("Started " + confId + " — add participants, then type what they say. Silent participants get an AI prompt after ~60s.");
   } catch (e) { status("Start failed: " + e.message, true); }
 }
@@ -441,11 +669,13 @@ function conf() {
   confId = document.getElementById("confId").value.trim() || confId;
   if (!confId) { status("Start a demo conference or paste a conference_id first.", true); return false; }
   document.getElementById("liveCard").style.display = "block";
+  connectWS();
   if (!timer) timer = setInterval(poll, 2000);
   return true;
 }
 async function poll() {
   if (!confId) return;
+  if (sock && sock.readyState === 1) return; // WS covers it
   try {
     const r = await fetch("/conferences/" + confId + "/transcript?since=" + since).then(r => r.json());
     if (r.turns && r.turns.length) {
