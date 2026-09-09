@@ -7,6 +7,7 @@
     "deploy": "telnyx-edge ship",
     "types": "telnyx-edge types",
     "typecheck": "tsc --noEmit",
+    "dev": "vite-node local-dev.ts",
     "test": "vitest run"
   },
   "dependencies": {

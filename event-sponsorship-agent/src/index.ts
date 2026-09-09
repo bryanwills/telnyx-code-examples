@@ -234,6 +234,9 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
 
     const response = await this.processMessage(text, updated, "chat");
 
+    // Persist mutations processMessage made to the session state
+    await this.setState(updated);
+
     return { success: true, message: response };
   }
 
@@ -357,6 +360,35 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
     }
   }
 
+  /**
+   * The next unanswered qualification question, or null when the flow is
+   * complete. Attendee replies are captured into `state.collected`, so the
+   * same actor picks the conversation back up across channels.
+   */
+  private nextFlowQuestion(state: SessionState): string | null {
+    if (!state.collected.name) {
+      state.step = "ask_name";
+      return this.localize(`Hi! Welcome to ${this.env.EVENT_NAME || "our event"}. What's your name?`, state.language);
+    }
+    if (!state.collected.company) {
+      state.step = "ask_company";
+      return this.localize(`Nice to meet you, ${state.collected.name}! What company do you work for?`, state.language);
+    }
+    if (!state.collected.useCase) {
+      state.step = "ask_usecase";
+      return this.localize("What's your primary use case for Telnyx?", state.language);
+    }
+    if (!state.collected.companySize) {
+      state.step = "ask_company_size";
+      return this.localize("How many employees are at your company?", state.language);
+    }
+    if (!state.collected.timeline) {
+      state.step = "ask_timeline";
+      return this.localize("When are you looking to implement a solution?", state.language);
+    }
+    return null;
+  }
+
   private async processMessage(
     text: string,
     state: SessionState,
@@ -375,7 +407,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
     if (lowerText.includes("demo") || lowerText.includes("book") || lowerText.includes("schedule")) {
       state.demoRequested = true;
       await this.saveLead(state);
-      return this.localize("📅 Great! Let's book a demo. What's your company name?", state.language);
+      return this.localize("📅 Great! Let's book a demo — I'll take your details first.", state.language);
     }
 
     // Product questions
@@ -384,31 +416,39 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
       return answer;
     }
 
-    // Qualification flow
-    if (state.step === "welcome" || state.step === "ask_name") {
-      if (!state.collected.name) {
-        state.step = "ask_name";
-        return this.localize("Hi! Welcome to " + this.env.EVENT_NAME + ". What's your name?", state.language);
+    // Qualification flow: on the first interaction, greet and ask — don't
+    // capture the greeting as an answer. Once a question is out, this
+    // message IS the answer: capture it, persist the lead, and continue.
+    if (state.step === "welcome") {
+      return this.nextFlowQuestion(state) ?? this.localize("Hi! Welcome to " + this.env.EVENT_NAME + ". What's your name?", state.language);
+    }
+    const pending = this.nextFlowQuestion(state);
+    if (pending) {
+      const field = state.step.replace(/^ask_/, "");
+      const keyMap: Record<string, keyof SessionState["collected"]> = {
+        name: "name",
+        company: "company",
+        usecase: "useCase",
+        company_size: "companySize",
+        timeline: "timeline",
+      };
+      const key = keyMap[field];
+      if (key) {
+        state.collected[key] = text.trim();
+        await this.saveLead(state);
+
+        const next = this.nextFlowQuestion(state);
+        if (next) {
+          return next;
+        }
+        state.step = "chat";
+        await this.setState(state);
+        return this.localize("Perfect — you're all set! I've saved your details. Ask me anything, or type \"giveaway\" to enter the prize draw.", state.language);
       }
-      if (!state.collected.company) {
-        state.step = "ask_company";
-        return this.localize("Nice to meet you, " + state.collected.name + "! What company do you work for?", state.language);
-      }
-      if (!state.collected.useCase) {
-        state.step = "ask_usecase";
-        return this.localize("What's your primary use case for Telnyx?", state.language);
-      }
-      if (!state.collected.companySize) {
-        state.step = "ask_company_size";
-        return this.localize("How many employees are at your company?", state.language);
-      }
-      if (!state.collected.timeline) {
-        state.step = "ask_timeline";
-        return this.localize("When are you looking to implement a solution?", state.language);
-      }
+      return pending;
     }
 
-    // Default: use inference to generate a contextual response
+    // Qualification complete: use inference to generate a contextual response
     const contextualResponse = await this.generateAgentResponse(text, state, channel);
     return contextualResponse;
   }
@@ -556,8 +596,8 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
       lead.companySize,
       lead.timeline,
       lead.channel,
-      lead.qualified,
-      lead.giveawayEntry,
+      lead.qualified ? 1 : 0,
+      lead.giveawayEntry ? 1 : 0,
       lead.createdAt,
       lead.updatedAt
     ).all();
