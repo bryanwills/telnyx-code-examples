@@ -3219,6 +3219,12 @@ examples:
 
   - product: ai
     use_case: "auto-generated-from-linear"
+    language: python
+    framework: flask
+    folder: call-quality-monitor
+
+  - product: ai
+    use_case: "auto-generated-from-linear"
     language: typescript
     framework: telnyx-edge
     folder: network-incident-agent
