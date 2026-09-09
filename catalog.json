@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-09-08T13:51:35Z",
-  "example_count": 546,
+  "generated_at": "2026-09-09T19:00:11Z",
+  "example_count": 547,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -4919,6 +4919,15 @@
       "language": "typescript",
       "framework": "edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/patient-agent"
+    },
+    {
+      "folder": "event-sponsorship-agent",
+      "title": "Event Sponsorship Agent — Telnyx Edge",
+      "description": "A multilingual, multi-channel agent for event sponsorship activations with giveaway entry, product Q&A, demo booking, lead capture, and real-time hot-lead routing.",
+      "product": "ai",
+      "language": "typescript",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/event-sponsorship-agent"
     }
   ]
 }

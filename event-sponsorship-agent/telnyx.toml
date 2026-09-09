@@ -13,9 +13,6 @@ name = "TELNYX_API_KEY"
 [telnyx]
 binding = "TELNYX"
 
-[storage.kv.SESSION_KV]
-id = "<kv-namespace-uuid>"
-
 [storage.sqldb.LEADS_DB]
 id = "<sqldb-instance-uuid>"
 
@@ -24,6 +21,7 @@ id = "<rate-limit-kv-uuid>"
 
 [env_vars]
 AI_MODEL = "gpt-4o-mini"
+TELNYX_PUBLIC_KEY = "<telnyx-public-key-base64>"
 DEMO_MODE = "true"
 SALES_TEAM_NUMBER = "+1555XXXXXXXX"
 FROM_NUMBER = "+1555XXXXXXXX"

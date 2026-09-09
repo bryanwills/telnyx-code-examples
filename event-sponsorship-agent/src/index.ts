@@ -1,25 +1,20 @@
 import {
   Agent,
-  StatefulActor,
-  env,
-  type Env,
-  type Secrets,
   type ActorContext,
   type ActorNamespace,
+  type Env,
   type KvNamespace,
+  type Secrets,
   type SqlDatabase,
-  type RateLimiter,
-  type AgentMessage,
-  type ToolCall,
 } from "@telnyx/edge-runtime";
+import { verifyTelnyxSignature } from "./verify";
 
 // ---------------------------------------------------------------------------
 // Environment interface — bindings declared in telnyx.toml
 // ---------------------------------------------------------------------------
 export interface SponsorEnv extends Env {
   SECRETS: Secrets;
-  SPONSOR_AGENT: ActorNamespace;
-  SESSION_KV: KvNamespace;
+  SPONSOR_AGENT: ActorNamespace<SponsorAgent>;
   LEADS_DB: SqlDatabase;
   RATE_LIMIT_KV: KvNamespace;
   TELNYX: {
@@ -65,14 +60,14 @@ export interface LeadRecord {
   useCase?: string;
   companySize?: string;
   timeline?: string;
-  channel: "sms" | "whatsapp" | "email" | "voice";
+  channel: "sms" | "whatsapp" | "email" | "chat" | "voice";
   qualified: boolean;
   giveawayEntry: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface SessionState {
+export interface SessionState extends Record<string, unknown> {
   phone: string;
   name?: string;
   channel: "sms" | "whatsapp" | "chat" | "voice";
@@ -93,19 +88,19 @@ export interface RateLimitResult {
 // ---------------------------------------------------------------------------
 // Rate limiter helper
 // ---------------------------------------------------------------------------
-class SimpleRateLimiter {
+export class SimpleRateLimiter {
   constructor(private kv: KvNamespace, private windowSeconds: number, private maxRequests: number) {}
 
   async check(identifier: string): Promise<RateLimitResult> {
     const now = Math.floor(Date.now() / 1000);
-    const windowStart = now - this.windowSeconds;
-    const key = `rl:${identifier}:${Math.floor(now / this.windowSeconds)}`;
+    const window = Math.floor(now / this.windowSeconds);
+    const key = `rl:${identifier}:${window}`;
 
-    const current = (await this.kv.get(key, { type: "json" }).catch(() => 0)) as number | null;
-    const count = current ?? 0;
+    const current = (await this.kv.get(key, { type: "json" }).catch(() => 0)) as number | string | null;
+    const count = Number(current ?? 0);
 
     if (count >= this.maxRequests) {
-      return { allowed: false, remaining: 0, resetAt: key.endsWith(String(Math.floor(now / this.windowSeconds))) ? (Math.floor(now / this.windowSeconds) + 1) * this.windowSeconds : now + this.windowSeconds };
+      return { allowed: false, remaining: 0, resetAt: (window + 1) * this.windowSeconds };
     }
 
     await this.kv.put(key, String(count + 1), {
@@ -115,15 +110,21 @@ class SimpleRateLimiter {
     return {
       allowed: true,
       remaining: this.maxRequests - count - 1,
-      resetAt: now + this.windowSeconds,
+      resetAt: (window + 1) * this.windowSeconds,
     };
   }
 }
 
 // ---------------------------------------------------------------------------
-// SponsorAgent — the main agent handling all attendee interactions
+// SponsorAgent — the main agent handling all attendee interactions.
+// One durable actor per attendee, addressed by phone number (or session id
+// for in-browser chat) via `idFromName`.
 // ---------------------------------------------------------------------------
 export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
+  constructor(ctx: ActorContext, env: SponsorEnv) {
+    super(ctx, env);
+  }
+
   protected initialState(): SessionState {
     return {
       phone: "",
@@ -160,7 +161,6 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
     }
 
     // Load or create session
-    const sessionKey = `session:${from}`;
     let state = await this.getState();
     if (!state.phone) {
       state = { ...state, phone: from, channel, lastInteraction: new Date().toISOString() };
@@ -175,9 +175,6 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
 
     // Persist session
     await this.setState({ ...state, lastInteraction: new Date().toISOString() });
-    await this.env.SESSION_KV.put(sessionKey, JSON.stringify(state), {
-      expirationTtl: 86400,
-    });
 
     // Send response
     await this.sendResponse(from, response, channel);
@@ -257,6 +254,8 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
 
   /**
    * Task handler: send follow-up message after event.
+   * Invoked by the Agent task scheduler — do NOT override `alarm()`, which
+   * would break the scheduler.
    */
   async sendFollowUp(payload: { phone: string; channel: "sms" | "whatsapp" | "email" | "voice" }): Promise<void> {
     const { phone, channel } = payload;
@@ -294,11 +293,28 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
     byChannel: Record<string, number>;
     byUseCase: Record<string, number>;
   }> {
+    await this.env.LEADS_DB.exec(`
+      CREATE TABLE IF NOT EXISTS leads (
+        phone TEXT PRIMARY KEY,
+        name TEXT,
+        email TEXT,
+        company TEXT,
+        useCase TEXT,
+        companySize TEXT,
+        timeline TEXT,
+        channel TEXT,
+        qualified BOOLEAN,
+        giveawayEntry BOOLEAN,
+        createdAt TEXT,
+        updatedAt TEXT
+      )
+    `);
+
     const result = await this.env.LEADS_DB.prepare(
       "SELECT channel, useCase, qualified, giveawayEntry FROM leads"
-    ).all();
+    ).all<{ channel: string; useCase: string; qualified: boolean; giveawayEntry: boolean }>();
 
-    const leads = result.rows || [];
+    const leads = result.results || [];
     const report = {
       totalCaptured: leads.length,
       totalQualified: leads.filter((l: any) => l.qualified).length,
@@ -351,14 +367,14 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
     // Giveaway entry
     if (lowerText.includes("giveaway") || lowerText.includes("enter") || lowerText.includes("prize")) {
       state.giveawayEntry = true;
-      await this.saveLead(state, { giveawayEntry: true });
+      await this.saveLead(state);
       return this.localize("🎉 You're entered in the giveaway! Prize: " + this.env.GIVEAWAY_PRIZE + ". A sales rep will contact you shortly.", state.language);
     }
 
     // Demo booking
     if (lowerText.includes("demo") || lowerText.includes("book") || lowerText.includes("schedule")) {
       state.demoRequested = true;
-      await this.saveLead(state, { demoRequested: true });
+      await this.saveLead(state);
       return this.localize("📅 Great! Let's book a demo. What's your company name?", state.language);
     }
 
@@ -404,7 +420,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
         messages: [
           {
             role: "system",
-            content: `You are a helpful product expert for Telnyx at ${process.env.EVENT_NAME || "the event"}. Answer the following question concisely. Respond in ${language}.`,
+            content: `You are a helpful product expert for Telnyx at ${this.env.EVENT_NAME || "the event"}. Answer the following question concisely. Respond in ${language}.`,
           },
           { role: "user", content: question },
         ],
@@ -451,13 +467,38 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
     }
   }
 
+  private async generateFollowUpMessage(lead: LeadRecord): Promise<string> {
+    const fallback = `Hi ${lead.name || "there"}! Thanks for stopping by ${this.env.EVENT_NAME || "our booth"}. You mentioned ${lead.useCase || "your project"} — happy to pick that conversation back up whenever you're ready.`;
+
+    try {
+      const response = await this.env.TELNYX.ai.openai.chat.createCompletion({
+        model: this.env.AI_MODEL || "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: `You are a friendly sales follow-up assistant for ${this.env.EVENT_NAME || "the event"}. Write a short, warm follow-up message. Keep it under 300 characters (SMS-friendly).`,
+          },
+          {
+            role: "user",
+            content: `Write a follow-up message for: name=${lead.name || "unknown"}, company=${lead.company || "unknown"}, use case=${lead.useCase || "unknown"}, company size=${lead.companySize || "unknown"}, timeline=${lead.timeline || "unknown"}, demo requested=${lead.channel}.`,
+          },
+        ],
+      });
+
+      return response.choices[0]?.message?.content?.trim() || fallback;
+    } catch (err) {
+      console.error("Follow-up generation failed:", err);
+      return fallback;
+    }
+  }
+
   private localize(text: string, language: string): string {
     // In a real implementation, this would use the inference API for translation
     // For now, we return the text as-is (English) since the agent generates responses in the detected language
     return text;
   }
 
-  private async saveLead(state: SessionState, updates: Partial<LeadRecord> = {}): Promise<void> {
+  private async saveLead(state: SessionState): Promise<void> {
     const now = new Date().toISOString();
     const lead: LeadRecord = {
       phone: state.phone,
@@ -472,7 +513,6 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
       giveawayEntry: state.giveawayEntry,
       createdAt: now,
       updatedAt: now,
-      ...updates,
     };
 
     // Upsert into SQLDB
@@ -533,8 +573,8 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
       "SELECT * FROM leads WHERE phone = ?"
     ).bind(phone).all();
 
-    if (result.rows && result.rows.length > 0) {
-      return result.rows[0] as LeadRecord;
+    if (result.results && result.results.length > 0) {
+      return result.results[0] as unknown as LeadRecord;
     }
     return null;
   }
@@ -583,151 +623,120 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
       });
     }
   }
-
-  // -----------------------------------------------------------------------
-  // WebSocket handler for in-browser chat
-  // -----------------------------------------------------------------------
-  async webSocket(ws: WebSocket, req: Request): Promise<void> {
-    ws.accept();
-
-    ws.addEventListener("message", async (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        const result = await this.handleChatMessage({
-          sessionId: data.sessionId || `ws:${Date.now()}`,
-          text: data.text,
-        });
-        ws.send(JSON.stringify(result));
-      } catch (err) {
-        ws.send(JSON.stringify({ success: false, message: "Error processing message" }));
-      }
-    });
-
-    ws.addEventListener("close", () => {
-      ws.close();
-    });
-  }
-
-  // -----------------------------------------------------------------------
-  // Alarm handler for scheduled tasks
-  // -----------------------------------------------------------------------
-  async alarm(alarmInfo: any): Promise<void> {
-    console.log("Alarm triggered:", alarmInfo);
-  }
 }
 
 // ---------------------------------------------------------------------------
-// Fetch handler — routes HTTP requests to the appropriate actor method
+// Fetch handler — routes HTTP requests to the appropriate actor method.
+// Each route resolves the per-attendee actor with `idFromName(...)` and
+// invokes its public methods directly on the returned stub.
 // ---------------------------------------------------------------------------
+
+/** Normalize a Telnyx webhook `from`/`to` field (string or `{phone_number}`). */
+function normalizePhone(field: any): string {
+  if (!field) return "";
+  if (typeof field === "string") return field;
+  if (typeof field === "object" && typeof field.phone_number === "string") return field.phone_number;
+  return "";
+}
+
+/** Parse a Telnyx webhook body into a normalized shape. */
+function parseWebhookJson(rawBody: ArrayBuffer): { from: string; to: string; text: string; callId: string } {
+  let body: any = {};
+  try {
+    body = JSON.parse(new TextDecoder().decode(rawBody));
+  } catch {
+    body = {};
+  }
+  const payload = body?.data?.payload ?? body ?? {};
+
+  return {
+    from: normalizePhone(payload.from),
+    to: normalizePhone(payload.to),
+    text: typeof payload.text === "string" ? payload.text : "",
+    callId: typeof payload.call_control_id === "string" ? payload.call_control_id : "",
+  };
+}
+
 export default {
   async fetch(req: Request, e: SponsorEnv): Promise<Response> {
     const url = new URL(req.url);
     const path = url.pathname;
 
-    // Initialize SQLDB tables on first request
-    await e.LEADS_DB.exec(`
-      CREATE TABLE IF NOT EXISTS leads (
-        phone TEXT PRIMARY KEY,
-        name TEXT,
-        email TEXT,
-        company TEXT,
-        useCase TEXT,
-        companySize TEXT,
-        timeline TEXT,
-        channel TEXT,
-        qualified BOOLEAN,
-        giveawayEntry BOOLEAN,
-        createdAt TEXT,
-        updatedAt TEXT
-      )
-    `);
-
-    // Route: Inbound SMS webhook
+    // Route: Inbound SMS webhook (signature-verified)
     if (path === "/webhook/sms" && req.method === "POST") {
-      const body = await req.json();
-      const from = body.from || body.data?.payload?.from;
-      const text = body.text || body.data?.payload?.text;
-      const to = body.to || body.data?.payload?.to;
-
+      const raw = await req.arrayBuffer();
+      if (verifyTelnyxSignature(req.headers, raw, process.env.TELNYX_PUBLIC_KEY ?? "") !== 0) {
+        return new Response(JSON.stringify({ error: "Invalid signature" }), { status: 401 });
+      }
+      const { from, to, text } = parseWebhookJson(raw);
       if (!from || !text) {
         return new Response(JSON.stringify({ error: "Missing from or text" }), { status: 400 });
       }
 
-      const stub = e.SPONSOR_AGENT.idFromName(from);
-      const actor = e.SPONSOR_AGENT.get(stub);
-      const result = await actor.handleInboundMessage({ from, to, text, channel: "sms" });
+      const result = await e.SPONSOR_AGENT.idFromName(from).handleInboundMessage({ from, to, text, channel: "sms" });
       return new Response(JSON.stringify(result), { status: 200 });
     }
 
-    // Route: Inbound WhatsApp webhook
+    // Route: Inbound WhatsApp webhook (signature-verified)
     if (path === "/webhook/whatsapp" && req.method === "POST") {
-      const body = await req.json();
-      const from = body.from || body.data?.payload?.from;
-      const text = body.text || body.data?.payload?.text;
-      const to = body.to || body.data?.payload?.to;
-
+      const raw = await req.arrayBuffer();
+      if (verifyTelnyxSignature(req.headers, raw, process.env.TELNYX_PUBLIC_KEY ?? "") !== 0) {
+        return new Response(JSON.stringify({ error: "Invalid signature" }), { status: 401 });
+      }
+      const { from, to, text } = parseWebhookJson(raw);
       if (!from || !text) {
         return new Response(JSON.stringify({ error: "Missing from or text" }), { status: 400 });
       }
 
-      const stub = e.SPONSOR_AGENT.idFromName(from);
-      const actor = e.SPONSOR_AGENT.get(stub);
-      const result = await actor.handleInboundMessage({ from, to, text, channel: "whatsapp" });
+      const result = await e.SPONSOR_AGENT.idFromName(from).handleInboundMessage({ from, to, text, channel: "whatsapp" });
       return new Response(JSON.stringify(result), { status: 200 });
     }
 
-    // Route: Inbound voice webhook
+    // Route: Inbound voice webhook (signature-verified)
     if (path === "/webhook/voice" && req.method === "POST") {
-      const body = await req.json();
-      const from = body.from || body.data?.payload?.from;
-      const callId = body.call_id || body.data?.payload?.call_id;
-
+      const raw = await req.arrayBuffer();
+      if (verifyTelnyxSignature(req.headers, raw, process.env.TELNYX_PUBLIC_KEY ?? "") !== 0) {
+        return new Response(JSON.stringify({ error: "Invalid signature" }), { status: 401 });
+      }
+      const { from, callId } = parseWebhookJson(raw);
       if (!from || !callId) {
-        return new Response(JSON.stringify({ error: "Missing from or call_id" }), { status: 400 });
+        return new Response(JSON.stringify({ error: "Missing from or call_control_id" }), { status: 400 });
       }
 
-      const stub = e.SPONSOR_AGENT.idFromName(from);
-      const actor = e.SPONSOR_AGENT.get(stub);
-      const result = await actor.handleInboundCall({ callId, from, to: body.to || "" });
+      const result = await e.SPONSOR_AGENT.idFromName(from).handleInboundCall({ callId, from, to: "" });
       return new Response(JSON.stringify(result), { status: 200 });
     }
 
     // Route: In-browser chat (REST endpoint)
     if (path === "/api/chat" && req.method === "POST") {
-      const body = await req.json();
-      const sessionId = body.sessionId || `chat:${Date.now()}`;
-      const text = body.text;
+      const body = await req.json().catch(() => ({} as any));
+      const sessionId = typeof body.sessionId === "string" && body.sessionId ? body.sessionId : `chat:${Date.now()}`;
+      const text = typeof body.text === "string" ? body.text : "";
 
       if (!text) {
         return new Response(JSON.stringify({ error: "Missing text" }), { status: 400 });
       }
 
-      const stub = e.SPONSOR_AGENT.idFromName(sessionId);
-      const actor = e.SPONSOR_AGENT.get(stub);
-      const result = await actor.handleChatMessage({ sessionId, text });
+      const result = await e.SPONSOR_AGENT.idFromName(sessionId).handleChatMessage({ sessionId, text });
       return new Response(JSON.stringify(result), { status: 200 });
     }
 
     // Route: Schedule follow-up
     if (path === "/api/followup" && req.method === "POST") {
-      const body = await req.json();
+      const body = await req.json().catch(() => ({} as any));
       const { phone, channel, delaySeconds } = body;
 
       if (!phone || !channel || !delaySeconds) {
         return new Response(JSON.stringify({ error: "Missing phone, channel, or delaySeconds" }), { status: 400 });
       }
 
-      const stub = e.SPONSOR_AGENT.idFromName(phone);
-      const actor = e.SPONSOR_AGENT.get(stub);
-      const result = await actor.scheduleFollowUp({ phone, channel, delaySeconds });
+      const result = await e.SPONSOR_AGENT.idFromName(phone).scheduleFollowUp({ phone, channel, delaySeconds });
       return new Response(JSON.stringify(result), { status: 200 });
     }
 
     // Route: Attribution report
     if (path === "/api/report" && req.method === "GET") {
-      const stub = e.SPONSOR_AGENT.idFromName("report");
-      const actor = e.SPONSOR_AGENT.get(stub);
-      const report = await actor.generateAttributionReport();
+      const report = await e.SPONSOR_AGENT.idFromName("report").generateAttributionReport();
       return new Response(JSON.stringify(report), { status: 200 });
     }
 
@@ -796,7 +805,3 @@ export default {
     return new Response("Not Found", { status: 404 });
   },
 };
-
-// Re-export for smoke test
-export { SponsorAgent, SimpleRateLimiter };
-export type { LeadRecord, SessionState, RateLimitResult, SponsorEnv };
