@@ -177,11 +177,32 @@ function makeTelnyxStub() {
             messages: Array<{ role: string; content: string }>;
           }) => {
             const system = params.messages[0]?.content ?? "";
-            // Language-detection prompt → reply "en"; other prompts → canned reply
-            const content = system.startsWith("Detect the language")
-              ? "en"
-              : `(local stub) ${params.model}: I can help with the giveaway, product questions, or booking a demo.`;
-            return { choices: [{ message: { content } }] };
+            const userText = params.messages.find((m) => m.role === "user")?.content ?? "";
+
+            // Language-detection prompt → tiny heuristic so the multilingual
+            // path is locally testable
+            if (system.startsWith("Detect the language")) {
+              const heuristics: Array<[RegExp, string]> = [
+                [/(hola|gracias|cómo|qué tal|buenos días)/i, "es"],
+                [/(bonjour|merci|comment ça va)/i, "fr"],
+                [/(hallo|danke|guten tag)/i, "de"],
+                [/(olá|obrigado|bom dia)/i, "pt"],
+                [/(ciao|grazie|buongiorno)/i, "it"],
+                [/(こんにちは|ありがとう)/, "ja"],
+                [/(你好|谢谢)/, "zh"],
+              ];
+              const hit = heuristics.find(([re]) => re.test(userText));
+              return { choices: [{ message: { content: hit ? hit[1] : "en" } }] };
+            }
+
+            // Translation prompt → visibly mark the language path (a real
+            // deployment translates via inference)
+            if (system.startsWith("Translate the message below")) {
+              const lang = system.match(/code "([a-z-]+)"/)?.[1] ?? "en";
+              return { choices: [{ message: { content: `[${lang}] ${userText}` } }] };
+            }
+
+            return { choices: [{ message: { content: `(local stub) ${params.model}: I can help with the giveaway, product questions, or booking a demo.` } }] };
           },
         },
       },
@@ -244,10 +265,13 @@ function makeEnv(): SponsorEnv {
 for (const [k, v] of Object.entries({
   AI_MODEL: "gpt-4o-mini",
   DEMO_MODE: "true",
-  SALES_TEAM_NUMBER: "+15551234567",
+  SALES_TEAM_NUMBER: "+17177247292",
   FROM_NUMBER: "+16282564655",
-  EVENT_NAME: "Re:Invent 2025",
+  EVENT_NAME: "TechHorizon Summit 2026",
   GIVEAWAY_PRIZE: "Telnyx Developer Kit",
+  EMAIL_FROM: "onboarding@mail.telnyx.com",
+  EMAIL_TO: "you@example.com",
+  FOLLOWUP_DELAY_SECONDS: "300",
 })) {
   process.env[k] = process.env[k] || fileEnv[k] || v;
 }

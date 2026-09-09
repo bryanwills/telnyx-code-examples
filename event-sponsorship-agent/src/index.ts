@@ -8,6 +8,8 @@ import {
   type SqlDatabase,
 } from "@telnyx/edge-runtime";
 import { verifyTelnyxSignature } from "./verify";
+import { micrositeHtml } from "./microsite";
+import { PP_FORMULA_WOFF2_B64, TELNYX_LOGO_SVG } from "./assets";
 
 // ---------------------------------------------------------------------------
 // Environment interface — bindings declared in telnyx.toml
@@ -88,6 +90,7 @@ export interface SessionState extends Record<string, unknown> {
   collected: Record<string, string>;
   giveawayEntry: boolean;
   demoRequested: boolean;
+  followUpScheduled: boolean;
   lastInteraction: string;
 }
 
@@ -149,6 +152,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
       collected: {},
       giveawayEntry: false,
       demoRequested: false,
+      followUpScheduled: false,
       lastInteraction: new Date().toISOString(),
     };
   }
@@ -181,9 +185,10 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
       state = { ...state, phone: from, channel, lastInteraction: new Date().toISOString() };
     }
 
-    // Detect language via inference
+    // Adopt a newly detected non-English language; keep the attendee's
+    // established language when detection reads plain English.
     const lang = await this.detectLanguage(text);
-    state.language = lang;
+    if (lang && lang !== "en") state.language = lang;
 
     // Process the message through the agent flow
     const response = await this.processMessage(text, state, channel);
@@ -245,6 +250,14 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
 
     const state = await this.getState();
     const updated = { ...state, channel: "chat" as const, lastInteraction: new Date().toISOString() };
+    // Chat sessions have no phone — key the lead on the session id so the
+    // attribution report still counts web-chat leads.
+    if (!updated.phone) updated.phone = sessionId;
+
+    // Adopt a newly detected non-English language; keep the attendee's
+    // established language when detection reads plain English.
+    const lang = await this.detectLanguage(text);
+    if (lang && lang !== "en") updated.language = lang;
     await this.setState(updated);
 
     const response = await this.processMessage(text, updated, "chat");
@@ -278,26 +291,67 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
   async sendFollowUp(payload: { phone: string; channel: "sms" | "whatsapp" | "email" | "voice" }): Promise<void> {
     const { phone, channel } = payload;
 
-    const lead = await this.getLeadByPhone(phone);
-    if (!lead) return;
+    // Prefer the SQLDB record; if the DB is unreachable, fall back to this
+    // actor's own session state (the task fires on the per-lead actor, which
+    // holds the full collected profile).
+    const lead = (await this.getLeadByPhone(phone)) ?? (await this.leadFromState(phone));
+    if (!lead) {
+      console.log(`[FOLLOWUP] No lead found for ${phone}, skipping`);
+      return;
+    }
 
     const followUpText = await this.generateFollowUpMessage(lead);
+    const eventName = await cfg(this.env, "EVENT_NAME", "our event");
+    const demo = await isDemoMode(this.env);
 
     if (channel === "sms" || channel === "whatsapp") {
       await this.sendResponse(phone, followUpText, channel);
     } else if (channel === "email") {
-      if ((await isDemoMode(this.env))) {
-        console.log(`[DEMO] Would send email to ${lead.email}: ${followUpText}`);
-      } else {
-        // In live mode, use Telnyx Email API via raw fetch or TELNYX binding
-        console.log(`[LIVE] Sending email to ${lead.email}`);
+      // Email is low-risk and always deliverable: in demo mode it goes to the
+      // configured demo inbox (EMAIL_TO) so the flow can be watched end-to-end;
+      // in live mode it goes to the lead's own address.
+      const recipient = !demo && lead.email ? lead.email : (await cfg(this.env, "EMAIL_TO", ""));
+      if (!recipient) {
+        console.log(`[EMAIL] No recipient for follow-up (lead.email=${lead.email || "none"}), skipping`);
+        return;
       }
+      const subject = `Following up from ${eventName}`;
+      const ok = await this.sendEmailFollowUp(recipient, subject, followUpText);
+      if (ok) console.log(`[EMAIL] Sent follow-up to ${recipient} (${demo ? "demo inbox" : "lead"})`);
     } else if (channel === "voice") {
-      if ((await isDemoMode(this.env))) {
+      if (demo) {
         console.log(`[DEMO] Would place voice call to ${phone}: ${followUpText}`);
       } else {
         console.log(`[LIVE] Placing voice call to ${phone}`);
       }
+    }
+  }
+
+  /**
+   * Send a real email via the Telnyx Email API (POST /v2/email_messages).
+   * The API key comes from the [[secrets]] binding (process.env injection).
+   */
+  private async sendEmailFollowUp(to: string, subject: string, textBody: string): Promise<boolean> {
+    try {
+      const apiKey = process.env.TELNYX_API_KEY ?? (await this.env.SECRETS?.get("TELNYX_API_KEY").catch(() => "")) ?? "";
+      if (!apiKey) {
+        console.error("[EMAIL] TELNYX_API_KEY not configured — cannot send email");
+        return false;
+      }
+      const from = await cfg(this.env, "EMAIL_FROM", "onboarding@mail.telnyx.com");
+      const resp = await fetch("https://api.telnyx.com/v2/email_messages", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ from, to: [to], subject, text_body: textBody }),
+      });
+      if (!resp.ok) {
+        console.error(`[EMAIL] Send failed: HTTP ${resp.status}: ${(await resp.text()).slice(0, 300)}`);
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error("Email send failed:", err);
+      return false;
     }
   }
 
@@ -383,23 +437,23 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
   private async nextFlowQuestion(state: SessionState): Promise<string | null> {
     if (!state.collected.name) {
       state.step = "ask_name";
-      return this.localize(`Hi! Welcome to ${(await cfg(this.env, "EVENT_NAME", "our event"))}. What's your name?`, state.language);
+      return await this.localize(`Hi! Welcome to ${(await cfg(this.env, "EVENT_NAME", "our event"))}. What's your name?`, state.language);
     }
     if (!state.collected.company) {
       state.step = "ask_company";
-      return this.localize(`Nice to meet you, ${state.collected.name}! What company do you work for?`, state.language);
+      return await this.localize(`Nice to meet you, ${state.collected.name}! What company do you work for?`, state.language);
     }
     if (!state.collected.useCase) {
       state.step = "ask_usecase";
-      return this.localize("What's your primary use case for Telnyx?", state.language);
+      return await this.localize("What's your primary use case for Telnyx?", state.language);
     }
     if (!state.collected.companySize) {
       state.step = "ask_company_size";
-      return this.localize("How many employees are at your company?", state.language);
+      return await this.localize("How many employees are at your company?", state.language);
     }
     if (!state.collected.timeline) {
       state.step = "ask_timeline";
-      return this.localize("When are you looking to implement a solution?", state.language);
+      return await this.localize("When are you looking to implement a solution?", state.language);
     }
     return null;
   }
@@ -411,18 +465,27 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
   ): Promise<string> {
     const lowerText = text.toLowerCase().trim();
 
+    // Follow-up preference capture — the agent asked a specific question,
+    // so this reply is the answer (checked before intent keywords).
+    if (state.step === "ask_followup") {
+      return await this.handleFollowUpAnswer(text, state);
+    }
+    if (state.step === "ask_email") {
+      return await this.handleEmailAnswer(text, state);
+    }
+
     // Giveaway entry
     if (lowerText.includes("giveaway") || lowerText.includes("enter") || lowerText.includes("prize")) {
       state.giveawayEntry = true;
       await this.saveLead(state);
-      return this.localize("🎉 You're entered in the giveaway! Prize: " + (await cfg(this.env, "GIVEAWAY_PRIZE", "Telnyx Developer Kit")) + ". A sales rep will contact you shortly.", state.language);
+      return await this.localize("You are entered in the giveaway. Prize: " + (await cfg(this.env, "GIVEAWAY_PRIZE", "Telnyx Developer Kit")) + ". A sales rep will contact you shortly.", state.language);
     }
 
     // Demo booking
     if (lowerText.includes("demo") || lowerText.includes("book") || lowerText.includes("schedule")) {
       state.demoRequested = true;
       await this.saveLead(state);
-      return this.localize("📅 Great! Let's book a demo — I'll take your details first.", state.language);
+      return await this.localize("Great! Let us book a demo — I will take your details first.", state.language);
     }
 
     // Product questions
@@ -435,7 +498,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
     // capture the greeting as an answer. Once a question is out, this
     // message IS the answer: capture it, persist the lead, and continue.
     if (state.step === "welcome") {
-      return (await this.nextFlowQuestion(state)) ?? this.localize("Hi! Welcome to " + (await cfg(this.env, "EVENT_NAME", "our event")) + ". What's your name?", state.language);
+      return (await this.nextFlowQuestion(state)) ?? await this.localize("Hi! Welcome to " + (await cfg(this.env, "EVENT_NAME", "our event")) + ". What is your name?", state.language);
     }
     const pending = (await this.nextFlowQuestion(state));
     if (pending) {
@@ -456,9 +519,11 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
         if (next) {
           return next;
         }
-        state.step = "chat";
+
+        // Qualification complete — capture the preferred follow-up channel
+        state.step = "ask_followup";
         await this.setState(state);
-        return this.localize("Perfect — you're all set! I've saved your details. Ask me anything, or type \"giveaway\" to enter the prize draw.", state.language);
+        return await this.localize("Perfect — you're all set! One last thing: how would you like us to follow up after the event — SMS, email, or a call?", state.language);
       }
       return pending;
     }
@@ -466,6 +531,68 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
     // Qualification complete: use inference to generate a contextual response
     const contextualResponse = await this.generateAgentResponse(text, state, channel);
     return contextualResponse;
+  }
+
+  /**
+   * Map a free-text follow-up preference to a supported channel.
+   * Understands English and common non-English channel words, and treats
+   * an email address as an email preference.
+   */
+  private mapFollowUpChannel(text: string): "sms" | "whatsapp" | "email" | "voice" | null {
+    const t = text.toLowerCase();
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t)) return "email";
+    if (t.includes("email") || t.includes("e-mail") || t.includes("mail") || t.includes("correo") || t.includes("courriel") || t.includes("邮件") || t.includes("メール")) return "email";
+    if (t.includes("whatsapp")) return "whatsapp";
+    if (t.includes("call") || t.includes("phone") || t.includes("voice") || t.includes("llamada") || t.includes("appel") || t.includes("電話") || t.includes("电话")) return "voice";
+    if (t.includes("sms") || t.includes("text") || t.includes("message") || t.includes("mensaje") || t.includes("短信")) return "sms";
+    return null;
+  }
+
+  private async handleFollowUpAnswer(text: string, state: SessionState): Promise<string> {
+    const mapped = this.mapFollowUpChannel(text);
+    if (!mapped) {
+      // Don't trap the attendee: default to the channel they are on now.
+      return await this.completeFlow(state, state.channel === "whatsapp" ? "whatsapp" : "sms");
+    }
+    state.collected.followUpChannel = mapped;
+    if (mapped === "email") {
+      state.step = "ask_email";
+      await this.setState(state);
+      return await this.localize("Great — what is the best email for you?", state.language);
+    }
+    return await this.completeFlow(state, mapped);
+  }
+
+  private async handleEmailAnswer(text: string, state: SessionState): Promise<string> {
+    const email = text.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return await this.localize("That does not look like an email address — what is the best email for you?", state.language);
+    }
+    state.collected.email = email;
+    return await this.completeFlow(state, "email");
+  }
+
+  /**
+   * Finish onboarding: persist the lead, schedule the post-event follow-up
+   * on the attendee's preferred channel, and confirm.
+   */
+  private async completeFlow(state: SessionState, followUpChannel: "sms" | "whatsapp" | "email" | "voice"): Promise<string> {
+    state.step = "chat";
+    await this.saveLead(state);
+
+    if (!state.followUpScheduled) {
+      // Demo deployments schedule a short-delay follow-up (FOLLOWUP_DELAY_SECONDS,
+      // default 5 min) so the channel can be watched end-to-end; live events
+      // follow up the next day.
+      const delay = Number((await cfg(this.env, "FOLLOWUP_DELAY_SECONDS", ""))) ||
+        ((await isDemoMode(this.env)) ? 300 : 86400);
+      await this.schedule(delay, "sendFollowUp", { phone: state.phone, channel: followUpChannel });
+      state.followUpScheduled = true;
+      await this.setState(state);
+    }
+
+    const channelNote = followUpChannel === "email" ? "email" : followUpChannel === "voice" ? "a call" : followUpChannel;
+    return await this.localize(`Perfect — you're all set! I've saved your details and will follow up after the event via ${channelNote}. Ask me anything, or type "giveaway" to enter the prize draw.`, state.language);
   }
 
   private async answerProductQuestion(question: string, language: string): Promise<string> {
@@ -547,10 +674,32 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
     }
   }
 
-  private localize(text: string, language: string): string {
-    // In a real implementation, this would use the inference API for translation
-    // For now, we return the text as-is (English) since the agent generates responses in the detected language
-    return text;
+  /**
+   * Multilingual support: translate the canned English flow messages into
+   * the attendee's detected language via inference. Falls back to the
+   * English original on any failure. "en" short-circuits (no call).
+   */
+  private async localize(text: string, language: string): Promise<string> {
+    const lang = (language || "en").trim().toLowerCase();
+    if (!lang || lang === "en" || lang === "english") return text;
+
+    try {
+      const response = await this.env.TELNYX.ai.openai.chat.createCompletion({
+        model: (await cfg(this.env, "AI_MODEL", "gpt-4o-mini")),
+        messages: [
+          {
+            role: "system",
+            content: `Translate the message below into the language with ISO 639-1 code "${lang}". Keep the tone warm and professional. Reply with ONLY the translation — no quotes, no explanation. Keep it under 300 characters.`,
+          },
+          { role: "user", content: text },
+        ],
+      });
+
+      return response.choices[0]?.message?.content?.trim() || text;
+    } catch (err) {
+      console.error("Translation failed:", err);
+      return text;
+    }
   }
 
   private async saveLead(state: SessionState): Promise<void> {
@@ -645,8 +794,38 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
     }
   }
 
+  /**
+   * Build a lead from this actor's session state — the fallback when the
+   * leads SQLDB is unreachable. The follow-up task fires on the per-lead
+   * actor itself, whose state carries the full collected profile.
+   */
+  private async leadFromState(phone: string): Promise<LeadRecord | null> {
+    try {
+      const state = await this.getState();
+      if (!state.phone || state.phone !== phone) return null;
+      const now = new Date().toISOString();
+      return {
+        phone: state.phone,
+        name: state.collected.name || "",
+        email: state.collected.email || "",
+        company: state.collected.company || "",
+        useCase: state.collected.useCase || "",
+        companySize: state.collected.companySize || "",
+        timeline: state.collected.timeline || "",
+        channel: state.channel,
+        qualified: !!(state.collected.useCase && state.collected.companySize && state.collected.timeline),
+        giveawayEntry: state.giveawayEntry,
+        createdAt: now,
+        updatedAt: now,
+      };
+    } catch (err) {
+      console.error("Lead-from-state lookup failed:", err);
+      return null;
+    }
+  }
+
   private async routeHotLeadToSales(lead: LeadRecord): Promise<void> {
-    const message = `🔥 HOT LEAD: ${lead.name || "Unknown"} from ${lead.company || "Unknown"} (${lead.phone}). Use case: ${lead.useCase || "N/A"}. Company size: ${lead.companySize || "N/A"}. Timeline: ${lead.timeline || "N/A"}. Demo requested: YES.`;
+    const message = `HOT LEAD: ${lead.name || "Unknown"} from ${lead.company || "Unknown"} (${lead.phone}). Use case: ${lead.useCase || "N/A"}. Company size: ${lead.companySize || "N/A"}. Timeline: ${lead.timeline || "N/A"}. Demo requested: YES.`;
 
     if ((await isDemoMode(this.env))) {
       console.log(`[DEMO] Would SMS sales team at ${(await cfg(this.env, "SALES_TEAM_NUMBER"))}: ${message}`);
@@ -819,63 +998,39 @@ export default {
       return new Response(JSON.stringify({ status: "ok", service: "event-sponsorship-agent" }), { status: 200 });
     }
 
-    // Default: serve microsite
-    if (path === "/" || path === "/index.html") {
-      const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${(await cfg(e, "EVENT_NAME", "our event"))}</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-    #chat { height: 400px; border: 1px solid #ddd; padding: 10px; overflow-y: auto; margin-bottom: 10px; }
-    .msg { margin: 5px 0; padding: 8px; border-radius: 4px; }
-    .user { background: #e3f2fd; }
-    .agent { background: #f5f5f5; }
-    #input { width: 80%; padding: 8px; }
-    button { padding: 8px 12px; }
-  </style>
-</head>
-<body>
-  <h1>${(await cfg(e, "EVENT_NAME", "our event"))}</h1>
-  <p>Text, call, or chat with our agent to enter the giveaway, ask product questions, or book a demo!</p>
-  <div id="chat"></div>
-  <input type="text" id="input" placeholder="Type a message..." />
-  <button onclick="sendMessage()">Send</button>
-  <script>
-    const sessionId = 'web_' + Date.now();
-    const chatEl = document.getElementById('chat');
-    function addMessage(text, cls) {
-      const div = document.createElement('div');
-      div.className = 'msg ' + cls;
-      div.textContent = text;
-      chatEl.appendChild(div);
-      chatEl.scrollTop = chatEl.scrollHeight;
-    }
-    async function sendMessage() {
-      const input = document.getElementById('input');
-      const text = input.value.trim();
-      if (!text) return;
-      addMessage(text, 'user');
-      input.value = '';
-      const resp = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId, text })
+    // Brand assets
+    if (path === "/logo.svg" && req.method === "GET") {
+      return new Response(TELNYX_LOGO_SVG, {
+        status: 200,
+        headers: { "Content-Type": "image/svg+xml", "Cache-Control": "public, max-age=86400" },
       });
-      const data = await resp.json();
-      addMessage(data.message, 'agent');
     }
-    document.getElementById('input').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') sendMessage();
-    });
-  </script>
-</body>
-</html>`;
-      return new Response(html, { headers: { "Content-Type": "text/html" } });
+    if (path === "/fonts/pp-formula.woff2" && req.method === "GET") {
+      const woff2 = base64ToArrayBuffer(PP_FORMULA_WOFF2_B64);
+      return new Response(woff2, {
+        status: 200,
+        headers: { "Content-Type": "font/woff2", "Cache-Control": "public, max-age=31536000, immutable" },
+      });
+    }
+
+    // Default: serve the branded microsite
+    if (path === "/" || path === "/index.html") {
+      const html = micrositeHtml({
+        eventName: await cfg(e, "EVENT_NAME", "our event"),
+        prize: await cfg(e, "GIVEAWAY_PRIZE", "Telnyx Developer Kit"),
+        smsNumber: await cfg(e, "FROM_NUMBER", "+16282564655"),
+      });
+      return new Response(html, { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } });
     }
 
     return new Response("Not Found", { status: 404 });
   },
 };
+
+/** Decode base64 to ArrayBuffer (fonts/assets). */
+function base64ToArrayBuffer(b64: string): ArrayBuffer {
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes.buffer;
+}
