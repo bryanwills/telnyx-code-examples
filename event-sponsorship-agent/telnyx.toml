@@ -2,6 +2,10 @@ name = "event-sponsorship-agent"
 main = "src/index.ts"
 compatibility_date = "2026-07-28"
 
+[edge_compute]
+func_id = "21e58f79-9425-4115-a0f9-d99913549c1b"
+func_name = "event-sponsorship-agent"
+
 [[actors]]
 binding = "SPONSOR_AGENT"
 type = "SponsorAgent"
@@ -14,16 +18,15 @@ name = "TELNYX_API_KEY"
 binding = "TELNYX"
 
 [storage.sqldb.LEADS_DB]
-id = "<sqldb-instance-uuid>"
+id = "1a3fa650-5c3d-477e-9117-fb671b64dc98"
 
 [storage.kv.RATE_LIMIT_KV]
-id = "<rate-limit-kv-uuid>"
+id = "0588d79f-c33c-4999-8f75-35aab9a4e969"
 
 [env_vars]
 AI_MODEL = "gpt-4o-mini"
-TELNYX_PUBLIC_KEY = "<telnyx-public-key-base64>"
 DEMO_MODE = "true"
-SALES_TEAM_NUMBER = "+1555XXXXXXXX"
-FROM_NUMBER = "+1555XXXXXXXX"
+SALES_TEAM_NUMBER = "+17177247292"
+FROM_NUMBER = "+16282564655"
 EVENT_NAME = "Re:Invent 2025"
 GIVEAWAY_PRIZE = "Telnyx Developer Kit"

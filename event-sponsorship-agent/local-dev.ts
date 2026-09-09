@@ -235,14 +235,21 @@ function makeEnv(): SponsorEnv {
     LEADS_DB: makeSqlDb(),
     RATE_LIMIT_KV: makeKv(),
     TELNYX: makeTelnyxStub() as any,
-    AI_MODEL: envOf("AI_MODEL", "gpt-4o-mini"),
-    DEMO_MODE: envOf("DEMO_MODE", "true"),
-    SALES_TEAM_NUMBER: envOf("SALES_TEAM_NUMBER", "+15551234567"),
-    FROM_NUMBER: envOf("FROM_NUMBER", "+16282564655"),
-    EVENT_NAME: envOf("EVENT_NAME", "Re:Invent 2025"),
-    GIVEAWAY_PRIZE: envOf("GIVEAWAY_PRIZE", "Telnyx Developer Kit"),
   };
   return env;
+}
+
+// [env_vars] equivalent: config reaches the code via process.env on the
+// platform, so the local runner sets it the same way.
+for (const [k, v] of Object.entries({
+  AI_MODEL: "gpt-4o-mini",
+  DEMO_MODE: "true",
+  SALES_TEAM_NUMBER: "+15551234567",
+  FROM_NUMBER: "+16282564655",
+  EVENT_NAME: "Re:Invent 2025",
+  GIVEAWAY_PRIZE: "Telnyx Developer Kit",
+})) {
+  process.env[k] = process.env[k] || fileEnv[k] || v;
 }
 
 const env = makeEnv();

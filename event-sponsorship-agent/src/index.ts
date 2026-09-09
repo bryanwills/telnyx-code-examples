@@ -40,13 +40,18 @@ export interface SponsorEnv extends Env {
       };
     };
   };
-  AI_MODEL: string;
-  DEMO_MODE: string;
-  SALES_TEAM_NUMBER: string;
-  FROM_NUMBER: string;
-  EVENT_NAME: string;
-  GIVEAWAY_PRIZE: string;
 }
+
+// ── Config from [env_vars] (process.env on the platform) ────────────────
+function cfg(name: string, dflt = ""): string {
+  return process.env[name] ?? dflt;
+}
+const AI_MODEL = () => cfg("AI_MODEL", "gpt-4o-mini");
+const IS_DEMO_MODE = () => cfg("DEMO_MODE", "true") === "true";
+const EVENT_NAME = () => cfg("EVENT_NAME", "our event");
+const GIVEAWAY_PRIZE = () => cfg("GIVEAWAY_PRIZE", "Telnyx Developer Kit");
+const SALES_TEAM_NUMBER = () => cfg("SALES_TEAM_NUMBER");
+const FROM_NUMBER = () => cfg("FROM_NUMBER");
 
 // ---------------------------------------------------------------------------
 // Types
@@ -94,7 +99,10 @@ export class SimpleRateLimiter {
   async check(identifier: string): Promise<RateLimitResult> {
     const now = Math.floor(Date.now() / 1000);
     const window = Math.floor(now / this.windowSeconds);
-    const key = `rl:${identifier}:${window}`;
+    // Platform KV keys only allow a-z A-Z 0-9 - _ / = . — identifiers like
+    // phone numbers ("+1...") or arbitrary session ids must be sanitized.
+    const safeId = identifier.replace(/[^a-zA-Z0-9\-_\/=.]/g, "_");
+    const key = `rl/${safeId}/${window}`;
 
     const current = (await this.kv.get(key, { type: "json" }).catch(() => 0)) as number | string | null;
     const count = Number(current ?? 0);
@@ -203,7 +211,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
     await this.setState(updated);
 
     // In demo mode, just log; in live mode, use Call Control
-    if (this.env.DEMO_MODE === "true") {
+    if (IS_DEMO_MODE()) {
       console.log(`[DEMO] Voice call from ${from}, callId=${callId}. Would connect to agent.`);
     } else {
       // Real Call Control would use telnyx.calls.create or Call Control API
@@ -271,14 +279,14 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
     if (channel === "sms" || channel === "whatsapp") {
       await this.sendResponse(phone, followUpText, channel);
     } else if (channel === "email") {
-      if (this.env.DEMO_MODE === "true") {
+      if (IS_DEMO_MODE()) {
         console.log(`[DEMO] Would send email to ${lead.email}: ${followUpText}`);
       } else {
         // In live mode, use Telnyx Email API via raw fetch or TELNYX binding
         console.log(`[LIVE] Sending email to ${lead.email}`);
       }
     } else if (channel === "voice") {
-      if (this.env.DEMO_MODE === "true") {
+      if (IS_DEMO_MODE()) {
         console.log(`[DEMO] Would place voice call to ${phone}: ${followUpText}`);
       } else {
         console.log(`[LIVE] Placing voice call to ${phone}`);
@@ -343,7 +351,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
   private async detectLanguage(text: string): Promise<string> {
     try {
       const response = await this.env.TELNYX.ai.openai.chat.createCompletion({
-        model: this.env.AI_MODEL || "gpt-4o-mini",
+        model: AI_MODEL(),
         messages: [
           {
             role: "system",
@@ -368,7 +376,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
   private nextFlowQuestion(state: SessionState): string | null {
     if (!state.collected.name) {
       state.step = "ask_name";
-      return this.localize(`Hi! Welcome to ${this.env.EVENT_NAME || "our event"}. What's your name?`, state.language);
+      return this.localize(`Hi! Welcome to ${EVENT_NAME()}. What's your name?`, state.language);
     }
     if (!state.collected.company) {
       state.step = "ask_company";
@@ -400,7 +408,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
     if (lowerText.includes("giveaway") || lowerText.includes("enter") || lowerText.includes("prize")) {
       state.giveawayEntry = true;
       await this.saveLead(state);
-      return this.localize("🎉 You're entered in the giveaway! Prize: " + this.env.GIVEAWAY_PRIZE + ". A sales rep will contact you shortly.", state.language);
+      return this.localize("🎉 You're entered in the giveaway! Prize: " + GIVEAWAY_PRIZE() + ". A sales rep will contact you shortly.", state.language);
     }
 
     // Demo booking
@@ -420,7 +428,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
     // capture the greeting as an answer. Once a question is out, this
     // message IS the answer: capture it, persist the lead, and continue.
     if (state.step === "welcome") {
-      return this.nextFlowQuestion(state) ?? this.localize("Hi! Welcome to " + this.env.EVENT_NAME + ". What's your name?", state.language);
+      return this.nextFlowQuestion(state) ?? this.localize("Hi! Welcome to " + EVENT_NAME() + ". What's your name?", state.language);
     }
     const pending = this.nextFlowQuestion(state);
     if (pending) {
@@ -456,11 +464,11 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
   private async answerProductQuestion(question: string, language: string): Promise<string> {
     try {
       const response = await this.env.TELNYX.ai.openai.chat.createCompletion({
-        model: this.env.AI_MODEL || "gpt-4o-mini",
+        model: AI_MODEL(),
         messages: [
           {
             role: "system",
-            content: `You are a helpful product expert for Telnyx at ${this.env.EVENT_NAME || "the event"}. Answer the following question concisely. Respond in ${language}.`,
+            content: `You are a helpful product expert for Telnyx at ${EVENT_NAME()}. Answer the following question concisely. Respond in ${language}.`,
           },
           { role: "user", content: question },
         ],
@@ -480,7 +488,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
   ): Promise<string> {
     try {
       const context = `
-You are a multilingual event sponsorship agent for ${this.env.EVENT_NAME || "the event"}.
+You are a multilingual event sponsorship agent for ${EVENT_NAME()}.
 The attendee's name is ${state.collected.name || "unknown"}.
 Their company is ${state.collected.company || "unknown"}.
 Their use case is ${state.collected.useCase || "unknown"}.
@@ -493,7 +501,7 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
 `;
 
       const response = await this.env.TELNYX.ai.openai.chat.createCompletion({
-        model: this.env.AI_MODEL || "gpt-4o-mini",
+        model: AI_MODEL(),
         messages: [
           { role: "system", content: context },
           { role: "user", content: text },
@@ -508,15 +516,15 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
   }
 
   private async generateFollowUpMessage(lead: LeadRecord): Promise<string> {
-    const fallback = `Hi ${lead.name || "there"}! Thanks for stopping by ${this.env.EVENT_NAME || "our booth"}. You mentioned ${lead.useCase || "your project"} — happy to pick that conversation back up whenever you're ready.`;
+    const fallback = `Hi ${lead.name || "there"}! Thanks for stopping by ${EVENT_NAME()}. You mentioned ${lead.useCase || "your project"} — happy to pick that conversation back up whenever you're ready.`;
 
     try {
       const response = await this.env.TELNYX.ai.openai.chat.createCompletion({
-        model: this.env.AI_MODEL || "gpt-4o-mini",
+        model: AI_MODEL(),
         messages: [
           {
             role: "system",
-            content: `You are a friendly sales follow-up assistant for ${this.env.EVENT_NAME || "the event"}. Write a short, warm follow-up message. Keep it under 300 characters (SMS-friendly).`,
+            content: `You are a friendly sales follow-up assistant for ${EVENT_NAME()}. Write a short, warm follow-up message. Keep it under 300 characters (SMS-friendly).`,
           },
           {
             role: "user",
@@ -622,12 +630,12 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
   private async routeHotLeadToSales(lead: LeadRecord): Promise<void> {
     const message = `🔥 HOT LEAD: ${lead.name || "Unknown"} from ${lead.company || "Unknown"} (${lead.phone}). Use case: ${lead.useCase || "N/A"}. Company size: ${lead.companySize || "N/A"}. Timeline: ${lead.timeline || "N/A"}. Demo requested: YES.`;
 
-    if (this.env.DEMO_MODE === "true") {
-      console.log(`[DEMO] Would SMS sales team at ${this.env.SALES_TEAM_NUMBER}: ${message}`);
+    if (IS_DEMO_MODE()) {
+      console.log(`[DEMO] Would SMS sales team at ${SALES_TEAM_NUMBER()}: ${message}`);
     } else {
       await this.env.TELNYX.messages.send({
-        to: this.env.SALES_TEAM_NUMBER,
-        from: this.env.FROM_NUMBER,
+        to: SALES_TEAM_NUMBER(),
+        from: FROM_NUMBER(),
         text: message,
       });
     }
@@ -643,7 +651,7 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
       return;
     }
 
-    if (this.env.DEMO_MODE === "true") {
+    if (IS_DEMO_MODE()) {
       console.log(`[DEMO] Would send ${channel} to ${to}: ${text}`);
       return;
     }
@@ -651,12 +659,12 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
     if (channel === "sms") {
       await this.env.TELNYX.messages.send({
         to,
-        from: this.env.FROM_NUMBER,
+        from: FROM_NUMBER(),
         text,
       });
     } else if (channel === "whatsapp") {
       await this.env.TELNYX.v2.messages.create({
-        from: this.env.FROM_NUMBER,
+        from: FROM_NUMBER(),
         to,
         channel: "whatsapp",
         text: { body: text },
@@ -705,7 +713,8 @@ export default {
     // Route: Inbound SMS webhook (signature-verified)
     if (path === "/webhook/sms" && req.method === "POST") {
       const raw = await req.arrayBuffer();
-      if (verifyTelnyxSignature(req.headers, raw, process.env.TELNYX_PUBLIC_KEY ?? "") !== 0) {
+      const publicKey = process.env.TELNYX_PUBLIC_KEY ?? (await e.SECRETS?.get("TELNYX_PUBLIC_KEY").catch(() => "")) ?? "";
+      if (verifyTelnyxSignature(req.headers, raw, publicKey) !== 0) {
         return new Response(JSON.stringify({ error: "Invalid signature" }), { status: 401 });
       }
       const { from, to, text } = parseWebhookJson(raw);
@@ -720,7 +729,8 @@ export default {
     // Route: Inbound WhatsApp webhook (signature-verified)
     if (path === "/webhook/whatsapp" && req.method === "POST") {
       const raw = await req.arrayBuffer();
-      if (verifyTelnyxSignature(req.headers, raw, process.env.TELNYX_PUBLIC_KEY ?? "") !== 0) {
+      const publicKey = process.env.TELNYX_PUBLIC_KEY ?? (await e.SECRETS?.get("TELNYX_PUBLIC_KEY").catch(() => "")) ?? "";
+      if (verifyTelnyxSignature(req.headers, raw, publicKey) !== 0) {
         return new Response(JSON.stringify({ error: "Invalid signature" }), { status: 401 });
       }
       const { from, to, text } = parseWebhookJson(raw);
@@ -735,7 +745,8 @@ export default {
     // Route: Inbound voice webhook (signature-verified)
     if (path === "/webhook/voice" && req.method === "POST") {
       const raw = await req.arrayBuffer();
-      if (verifyTelnyxSignature(req.headers, raw, process.env.TELNYX_PUBLIC_KEY ?? "") !== 0) {
+      const publicKey = process.env.TELNYX_PUBLIC_KEY ?? (await e.SECRETS?.get("TELNYX_PUBLIC_KEY").catch(() => "")) ?? "";
+      if (verifyTelnyxSignature(req.headers, raw, publicKey) !== 0) {
         return new Response(JSON.stringify({ error: "Invalid signature" }), { status: 401 });
       }
       const { from, callId } = parseWebhookJson(raw);
@@ -792,7 +803,7 @@ export default {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${e.EVENT_NAME || "Event Sponsorship"}</title>
+  <title>${EVENT_NAME()}</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
     #chat { height: 400px; border: 1px solid #ddd; padding: 10px; overflow-y: auto; margin-bottom: 10px; }
@@ -804,7 +815,7 @@ export default {
   </style>
 </head>
 <body>
-  <h1>${e.EVENT_NAME || "Event Sponsorship"}</h1>
+  <h1>${EVENT_NAME()}</h1>
   <p>Text, call, or chat with our agent to enter the giveaway, ask product questions, or book a demo!</p>
   <div id="chat"></div>
   <input type="text" id="input" placeholder="Type a message..." />

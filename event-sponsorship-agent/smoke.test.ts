@@ -95,6 +95,26 @@ describe("SimpleRateLimiter", () => {
     expect((await limiter.check("caller")).allowed).toBe(false);
   });
 
+  it("should produce platform-legal KV keys for identifiers with special characters", async () => {
+    // Regression: the platform KV rejects keys outside [a-zA-Z0-9\-_\/=.],
+    // so phone numbers ("+1...") and colons must be sanitized.
+    const keys: string[] = [];
+    const kv = {
+      get: async () => null,
+      put: async (key: string) => {
+        keys.push(key);
+      },
+    } as any;
+
+    const limiter = new SimpleRateLimiter(kv, 60, 10);
+    await limiter.check("+17177247292");
+    await limiter.check("session:abc");
+
+    const keyPattern = /^[a-zA-Z0-9\-_\/=.]+$/;
+    expect(keys).toHaveLength(2);
+    for (const key of keys) expect(key).toMatch(keyPattern);
+  });
+
   it("should report a resetAt in the future when denied", async () => {
     const store = new Map<string, string>();
     const kv = {
