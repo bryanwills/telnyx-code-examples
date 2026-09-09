@@ -42,16 +42,23 @@ export interface SponsorEnv extends Env {
   };
 }
 
-// ── Config from [env_vars] (process.env on the platform) ────────────────
-function cfg(name: string, dflt = ""): string {
+// ── Config resolution ───────────────────────────────────────────────────
+// [env_vars] reach the fetch-handler pod as process.env, but actor pods do
+// not — so actor-readable config goes through the SECRETS binding first
+// (secrets added via `telnyx-edge secrets add`), falling back to
+// process.env locally.
+async function cfg(env: SponsorEnv | undefined, name: string, dflt = ""): Promise<string> {
+  try {
+    const fromSecret = await env?.SECRETS?.get(name);
+    if (fromSecret) return fromSecret;
+  } catch {
+    // secrets not configured — fall through to process.env
+  }
   return process.env[name] ?? dflt;
 }
-const AI_MODEL = () => cfg("AI_MODEL", "gpt-4o-mini");
-const IS_DEMO_MODE = () => cfg("DEMO_MODE", "true") === "true";
-const EVENT_NAME = () => cfg("EVENT_NAME", "our event");
-const GIVEAWAY_PRIZE = () => cfg("GIVEAWAY_PRIZE", "Telnyx Developer Kit");
-const SALES_TEAM_NUMBER = () => cfg("SALES_TEAM_NUMBER");
-const FROM_NUMBER = () => cfg("FROM_NUMBER");
+async function isDemoMode(env: SponsorEnv | undefined): Promise<boolean> {
+  return (await cfg(env, "DEMO_MODE", "true")) === "true";
+}
 
 // ---------------------------------------------------------------------------
 // Types
@@ -211,7 +218,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
     await this.setState(updated);
 
     // In demo mode, just log; in live mode, use Call Control
-    if (IS_DEMO_MODE()) {
+    if ((await isDemoMode(this.env))) {
       console.log(`[DEMO] Voice call from ${from}, callId=${callId}. Would connect to agent.`);
     } else {
       // Real Call Control would use telnyx.calls.create or Call Control API
@@ -279,14 +286,14 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
     if (channel === "sms" || channel === "whatsapp") {
       await this.sendResponse(phone, followUpText, channel);
     } else if (channel === "email") {
-      if (IS_DEMO_MODE()) {
+      if ((await isDemoMode(this.env))) {
         console.log(`[DEMO] Would send email to ${lead.email}: ${followUpText}`);
       } else {
         // In live mode, use Telnyx Email API via raw fetch or TELNYX binding
         console.log(`[LIVE] Sending email to ${lead.email}`);
       }
     } else if (channel === "voice") {
-      if (IS_DEMO_MODE()) {
+      if ((await isDemoMode(this.env))) {
         console.log(`[DEMO] Would place voice call to ${phone}: ${followUpText}`);
       } else {
         console.log(`[LIVE] Placing voice call to ${phone}`);
@@ -351,7 +358,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
   private async detectLanguage(text: string): Promise<string> {
     try {
       const response = await this.env.TELNYX.ai.openai.chat.createCompletion({
-        model: AI_MODEL(),
+        model: (await cfg(this.env, "AI_MODEL", "gpt-4o-mini")),
         messages: [
           {
             role: "system",
@@ -373,10 +380,10 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
    * complete. Attendee replies are captured into `state.collected`, so the
    * same actor picks the conversation back up across channels.
    */
-  private nextFlowQuestion(state: SessionState): string | null {
+  private async nextFlowQuestion(state: SessionState): Promise<string | null> {
     if (!state.collected.name) {
       state.step = "ask_name";
-      return this.localize(`Hi! Welcome to ${EVENT_NAME()}. What's your name?`, state.language);
+      return this.localize(`Hi! Welcome to ${(await cfg(this.env, "EVENT_NAME", "our event"))}. What's your name?`, state.language);
     }
     if (!state.collected.company) {
       state.step = "ask_company";
@@ -408,7 +415,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
     if (lowerText.includes("giveaway") || lowerText.includes("enter") || lowerText.includes("prize")) {
       state.giveawayEntry = true;
       await this.saveLead(state);
-      return this.localize("🎉 You're entered in the giveaway! Prize: " + GIVEAWAY_PRIZE() + ". A sales rep will contact you shortly.", state.language);
+      return this.localize("🎉 You're entered in the giveaway! Prize: " + (await cfg(this.env, "GIVEAWAY_PRIZE", "Telnyx Developer Kit")) + ". A sales rep will contact you shortly.", state.language);
     }
 
     // Demo booking
@@ -428,9 +435,9 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
     // capture the greeting as an answer. Once a question is out, this
     // message IS the answer: capture it, persist the lead, and continue.
     if (state.step === "welcome") {
-      return this.nextFlowQuestion(state) ?? this.localize("Hi! Welcome to " + EVENT_NAME() + ". What's your name?", state.language);
+      return (await this.nextFlowQuestion(state)) ?? this.localize("Hi! Welcome to " + (await cfg(this.env, "EVENT_NAME", "our event")) + ". What's your name?", state.language);
     }
-    const pending = this.nextFlowQuestion(state);
+    const pending = (await this.nextFlowQuestion(state));
     if (pending) {
       const field = state.step.replace(/^ask_/, "");
       const keyMap: Record<string, keyof SessionState["collected"]> = {
@@ -445,7 +452,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
         state.collected[key] = text.trim();
         await this.saveLead(state);
 
-        const next = this.nextFlowQuestion(state);
+        const next = (await this.nextFlowQuestion(state));
         if (next) {
           return next;
         }
@@ -464,11 +471,11 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
   private async answerProductQuestion(question: string, language: string): Promise<string> {
     try {
       const response = await this.env.TELNYX.ai.openai.chat.createCompletion({
-        model: AI_MODEL(),
+        model: (await cfg(this.env, "AI_MODEL", "gpt-4o-mini")),
         messages: [
           {
             role: "system",
-            content: `You are a helpful product expert for Telnyx at ${EVENT_NAME()}. Answer the following question concisely. Respond in ${language}.`,
+            content: `You are a helpful product expert for Telnyx at ${(await cfg(this.env, "EVENT_NAME", "our event"))}. Answer the following question concisely. Respond in ${language}.`,
           },
           { role: "user", content: question },
         ],
@@ -488,7 +495,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
   ): Promise<string> {
     try {
       const context = `
-You are a multilingual event sponsorship agent for ${EVENT_NAME()}.
+You are a multilingual event sponsorship agent for ${(await cfg(this.env, "EVENT_NAME", "our event"))}.
 The attendee's name is ${state.collected.name || "unknown"}.
 Their company is ${state.collected.company || "unknown"}.
 Their use case is ${state.collected.useCase || "unknown"}.
@@ -501,7 +508,7 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
 `;
 
       const response = await this.env.TELNYX.ai.openai.chat.createCompletion({
-        model: AI_MODEL(),
+        model: (await cfg(this.env, "AI_MODEL", "gpt-4o-mini")),
         messages: [
           { role: "system", content: context },
           { role: "user", content: text },
@@ -516,15 +523,15 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
   }
 
   private async generateFollowUpMessage(lead: LeadRecord): Promise<string> {
-    const fallback = `Hi ${lead.name || "there"}! Thanks for stopping by ${EVENT_NAME()}. You mentioned ${lead.useCase || "your project"} — happy to pick that conversation back up whenever you're ready.`;
+    const fallback = `Hi ${lead.name || "there"}! Thanks for stopping by ${(await cfg(this.env, "EVENT_NAME", "our event"))}. You mentioned ${lead.useCase || "your project"} — happy to pick that conversation back up whenever you're ready.`;
 
     try {
       const response = await this.env.TELNYX.ai.openai.chat.createCompletion({
-        model: AI_MODEL(),
+        model: (await cfg(this.env, "AI_MODEL", "gpt-4o-mini")),
         messages: [
           {
             role: "system",
-            content: `You are a friendly sales follow-up assistant for ${EVENT_NAME()}. Write a short, warm follow-up message. Keep it under 300 characters (SMS-friendly).`,
+            content: `You are a friendly sales follow-up assistant for ${(await cfg(this.env, "EVENT_NAME", "our event"))}. Write a short, warm follow-up message. Keep it under 300 characters (SMS-friendly).`,
           },
           {
             role: "user",
@@ -563,79 +570,90 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
       updatedAt: now,
     };
 
-    // Upsert into SQLDB
-    await this.env.LEADS_DB.exec(`
-      CREATE TABLE IF NOT EXISTS leads (
-        phone TEXT PRIMARY KEY,
-        name TEXT,
-        email TEXT,
-        company TEXT,
-        useCase TEXT,
-        companySize TEXT,
-        timeline TEXT,
-        channel TEXT,
-        qualified BOOLEAN,
-        giveawayEntry BOOLEAN,
-        createdAt TEXT,
-        updatedAt TEXT
-      )
-    `);
+    // Upsert into SQLDB. A persistence failure must never kill the
+    // conversation — the lead stays in actor state and we log for follow-up.
+    try {
+      await this.env.LEADS_DB.exec(`
+        CREATE TABLE IF NOT EXISTS leads (
+          phone TEXT PRIMARY KEY,
+          name TEXT,
+          email TEXT,
+          company TEXT,
+          useCase TEXT,
+          companySize TEXT,
+          timeline TEXT,
+          channel TEXT,
+          qualified BOOLEAN,
+          giveawayEntry BOOLEAN,
+          createdAt TEXT,
+          updatedAt TEXT
+        )
+      `);
 
-    await this.env.LEADS_DB.prepare(`
-      INSERT INTO leads (phone, name, email, company, useCase, companySize, timeline, channel, qualified, giveawayEntry, createdAt, updatedAt)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT(phone) DO UPDATE SET
-        name = excluded.name,
-        email = excluded.email,
-        company = excluded.company,
-        useCase = excluded.useCase,
-        companySize = excluded.companySize,
-        timeline = excluded.timeline,
-        channel = excluded.channel,
-        qualified = excluded.qualified,
-        giveawayEntry = excluded.giveawayEntry,
-        updatedAt = excluded.updatedAt
-    `).bind(
-      lead.phone,
-      lead.name,
-      lead.email,
-      lead.company,
-      lead.useCase,
-      lead.companySize,
-      lead.timeline,
-      lead.channel,
-      lead.qualified ? 1 : 0,
-      lead.giveawayEntry ? 1 : 0,
-      lead.createdAt,
-      lead.updatedAt
-    ).all();
+      await this.env.LEADS_DB.prepare(`
+        INSERT INTO leads (phone, name, email, company, useCase, companySize, timeline, channel, qualified, giveawayEntry, createdAt, updatedAt)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(phone) DO UPDATE SET
+          name = excluded.name,
+          email = excluded.email,
+          company = excluded.company,
+          useCase = excluded.useCase,
+          companySize = excluded.companySize,
+          timeline = excluded.timeline,
+          channel = excluded.channel,
+          qualified = excluded.qualified,
+          giveawayEntry = excluded.giveawayEntry,
+          updatedAt = excluded.updatedAt
+      `).bind(
+        lead.phone,
+        lead.name,
+        lead.email,
+        lead.company,
+        lead.useCase,
+        lead.companySize,
+        lead.timeline,
+        lead.channel,
+        lead.qualified ? 1 : 0,
+        lead.giveawayEntry ? 1 : 0,
+        lead.createdAt,
+        lead.updatedAt
+      ).all();
+    } catch (err) {
+      console.error("Lead persistence failed:", err);
+    }
 
     // If qualified and demo requested, route hot lead to sales team via SMS
+    // (independent of the DB write above).
     if (lead.qualified && state.demoRequested) {
       await this.routeHotLeadToSales(lead);
     }
   }
 
   private async getLeadByPhone(phone: string): Promise<LeadRecord | null> {
-    const result = await this.env.LEADS_DB.prepare(
-      "SELECT * FROM leads WHERE phone = ?"
-    ).bind(phone).all();
+    try {
+      const result = await this.env.LEADS_DB.prepare(
+        "SELECT * FROM leads WHERE phone = ?"
+      ).bind(phone).all();
 
-    if (result.results && result.results.length > 0) {
-      return result.results[0] as unknown as LeadRecord;
+      if (result.results && result.results.length > 0) {
+        return result.results[0] as unknown as LeadRecord;
+      }
+      return null;
+    } catch (err) {
+      console.error("Lead lookup failed:", err);
+      return null;
     }
-    return null;
   }
 
   private async routeHotLeadToSales(lead: LeadRecord): Promise<void> {
     const message = `🔥 HOT LEAD: ${lead.name || "Unknown"} from ${lead.company || "Unknown"} (${lead.phone}). Use case: ${lead.useCase || "N/A"}. Company size: ${lead.companySize || "N/A"}. Timeline: ${lead.timeline || "N/A"}. Demo requested: YES.`;
 
-    if (IS_DEMO_MODE()) {
-      console.log(`[DEMO] Would SMS sales team at ${SALES_TEAM_NUMBER()}: ${message}`);
+    if ((await isDemoMode(this.env))) {
+      console.log(`[DEMO] Would SMS sales team at ${(await cfg(this.env, "SALES_TEAM_NUMBER"))}: ${message}`);
     } else {
       await this.env.TELNYX.messages.send({
-        to: SALES_TEAM_NUMBER(),
-        from: FROM_NUMBER(),
+        to: (await cfg(this.env, "SALES_TEAM_NUMBER")),
+        from: (await cfg(this.env, "FROM_NUMBER")),
         text: message,
       });
     }
@@ -651,7 +669,7 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
       return;
     }
 
-    if (IS_DEMO_MODE()) {
+    if ((await isDemoMode(this.env))) {
       console.log(`[DEMO] Would send ${channel} to ${to}: ${text}`);
       return;
     }
@@ -659,12 +677,12 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
     if (channel === "sms") {
       await this.env.TELNYX.messages.send({
         to,
-        from: FROM_NUMBER(),
+        from: (await cfg(this.env, "FROM_NUMBER")),
         text,
       });
     } else if (channel === "whatsapp") {
       await this.env.TELNYX.v2.messages.create({
-        from: FROM_NUMBER(),
+        from: (await cfg(this.env, "FROM_NUMBER")),
         to,
         channel: "whatsapp",
         text: { body: text },
@@ -787,8 +805,13 @@ export default {
 
     // Route: Attribution report
     if (path === "/api/report" && req.method === "GET") {
-      const report = await e.SPONSOR_AGENT.idFromName("report").generateAttributionReport();
-      return new Response(JSON.stringify(report), { status: 200 });
+      try {
+        const report = await e.SPONSOR_AGENT.idFromName("report").generateAttributionReport();
+        return new Response(JSON.stringify(report), { status: 200 });
+      } catch (err) {
+        console.error("Attribution report failed:", err);
+        return new Response(JSON.stringify({ error: "Leads database unavailable — report temporarily offline" }), { status: 503 });
+      }
     }
 
     // Route: Health check
@@ -803,7 +826,7 @@ export default {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${EVENT_NAME()}</title>
+  <title>${(await cfg(e, "EVENT_NAME", "our event"))}</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
     #chat { height: 400px; border: 1px solid #ddd; padding: 10px; overflow-y: auto; margin-bottom: 10px; }
@@ -815,7 +838,7 @@ export default {
   </style>
 </head>
 <body>
-  <h1>${EVENT_NAME()}</h1>
+  <h1>${(await cfg(e, "EVENT_NAME", "our event"))}</h1>
   <p>Text, call, or chat with our agent to enter the giveaway, ask product questions, or book a demo!</p>
   <div id="chat"></div>
   <input type="text" id="input" placeholder="Type a message..." />
