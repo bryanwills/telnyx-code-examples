@@ -23,7 +23,7 @@ Telnyx provides **AI Communications Infrastructure** — a global, low-latency p
 | **Messaging (WhatsApp)** | `TELNYX.v2.messages.create({from, to, channel, text})` | WhatsApp follow-up messages |
 | **Voice** | `TELNYX.calls.create(...)` | Inbound voice call handling via Call Control |
 | **Inference** | `TELNYX.ai.openai.chat.createCompletion({model, messages})` | Language detection, product Q&A, contextual agent responses |
-| **KV** | `SESSION_KV.get/put/delete` | Session state persistence per attendee |
+| **KV** | `RATE_LIMIT_KV.get/put` | Rate-limit counters per attendee/session |
 | **SQLDB** | `LEADS_DB.exec/prepare` | Lead capture, upsert, and attribution reporting |
 | **Rate Limiting** | `RATE_LIMIT_KV` (custom `SimpleRateLimiter`) | Per-attendee rate limiting on interaction endpoints |
 | **Custom Domains** | Telnyx Edge microsite hosting | Branded domain (e.g. `telnyx-at-reinvent.com`) |
@@ -70,8 +70,8 @@ Telnyx provides **AI Communications Infrastructure** — a global, low-latency p
 │  │         ▼                                       ▼           │   │
 │  │  ┌──────────────┐                    ┌──────────────────┐  │   │
 │  │  │   SQLDB      │                    │     KV Store     │  │   │
-│  │  │  LEADS_DB    │                    │  SESSION_KV      │  │   │
-│  │  │  (leads)     │                    │  (sessions)      │  │   │
+│  │  │  LEADS_DB    │                    │  RATE_LIMIT_KV   │  │   │
+│  │  │  (leads)     │                    │  (rate limits)   │  │   │
 │  │  └──────┬───────┘                    └──────────────────┘  │   │
 │  │         │                                                   │   │
 │  │         ▼                                                   │   │
@@ -104,13 +104,13 @@ Telnyx provides **AI Communications Infrastructure** — a global, low-latency p
 |----------|------|---------|----------|-------------|-----------------|
 | `EVENT_NAME` | `string` | `your_event_name_here` | **yes** | EVENT_NAME | — |
 | `TELNYX_API_KEY` | `string` | `your_telnyx_api_key_here` | **yes** | TELNYX_API_KEY | — |
+| `TELNYX_PUBLIC_KEY` | `string` | `your_telnyx_public_key_here` | yes (webhooks) | Ed25519 public key used to verify inbound webhook signatures | Telnyx Portal → API Keys |
 
 Additional bindings configured in `telnyx.toml` (not env vars):
 
 | Binding | Type | Description |
 |---------|------|-------------|
 | `SPONSOR_AGENT` | ActorNamespace | The `SponsorAgent` actor class |
-| `SESSION_KV` | KvNamespace | Session state storage |
 | `LEADS_DB` | SqlDatabase | Lead capture database |
 | `RATE_LIMIT_KV` | KvNamespace | Rate limiting counters |
 | `TELNYX` | Telnyx API binding | Zero-credential Telnyx API access |
@@ -143,8 +143,8 @@ cp .env.example .env
 # 6. Generate type bindings
 telnyx-edge types
 
-# 7. Run smoke test
-npx tsx smoke_test.ts
+# 7. Run smoke tests
+npm test
 
 # 8. Deploy
 telnyx-edge ship

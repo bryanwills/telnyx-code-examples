@@ -308,9 +308,9 @@ Returns the full HTML microsite with embedded chat widget.
 
 ---
 
-## WebSocket / (in-browser chat)
+## WebSocket (agent socket protocol)
 
-The microsite also supports a WebSocket connection for real-time chat. The `webSocket(ws, req)` handler on the agent accepts messages in the format:
+The `SponsorAgent` inherits the base `Agent` class's default `webSocket()` handler, which speaks the Telnyx agent socket protocol for real-time streaming connections. The primary chat surface for the microsite is the REST endpoint above (`POST /api/chat`), which accepts:
 
 ```json
 {

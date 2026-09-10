@@ -23,12 +23,13 @@ telnyx-edge auth api-key set <your_api_key>
 event-sponsorship-agent/
 ├── src/
 │   └── index.ts          # Main agent + fetch handler
+│   └── verify.ts         # Telnyx Ed25519 webhook signature verification
 ├── package.json
 ├── tsconfig.json
 ├── telnyx.toml
 ├── .env.example
 ├── .gitignore
-└── smoke_test.ts
+└── smoke.test.ts
 ```
 
 ---
@@ -62,9 +63,6 @@ name    = "TELNYX_API_KEY"
 [telnyx]
 binding = "TELNYX"
 
-[storage.kv.SESSION_KV]
-id = "<session-kv-namespace-uuid>"
-
 [storage.kv.RATE_LIMIT_KV]
 id = "<rate-limit-kv-namespace-uuid>"
 
@@ -73,6 +71,7 @@ id = "<leads-sqldb-uuid>"
 
 [env_vars]
 AI_MODEL = "gpt-4o-mini"
+TELNYX_PUBLIC_KEY = "<telnyx-public-key-base64>"
 DEMO_MODE = "true"
 SALES_TEAM_NUMBER = "+1555XXXXXXXX"
 FROM_NUMBER = "+1555XXXXXXXX"
@@ -195,7 +194,7 @@ The `generateAttributionReport()` method queries all leads from SQLDB and return
 
 The microsite HTML (served at `/`) includes a chat interface that POSTs to `/api/chat`. The `handleChatMessage()` method processes the message through the same `processMessage()` flow and returns the agent's response as JSON.
 
-A WebSocket handler (`webSocket()`) is also available for real-time chat connections.
+The agent also inherits the base `Agent` class's default `webSocket()` handler, which speaks the agent socket protocol for real-time streaming connections.
 
 ---
 
@@ -222,8 +221,8 @@ To switch to **live mode**, set `DEMO_MODE=false` in your environment. In live m
 # Generate TypeScript types from telnyx.toml
 telnyx-edge types
 
-# Run smoke test
-npx tsx smoke_test.ts
+# Run smoke tests
+npm test
 
 # Deploy to Telnyx Edge
 telnyx-edge ship
@@ -231,7 +230,7 @@ telnyx-edge ship
 
 ### Smoke test
 
-The `smoke_test.ts` file verifies that the module loads without errors and that all exported types and classes are accessible.
+The `smoke.test.ts` file runs under Vitest (`npm test`) and verifies that the module loads without errors, that all exported types and classes are accessible, and that the rate limiter behaves correctly (allows up to the limit, denies beyond it, and survives raw-string counter values).
 
 ---
 
@@ -241,7 +240,7 @@ The `smoke_test.ts` file verifies that the module loads without errors and that 
 |-----------------|-----------------------------------------------------------|
 | **Functions**   | Single function deployment via `telnyx-edge ship`         |
 | **Custom domains** | Branded microsite served at `/` on a custom domain     |
-| **KV**          | Session state (`SESSION_KV`) and rate limiting (`RATE_LIMIT_KV`) |
+| **KV**          | Rate-limit counters (`RATE_LIMIT_KV`); session state lives in durable actor state |
 | **SQLDB**       | Lead capture and attribution reporting (`LEADS_DB`)       |
 | **Messaging**   | SMS and WhatsApp interactions via `TELNYX.messages.send` and `TELNYX.v2.messages.create` |
 | **Voice**       | Inbound voice call handling via webhook routing           |
