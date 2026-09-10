@@ -412,7 +412,7 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
   private async detectLanguage(text: string): Promise<string> {
     try {
       const response = await this.env.TELNYX.ai.openai.chat.createCompletion({
-        model: (await cfg(this.env, "AI_MODEL", "gpt-4o-mini")),
+        model: (await cfg(this.env, "AI_MODEL", "moonshotai/Kimi-K2.6")),
         messages: [
           {
             role: "system",
@@ -598,11 +598,11 @@ export class SponsorAgent extends Agent<SponsorEnv, SessionState> {
   private async answerProductQuestion(question: string, language: string): Promise<string> {
     try {
       const response = await this.env.TELNYX.ai.openai.chat.createCompletion({
-        model: (await cfg(this.env, "AI_MODEL", "gpt-4o-mini")),
+        model: (await cfg(this.env, "AI_MODEL", "moonshotai/Kimi-K2.6")),
         messages: [
           {
             role: "system",
-            content: `You are a helpful product expert for Telnyx at ${(await cfg(this.env, "EVENT_NAME", "our event"))}. Answer the following question concisely. Respond in ${language}.`,
+            content: `You are a helpful product expert for Telnyx at ${(await cfg(this.env, "EVENT_NAME", "our event"))}. Answer the following question concisely. Respond in ${language}. Never mention or compare against competitor companies.`,
           },
           { role: "user", content: question },
         ],
@@ -635,7 +635,7 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
 `;
 
       const response = await this.env.TELNYX.ai.openai.chat.createCompletion({
-        model: (await cfg(this.env, "AI_MODEL", "gpt-4o-mini")),
+        model: (await cfg(this.env, "AI_MODEL", "moonshotai/Kimi-K2.6")),
         messages: [
           { role: "system", content: context },
           { role: "user", content: text },
@@ -654,7 +654,7 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
 
     try {
       const response = await this.env.TELNYX.ai.openai.chat.createCompletion({
-        model: (await cfg(this.env, "AI_MODEL", "gpt-4o-mini")),
+        model: (await cfg(this.env, "AI_MODEL", "moonshotai/Kimi-K2.6")),
         messages: [
           {
             role: "system",
@@ -685,7 +685,7 @@ Respond helpfully in ${state.language}. Keep responses concise for SMS.
 
     try {
       const response = await this.env.TELNYX.ai.openai.chat.createCompletion({
-        model: (await cfg(this.env, "AI_MODEL", "gpt-4o-mini")),
+        model: (await cfg(this.env, "AI_MODEL", "moonshotai/Kimi-K2.6")),
         messages: [
           {
             role: "system",

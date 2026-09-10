@@ -263,7 +263,7 @@ function makeEnv(): SponsorEnv {
 // [env_vars] equivalent: config reaches the code via process.env on the
 // platform, so the local runner sets it the same way.
 for (const [k, v] of Object.entries({
-  AI_MODEL: "gpt-4o-mini",
+  AI_MODEL: "moonshotai/Kimi-K2.6",
   DEMO_MODE: "true",
   SALES_TEAM_NUMBER: "+17177247292",
   FROM_NUMBER: "+16282564655",
