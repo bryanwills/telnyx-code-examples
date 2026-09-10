@@ -265,8 +265,8 @@ function makeEnv(): SponsorEnv {
 for (const [k, v] of Object.entries({
   AI_MODEL: "moonshotai/Kimi-K2.6",
   DEMO_MODE: "true",
-  SALES_TEAM_NUMBER: "+17177247292",
-  FROM_NUMBER: "+16282564655",
+  SALES_TEAM_NUMBER: "+15550000001",
+  FROM_NUMBER: "+15550000000",
   EVENT_NAME: "TechHorizon Summit 2026",
   GIVEAWAY_PRIZE: "Telnyx Developer Kit",
   EMAIL_FROM: "onboarding@mail.telnyx.com",

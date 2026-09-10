@@ -107,7 +107,7 @@ describe("SimpleRateLimiter", () => {
     } as any;
 
     const limiter = new SimpleRateLimiter(kv, 60, 10);
-    await limiter.check("+17177247292");
+    await limiter.check("+15550000001");
     await limiter.check("session:abc");
 
     const keyPattern = /^[a-zA-Z0-9\-_\/=.]+$/;

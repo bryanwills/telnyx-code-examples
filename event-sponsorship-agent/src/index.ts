@@ -10,6 +10,7 @@ import {
 import { verifyTelnyxSignature } from "./verify";
 import { micrositeHtml } from "./microsite";
 import { PP_FORMULA_WOFF2_B64, TELNYX_LOGO_SVG } from "./assets";
+import { encodeAgentName } from "@telnyx/edge-runtime/mount";
 
 // ---------------------------------------------------------------------------
 // Environment interface — bindings declared in telnyx.toml
@@ -919,7 +920,7 @@ export default {
         return new Response(JSON.stringify({ error: "Missing from or text" }), { status: 400 });
       }
 
-      const result = await e.SPONSOR_AGENT.idFromName(from).handleInboundMessage({ from, to, text, channel: "sms" });
+      const result = await e.SPONSOR_AGENT.idFromName(encodeAgentName(from)).handleInboundMessage({ from, to, text, channel: "sms" });
       return new Response(JSON.stringify(result), { status: 200 });
     }
 
@@ -935,7 +936,7 @@ export default {
         return new Response(JSON.stringify({ error: "Missing from or text" }), { status: 400 });
       }
 
-      const result = await e.SPONSOR_AGENT.idFromName(from).handleInboundMessage({ from, to, text, channel: "whatsapp" });
+      const result = await e.SPONSOR_AGENT.idFromName(encodeAgentName(from)).handleInboundMessage({ from, to, text, channel: "whatsapp" });
       return new Response(JSON.stringify(result), { status: 200 });
     }
 
@@ -951,7 +952,7 @@ export default {
         return new Response(JSON.stringify({ error: "Missing from or call_control_id" }), { status: 400 });
       }
 
-      const result = await e.SPONSOR_AGENT.idFromName(from).handleInboundCall({ callId, from, to: "" });
+      const result = await e.SPONSOR_AGENT.idFromName(encodeAgentName(from)).handleInboundCall({ callId, from, to: "" });
       return new Response(JSON.stringify(result), { status: 200 });
     }
 
@@ -965,7 +966,7 @@ export default {
         return new Response(JSON.stringify({ error: "Missing text" }), { status: 400 });
       }
 
-      const result = await e.SPONSOR_AGENT.idFromName(sessionId).handleChatMessage({ sessionId, text });
+      const result = await e.SPONSOR_AGENT.idFromName(encodeAgentName(sessionId)).handleChatMessage({ sessionId, text });
       return new Response(JSON.stringify(result), { status: 200 });
     }
 
@@ -978,14 +979,14 @@ export default {
         return new Response(JSON.stringify({ error: "Missing phone, channel, or delaySeconds" }), { status: 400 });
       }
 
-      const result = await e.SPONSOR_AGENT.idFromName(phone).scheduleFollowUp({ phone, channel, delaySeconds });
+      const result = await e.SPONSOR_AGENT.idFromName(encodeAgentName(phone)).scheduleFollowUp({ phone, channel, delaySeconds });
       return new Response(JSON.stringify(result), { status: 200 });
     }
 
     // Route: Attribution report
     if (path === "/api/report" && req.method === "GET") {
       try {
-        const report = await e.SPONSOR_AGENT.idFromName("report").generateAttributionReport();
+        const report = await e.SPONSOR_AGENT.idFromName(encodeAgentName("report")).generateAttributionReport();
         return new Response(JSON.stringify(report), { status: 200 });
       } catch (err) {
         console.error("Attribution report failed:", err);
@@ -1018,7 +1019,7 @@ export default {
       const html = micrositeHtml({
         eventName: await cfg(e, "EVENT_NAME", "our event"),
         prize: await cfg(e, "GIVEAWAY_PRIZE", "Telnyx Developer Kit"),
-        smsNumber: await cfg(e, "FROM_NUMBER", "+16282564655"),
+        smsNumber: await cfg(e, "FROM_NUMBER", "+15550000000"),
       });
       return new Response(html, { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } });
     }
