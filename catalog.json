@@ -5,6 +5,8 @@
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
   "generated_at": "2026-09-09T19:00:11Z",
   "example_count": 547,
+  "generated_at": "2026-09-09T10:41:33Z",
+  "example_count": 548,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -4712,6 +4714,15 @@
       "language": "python",
       "framework": "flask",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/shipment-agent"
+    },
+    {
+      "folder": "call-quality-monitor",
+      "title": "Call Quality Monitor",
+      "description": "Monitor call quality metrics (MOS, jitter, latency) via Telnyx webhooks, store historical data in SQLite, and view live alerts on an SSE dashboard.",
+      "product": "ai",
+      "language": "python",
+      "framework": "flask",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/call-quality-monitor"
     },
     {
       "folder": "network-incident-agent",
