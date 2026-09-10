@@ -263,11 +263,13 @@ footer .domain { font-family: var(--font-mono); font-size: 13px; color: var(--fg
 }
 `;
 
-const CHAT_JS = `
+function chatJs(smsNumber: string): string {
+  return `
 const sessionId = 'web_' + Date.now();
 const chatEl = document.getElementById('chat');
 const typingEl = document.getElementById('typing');
 const input = document.getElementById('input');
+const NUMBER = ${JSON.stringify(smsNumber.replace(/[^\d+]/g, ""))};
 
 function addMessage(text, cls) {
   const div = document.createElement('div');
@@ -297,14 +299,43 @@ async function sendMessage() {
   typingEl.style.display = 'none';
   chatEl.scrollTop = chatEl.scrollHeight;
 }
-document.querySelectorAll('.chip').forEach(function (chip) {
+
+// Quick-start chips and the giveaway CTA send preset messages
+document.querySelectorAll('.chip, .chip-btn').forEach(function (chip) {
   chip.addEventListener('click', function () {
     input.value = chip.dataset.text || chip.textContent;
     sendMessage();
+    document.querySelector('.chat-panel').scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 });
+
+// Copy-to-clipboard — the universal path on desktop
+const copyBtn = document.getElementById('copy-number');
+if (copyBtn) {
+  copyBtn.addEventListener('click', function () {
+    function done() {
+      copyBtn.textContent = 'Copied ✓';
+      setTimeout(function () { copyBtn.textContent = 'Copy number'; }, 2000);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(NUMBER).then(done).catch(function () { fallbackCopy(); });
+    } else {
+      fallbackCopy();
+    }
+    function fallbackCopy() {
+      const ta = document.createElement('textarea');
+      ta.value = NUMBER;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+  });
+}
+
 input.addEventListener('keypress', function (e) { if (e.key === 'Enter') sendMessage(); });
 `;
+}
 
 export function micrositeHtml(opts: MicrositeOpts): string {
   const ev = escapeHtml(opts.eventName);
@@ -342,18 +373,19 @@ export function micrositeHtml(opts: MicrositeOpts): string {
         <div class="reach-card">
           <p class="card-eyebrow">Text us</p>
           <p class="big-number">${num}</p>
-          <p class="card-note">Save this number — it is on your lanyard card. Standard message and data rates apply.</p>
+          <p class="card-note">Save this number — it is on your lanyard card. On a phone, the buttons below open your messaging or dialer app. On desktop, use Copy number and text from any device.</p>
           <div class="btn-row">
             <a class="btn btn-primary" href="${smsHref}">Text the booth →</a>
             <a class="btn btn-ghost" href="${telHref}">Call us →</a>
+            <button class="btn btn-ghost" id="copy-number">Copy number</button>
           </div>
         </div>
         <div class="reach-card prize-card">
           <p class="card-eyebrow">Giveaway</p>
           <p class="big-number">${prize}</p>
-          <p class="card-note">Enter by texting "giveaway" or using the chat below. A sales rep follows up either way.</p>
+          <p class="card-note">A hardware starter kit for building voice AI agents — dev board, SIM, and API credits to ship your first agent. Enter by texting "giveaway" or with the button below; a sales rep follows up either way.</p>
           <div class="btn-row">
-            <button class="btn btn-ghost chip-btn" data-text="giveaway">Enter now →</button>
+            <button class="btn btn-primary chip-btn" data-text="giveaway" id="enter-now">Enter now →</button>
           </div>
         </div>
       </div>
@@ -417,7 +449,7 @@ export function micrositeHtml(opts: MicrositeOpts): string {
     <span class="domain">telnyx-at-techhorizon.com</span>
   </footer>
 
-  <script>${CHAT_JS}</script>
+  <script>${chatJs(opts.smsNumber)}</script>
 </body>
 </html>`;
 }
