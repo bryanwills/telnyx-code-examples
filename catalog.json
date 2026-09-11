@@ -3,10 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-09-09T19:00:11Z",
-  "example_count": 547,
-  "generated_at": "2026-09-09T10:41:33Z",
-  "example_count": 548,
+  "generated_at": "2026-09-11T19:14:54Z",
+  "example_count": 549,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -4696,6 +4694,15 @@
       "language": "nodejs",
       "framework": "vanilla",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/agent-fleet-shared-workspace"
+    },
+    {
+      "folder": "auto-failover-voice-routing",
+      "title": "Auto-Failover Voice Routing with Circuit Breaker",
+      "description": "Telecom-native circuit breaker pattern using Telnyx Call Control, KV state, and SMS alerts for automatic SIP failover.",
+      "product": "ai",
+      "language": "typescript",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/auto-failover-voice-routing"
     },
     {
       "folder": "voice-ivr-with-agent-backend",
