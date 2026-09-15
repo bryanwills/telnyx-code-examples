@@ -3378,6 +3378,11 @@ examples:
     framework: edge
     folder: event-sponsorship-agent
 
+  - product: ai
+    use_case: "auto-generated-from-linear"
+    language: typescript
+    framework: edge
+    folder: venue-sales-concierge
   - product: voice
     use_case: omni-channel-inbox-agent
     language: nodejs
