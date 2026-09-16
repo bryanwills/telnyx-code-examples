@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-09-14T19:20:17Z",
-  "example_count": 550,
+  "generated_at": "2026-09-16T20:48:42Z",
+  "example_count": 551,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -4946,6 +4946,15 @@
       "language": "typescript",
       "framework": "edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/event-sponsorship-agent"
+    },
+    {
+      "folder": "venue-sales-concierge",
+      "title": "Venue Sales Concierge — AI Booking Agent for Hotels, Resorts & Event Venues",
+      "description": "Telnyx-branded venue microsite + AI sales concierge on Edge Compute — per-planner Stateful Actors carry conversations across SMS and voice, live SQLDB availability, lead qualification, in-browser WebRTC voice, email brochures, and automated one-week follow-up calls.",
+      "product": "ai",
+      "language": "nodejs",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/venue-sales-concierge"
     },
     {
       "folder": "omni-channel-inbox-agent",

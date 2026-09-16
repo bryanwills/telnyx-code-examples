@@ -6,9 +6,10 @@
     "lib": ["ES2022", "DOM"],
     "types": ["@telnyx/edge-runtime"],
     "strict": true,
-    "noEmit": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "test/**/*.ts"]
 }
