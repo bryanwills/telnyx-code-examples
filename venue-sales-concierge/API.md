@@ -1,181 +1,317 @@
 # API Reference — Venue Sales Concierge
 
-All endpoints are served by a single Telnyx Edge Function. The function routes inbound webhooks to a `ConciergeAgent` (a stateful `Agent` backed by a `StatefulActor`) via the `CONCIERGE` actor namespace.
+All endpoints are served by a single Telnyx Edge Function at
+`https://<your-function>.telnyxcompute.com` (or your attached custom domain).
+Pages are HTML; APIs are JSON; webhooks are Ed25519-verified.
 
 ---
 
-## `GET /health`
+## Pages
 
-Health check endpoint.
+### `GET /`
 
-### Request
+The branded venue microsite — galleries, capacity charts, catering menus, AV specs, pricing, FAQs, a live availability checker, and a site-visit booking form. Server-rendered entirely from KV (`venue/data`).
 
-No parameters.
+| Status | Meaning |
+|--------|---------|
+| 200 | HTML page |
 
-### Example
+### `GET /voice`
+
+In-browser voice concierge page (WebRTC, anonymous login to the provisioned AI Assistant).
+
+| Status | Meaning |
+|--------|---------|
+| 200 | HTML page (assistant must be provisioned via `POST /api/setup-assistant` first) |
+
+### `GET /ops`
+
+The venue's branded bookings dashboard ("{Venue name} — Bookings"): funnel stats, live availability (next 14 days), recent inquiries, booked site visits. Auto-refreshes every 15s.
+
+| Status | Meaning |
+|--------|---------|
+| 200 | HTML page |
+
+### `GET /health`
+
+Platform health probe.
+
+| Status | Meaning |
+|--------|---------|
+| 200 | `ok` |
+
+---
+
+## JSON APIs
+
+### `GET /api/event`
+
+Returns the venue data (the same JSON the microsite renders from KV).
 
 ```bash
-curl https://<your-function-url>/health
+curl https://<your-function-url>/api/event
 ```
 
-### Response — `200 OK`
+**Response — `200 OK`**
 
-| Field    | Type   | Description                     |
-|----------|--------|---------------------------------|
-| `status` | string | Always `"ok"`.                  |
+| Field | Type | Description |
+|-------|------|-------------|
+| `venue` | object | name, tagline, location, description |
+| `gallery` | array | `{url, caption}` photo entries |
+| `spaces` | array | `{name, seated, cocktail, sqft, features[]}` |
+| `menus` | array | `{name, price_per_person, description, items[]}` |
+| `av` | array | AV/production specs |
+| `pricing` | object | `{rental: {space: price}, catering_from, note}` |
+| `faqs` | array | `{question, answer, keywords[]}` |
+
+---
+
+### `GET /api/availability?start=YYYY-MM-DD&end=YYYY-MM-DD`
+
+Live availability from the venue SQLDB. Seeds the schema + 90 days of sample data on first call.
+
+| Param | Type | Required | Description |
+|-------|------|----------|-------------|
+| `start` | string | no | Range start (defaults to today) |
+| `end` | string | no | Range end (defaults to +90 days) |
+
+```bash
+curl "https://<your-function-url>/api/availability?start=2026-10-01&end=2026-10-31"
+```
+
+**Response — `200 OK`**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `start` / `end` | string | Echoed range |
+| `summary` | string | Human summary the concierge quotes |
+| `days` | array | `{date, available, note}` |
 
 ```json
-{ "status": "ok" }
+{
+  "start": "2026-10-01",
+  "end": "2026-10-31",
+  "summary": "27 of 31 dates between 2026-10-01 and 2026-10-31 are available. Earliest openings: 2026-10-01, 2026-10-02, ...",
+  "days": [{ "date": "2026-10-01", "available": true, "note": "" }]
+}
 ```
-
-### Status Codes
-
-| Code | Description                     |
-|------|---------------------------------|
-| 200  | Service is healthy.             |
 
 ---
 
-## `POST /inbound`
+### `GET /api/leads`
 
-Primary entry point for inbound SMS and voice webhooks. The request body is forwarded to the `ConciergeAgent` actor for stateful processing.
+Funnel + records for the sales dashboard.
 
-### Request Body
+**Response — `200 OK`**
 
-| Field    | Type    | Required | Description                                                                 |
-|----------|---------|----------|-----------------------------------------------------------------------------|
-| `from`   | string  | Yes      | The planner's phone number (E.164 format). Used as the actor state key.     |
-| `text`   | string  | No       | The SMS message body. Omit or empty for voice-only interactions.            |
-| `callId` | string  | No       | Telnyx Call Control ID. When present, the request is treated as a voice call. |
+| Field | Type | Description |
+|-------|------|-------------|
+| `stats.inquiries` | number | Total inquiry rows in SQLDB |
+| `stats.qualified` | number | Inquiries qualified as RFPs (rendered as the "RFPs" card in the UI) |
+| `stats.booked` | number | Site visits with status `booked` |
+| `stats.conversion_pct` | number | Booked ÷ inquiries, rounded |
+| `inquiries` | array | Recent inquiry rows |
+| `visits` | array | Recent site-visit rows |
 
-### Example — SMS
+```json
+{
+  "stats": { "inquiries": 12, "qualified": 5, "booked": 3, "conversion_pct": 25 },
+  "inquiries": [
+    {
+      "id": "inq-k1x2y3",
+      "phone": "+15551234567",
+      "name": "Jane",
+      "email": "jane@example.com",
+      "event_type": "wedding",
+      "guests": 150,
+      "budget": "$20,000",
+      "dates": "2026-11-07 → 2026-11-08",
+      "message": "We're planning a fall wedding for 150...",
+      "channel": "sms",
+      "qualified": 1,
+      "created_at": 1757932000000
+    }
+  ],
+  "visits": [
+    {
+      "id": "visit-a9b8c7",
+      "phone": "+15551234567",
+      "name": "Jane",
+      "email": "jane@example.com",
+      "visit_date": "2026-09-24",
+      "status": "booked",
+      "source": "voice-call",
+      "created_at": 1757932100000
+    }
+  ]
+}
+```
+
+---
+
+### `POST /api/site-visit`
+
+Book a site visit from the microsite form. Writes to SQLDB and confirms by email **and** SMS to the planner (real sends when `DEMO_MODE=false`).
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `phone_number` | string | yes | Planner phone (E.164) |
+| `email` | string | yes | Planner email |
+| `name` | string | no | Planner name |
+| `visit_date` | string | no | Preferred date (`YYYY-MM-DD`); defaults to TBD |
 
 ```bash
-curl -X POST https://<your-function-url>/inbound \
+curl -X POST https://<your-function-url>/api/site-visit \
   -H "Content-Type: application/json" \
-  -d '{
-    "from": "+15551234567",
-    "text": "Hi, I am interested in booking a site visit for 150 guests."
-  }'
+  -d '{ "phone_number": "+15551234567", "email": "jane@example.com", "name": "Jane", "visit_date": "2026-09-24" }'
 ```
 
-### Example — Voice Call
+**Response — `200 OK`**
+
+```json
+{ "ok": true, "visit": { "id": "visit-a9b8c7", "visit_date": "2026-09-24", "email": "jane@example.com", "name": "Jane" } }
+```
+
+| Status | Meaning |
+|--------|---------|
+| 200 | Booked (confirmation emailed + texted, or demo-logged) |
+| 400 | Missing/invalid phone or email |
+
+---
+
+### `GET /api/config`
+
+What the browser voice page needs: the provisioned assistant id (never credentials).
+
+```json
+{ "assistant_id": "uuid-...", "venue_name": "Harborview Grand Pavilion" }
+```
+
+---
+
+### `POST /api/setup-assistant`
+
+Provisions (or updates) the Telnyx AI Assistant used for browser voice, wired with a `lookup_venue_info` webhook tool backed by this function's KV + SQLDB. Run once after the first deploy:
 
 ```bash
-curl -X POST https://<your-function-url>/inbound \
+curl -X POST https://<your-function-url>/api/setup-assistant
+```
+
+**Response — `200 OK`**
+
+```json
+{
+  "status": "ok",
+  "assistant_id": "uuid-...",
+  "webhook_tool_url": "https://<your-function-url>/tools/lookup",
+  "voice_page": "https://<your-function-url>/voice"
+}
+```
+
+---
+
+### `POST /api/demo/message`
+
+Demo-only entry: simulates an inbound planner SMS and runs the same StatefulActor pipeline end-to-end (inference, KV, SQLDB real; outbound sends demo-logged). No signature required.
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `from` | string | yes | Planner phone (E.164) |
+| `text` | string | yes | Message text |
+
+```bash
+curl -X POST https://<your-function-url>/api/demo/message \
   -H "Content-Type: application/json" \
-  -d '{
-    "from": "+15551234567",
-    "callId": "TNKabc123def456"
-  }'
+  -d '{ "from": "+15551234567", "text": "Hi, planning a wedding for 150 guests, do you have space in November?" }'
 ```
 
-### Response — `200 OK` (SMS)
-
-| Field  | Type   | Description                                              |
-|--------|--------|----------------------------------------------------------|
-| `reply`| string | The AI-generated or demo-mode response text sent to the planner. |
+**Response — `200 OK`**
 
 ```json
-{ "reply": "[DEMO MODE] I'd be happy to book a site visit! Our available tour slots are Tuesday through Friday, 10 AM to 3 PM. What date works best for you?" }
+{ "queued": true, "phone": "+15551234567" }
 ```
 
-### Response — `200 OK` (Voice)
+---
 
-| Field    | Type   | Description                                              |
-|----------|--------|----------------------------------------------------------|
-| `status` | string | Always `"call_initiated"`.                               |
+## Webhooks
+
+### `POST /webhooks/sms`
+
+Inbound SMS webhook for the venue's messaging profile.
+
+**Security**: Ed25519 — `Telnyx-Signature-Ed25519` + `Telnyx-Timestamp` headers verified against `TELNYX_PUBLIC_KEY` (±5 min skew). Failures: `400` missing headers, `401` bad signature/stale timestamp, `500` key not configured.
+
+**Handling**: only `message.received` events with inbound direction are processed; outbound receipts and self-sent messages are ignored. Deduped on `data.payload.id` (KV lock, 10 min TTL). Fast-acked (`ok`), then processed in the background by the planner's StatefulActor.
+
+**Expected payload** (`data.payload`):
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Message id (dedupe key) |
+| `direction` | string | `inbound` |
+| `from.phone_number` | string | Planner phone |
+| `text` | string \| object | Message text (or `{body}` for WhatsApp) |
+
+Always responds `200` (or a 4xx/5xx verification error) — never echoes processing state, so Telnyx never retries a slow pipeline.
+
+---
+
+### `POST /webhooks/voice`
+
+Call Control webhook for the venue's Call Control connection: inbound planner calls and events for the scheduled follow-up calls.
+
+**Security**: same Ed25519 verification as above.
+
+**Routing**: `direction === "outgoing"` routes by `payload.to` (follow-up calls the agent placed); `incoming` routes by `payload.from`.
+
+**Handled events** (`data.event_type`):
+
+| Event | Actor behavior |
+|-------|----------------|
+| `call.initiated` | Store call id, issue `answer` |
+| `call.answered` | Follow-up call → personalized script + DTMF confirm. Inbound call → greeting + speech gather |
+| `call.gather.ended` | Digits `1` → book site visit (SQLDB + email) / `2` → polite close. Speech → LLM turn → speak reply → gather again |
+| `call.hangup` / `call.hangup.ended` | Clear call state |
+
+**Expected payload** (`data.payload`):
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `call_control_id` | string | Live call handle |
+| `direction` | string | `incoming` / `outgoing` |
+| `from` / `to` | object \| string | `{phone_number}` or raw |
+| `digits` | string | DTMF collected (confirm gathers) |
+| `result` | string \| object | Speech transcription (chat gathers) |
+
+---
+
+### `POST /tools/lookup`
+
+Webhook tool invoked by the AI Assistant mid-conversation (Telnyx signs these automatically). Ed25519-verified.
+
+**Response — `200 OK`**
 
 ```json
-{ "status": "call_initiated" }
+{
+  "venue": { "venue": {...}, "spaces": [...], "menus": [...], "av": [...], "pricing": {...}, "faqs": [...] },
+  "availability": "58 of 91 dates between 2026-09-15 and 2026-12-14 are available..."
+}
 ```
-
-### Status Codes
-
-| Code | Description                                                                 |
-|------|-----------------------------------------------------------------------------|
-| 200  | Request processed successfully.                                             |
-| 400  | Missing required `from` field.                                              |
-| 404  | Path not found.                                                             |
-| 500  | Internal server error (generic message; details logged server-side).        |
 
 ---
 
-## `GET /voice/{callId}`
+## Scheduled Tasks
 
-Voice webhook endpoint. Returns TwiML-like XML consumed by Telnyx Call Control to handle the inbound voice call.
+### `followUpCall` (StatefulActor task)
 
-### Path Parameters
+Durable one-week timer, scheduled per planner with a fixed task id (`followup`) so it re-arms on every touchpoint instead of stacking.
 
-| Parameter | Type   | Required | Description                                      |
-|-----------|--------|----------|--------------------------------------------------|
-| `callId`  | string | Yes      | The Telnyx Call Control ID from the inbound call.|
+| Guard | Skip reason |
+|-------|-------------|
+| `DEMO_MODE !== "false"` | `demo_mode` (logged instead of dialed) |
+| `siteVisitBooked` | `already_booked` |
+| Active within 7 days | `planner_active_recently` |
+| Last message from planner | `planner_replied_after_us` |
+| No `TELNYX_CONNECTION_ID` | `no_connection_id` |
 
-### Example
-
-```bash
-curl https://<your-function-url>/voice/TNKabc123def456
-```
-
-### Response — `200 OK`
-
-Returns XML with `Content-Type: application/xml`.
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-  <Say voice="female" language="en-US">Hello! This is your venue sales concierge. Please leave a message after the beep, or continue your conversation via text.</Say>
-  <Record timeout="10" maxLength="120" />
-  <Hangup />
-</Response>
-```
-
-### Status Codes
-
-| Code | Description                                                                 |
-|------|-----------------------------------------------------------------------------|
-| 200  | XML response returned for Call Control.                                     |
-| 404  | Path not found.                                                             |
-| 500  | Internal server error (generic message; details logged server-side).        |
-
----
-
-## Scheduled Task: `followUpCall`
-
-Triggered automatically by `this.schedule(7 * 24 * 3600, "followUpCall", { phone })` — one week (604 800 seconds) after a planner's second inquiry, if they have not become active again.
-
-### Payload
-
-| Field   | Type   | Description                                           |
-|---------|--------|-------------------------------------------------------|
-| `phone` | string | The planner's phone number (E.164 format).            |
-
-### Behavior
-
-1. Loads the planner's persisted `PlannerState` from the actor's durable storage.
-2. Checks `lastActive` — if the planner has been active within the last 7 days, the follow-up is skipped.
-3. In **demo mode** (`DEMO_MODE=true`): logs the intended outbound call message with a masked phone number.
-4. In **live mode**: places an outbound voice call via `this.env.TELNYX.calls.create()` to the planner's number from `FROM_NUMBER`.
-
-### Example Log (Demo Mode)
-
-```
-[DEMO] Would place outbound call to +15***67: Hi there! This is a friendly follow-up from your venue sales concierge. We noticed you were interested in booking a site visit. Would you like to schedule one now?
-```
-
-### Status Codes
-
-This is an internal scheduled task — no HTTP response is returned to the caller. Errors are logged server-side.
-
----
-
-## Environment Variables
-
-| Variable       | Required | Description                                                                 |
-|----------------|----------|-----------------------------------------------------------------------------|
-| `TELNYX_API_KEY` | Yes      | Telnyx API key (injected as a secret binding).                              |
-| `DEMO_MODE`    | No       | Set to `"true"` to enable demo mode (default). No real SMS/calls are made.  |
-| `FROM_NUMBER`  | Yes      | The venue's Telnyx phone number (E.164 format) used as the sender/caller ID.|
-| `VENUE_EMAIL`  | Yes      | The venue's email address for brochure delivery.                            |
-
-> All variables are configured via `telnyx.toml` bindings and `.env.example`. No credentials are hardcoded.
+When it fires: `POST /v2/calls` on the Call Control connection → `call.answered` → personalized speak script → DTMF gather → `1` books the visit (SQLDB + confirmation email) → hangup.

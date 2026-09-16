@@ -1,104 +1,115 @@
 ---
 name: venue-sales-concierge
-title: "Venue Sales Concierge — AI-Powered Booking Agent for Hotels, Resorts & Event Venues"
-description: "A Telnyx Edge Function that deploys an AI concierge agent for venue sales, enabling planners to check availability, get pricing, request proposals, and book site visits via text or voice — with per-planner stateful conversations, KV FAQs, SQLDB availability, email brochures, and automated voice follow-ups."
-language: typescript
-framework: edge
-telnyx_products: [Messaging, Voice, AI Inference, Agents, Stateful Actors, KV, SQL Database, Scheduling, Email]
+title: "Venue Sales Concierge — AI Booking Agent for Hotels, Resorts & Event Venues"
+description: "Telnyx-branded venue microsite + AI sales concierge on Edge Compute — per-planner Stateful Actors carry conversations across SMS and voice, live SQLDB availability, lead qualification, in-browser WebRTC voice, email brochures, and automated one-week follow-up calls."
+language: nodejs
+framework: telnyx-edge
+telnyx_products: [Edge Compute, KV, SQL Database, Stateful Actors, Messaging, Voice, AI Inference, AI Assistants, Email]
 ---
 
 # Venue Sales Concierge
 
-An AI-powered venue sales concierge deployed as a single Telnyx Edge Function, enabling event planners to interact with a branded venue website via text or voice to check availability, get pricing, request proposals, and book site visits — with persistent per-planner conversation state, automated follow-ups, and full inquiry logging.
+A Telnyx-branded venue microsite + AI sales concierge deployed as a single Telnyx Edge Function — event planners browse the site, then text or talk to the concierge to check live availability, get pricing, request proposals, and book site visits. Per-planner Stateful Actors keep the conversation going across channels and across weeks, the venue team gets a live sales dashboard, and quiet planners get a personalized voice follow-up call one week later.
 
 ## Why Telnyx
 
-Telnyx provides **AI Communications Infrastructure** — the real-time, programmable building blocks that let this concierge agent talk to planners across every channel they prefer: SMS, voice calls, and email. Unlike traditional contact-center platforms, Telnyx Edge Functions run stateful agents with built-in KV, SQL databases, and scheduling — so the concierge remembers each planner's conversation history across days or weeks, pulls live availability from a real database, answers FAQs from a managed key-value store, and automatically places personalized voice follow-up calls when a planner goes quiet. All of this runs on Telnyx's global edge network with zero server management, zero credential handling in code, and native integration with Telnyx's Messaging, Voice, AI Inference, and Email APIs.
+Telnyx provides **AI Communications Infrastructure** — voice, messaging, AI inference, storage, and compute on one programmable platform. This concierge runs entirely on it: the website, the SMS concierge, the voice agent, and the sales dashboard all read the **same KV namespace and SQL database**, so the site and every channel say exactly the same thing. Stateful Actors give the concierge durable per-planner memory that survives restarts and spans touchpoints; Telnyx AI Inference answers with zero credentials in code; and the follow-up call — the highest-converting touch in venue sales — is scheduled and placed by the platform itself.
 
 ## Telnyx API Endpoints Used
 
-| Endpoint | Product | Usage |
+| Endpoint / Binding | Product | Usage |
 |---|---|---|
-| `TELNYX.messages.send()` | Messaging | Sends SMS replies to planners during text conversations |
-| `TELNYX.calls.create()` | Voice | Initiates outbound voice calls for inbound voice webhooks and one-week follow-up calls |
-| `TELNYX.ai.openai.chat.createCompletion()` | AI Inference | Generates natural-language responses from the LLM-powered concierge agent |
-| `Agent` / `StatefulActor` | Agents | Maintains per-planner conversation state across touchpoints |
-| `this.schedule()` | Scheduling | Schedules the one-week follow-up call after planner inactivity |
-| `FAQ_KV.get()` | KV Store | Retrieves FAQ answers for capacity, catering, AV, parking, and accessibility |
-| `AVAILABILITY_DB.prepare()` | SQL Database | Queries live date availability for requested booking windows |
-| `env.SECRETS.get()` | Secrets | Securely retrieves the Telnyx API key at runtime |
+| `env.TELNYX.ai.openai.chat.createCompletion()` | AI Inference | Grounded concierge replies + planner-detail extraction (zero-credential) |
+| `POST /v2/messages` | Messaging | SMS replies to planner inquiries |
+| `POST /v2/calls` + `/v2/calls/{id}/actions/*` | Voice | Outbound follow-up calls, answer/speak/gather on live calls |
+| `POST /v2/ai/assistants` | AI Assistants | Provisions the browser voice agent with a webhook tool |
+| `POST /v2/email_messages` | Email | Brochures to planners, confirmations, qualified-lead alerts |
+| `StatefulActor` / `Agent` (`[[actors]]`) | Stateful Actors | One durable ConciergeAgent per planner — state + history survive restarts |
+| `this.schedule(7d, "followUpCall", {id})` | Scheduling | Durable one-week follow-up timer per planner |
+| `[storage.kv.VENUE_KV]` | KV | Venue content (galleries, capacity, menus, AV, pricing, FAQs) — single source of truth |
+| `[storage.sqldb.AVAILABILITY_DB]` | SQL Database | Live availability, inquiries, qualified leads, site-visit conversions |
+| `env.SECRETS` / `process.env.TELNYX_PUBLIC_KEY` | Secrets | Ed25519 webhook verification, zero credentials in code |
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        PLANNER (Browser / Phone)                        │
-│                                                                         │
-│  ┌──────────────┐     ┌──────────────┐     ┌──────────────────────┐   │
-│  │ Custom Domain│     │ Text (SMS)   │     │ Voice Call           │   │
-│  │ Website      │     │              │     │                      │   │
-│  │ Galleries,   │────▶│ /inbound     │◀───▶│ /voice/{callId}      │   │
-│  │ Capacity,    │     │              │     │                      │   │
-│  │ Menus, AV    │     └──────────────┘     └──────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│              TELNYX EDGE FUNCTION (src/index.ts)                        │
-│                                                                         │
-│  ┌──────────────────┐    ┌─────────────────────────────────────────┐  │
-│  │ Default Export   │    │ ConciergeAgent (extends Agent)          │  │
-│  │ fetch()          │    │                                         │  │
-│  │ Routes:          │───▶│  • getState() / replaceState()          │  │
-│  │  /health         │    │  • checkAvailability() → SQLDB          │  │
-│  │  /inbound        │    │  • getFaqContext() → KV                 │  │
-│  │  /voice/*        │    │  • generateResponse() → TELNYX.ai       │  │
-│  └──────────────────┘    │  • sendSms() → TELNYX.messages          │  │
-│                          │  • followUpCall() → TELNYX.calls        │  │
-│                          │  • schedule(7d, "followUpCall")         │  │
-│                          └─────────────────────────────────────────┘  │
-│                                                                         │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌────────────┐ │
-│  │ Stateful     │  │ KV Store     │  │ SQL Database │  │ Scheduler  │ │
-│  │ Actor        │  │ FAQ_KV       │  │ AVAILABILITY_│  │ this.sched-│ │
-│  │ CONCIERGE    │  │ FAQs,        │  │ DB           │  │ ule()      │ │
-│  │              │  │ capacity,    │  │ availability │  │            │ │
-│  │ PlannerState │  │ catering, AV │  │ dates        │  │ 7-day      │ │
-│  │ per phone    │  │ parking,     │  │              │  │ follow-up  │ │
-│  │              │  │ accessibility│  │              │  │            │ │
-│  └──────────────┘  └──────────────┘  └──────────────┘  └────────────┘ │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                         VENUE DASHBOARD                                 │
-│  • Inquiry logs (every interaction)                                     │
-│  • Qualified leads (state.qualified)                                    │
-│  • Conversion data (state.siteVisitBooked)                              │
-│  • Email brochures sent via TELNYX.Email                                │
-└─────────────────────────────────────────────────────────────────────────┘
+                      ┌────────────────────────────────────────────────────────┐
+                      │       Edge Function (TypeScript, one deploy)           │
+                      │       *.telnyxcompute.com  (custom domain capable)     │
+                      │                                                        │
+   Planner browser ──►│  GET /            venue microsite (KV)                 │
+                      │  GET /voice       in-browser voice AI (WebRTC)         │
+                      │  GET /ops         venue sales dashboard (SQLDB)        │
+                      │  GET /api/*       venue data + live availability       │
+                      │  POST /api/site-visit   book a tour → SQLDB + email    │
+                      │  POST /api/setup-assistant  provision voice assistant  │
+                      │  POST /tools/lookup  ← assistant webhook tool (signed) │
+   Planner phone ────►│  POST /webhooks/sms   SMS concierge (Ed25519-verified) │
+   (venue number) ───►│  POST /webhooks/voice  Call Control (Ed25519-verified) │
+                      └──────────────┬─────────────────────────────────────────┘
+                                     │
+                 ┌───────────────────┼──────────────────────────────┐
+                 ▼                   ▼                              ▼
+     ┌───────────────────┐  ┌──────────────────┐  ┌───────────────────────────┐
+     │  Stateful Actors  │  │   Telnyx KV      │  │      Telnyx SQLDB         │
+     │  ConciergeAgent   │  │   venue/data     │  │   availability (dates)    │
+     │  one per planner  │  │   faqs, menus,   │  │   inquiries (logged)      │
+     │  state + history  │  │   pricing, AV    │  │   site_visits (bookings)  │
+     │  survive restarts │  │  single source   │  │  funnel: inquiry →        │
+     └────────┬──────────┘  │  of truth        │  │  qualified → booked       │
+              │             └──────────────────┘  └───────────────────────────┘
+              ▼
+     ┌────────────────────────────────────────────────────────────────┐
+     │  AI Inference: grounded reply + detail extraction              │
+     │  Messaging: SMS reply  ·  Email: brochure + lead alerts        │
+     │  Voice: speak/gather on live calls + scheduled follow-up dial  │
+     └────────────────────────────────────────────────────────────────┘
 ```
 
 **Data Flow:**
-1. Planner visits the branded custom-domain website to browse galleries, capacity charts, catering menus, and AV specs.
-2. Planner texts or calls the venue number → webhook hits `/inbound` or `/voice/{callId}`.
-3. The `ConciergeAgent` loads per-planner state from the Stateful Actor's durable storage.
-4. Agent queries `AVAILABILITY_DB` (SQLDB) for live date availability and `FAQ_KV` for common questions.
-5. Agent uses `TELNYX.ai.openai.chat.createCompletion()` to generate a natural-language response.
-6. Reply is sent via `TELNYX.messages.send()` (SMS) or Telnyx Call Control XML (voice).
-7. If the planner shows interest (≥2 inquiries, not yet qualified), `this.schedule(7 days, "followUpCall")` is queued.
-8. After 7 days of inactivity, `followUpCall()` places a personalized outbound voice call.
-9. Brochures and follow-up details are sent by email.
-10. All inquiries, qualified leads, and conversion data are logged in the actor's state for the venue dashboard.
+1. Planner opens the branded venue site (galleries, capacity charts, menus, AV specs, pricing, FAQs) — all rendered from KV.
+2. Planner texts the venue number (or talks in-browser via WebRTC) → webhook hits `/webhooks/sms` or `/webhooks/voice` (Ed25519-verified).
+3. The webhook routes to the planner's own `ConciergeAgent` StatefulActor — one actor per phone number, durable across days/weeks.
+4. The actor pulls live availability from SQLDB, venue facts from KV, and generates a grounded reply with AI Inference.
+5. Details (name, email, event type, guests, budget, dates) are extracted from the conversation; an inquiry row is written to SQLDB.
+6. Planners with a real email + serious scale/budget are **qualified**: they get the brochure by email, the venue sales inbox gets a lead alert.
+7. Unqualified-but-interested planners get a durable one-week follow-up timer (`this.schedule`), re-armed on every touchpoint.
+8. After one quiet week the agent places a **personalized voice follow-up call** (Call Control) — "press 1 to book your site visit" books it into SQLDB and emails the confirmation.
+9. The venue team watches it all live on `/ops`: inquiries → RFPs → booked, with conversion rate.
 
 ## Environment Variables
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `TELNYX_API_KEY` | `string` | `your_telnyx_api_key_here` | **yes** | TELNYX_API_KEY | — |
-| `FROM_NUMBER` | `string` | `+1555XXXXXXXX` | **yes** | Telnyx phone number used as the sender for SMS and voice calls | [Telnyx Mission Control](https://portal.telnyx.com/) |
-| `VENUE_EMAIL` | `string` | `bookings@yourvenue.com` | **yes** | Email address for sending brochures and follow-up details | Your venue's email system |
-| `DEMO_MODE` | `string` | `true` | no | When `true`, logs actions instead of sending real SMS/calls (default: `true`) | Set in `.env` |
+| `TELNYX_API_KEY` | `string` | `your_telnyx_api_key_here` | **yes** | Telnyx API key (injected by the `[telnyx]` binding; also used by REST helpers) | [Mission Control → API Keys](https://portal.telnyx.com/) |
+| `TELNYX_PUBLIC_KEY` | `string` | `your_ed25519_public_key_here` | **yes** | Org public key for Ed25519 webhook verification | `GET /v2/public_key` |
+| `TELNYX_CONNECTION_ID` | `string` | `your_call_control_connection_id_here` | for follow-up calls | Call Control connection id for outbound follow-ups | Mission Control → Voice |
+| `TELNYX_SMS_FROM` | `string` | `+1555XXXXXXXX` | **yes** | The venue's Telnyx number (SMS sender + voice ANI) | Mission Control → Numbers |
+| `EMAIL_FROM` | `string` | `onboarding@mail.telnyx.com` | no | Sender address (Telnyx shared domain works out of the box) | default |
+| `EMAIL_TO` | `string` | `sales@venue.example` | no | Venue sales inbox for qualified-lead alerts | your inbox |
+| `AI_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Telnyx-hosted inference model (no BYOK needed) | default |
+| `ASSISTANT_MODEL` | `string` | `moonshotai/Kimi-K2.6` | no | Model for the browser voice assistant | default |
+| `DEMO_MODE` | `string` | `true` | no | `true` simulates outbound SMS/email/calls; inference + KV + SQLDB always run for real | default |
+
+> Agent / CLI access — provision the resources this example uses:
+>
+> ```bash
+> # Secrets (org-scoped, injected at runtime)
+> telnyx-edge secrets add TELNYX_PUBLIC_KEY "$PUBLIC_KEY"
+> telnyx-edge secrets add TELNYX_CONNECTION_ID "$CONNECTION_ID"
+>
+> # KV namespace
+> telnyx-edge storage kv create --name venue-sales-concierge-data
+>
+> # SQLDB instance (availability, inquiries, leads, conversions)
+> # Mission Control → SQL Database → create instance → paste id into telnyx.toml
+>
+> # Phone number + messaging profile (SMS sender)
+> telnyx number-orders create --phone-numbers["+1555XXXXXXX"] --connection-id ""
+> telnyx messaging-profiles create --name "venue-sales-concierge" \
+>   --webhook-url "https://<your-func>.telnyxcompute.com/webhooks/sms"
+> telnyx messaging-phone-numbers update <number-id> --messaging-profile-id <profile-id>
+> ```
 
 ## Setup
 
@@ -112,119 +123,182 @@ npm install
 
 # 3. Create a .env file from the example
 cp .env.example .env
-# Edit .env and fill in your Telnyx API key, phone number, and venue email
+# Edit .env — see the Environment Variables table above
 
-# 4. Authenticate with Telnyx CLI
+# 4. Authenticate the Telnyx Edge CLI
+npm install -g @telnyx/edge-cli
 telnyx-edge auth api-key set your_telnyx_api_key_here
 
-# 5. Set required secrets
-telnyx-edge secrets add TELNYX_API_KEY "your_telnyx_api_key_here"
+# 5. Type-check and run the test suite
+npm run typecheck
+npm test
 
-# 6. Generate TypeScript types from telnyx.toml bindings
-telnyx-edge types
-
-# 7. Run the smoke test to verify everything loads
-npx tsx smoke_test.ts
-
-# 8. Deploy to Telnyx Edge
+# 6. Deploy to Telnyx Edge
 telnyx-edge ship
+
+# 7. Provision the browser voice assistant (one-time)
+curl -X POST https://<your-function-url>/api/setup-assistant
 ```
+
+<details><summary>Programmatic / CLI setup</summary>
+
+Provision the Telnyx resources behind the env vars with the Telnyx CLI (or grab them from Mission Control):
+
+```bash
+# Buy a phone number for the venue (SMS + voice)
+telnyx number-orders create --phone-numbers["+1555XXXXXXX"] --connection-id ""
+
+# Messaging profile → point at this function's SMS webhook
+telnyx messaging-profiles create --name "venue-sales-concierge" \
+  --webhook-url "https://<your-func>.telnyxcompute.com/webhooks/sms"
+telnyx messaging-phone-numbers update <number-id> --messaging-profile-id <profile-id>
+
+# Call Control connection → point its webhook at /webhooks/voice (for the
+# follow-up calls), then attach the venue number to it
+telnyx connections create --name "venue-concierge-cc" \
+  --webhook-url "https://<your-func>.telnyxcompute.com/webhooks/voice"
+
+# Ed25519 public key for webhook verification
+curl -H "Authorization: Bearer $TELNYX_API_KEY" https://api.telnyx.com/v2/public_key
+telnyx-edge secrets add TELNYX_PUBLIC_KEY "$PUBLIC_KEY"
+
+# Custom domain (branded venue website): Mission Control → Edge Functions →
+# your function → Domains → attach your venue domain (TLS provisioned for you)
+```
+
+</details>
 
 ## API Reference
 
-### `POST /inbound`
+### `GET /`
 
-Receives inbound SMS or voice webhook from Telnyx.
+The branded venue microsite — galleries, capacity charts, catering menus, AV specs, pricing, FAQs, live availability checker, and site-visit booking form. Fully server-rendered from KV.
 
-**Request Body:**
-```json
-{
-  "from": "+1555XXXXXXXX",
-  "text": "Hi, I'm interested in booking for 150 guests on June 15-17",
-  "callId": "call_abc123"
-}
-```
+### `GET /voice`
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `from` | `string` | yes | The planner's phone number |
-| `text` | `string` | no | The SMS message content (omitted for voice calls) |
-| `callId` | `string` | no | Telnyx call ID — if present, triggers a voice response |
+In-browser voice concierge (WebRTC, anonymous login to the AI Assistant). No dialing, no credentials.
 
-**Response (200 OK):**
-```json
-{
-  "reply": "I can check availability for your requested dates. 3 of 3 dates are available. Please let me know your preferred check-in and check-out dates."
-}
-```
+### `GET /ops`
 
-### `GET /voice/{callId}`
-
-Returns TwiML-like XML for Telnyx Call Control when a planner calls the venue number.
-
-**Response (200 OK):**
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-  <Say voice="female" language="en-US">Hello! This is your venue sales concierge...</Say>
-  <Record timeout="10" maxLength="120" />
-  <Hangup />
-</Response>
-```
+The venue's branded bookings dashboard — inquiries → RFPs → site-visit bookings funnel, live availability for the next 14 days, recent inquiries, and booked site visits. Auto-refreshes every 15s.
 
 ### `GET /health`
 
-Health check endpoint.
+Health probe. Returns `ok`.
+
+### `GET /api/event`
+
+Returns the venue data (same JSON the microsite renders from KV).
+
+### `GET /api/availability?start=YYYY-MM-DD&end=YYYY-MM-DD`
+
+Live availability from SQLDB.
 
 **Response (200 OK):**
 ```json
 {
-  "status": "ok"
+  "start": "2026-09-15",
+  "end": "2026-12-14",
+  "summary": "58 of 91 dates between 2026-09-15 and 2026-12-14 are available. Earliest openings: 2026-09-16, 2026-09-17, ...",
+  "days": [{ "date": "2026-09-16", "available": true, "note": "" }]
 }
 ```
+
+### `GET /api/leads`
+
+Funnel + records for the dashboard.
+
+**Response (200 OK):**
+```json
+{
+  "stats": { "inquiries": 12, "qualified": 5, "booked": 3, "conversion_pct": 25 },
+  "inquiries": [{ "id": "inq-...", "phone": "+1555...", "qualified": 1, "...": "..." }],
+  "visits": [{ "id": "visit-...", "visit_date": "2026-09-24", "status": "booked" }]
+}
+```
+
+### `POST /api/site-visit`
+
+Book a site visit from the web form.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `phone_number` | `string` | yes | Planner phone (E.164) |
+| `email` | `string` | yes | Planner email |
+| `name` | `string` | no | Planner name |
+| `visit_date` | `string` | no | Preferred date (`YYYY-MM-DD`) |
+
+**Response (200 OK):**
+```json
+{ "ok": true, "visit": { "id": "visit-k1x2...", "visit_date": "2026-09-24", "email": "jane@example.com", "name": "Jane" } }
+```
+
+### `POST /api/demo/message`
+
+Demo entry point — simulates an inbound planner SMS and runs the same actor pipeline end-to-end (inference real, outbound sends demo-logged). No signature required; test/demo only.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `from` | `string` | yes | Planner phone (E.164) |
+| `text` | `string` | yes | Message text |
+
+### `POST /webhooks/sms`
+
+Inbound SMS webhook (Telnyx messaging profile). Ed25519-verified, deduped on the message id, fast-acked, then processed by the planner's StatefulActor.
+
+### `POST /webhooks/voice`
+
+Call Control webhook (inbound venue calls + follow-up call events). Ed25519-verified; routes to the planner's actor which answers, speaks, gathers speech/DTMF, and books visits.
+
+### `POST /tools/lookup`
+
+Webhook tool for the voice assistant (Telnyx-signed). Returns live venue data + availability so the voice agent always agrees with the website.
 
 ### Scheduled Task: `followUpCall`
 
-Automatically triggered 7 days after a planner's last activity if they haven't been qualified. Places a personalized outbound voice call.
-
-**Payload:**
-```json
-{
-  "phone": "+1555XXXXXXXX"
-}
-```
+Durable one-week timer per planner (named task id — re-armed on every touchpoint). Skips if the planner replied, already booked, or is in demo mode; otherwise places a personalized outbound voice call.
 
 ## Troubleshooting
 
 | Issue | Cause | Solution |
 |---|---|---|
-| `Error: Missing 'from' field` | Inbound webhook received without a `from` parameter | Verify the Telnyx webhook payload includes the planner's phone number |
-| `Error: TELNYX_API_KEY not configured` | Secret not set in the Telnyx Edge environment | Run `telnyx-edge secrets add TELNYX_API_KEY "your_key_here"` |
-| `No availability data found for those dates` | SQLDB has no records for the requested date range | Insert availability records into the `availability` table |
-| `No FAQ context available` | KV namespace `FAQ_KV` is empty or missing `faqs` key | Populate `FAQ_KV` with FAQ entries using `telnyx-edge types` and the KV API |
-| `[DEMO] Would send SMS...` appears in logs | `DEMO_MODE=true` is set | Set `DEMO_MODE=false` in `.env` to send real SMS messages |
-| Follow-up call not scheduled | Planner was qualified or had fewer than 2 inquiries | The follow-up only triggers after 2+ inquiries from an unqualified planner |
-| `telnyx-edge: command not found` | Telnyx CLI not installed | Install via `npm install -g @telnyx/edge-cli` |
+| `401 invalid webhook signature` on `/webhooks/*` | `TELNYX_PUBLIC_KEY` not set or wrong key | `curl -H "Authorization: Bearer $TELNYX_API_KEY" https://api.telnyx.com/v2/public_key`, then `telnyx-edge secrets add TELNYX_PUBLIC_KEY "$PUBLIC_KEY"` |
+| `500 TELNYX_PUBLIC_KEY secret not configured` | Secret missing in the Edge environment | Run `telnyx-edge secrets add TELNYX_PUBLIC_KEY "$PUBLIC_KEY"` |
+| `[DEMO] Would send SMS...` in logs | `DEMO_MODE` is not `false` | Set `DEMO_MODE=false` (`telnyx-edge env-var set DEMO_MODE false` or in `telnyx.toml`) to send real SMS/emails/calls |
+| `No availability data` / empty calendar | SQLDB instance missing or schema not created | Create the SQLDB instance, paste its id into `telnyx.toml`; schema + 90-day seed are created on first `/api/availability` or `/ops` hit |
+| Voice assistant says it can't find info | Assistant not provisioned | `curl -X POST https://<your-function-url>/api/setup-assistant` |
+| Browser voice fails with `Login Incorrect` | Assistant missing `supports_unauthenticated_web_calls` | Re-run setup — `upsertAssistant()` sets it |
+| Follow-up call never happens | No `TELNYX_CONNECTION_ID`, planner replied, already booked, or demo mode | Set the connection secret; the actor skips quiet planners who replied or who already booked |
+| SMS replies not arriving | Messaging profile webhook mis-pointed or `from` number not on the profile | Point the profile at `/webhooks/sms` and attach the number (`telnyx messaging-phone-numbers update`) |
+| `telnyx-edge: command not found` | Edge CLI not installed | `npm install -g @telnyx/edge-cli` |
 
 ## Agent Discovery
 
-- [Telnyx Agent Signup](https://telnyx.com/agent-signup.md) — Register your venue's custom-domain agent
-- [Telnyx AI GitHub](https://github.com/team-telnyx/ai) — Open-source AI agent examples and SDK
-- [llms.txt](https://telnyx.com/llms.txt) — Machine-readable documentation for AI agents
+This example is part of the [Telnyx Code Examples](https://github.com/team-telnyx/telnyx-code-examples) catalog.
+
+- **Agent signup**: [telnyx.com/agent-signup.md](https://telnyx.com/agent-signup.md) — automated account provisioning via agent mail; get an API key with no human intervention
+- **Agent CLI**: [github.com/team-telnyx/ai/tree/main/cli](https://github.com/team-telnyx/ai/tree/main/cli) — composite commands for agents ([commands reference](https://github.com/team-telnyx/ai/tree/main/cli/src/commands))
+- **Agent skills**: [github.com/team-telnyx/ai/tree/main/skills](https://github.com/team-telnyx/ai/tree/main/skills)
+- **Telnyx AI repo**: [github.com/team-telnyx/ai](https://github.com/team-telnyx/ai)
+- **LLM-optimized docs**: [`llms-full.txt`](https://developers.telnyx.com/llms-full.txt)
+- **Example index**: [`llms.txt`](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/llms.txt)
+- **Telnyx CLI (human)**: [developers.telnyx.com/development/cli](https://developers.telnyx.com/development/cli) — `go install github.com/team-telnyx/telnyx-cli/cmd/telnyx@latest`
 
 ## Related Examples
 
-- [ai-sales-assistant](../ai-sales-assistant) — AI-powered sales assistant for B2B outreach
-- [event-ticketing-bot](../event-ticketing-bot) — SMS-based event ticketing and check-in
-- [hotel-front-desk](../hotel-front-desk) — AI concierge for hotel guest services
-- [appointment-scheduler](../appointment-scheduler) — Automated appointment booking via SMS and voice
+- [edge-event-microsite](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-event-microsite/README.md) — Event microsite + AI concierge: one KV store powers the site, SMS/WhatsApp concierge, browser voice AI, and sponsor report
+- [sms-support-agent-with-followup](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sms-support-agent-with-followup/README.md) — SMS support agent on Stateful Actors with a scheduled 24h follow-up
+- [persistent-state-agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/persistent-state-agent/README.md) — Durable per-customer agent state across touchpoints
+- [conference-agent-mediator](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/conference-agent-mediator/README.md) — Multi-actor conference orchestration with Call Control
 
 ## Resources
 
-- [Telnyx Edge Documentation](https://docs.telnyx.com/edge) — Full developer docs for Edge Functions, Agents, and Stateful Actors
-- [Telnyx API Reference](https://developers.telnyx.com/api) — Complete API reference for Messaging, Voice, AI, and Email
-- [Telnyx Edge SDK](https://docs.telnyx.com/edge/sdk) — TypeScript SDK for `@telnyx/edge-runtime`
-- [Telnyx Messaging Product Page](https://telnyx.com/sms) — Programmable SMS for two-way conversations
-- [Telnyx Voice Product Page](https://telnyx.com/voice) — Programmable voice with Call Control
-- [Telnyx AI Inference Product Page](https://telnyx.com/ai) — LLM-powered inference with zero-credential bindings
-- [Telnyx Pricing](https://telnyx.com/pricing) — Pay-as-you-go pricing for all Telnyx products
+- [Edge Functions docs](https://developers.telnyx.com/docs/edge/functions) — deploy, secrets, bindings, actors
+- [Stateful Actors guide](https://developers.telnyx.com/docs/edge/stateful-actors) — durable per-entity state, tasks, alarms
+- [AI Inference API reference](https://developers.telnyx.com/api-reference/ai) — chat completions, hosted models
+- [Messaging API reference](https://developers.telnyx.com/api-reference/messaging) — send SMS, webhooks
+- [Call Control API reference](https://developers.telnyx.com/api-reference/call-control) — dial, answer, speak, gather
+- [Email API reference](https://developers.telnyx.com/api-reference/email) — send email messages
+- [Telnyx SDKs](https://developers.telnyx.com/development/sdk) — client libraries for every language
+- [Edge Compute product](https://telnyx.com/products/edge-functions) — zero-server compute at the edge
+- [Telnyx Pricing](https://telnyx.com/pricing) — pay-as-you-go pricing for all products
