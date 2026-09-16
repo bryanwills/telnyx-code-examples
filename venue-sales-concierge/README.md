@@ -230,7 +230,7 @@ Book a site visit from the web form.
 
 **Response (200 OK):**
 ```json
-{ "ok": true, "visit": { "id": "visit-k1x2...", "visit_date": "2026-09-24", "email": "jane@corp.com", "name": "Jane" } }
+{ "ok": true, "visit": { "id": "visit-k1x2...", "visit_date": "2026-09-24", "email": "jane@example.com", "name": "Jane" } }
 ```
 
 ### `POST /api/demo/message`

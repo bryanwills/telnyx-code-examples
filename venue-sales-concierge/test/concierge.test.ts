@@ -34,7 +34,7 @@ describe("phone helpers", () => {
 
 describe("lead qualification", () => {
   it("qualifies planners with an email and 50+ guests", () => {
-    expect(isQualifiedLead({ email: "jane@corp.com", guests: 150, budget: "", event_type: "" })).toBe(true);
+    expect(isQualifiedLead({ email: "jane@example.com", guests: 150, budget: "", event_type: "" })).toBe(true);
   });
 
   it("requires an email", () => {

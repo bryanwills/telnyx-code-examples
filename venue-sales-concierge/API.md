@@ -121,7 +121,7 @@ Funnel + records for the sales dashboard.
       "id": "inq-k1x2y3",
       "phone": "+15551234567",
       "name": "Jane",
-      "email": "jane@corp.com",
+      "email": "jane@example.com",
       "event_type": "wedding",
       "guests": 150,
       "budget": "$20,000",
@@ -137,7 +137,7 @@ Funnel + records for the sales dashboard.
       "id": "visit-a9b8c7",
       "phone": "+15551234567",
       "name": "Jane",
-      "email": "jane@corp.com",
+      "email": "jane@example.com",
       "visit_date": "2026-09-24",
       "status": "booked",
       "source": "voice-call",
@@ -163,13 +163,13 @@ Book a site visit from the microsite form. Writes to SQLDB and confirms by email
 ```bash
 curl -X POST https://<your-function-url>/api/site-visit \
   -H "Content-Type: application/json" \
-  -d '{ "phone_number": "+15551234567", "email": "jane@corp.com", "name": "Jane", "visit_date": "2026-09-24" }'
+  -d '{ "phone_number": "+15551234567", "email": "jane@example.com", "name": "Jane", "visit_date": "2026-09-24" }'
 ```
 
 **Response — `200 OK`**
 
 ```json
-{ "ok": true, "visit": { "id": "visit-a9b8c7", "visit_date": "2026-09-24", "email": "jane@corp.com", "name": "Jane" } }
+{ "ok": true, "visit": { "id": "visit-a9b8c7", "visit_date": "2026-09-24", "email": "jane@example.com", "name": "Jane" } }
 ```
 
 | Status | Meaning |
