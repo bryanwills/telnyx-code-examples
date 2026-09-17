@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-09-16T20:48:42Z",
-  "example_count": 551,
+  "generated_at": "2026-09-17T23:01:40Z",
+  "example_count": 552,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -4964,6 +4964,15 @@
       "language": "nodejs",
       "framework": "edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/omni-channel-inbox-agent"
+    },
+    {
+      "folder": "sub-agent-orchestrator-actor",
+      "title": "Sub-Agent Orchestrator Actor — Durable Multi-Agent Workflows on Telnyx Edge",
+      "description": "A persistent parent actor that spawns child actors for parallel transcription jobs, tracks their lifecycle, resumes interrupted runs without redoing finished work, persists a per-file scorecard to KV, and self-cleans on completion — built on @telnyx/edge-runtime 0.15.2.",
+      "product": "ai",
+      "language": "typescript",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/sub-agent-orchestrator-actor"
     }
   ]
 }

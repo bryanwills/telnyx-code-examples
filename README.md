@@ -25,7 +25,7 @@ Each example's README has a Quick Start with the exact install/run commands for 
 ---
 
 <details open>
-<summary><h2>Voice AI</h2> <em>(159 examples)</em></summary>
+<summary><h2>Voice AI</h2> <em>(160 examples)</em></summary>
 
 Build voice applications with [Telnyx Voice AI](https://telnyx.com/products/voice-ai-agents) - IVR menus, call recording, conferencing, WebRTC, and AI-powered call routing.
 
@@ -127,8 +127,8 @@ Build voice applications with [Telnyx Voice AI](https://telnyx.com/products/voic
 | [number-reputation-monitor-auto-rotate-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/number-reputation-monitor-auto-rotate-python/README.md) | Python | Number Reputation Monitor - track outbound number reputation, auto-rotate flagged numbers. |
 | [number-search-and-purchase-api-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/number-search-and-purchase-api-python/README.md) | Python | Number Search and Purchase API - search, filter, and buy phone numbers programmatically. |
 | [number-warmup-reputation-builder-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/number-warmup-reputation-builder-python/README.md) | Python | Number Warmup & Reputation Builder - gradually ramp SMS volume on new numbers to build carrier reputation and avoid spam flags. |
+| [omni-channel-inbox-agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/omni-channel-inbox-agent/README.md) | Node.js | Build a Telnyx Edge Compute agent that runs a lab-results intake workflow across fax, voice, email, and SMS — one durable StatefulActor per patient with a human-in-the-loop inbox and live engagement analytics. |
 | [omni-channel-lab-inbox-agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/omni-channel-lab-inbox-agent/README.md) | Node.js | Lab-result fax intake with a human-in-the-loop inbox: fax received, operator reviews and accepts (fax deleted, only reference kept), AI drafts confirmation email, SMS appointment flow, and a voice agent that answers status questions without touching lab content. |
-| [omni-channel-inbox-agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/omni-channel-inbox-agent/README.md) | Node.js | Run a lab-results intake workflow across fax, voice, email, and SMS on Telnyx Edge Compute — one durable StatefulActor per patient with a human-in-the-loop inbox and live engagement analytics. |
 | [porting-loa-automation-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/porting-loa-automation-python/README.md) | Python | Porting LOA Automation - automate Letter of Authorization generation and porting order submission. |
 | [porting-order-tracker-dashboard-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/porting-order-tracker-dashboard-python/README.md) | Python | Submit, track, and manage number porting orders with SLA monitoring, timeline visualization, and bulk operations. |
 | [real-time-call-intelligence-dashboard-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/real-time-call-intelligence-dashboard-python/README.md) | Python | Real-Time Call Intelligence Dashboard - live transcription, sentiment analysis, and competitor detection. |
@@ -380,7 +380,7 @@ Send and receive text messages with the [Telnyx SMS API](https://telnyx.com/prod
 </details>
 
 <details open>
-<summary><h2>AI Assistants</h2> <em>(148 examples)</em></summary>
+<summary><h2>AI Assistants</h2> <em>(149 examples)</em></summary>
 
 Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assistants) - LLM-powered agents for voice and messaging automation.
 
@@ -521,6 +521,7 @@ Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assis
 | [shipment-agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/shipment-agent/README.md) | Python | A durable AI shipment agent that proactively communicates with customers across carriers and status changes via SMS and Voice. |
 | [sql-natural-language-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sql-natural-language-python/README.md) | Python | AI SQL Natural Language — turn plain-English questions into validated SQL with schema context via Telnyx AI Inference. Includes a sample dataset for live execution. |
 | [storage-voicemail-archive-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/storage-voicemail-archive-python/README.md) | Python | Storage Voicemail Archive - record voicemails to Telnyx Cloud Storage with search. |
+| [sub-agent-orchestrator-actor](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sub-agent-orchestrator-actor/README.md) | Typescript | A persistent parent actor that spawns child actors for parallel transcription jobs, tracks their lifecycle, resumes interrupted runs without redoing finished work, persists a per-file scorecard to KV, and self-cleans on completion — with a browser console that walks the full recovery story — built on @telnyx/edge-runtime 0.15.2. |
 | [texml-voicemail-drop-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/texml-voicemail-drop-python/README.md) | Python | Leave pre-recorded voicemails at scale via TeXML. |
 | [three-way-ai-interpreter-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/three-way-ai-interpreter-python/README.md) | Python | Two humans speak different languages on the same call. AI translates in real-time and speaks the translation to each party. |
 | [update-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/update-ai-assistant-python/README.md) | Python | Update an existing Telnyx AI Assistant's configuration, model, system prompt, and tools via the API. |
