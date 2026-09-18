@@ -3390,6 +3390,7 @@ examples:
     folder: omni-channel-inbox-agent
 
   - product: ai
+    use_case: sub-agent-orchestration
     use_case: "auto-generated-from-linear"
     language: typescript
     framework: edge
