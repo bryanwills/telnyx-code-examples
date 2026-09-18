@@ -3384,6 +3384,12 @@ examples:
     framework: edge
     folder: patient-agent
 
+  - product: iot
+    use_case: sim-agent
+    language: typescript
+    framework: edge
+    folder: sim-agent
+
   - product: ai
     use_case: "auto-generated-from-linear"
     language: typescript

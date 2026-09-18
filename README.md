@@ -616,6 +616,7 @@ Activate SIM cards, monitor data usage, provision eSIMs, and track device locati
 | [provision-esim-php](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/provision-esim-php/README.md) | PHP | --- |
 | [provision-esim-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/provision-esim-python/README.md) | Python | Provision eSIM profiles over the air. |
 | [provision-esim-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/provision-esim-ruby/README.md) | Ruby | --- |
+| [sim-agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sim-agent/README.md) | TypeScript | A durable Telnyx Edge Agent that embodies a SIM card, tracking data usage, proactively alerting on thresholds, and auto-provisioning plan upgrades via SMS and Call Control. |
 | [sim-fleet-data-usage-anomaly-detector-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sim-fleet-data-usage-anomaly-detector-python/README.md) | Python | SIM Fleet Data Usage Anomaly Detector - monitor IoT SIM usage, AI detects anomalies, SMS alerts. |
 | [track-iot-device-location-csharp](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/track-iot-device-location-csharp/README.md) | C# | --- |
 | [track-iot-device-location-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/track-iot-device-location-go/README.md) | Go | --- |
