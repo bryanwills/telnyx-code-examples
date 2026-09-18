@@ -4,7 +4,7 @@
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
   "generated_at": "2026-09-17T23:01:40Z",
-  "example_count": 552,
+  "example_count": 553,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -1562,6 +1562,15 @@
       "language": "python",
       "framework": "flask",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/missions-ai-task-runner-python"
+    },
+    {
+      "folder": "multi-agent-debate",
+      "title": "Multi-Agent Debate with Live WebSocket Streaming",
+      "description": "Two AI agents debate a topic with turn-based arguments, live WebSocket broadcasting, and audience voting tallied in SQL.",
+      "product": "ai",
+      "language": "typescript",
+      "framework": "edge",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/multi-agent-debate"
     },
     {
       "folder": "multi-channel-ai-helpdesk-with-ticketing-python",

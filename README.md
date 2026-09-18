@@ -380,7 +380,7 @@ Send and receive text messages with the [Telnyx SMS API](https://telnyx.com/prod
 </details>
 
 <details open>
-<summary><h2>AI Assistants</h2> <em>(149 examples)</em></summary>
+<summary><h2>AI Assistants</h2> <em>(150 examples)</em></summary>
 
 Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assistants) - LLM-powered agents for voice and messaging automation.
 
@@ -502,6 +502,7 @@ Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assis
 | [maintenance-request-dispatch-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/maintenance-request-dispatch-python/README.md) | Python | Tenant texts issue, AI categorizes and estimates cost, auto-dispatches vendor for routine work, manager approves orders over $500 via SMS reply. |
 | [missions-ai-task-runner-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/missions-ai-task-runner-python/README.md) | Python | Missions AI Task Runner - AI-driven task execution within the Telnyx Missions framework. AI decides next steps based on task results. |
 | [moderation-classifier-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/moderation-classifier-python/README.md) | Python | AI Moderation Classifier — classify user-generated content as safe/spam/abuse/hate/harassment/self-harm using embeddings pre-filter + LLM judgment via Telnyx AI Inference. |
+| [multi-agent-debate](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/multi-agent-debate/README.md) | Typescript | Two AI agents debate a topic with turn-based arguments, live WebSocket broadcasting, and audience voting tallied in SQL. |
 | [multi-channel-ai-helpdesk-with-ticketing-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/multi-channel-ai-helpdesk-with-ticketing-python/README.md) | Python | Multi-Channel AI Helpdesk with Ticketing - voice + SMS + WhatsApp support with auto-ticket creation. |
 | [multi-character-narrator-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/multi-character-narrator-python/README.md) | Python | Paste a dialogue script with speaker labels, assign each speaker a distinct Telnyx Ultra voice, render every line in parallel, and stitch the per-line audio into one continuous MP3. |
 | [multi-model-inference-switcher](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/multi-model-inference-switcher/README.md) | Node.js | Switch between LLM models at runtime via a KV feature flag — no redeploy. Agent SDK + zero-credential inference + admin UI with live model switching. |

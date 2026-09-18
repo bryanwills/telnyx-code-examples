@@ -1073,6 +1073,12 @@ examples:
     folder: missions-ai-task-runner-python
 
   - product: ai
+    use_case: "auto-generated-from-linear"
+    language: typescript
+    framework: edge
+    folder: multi-agent-debate
+
+  - product: ai
     use_case: multi-channel-ai-helpdesk-with-ticketing
     language: python
     framework: flask
