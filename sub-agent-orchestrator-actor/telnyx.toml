@@ -41,3 +41,11 @@ MAX_CHILD_ATTEMPTS = "3"
 DEMO_DELAY_MS = "2500"
 DEMO_HANG_FILES = ""
 DEMO_HANG_MS = "8000"
+[telnyx]
+binding = "TELNYX"
+
+[storage.kv.JOB_KV]
+id = "<kv-namespace-uuid>"
+
+[env_vars]
+MOCK_AUDIO_URLS = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3,https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3,https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3,https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3,https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"

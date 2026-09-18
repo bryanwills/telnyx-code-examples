@@ -28,6 +28,7 @@ async function runSmokeTest(): Promise<void> {
 
   // 2. Orchestrator methods exist (spec primitives)
   const orchProto = OrchestratorAgent.prototype as unknown as Record<string, unknown>;
+  const orchProto = OrchestratorAgent.prototype as Record<string, unknown>;
   assert(typeof orchProto.startJob === "function", "OrchestratorAgent.startJob() exists");
   assert(typeof orchProto.reportComplete === "function", "OrchestratorAgent.reportComplete() exists");
   assert(typeof orchProto.reportFailure === "function", "OrchestratorAgent.reportFailure() exists");
@@ -38,6 +39,7 @@ async function runSmokeTest(): Promise<void> {
 
   // 3. Transcriber methods
   const childProto = TranscriberAgent.prototype as unknown as Record<string, unknown>;
+  const childProto = TranscriberAgent.prototype as Record<string, unknown>;
   assert(typeof childProto.assign === "function", "TranscriberAgent.assign() exists");
 
   // 4. Verify Agent base-class primitives are inherited (spawn, children, destroy, schedule, queue)
@@ -115,6 +117,16 @@ async function runSmokeTest(): Promise<void> {
   assert(respConfig.status === 200, "GET /config returns 200");
   assert(Array.isArray(cfg.audioUrls) && cfg.audioUrls.length === 2, "config exposes audio URLs");
   assert(typeof cfg.demoMode === "boolean", "config exposes demo mode");
+
+  // 5. HTTP handler routes
+  const resp404 = await handler.fetch(new Request("http://localhost/"), {
+    SECRETS: {} as never,
+    TRANSCRIBER: {} as never,
+    JOB_KV: {} as never,
+    TELNYX: {} as never,
+    MOCK_AUDIO_URLS: "",
+  } as never);
+  assert(resp404.status === 404, "Unknown route returns 404");
 
   const respBadJob = await handler.fetch(
     new Request("http://localhost/jobs", {

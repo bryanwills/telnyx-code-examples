@@ -51,6 +51,9 @@ Starts a new orchestration job — **and is idempotent**, which is the recovery 
 | `jobId` seen, job finished | No-op: the KV record is authoritative — finished work is **never redone**, even after the parent actor destroyed itself | `"ALREADY_DONE"` |
 
 The orchestrator actor is addressed by `jobId` (`idFromName`), so the same job ID always resolves to the same actor instance.
+### `POST /jobs`
+
+Starts a new orchestration job. The orchestrator actor is created (or resumed) by `jobId`, reads the audio file list from the `MOCK_AUDIO_URLS` env var, spawns one `TranscriberAgent` child actor per file, and schedules a stuck-child check at 5 minutes.
 
 #### Request Body
 
@@ -101,6 +104,7 @@ Returned when the request body is missing or `jobId` is absent/not a string.
 #### Response — `500 Internal Server Error`
 
 Returned when the job cannot be started (e.g., `MOCK_AUDIO_URLS` is empty, or the actor instance is bound to a different `jobId`).
+Returned when the job cannot be started (e.g., `MOCK_AUDIO_URLS` is empty, or the actor is already in a non-`CREATED` state).
 
 ```json
 {
@@ -147,6 +151,7 @@ The persisted job record, including the per-file **scorecard** (`outcomes`), per
       "completedAt": "2026-07-28T12:00:05.000Z",
       "error": null,
       "attempts": 1
+      "error": null
     }
   ],
   "status": "COMPLETED",
@@ -167,6 +172,11 @@ The persisted job record, including the per-file **scorecard** (`outcomes`), per
       "error": null,
       "attempts": 1,
       "childName": "batch-transcription-job-42-file-1"
+    }
+  ],
+      "transcript": "[demo] Mock transcript for file-1 from https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      "childName": "batch-transcription-job-42-file-1",
+      "completedAt": "2026-07-28T12:00:05.000Z"
     }
   ],
   "createdAt": "2026-07-28T12:00:00.000Z",
@@ -236,6 +246,29 @@ Queued via `queue("finalize", undefined, { id: "<jobId>:finalize" })` when all f
 ### `TranscriberAgent.assign(payload: { audioUrl: string; fileId: string; jobId: string; parentName: string; attempt: number; hangFiles?: string[] }): Promise<void>`
 
 Called by the parent via `child.assign(...)`. Sets child state to `RUNNING`, performs transcription (mock in demo mode, real speech-to-text via `/v2/ai/audio/transcriptions` in live mode), **persists its per-file outcome to KV before reporting to the parent** (KV-first ordering), then reports back via the `PARENT` binding. Request-level `hangFiles` fault injection applies before transcription; the env-based `DEMO_HANG_FILES` only applies in demo mode.
+### `OrchestratorAgent.startJob(payload: { jobId: string }): Promise<{ jobId: string }>`
+
+Called by the HTTP handler via `env.ORCHESTRATOR.idFromName(jobId)` + `.get(id)` + `.startJob(...)`. Spawns children, transitions state `CREATED → SPAWNING → RUNNING`, schedules `checkChildren`.
+
+### `OrchestratorAgent.reportComplete(fileId: string, transcript: string): Promise<void>`
+
+Called by a child via `env.PARENT.idFromName(parentName).reportComplete(...)`. Marks the child `COMPLETED`, persists the per-file result to KV, and triggers `finalize` when all children have reported.
+
+### `OrchestratorAgent.reportFailure(fileId: string, error: string): Promise<void>`
+
+Called by a child via `env.PARENT.idFromName(parentName).reportFailure(...)`. Marks the child `FAILED`, persists the error to KV, and triggers `finalize` when all children have reported.
+
+### `OrchestratorAgent.checkChildren(): Promise<void>`
+
+Scheduled via `schedule(300, "checkChildren")`. Marks any child still `RUNNING` after 5 minutes as `FAILED` with error `"Timed out after 5 minutes"`.
+
+### `OrchestratorAgent.finalize(): Promise<void>`
+
+Queued via `queue(0, "finalize")` when all children have reported. Sets final status (`COMPLETED` or `PARTIAL_FAILURE`), persists full job state to KV, sends operator SMS (demo mode logs instead), then calls `this.destroy()`.
+
+### `TranscriberAgent.assign(payload: { audioUrl: string; fileId: string; parentName: string }): Promise<void>`
+
+Called by the parent via `child.assign(...)`. Sets child state to `RUNNING`, performs transcription (mock in demo mode, LLM call in live mode), then reports back to the parent via the `PARENT` binding.
 
 ---
 
@@ -253,3 +286,10 @@ Called by the parent via `child.assign(...)`. Sets child state to `RUNNING`, per
 | `MAX_CHILD_ATTEMPTS`  | string  | No       | Max re-spawn attempts per file before it is left `FAILED` in the scorecard (default `3`). |
 | `DEMO_HANG_FILES`     | string  | No       | Demo fault injection: comma-separated file ids (e.g. `file-2`) whose workers crash mid-run. Demo mode only. |
 | `DEMO_HANG_MS`        | string  | No       | How long a `DEMO_HANG_FILES` worker stays hung before crashing (default `8000`). |
+| Variable            | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `DEMO_MODE`         | string  | No       | `"true"` (default) logs SMS and uses mock transcripts. Set to `"false"` for live mode. |
+| `MOCK_AUDIO_URLS`   | string  | Yes      | Comma-separated list of public audio file URLs (one child spawned per entry). |
+| `TELNYX_API_KEY`    | string  | Live only | Telnyx API key for LLM calls in live mode. |
+| `OPERATOR_NUMBER`   | string  | Live only | Destination phone number for SMS notification. |
+| `TELNYX_SENDER`     | string  | Live only | Sender phone number for SMS notification. |

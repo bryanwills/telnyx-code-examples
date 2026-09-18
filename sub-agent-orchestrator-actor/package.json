@@ -10,6 +10,8 @@
     "types": "telnyx-edge types",
     "test": "npx tsx smoke_test.ts",
     "test:recovery": "npx tsx recovery_test.ts",
+    "types": "telnyx-edge types",
+    "test": "npx tsx smoke_test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

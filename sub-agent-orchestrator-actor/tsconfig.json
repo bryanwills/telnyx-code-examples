@@ -12,4 +12,5 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*.ts", "dev_server.ts", "smoke_test.ts", "recovery_test.ts"]
+  "include": ["src/**/*.ts", "smoke_test.ts"]
 }

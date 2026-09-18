@@ -2,6 +2,7 @@
 name: sub-agent-orchestrator-actor
 title: "Sub-Agent Orchestrator Actor — Durable Multi-Agent Workflows on Telnyx Edge"
 description: "A persistent parent actor that spawns child actors for parallel transcription jobs, tracks their lifecycle, resumes interrupted runs without redoing finished work, persists a per-file scorecard to KV, and self-cleans on completion — built on @telnyx/edge-runtime 0.15.2."
+description: "A persistent parent actor that spawns child actors for parallel transcription jobs, tracks their lifecycle, persists results, and self-cleans on completion — built on @telnyx/edge-runtime 0.15.2."
 language: typescript
 framework: edge
 telnyx_products: [Edge Runtime, Agent SDK, SMS, AI, Inference]
@@ -16,6 +17,7 @@ The use case behind the sample: a clinic-network transcription service loses its
 **What you get when you open the URL:**
 - `GET /` — the clinic-facing service: tonight's batch, a power-event simulation, live per-recording progress, automatic recovery, and the morning report (scorecard + the exact SMS the manager receives)
 - `GET /console` — the engineering view: actor names, attempt counts, KV keys, `RESUMED`/`ALREADY_DONE` badges, and the KV-first write order
+A durable parent actor that spawns child actors for parallel transcription jobs, tracks each child's lifecycle (PENDING → RUNNING → COMPLETED → FAILED), persists results to KV, and self-cleans on completion. Built on the `spawn()`, `children()`, and `destroy()` primitives introduced in `@telnyx/edge-runtime` 0.15.2.
 
 ## Why Telnyx
 
@@ -29,6 +31,8 @@ Telnyx provides the **AI Communications Infrastructure** that makes this sample 
 | `/v2/messages` | `POST` | SMS notification to operator on job completion (live mode, via raw REST) |
 
 > Both calls go over raw REST with `TELNYX_API_KEY` from SECRETS — the TELNYX binding surface is unverified in 0.15.2, so the guaranteed REST path is used. The transcription endpoint is verified live: it returns `{ "text": ... }` for public audio URLs with `distil-whisper/distil-large-v2`.
+| `/v2/ai/openai/chat/completions` | `POST` | LLM transcription summary (live mode, via raw REST) |
+| `messages.send()` | — | SMS notification to operator on job completion (via `TELNYX` binding) |
 
 ## Architecture
 
@@ -56,6 +60,22 @@ The parent actor (`OrchestratorAgent`) IS the workflow. It owns the job state, s
 │  │                             what never reported (≤ attempts) │   │
 │  │  schedule(watchdog)         stuck-child detection, stable id │   │
 │  │  destroy()                  self-clean                       │   │
+│  POST /jobs { jobId }          GET /api/jobs/:jobId                 │
+│        │                              ▲                             │
+│        ▼                              │                             │
+│  ┌──────────────────────────────────────────────────────────────┐   │
+│  │              OrchestratorAgent (persistent parent)           │   │
+│  │                                                              │   │
+│  │  State: jobId, totalFiles, completed, failed, children[],    │   │
+│  │         status, results[], createdAt, completedAt            │   │
+│  │                                                              │   │
+│  │  CREATED → SPAWNING → RUNNING → COMPLETING → COMPLETED       │   │
+│  │                              ↘ PARTIAL_FAILURE               │   │
+│  │                                                              │   │
+│  │  spawn(TRANSCRIBER, name) ──┐                                │   │
+│  │  children()                 │  track lifecycle               │   │
+│  │  schedule(300, check)       │  stuck-child timeout           │   │
+│  │  destroy()                  │  self-clean                    │   │
 │  └──────────────┬───────────────────────────────────────────────┘   │
 │                 │ spawn() per audio file                            │
 │                 ▼                                                   │
@@ -77,6 +97,21 @@ The parent actor (`OrchestratorAgent`) IS the workflow. It owns the job state, s
 │  │  SMS (raw REST)                                              │   │
 │  │  Operator notified with the scorecard on completion /        │   │
 │  │  partial failure                                             │   │
+│  │  State: fileId, audioUrl, parentName, status, transcript     │   │
+│  │                                                              │   │
+│  │  assign(payload) → transcribe → reportComplete(fileId,       │   │
+│  │  transcript) → parent via PARENT binding                     │   │
+│  └──────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+│  ┌──────────────────────────────────────────────────────────────┐   │
+│  │  KV (JOB_KV)                                                │   │
+│  │  job:{jobId} → full job state                               │   │
+│  │  job:{jobId}:file:{fileId} → per-child result               │   │
+│  └──────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+│  ┌──────────────────────────────────────────────────────────────┐   │
+│  │  SMS (TELNYX binding)                                        │   │
+│  │  Operator notified on completion / partial failure           │   │
 │  └──────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -105,6 +140,10 @@ The parent actor (`OrchestratorAgent`) IS the workflow. It owns the job state, s
 > # List numbers you already own
 > telnyx phone-numbers list
 > ```
+| `DEMO_MODE` | `string` | `your_demo_mode_here` | **yes** | DEMO_MODE | — |
+| `OPERATOR_NUMBER` | `string` | `your_operator_number_here` | **yes** | OPERATOR_NUMBER | — |
+| `TELNYX_API_KEY` | `string` | `your_telnyx_api_key_here` | **yes** | TELNYX_API_KEY | — |
+| `TELNYX_SENDER` | `string` | `your_telnyx_sender_here` | **yes** | TELNYX_SENDER | — |
 
 ## Setup
 
@@ -168,6 +207,13 @@ The parent actor (`OrchestratorAgent`) IS the workflow. It owns the job state, s
    morning report. The engineering view is at `/console`.
 
 6. **Deploy to Telnyx Edge:**
+4. **Run the smoke test:**
+
+   ```bash
+   npx tsx smoke_test.ts
+   ```
+
+5. **Deploy to Telnyx Edge:**
 
    ```bash
    npm run deploy
@@ -195,6 +241,9 @@ Non-secret knobs for the console: `audioUrls`, `transcriptionModel`, `stuckTimeo
 ### `POST /jobs`
 
 Idempotent: starts, resumes, or no-ops depending on the job's state. The audio list and fault injection can come from env or from the request body.
+### `POST /jobs`
+
+Starts a new orchestration job. The actor reads the audio file list from the `MOCK_AUDIO_URLS` env var.
 
 **Request body:**
 
@@ -215,6 +264,10 @@ Idempotent: starts, resumes, or no-ops depending on the job's state. The audio l
 | `stuckTimeoutSeconds` | number | no | Per-job watchdog window (UIs pass 6 for demo tempo) |
 | `demoMode` | boolean | no | Job-level demo pin — mock transcripts + logged SMS when true |
 
+  "jobId": "batch-transcription-job-42"
+}
+```
+
 **Response:**
 
 ```json
@@ -231,6 +284,9 @@ Idempotent: starts, resumes, or no-ops depending on the job's state. The audio l
 ### `GET /api/jobs/:jobId`
 
 Retrieves the persisted job record, including per-file outcome (`outcomes`), per-child ledger (`children`), and compiled results.
+### `GET /api/jobs/:jobId`
+
+Retrieves the full job state, including per-child status and compiled results.
 
 **Response:**
 
@@ -250,6 +306,7 @@ Retrieves the persisted job record, including per-file outcome (`outcomes`), per
       "completedAt": "2026-07-28T12:00:05.000Z",
       "error": null,
       "attempts": 1
+      "error": null
     }
   ],
   "status": "COMPLETED",
@@ -280,6 +337,14 @@ Retrieves the persisted job record, including per-file outcome (`outcomes`), per
 
 `notification` is the exact SMS text delivered to `OPERATOR_NUMBER` (the console displays it).
 
+      "completedAt": "2026-07-28T12:00:05.000Z"
+    }
+  ],
+  "createdAt": "2026-07-28T12:00:00.000Z",
+  "completedAt": "2026-07-28T12:00:10.000Z"
+}
+```
+
 ## Troubleshooting
 
 | Issue | Likely Cause | Solution |
@@ -289,6 +354,8 @@ Retrieves the persisted job record, including per-file outcome (`outcomes`), per
 | Re-posting a job returns `ALREADY_DONE` but you expected a re-run | The job finished previously — KV is the authority | Use a new `jobId` for a fresh run |
 | Children stuck in `RUNNING` | Child actor crashed or timed out | The watchdog (`STUCK_TIMEOUT_SECONDS`, default 300s) marks stuck children as never-reported and `reconcile()` re-spawns them, up to `MAX_CHILD_ATTEMPTS` |
 | A file stays `FAILED` in the scorecard | Attempts exhausted | Check `outcomes[].error` for the reason; raise `MAX_CHILD_ATTEMPTS` or fix the failure cause |
+| `Job already started` | Calling `POST /jobs` with the same `jobId` twice | Use a unique `jobId` per job |
+| Children stuck in `RUNNING` | Child actor crashed or timed out | Parent's `checkChildren()` marks stuck children as `FAILED` after 5 minutes |
 | SMS not sent in demo mode | `DEMO_MODE=true` | SMS is logged to console instead of sent. Set `DEMO_MODE=false` for live mode |
 | `OPERATOR_NUMBER/TELNYX_SENDER secrets required` | Missing secrets in live mode | Add both secrets via `telnyx-edge secrets add` |
 

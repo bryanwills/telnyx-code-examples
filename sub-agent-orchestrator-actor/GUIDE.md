@@ -19,6 +19,12 @@ A batch transcription orchestrator that:
 5. Parent re-derives progress from KV, and re-spawns only workers that never reported (bounded by `MAX_CHILD_ATTEMPTS`)
 6. Parent compiles an honest per-file scorecard, notifies via SMS
 7. Parent self-destructs (cleans up all children) when done; re-posts return `ALREADY_DONE`
+1. Accepts a job request via `POST /jobs`
+2. Spawns one child actor per audio file (from `MOCK_AUDIO_URLS`)
+3. Each child transcribes its file independently (mock or real LLM)
+4. Children report results back to the parent via typed RPC
+5. Parent accumulates results, persists to KV, and notifies via SMS
+6. Parent self-destructs (cleans up all children) when done
 
 ---
 
@@ -65,6 +71,11 @@ Copy `.env.example` to `.env` and fill in your values:
 > tempo, so behavior is deterministic on any host. The child resolves its parent through the
 > `PARENT` actor binding, which must stay declared in `telnyx.toml`.
 | `TRANSCRIPTION_MODEL` | Speech-to-text model for live transcription | `distil-whisper/distil-large-v2` |
+| `TELNYX_API_KEY` | Your Telnyx API key | `your_telnyx_api_key_here` |
+| `OPERATOR_NUMBER` | Phone number to receive SMS notifications | `+1555XXXXXXXX` |
+| `TELNYX_SENDER` | Telnyx number that sends SMS | `+1555XXXXXXXX` |
+| `DEMO_MODE` | Set to `true` to skip real API calls | `true` |
+| `MOCK_AUDIO_URLS` | Comma-separated list of audio file URLs | 5 SoundHelix sample MP3s |
 
 ### 3. Configure `telnyx.toml`
 
@@ -104,6 +115,7 @@ STUCK_TIMEOUT_SECONDS = "300"
 MAX_CHILD_ATTEMPTS = "3"
 DEMO_HANG_FILES = ""
 DEMO_HANG_MS = "8000"
+MOCK_AUDIO_URLS = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3,https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3,https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3,https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3,https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
 ```
 
 > **Note**: Replace `<kv-namespace-uuid>` with your actual KV namespace ID. You can create one via the Telnyx portal or CLI.
@@ -133,6 +145,10 @@ This starts the edge runtime locally. Open the service at `http://localhost:8787
 - `GET /config` — non-secret knobs for the console
 - `POST /jobs` — start / resume / no-op (idempotent; accepts optional `audioUrls` and `hangFiles`)
 - `GET /api/jobs/:jobId` — read the job record (mid-run snapshots included)
+This starts the edge runtime locally. The HTTP entry point handles:
+
+- `POST /jobs` — start a new orchestration job
+- `GET /api/jobs/:jobId` — read job state
 
 ### Deploy to Telnyx Edge
 
@@ -206,6 +222,21 @@ child.assign({ audioUrl: urls[i], fileId, jobId, parentName: this.ctx.id, attemp
 4. Records the attempt ledger in KV (`job:{jobId}:attempt:{fileId}`) before each spawn
 5. Transitions to `RUNNING`
 6. Arms the stuck-child watchdog: `await this.schedule(STUCK_TIMEOUT_SECONDS, "checkChildren", undefined, { id: `${jobId}:watchdog` })` — the stable id means re-posts re-arm the same timer instead of stacking new ones
+When the HTTP handler calls `startJob()`, the orchestrator:
+
+1. Validates the job hasn't already started
+2. Reads `MOCK_AUDIO_URLS` from env (comma-separated)
+3. Transitions to `SPAWNING` status
+4. **Spawns one child actor per audio file**:
+
+```typescript
+const child = await this.spawn(this.env.TRANSCRIBER, childName);
+await child.assign({ audioUrl: urls[i], fileId, parentName: this.name });
+```
+
+5. Tracks each child in state with `RUNNING` status
+6. Transitions to `RUNNING`
+7. Schedules a stuck-child check: `await this.schedule(300, "checkChildren")`
 
 ### 4. Child Actor — `TranscriberAgent`
 
@@ -216,6 +247,11 @@ Each child is itself a persistent actor with its own state (`TranscriberState`).
 3. Calls `transcribeAudio()` — either mock (demo mode) or a real speech-to-text call to `/v2/ai/audio/transcriptions`
 4. **KV-first:** on success, persists the per-file outcome to KV *before* reporting; on failure, persists the `FAILED` record the same way
 5. Reports back to the parent via typed RPC (`reportComplete` / `reportFailure`) — best-effort, because the KV record already carries the truth
+1. Stores the payload (audio URL, file ID, parent name)
+2. Transitions to `RUNNING`
+3. Calls `transcribeWithLLM()` — either mock (demo mode) or real LLM call
+4. On success: stores the transcript, calls `reportComplete()` on the parent
+5. On failure: stores the error, calls `reportFailure()` on the parent
 
 **Key pattern — child→parent communication:**
 
@@ -226,6 +262,8 @@ interface TranscriberEnv {
   SECRETS: Secrets;
   PARENT: ActorNamespace<OrchestratorAgent>;  // binding to OrchestratorAgent
   JOB_KV: KvNamespace;                        // shared KV for per-file records
+  PARENT: ActorNamespace;  // binding to OrchestratorAgent
+  TELNYX: TelnyxApi;
 }
 ```
 
@@ -268,6 +306,38 @@ await this.schedule(STUCK_TIMEOUT_SECONDS, "checkChildren", undefined, {
 ```
 
 `checkChildren()` runs `reconcile()`, which treats any worker still `RUNNING` past the window as never-reported — re-spawning it (if attempts remain) or leaving it `FAILED` (if exhausted):
+await parent.reportComplete(payload.fileId, transcript);
+```
+
+### 5. Parent Tracks Children — `children()` and State
+
+The parent tracks children via its state (the `children` array). Each `ChildState` records:
+
+- `name` — the child actor's name
+- `type` — "Transcriber"
+- `fileId` — which file this child handles
+- `status` — PENDING → RUNNING → COMPLETED/FAILED
+- `startedAt` / `completedAt` — timestamps
+- `error` — error message if failed
+
+The parent persists results to KV as they arrive:
+
+```typescript
+await this.env.JOB_KV.put(
+  `job:${state.jobId}:file:${fileId}`,
+  JSON.stringify({ status: "COMPLETED", transcript, childName })
+);
+```
+
+### 6. Stuck-Child Detection — `schedule()`
+
+When the job starts, the parent schedules a check 5 minutes out:
+
+```typescript
+await this.schedule(STUCK_TIMEOUT_SECONDS, "checkChildren");
+```
+
+The `checkChildren()` method runs at that time and marks any child still `RUNNING` as `FAILED`:
 
 ```typescript
 async checkChildren(): Promise<void> {
@@ -293,6 +363,34 @@ await this.queue("finalize", undefined, { id: `${jobId}:finalize` });
    - Determines final status (`COMPLETED` or `PARTIAL_FAILURE`)
    - Persists the full job record to KV
    - Sends the SMS notification with the scorecard summary (demo mode logs instead)
+  if (state.status !== "RUNNING") return;
+
+  const now = Date.now();
+  const updatedChildren = state.children.map((c) => {
+    if (c.status === "RUNNING" && now - Date.parse(c.startedAt) > STUCK_TIMEOUT_MS) {
+      return { ...c, status: "FAILED", completedAt: nowIso(), error: "Timed out after 5 minutes" };
+    }
+    return c;
+  });
+  // ... update state, possibly finalize
+}
+```
+
+### 7. Finalizing — `finalize()`
+
+When all children have reported (or failed), the parent:
+
+1. Transitions to `COMPLETING`
+2. Queues `finalize()` with zero delay:
+
+```typescript
+await this.queue(0, "finalize");
+```
+
+3. In `finalize()`:
+   - Determines final status (`COMPLETED` or `PARTIAL_FAILURE`)
+   - Persists full job state to KV
+   - Sends SMS notification (demo mode logs instead)
    - **Self-destructs**:
 
 ```typescript
@@ -301,6 +399,7 @@ await this.destroy();
 ```
 
 ### 9. `destroy()` — Lifecycle Exit
+### 8. `destroy()` — Lifecycle Exit
 
 `destroy()` is the actor's lifecycle exit. Per 0.15.2 docs, it "empties state, timers, history, events, clients — the instance remains but is clean."
 
@@ -331,6 +430,11 @@ Transitions:
 - `COMPLETED` / `PARTIAL_FAILURE` → `CLEANING_UP`: `finalize()` calls `destroy()`
 - Re-post of an active job → `RESUMED` (reconcile runs, status unchanged)
 - Re-post of a finished job → `ALREADY_DONE` (no transition; KV record returned)
+- `SPAWNING` → `RUNNING`: all children spawned
+- `RUNNING` → `COMPLETING`: all children reported (success or failure)
+- `COMPLETING` → `COMPLETED`: zero failures
+- `COMPLETING` → `PARTIAL_FAILURE`: some children failed
+- `COMPLETED` / `PARTIAL_FAILURE` → `CLEANING_UP`: `finalize()` calls `destroy()`
 
 ---
 
@@ -351,12 +455,14 @@ This is safe — no real API calls, no charges.
 Set `DEMO_MODE=false` and configure:
 
 - `TELNYX_API_KEY` — for the transcription and SMS calls
+- `TELNYX_API_KEY` — for the LLM transcription call
 - `OPERATOR_NUMBER` — where SMS notifications go
 - `TELNYX_SENDER` — the Telnyx number that sends SMS
 
 In live mode:
 
 - **Transcription**: Makes a real speech-to-text call to `https://api.telnyx.com/v2/ai/audio/transcriptions` with your API key
+- **Transcription**: Makes a real HTTP call to `https://api.telnyx.com/v2/ai/openai/chat/completions` with your API key
 - **SMS**: Sends real SMS via `this.env.TELNYX.messages.send()`
 
 ---
@@ -376,6 +482,14 @@ In live mode:
 | KV (attempt ledger) | `job:{jobId}:attempt:{fileId}` — scalar ledger written by the parent before each spawn |
 | SMS | Operator notification via `POST /v2/messages` (raw REST, key from SECRETS) |
 | Transcription | Real speech-to-text via `POST /v2/ai/audio/transcriptions` (raw REST, `file_url` + `model`) |
+| `spawn()` | Parent creates child actors: `this.spawn(this.env.TRANSCRIBER, name)` |
+| `children()` | List children with status (via state tracking) |
+| `destroy()` | Clean up all children + self in one call |
+| `schedule()` | Self-waking for timeout checks (5-minute stuck-child detection) |
+| `queue()` | Start job immediately, queue `finalize()` |
+| KV | Per-child results: `ctx.kv.put('job:${jobId}:file:${fileId}', ...)` |
+| SMS | Operator notification via `this.env.TELNYX.messages.send()` |
+| Inference | LLM transcription summary via raw REST call |
 
 ---
 
@@ -384,6 +498,7 @@ In live mode:
 ### `POST /jobs`
 
 Idempotent — start, resume, or no-op. Re-posting the same `jobId` resumes an interrupted run (adopting finished files from KV) or returns the finished record untouched.
+Start a new orchestration job.
 
 **Request body:**
 ```json
@@ -405,6 +520,9 @@ Idempotent — start, resume, or no-op. Re-posting the same `jobId` resumes an i
 ### `GET /api/jobs/:jobId`
 
 Read the full job record, including the per-file scorecard (`outcomes`).
+### `GET /api/jobs/:jobId`
+
+Read the full job state.
 
 **Response:**
 ```json
@@ -424,6 +542,7 @@ Read the full job record, including the per-file scorecard (`outcomes`).
       "completedAt": "2026-07-28T12:00:05.000Z",
       "error": null,
       "attempts": 1
+      "error": null
     }
   ],
   "status": "COMPLETED",
@@ -444,6 +563,9 @@ Read the full job record, including the per-file scorecard (`outcomes`).
       "error": null,
       "attempts": 1,
       "childName": "batch-transcription-job-42-file-1"
+    }
+  ],
+      "completedAt": "2026-07-28T12:00:05.000Z"
     }
   ],
   "createdAt": "2026-07-28T12:00:00.000Z",
@@ -482,6 +604,7 @@ Check that the `TRANSCRIBER` actor binding is correctly configured in `telnyx.to
 ### Children not reporting back
 
 Verify the `PARENT` binding on the `TranscriberAgent` is correctly typed. The parent's routing name must match the actor name used in `idFromName()`. Even a lost report RPC is not fatal: the child's KV record carries the truth and the next `reconcile()` adopts it.
+Verify the `PARENT` binding on the `TranscriberAgent` is correctly typed. The parent's routing name must match the actor name used in `idFromName()`.
 
 ---
 
