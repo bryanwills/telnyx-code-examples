@@ -725,6 +725,12 @@ examples:
     folder: changelog-generator-python
 
   - product: ai
+    use_case: "auto-generated-from-linear"
+    language: typescript
+    framework: edge
+    folder: email-batch-retry-agent
+
+  - product: ai
     use_case: error-explainer
     language: python
     framework: flask

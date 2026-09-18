@@ -380,7 +380,7 @@ Send and receive text messages with the [Telnyx SMS API](https://telnyx.com/prod
 </details>
 
 <details open>
-<summary><h2>AI Assistants</h2> <em>(150 examples)</em></summary>
+<summary><h2>AI Assistants</h2> <em>(151 examples)</em></summary>
 
 Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assistants) - LLM-powered agents for voice and messaging automation.
 
@@ -480,6 +480,7 @@ Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assis
 | [create-ai-assistant-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/create-ai-assistant-ruby/README.md) | Ruby | --- |
 | [edge-cron-scheduler](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-cron-scheduler/README.md) | Typescript | A durable UTC cron scheduler with actor KV, SQL execution history, and Telnyx SMS failure alerts. |
 | [edge-event-microsite](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/edge-event-microsite/README.md) | Node.js | Event microsite + AI concierge on Telnyx Edge Compute — one KV store powers the site, the SMS/WhatsApp concierge, lead qualification, in-browser voice AI, feedback transcription, and the sponsor report. |
+| [email-batch-retry-agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/email-batch-retry-agent/README.md) | Typescript | A durable, stateful agent that sends email batches via the Telnyx Email API, tracks per-message state, and self-wakes to retry failures with exponential backoff. |
 | [error-explainer-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/error-explainer-python/README.md) | Python | AI Error Explainer — paste a stack trace, get a root-cause hypothesis, confidence, severity, and a suggested fix via Telnyx AI Inference. |
 | [event-microsite-that-takes-calls](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/event-microsite-that-takes-calls/README.md) | Python | A Flask event microsite backed by Telnyx KV that lets attendees text, call, or talk in-browser to an AI concierge, broadcasts schedule changes, qualifies exhibitor leads, and transcribes post-event feedback into a sponsor report. |
 | [event-sponsorship-agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/event-sponsorship-agent/README.md) | Typescript | A multilingual, multi-channel agent for event sponsorship activations with giveaway entry, product Q&A, demo booking, lead capture, and real-time hot-lead routing. |
