@@ -17,6 +17,7 @@ import {
   ENABLED_CHANNELS,
   customerIdForChannel,
 } from "./types";
+import { runOmniGraph } from "./omniGraph";
 
 const SCHEMA_VERSION = "v1";
 const SYSTEM_PROMPT =
@@ -24,7 +25,7 @@ const SYSTEM_PROMPT =
   "Telnyx line. Keep replies short, warm, and useful. Ask one clarifying question at a " +
   "time if needed. Never mention APIs, webhooks, or implementation details. If you are " +
   "unsure, say so plainly. Your reply will be reviewed by a human operator before it " +
-  "goes out, so draft it as if the customer will see it verbatim.";
+  "goes out, so draft it as if the customer will see it verbatim. Some low-risk SMS replies may be auto-sent.";
 
 /**
  * InboxAgent — one durable actor instance per customer.
@@ -35,13 +36,9 @@ const SYSTEM_PROMPT =
  *  - this.setState/getState: actor-level summary (customer_id, enabled_channels, counts).
  *
  * Channel coverage (per PRD v1):
- *  - voice: live (inbound call → assistant → transcript → draft reply → operator approves → TTS)
- *  - email: stubbed (receiveEmail stores inbound + logs; sendEmail throws ChannelDisabledError)
- *  - sms/rcs/whatsapp: stubbed (receiveX stores inbound + logs; sendX throws ChannelDisabledError)
- *
- * The v1 stubs persist inbound messages so nothing is lost while we wait for the v1.1 / v2
- * channel enables. v1.1 flips email on once the Telnyx Email API is GA; v2 flips the
- * messaging channels on once the carrier registrations complete.
+ *  - voice: live (inbound call → assistant → transcript → shared-context draft → TTS)
+ *  - email and SMS use the same graph/context path as voice.
+ *  - RCS and WhatsApp are intentionally not enabled; adapters are not included.
  */
 export class InboxAgent extends Agent<InboxEnv, InboxState> {
   private schemaInitialized = false;
@@ -64,8 +61,18 @@ export class InboxAgent extends Agent<InboxEnv, InboxState> {
     if (this.schemaInitialized) return;
     const sql = this.ctx.storage.sql;
     sql.exec(`
+      CREATE TABLE IF NOT EXISTS cases (
+        id TEXT PRIMARY KEY,
+        customer_id TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'open',
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      );
+    `);
+    sql.exec(`
       CREATE TABLE IF NOT EXISTS conversations (
         id            TEXT PRIMARY KEY,
+        case_id       TEXT,
         customer_id   TEXT NOT NULL,
         customer_label TEXT,
         channel       TEXT NOT NULL,
@@ -84,6 +91,30 @@ export class InboxAgent extends Agent<InboxEnv, InboxState> {
     sql.exec(
       `CREATE INDEX IF NOT EXISTS conv_by_customer ON conversations(customer_id);`,
     );
+    try {
+      sql.exec(`ALTER TABLE conversations ADD COLUMN case_id TEXT;`);
+    } catch {
+      // column already exists on actors created before the case migration
+    }
+    for (const legacy of this.fetchAll<{ id: string; customer_id: string }>(
+      `SELECT id, customer_id FROM conversations WHERE case_id IS NULL;`,
+    )) {
+      const legacyCaseId = this.newId("case");
+      const now = Date.now();
+      sql.exec(
+        `INSERT INTO cases (id, customer_id, status, created_at, updated_at)
+         VALUES (?, ?, 'open', ?, ?);`,
+        legacyCaseId,
+        legacy.customer_id,
+        now,
+        now,
+      );
+      sql.exec(
+        `UPDATE conversations SET case_id = ? WHERE id = ?;`,
+        legacyCaseId,
+        legacy.id,
+      );
+    }
     sql.exec(
       `CREATE INDEX IF NOT EXISTS conv_by_last_message ON conversations(last_message_at DESC);`,
     );
@@ -179,6 +210,22 @@ export class InboxAgent extends Agent<InboxEnv, InboxState> {
         updated_at    INTEGER NOT NULL
       );
     `);
+    sql.exec(`
+      CREATE TABLE IF NOT EXISTS graph_runs (
+        id TEXT PRIMARY KEY,
+        case_id TEXT NOT NULL,
+        status TEXT NOT NULL,
+        state_json TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      );
+    `);
+    sql.exec(`
+      CREATE TABLE IF NOT EXISTS webhook_events (
+        event_id TEXT PRIMARY KEY,
+        claimed_at INTEGER NOT NULL
+      );
+    `);
     this.schemaInitialized = true;
   }
 
@@ -197,9 +244,8 @@ export class InboxAgent extends Agent<InboxEnv, InboxState> {
 
   /**
    * Find or create a conversation for an inbound message on a channel.
-   * If the customer has an open conversation on a different channel, we still
-   * create a new one per channel — cross-channel identity unification is v2
-   * (see PRD Open Decisions #1).
+   * One open conversation/case is reused across all channels in this actor.
+   * Individual messages retain their channel so the correct adapter can send.
    */
   async findOrCreateConversation(args: {
     channel: Channel;
@@ -212,26 +258,25 @@ export class InboxAgent extends Agent<InboxEnv, InboxState> {
     const state = await this.getState();
     const customerId = state.customer_id || "unknown";
 
-    // Reuse the actor's currently open conversation if it matches the channel.
+    // Reuse one open case regardless of channel. Message.channel controls the
+    // outbound adapter; the conversation is the unified operator timeline.
     if (state.open_conversation_id) {
       const existing = this.fetchOne<ConversationRow>(
         `SELECT * FROM conversations WHERE id = ?;`,
         state.open_conversation_id,
       );
-      if (existing && existing.channel === args.channel && existing.status === "open") {
+      if (existing && existing.status !== "closed") {
         return existing;
       }
     }
 
-    // Otherwise look for an open conversation on the same channel.
-    const byChannel = this.fetchOne<ConversationRow>(
+    const byCustomer = this.fetchOne<ConversationRow>(
       `SELECT * FROM conversations
-       WHERE customer_id = ? AND channel = ? AND status = 'open'
+       WHERE customer_id = ? AND status <> 'closed'
        ORDER BY last_message_at DESC NULLS LAST LIMIT 1;`,
       customerId,
-      args.channel,
     );
-    if (byChannel) return byChannel;
+    if (byCustomer) return byCustomer;
 
     return this.createConversation(args);
   }
@@ -248,12 +293,22 @@ export class InboxAgent extends Agent<InboxEnv, InboxState> {
     const customerId = state.customer_id || "unknown";
     const now = this.sqlNow();
     const id = this.newId("conv");
+    const caseId = this.newId("case");
+    sql.exec(
+      `INSERT INTO cases (id, customer_id, status, created_at, updated_at)
+       VALUES (?, ?, 'open', ?, ?);`,
+      caseId,
+      customerId,
+      now,
+      now,
+    );
     sql.exec(
       `INSERT INTO conversations
-         (id, customer_id, customer_label, channel, status, agent_id, assignee,
+         (id, case_id, customer_id, customer_label, channel, status, agent_id, assignee,
           last_channel, last_message_at, created_at, updated_at)
-       VALUES (?, ?, ?, ?, 'open', ?, NULL, ?, ?, ?, ?);`,
+       VALUES (?, ?, ?, ?, ?, 'open', ?, NULL, ?, ?, ?, ?);`,
       id,
+      caseId,
       customerId,
       args.customerLabel ?? null,
       args.channel,
@@ -287,6 +342,12 @@ export class InboxAgent extends Agent<InboxEnv, InboxState> {
       now,
       conversationId,
     );
+    this.ctx.storage.sql.exec(
+      `UPDATE cases SET updated_at = ?
+       WHERE id = (SELECT case_id FROM conversations WHERE id = ?);`,
+      now,
+      conversationId,
+    );
   }
 
   async setConversationStatus(
@@ -301,6 +362,13 @@ export class InboxAgent extends Agent<InboxEnv, InboxState> {
       conversationId,
     );
     const state = await this.getState();
+    this.ctx.storage.sql.exec(
+      `UPDATE cases SET status = ?, updated_at = ?
+       WHERE id = (SELECT case_id FROM conversations WHERE id = ?);`,
+      status,
+      this.sqlNow(),
+      conversationId,
+    );
     if (state.open_conversation_id === conversationId && status === "closed") {
       await this.setState({ ...state, open_conversation_id: null });
     }
@@ -344,7 +412,7 @@ export class InboxAgent extends Agent<InboxEnv, InboxState> {
   }): Promise<{ inbound: MessageRow; draft: MessageRow | null }> {
     await this.ensureSchema();
     if (!ENABLED_CHANNELS.includes(args.channel)) {
-      // v1 stubs still persist inbound messages so nothing is lost before v1.1/v2.
+      // Unsupported channels are retained for auditability, but do not draft.
       console.warn(
         `[inbox] channel '${args.channel}' is stubbed in ${SCHEMA_VERSION}; ` +
           `inbound message stored but no auto-reply will be drafted`,
@@ -389,10 +457,11 @@ export class InboxAgent extends Agent<InboxEnv, InboxState> {
     );
     if (!inbound) throw new Error("failed to store inbound message");
 
-    // Append to LLM context only for voice in v1 (email/SMS/etc. drafts come in v1.1+).
+    // Every enabled channel enters the same graph. The actor is the durable
+    // customer memory boundary; channel-specific adapters only deliver events.
     let draft: MessageRow | null = null;
     if (ENABLED_CHANNELS.includes(args.channel)) {
-      draft = await this.draftReply(conv, args.body);
+      draft = await this.draftReply(conv, args.body, args.channel);
     }
     return { inbound, draft };
   }
@@ -404,52 +473,28 @@ export class InboxAgent extends Agent<InboxEnv, InboxState> {
   async draftReply(
     conversation: ConversationRow,
     userText: string,
+    channel: Channel = conversation.channel,
   ): Promise<MessageRow> {
-    await this.messages.add("user", userText);
-    const history = await this.messages.toOpenAI();
-    const record = await this.getPatientRecord();
-    let systemPrompt = SYSTEM_PROMPT;
-    const contextParts: string[] = [];
-    const appt = record.appointment as Record<string, unknown> | null;
-    if (appt) {
-      if (appt.patient_name) contextParts.push(`patient: ${String(appt.patient_name)}`);
-      if (appt.appointment_time) contextParts.push(`appointment: ${String(appt.appointment_time)}`);
-      if (appt.location) contextParts.push(`location: ${String(appt.location)}`);
-      if (appt.status) contextParts.push(`appointment status: ${String(appt.status)}`);
-    }
-    for (const d of (record.lab_documents ?? []).slice(0, 3)) {
-      const emailed = d.email_sent_at
-        ? `results were EMAILED to the patient's email on file on ${new Date(d.email_sent_at as number).toLocaleDateString("en-US")}`
-        : "results are READY and in review — they will be emailed to the patient shortly (within 1-3 business days)";
-      contextParts.push(`lab document ${d.reference}: status ${d.status}, ${emailed}`);
-    }
-    if (contextParts.length) {
-      systemPrompt =
-        SYSTEM_PROMPT +
-        "\n\nKnown patient details you may reference when asked: " +
-        contextParts.join("; ") +
-        ". " +
-        "When the patient asks about their lab results: if the results were emailed, confirm it, mention the case reference, and reassure them to check spam. " +
-        "If the results are in review (not yet emailed), reassure them the results are ready and will land in their inbox shortly (within 1-3 business days). " +
-        "NEVER tell the patient to call back, hang up, or contact another office or department — you ARE the office. " +
-        "If asked something not covered here, say you will check with the front desk team and follow up.";
-    }
-    let reply = "";
-    try {
-      const completion = await this.env.TELNYX.ai.openai.chat.createCompletion({
-        model: this.env.AI_MODEL ?? "zai-org/GLM-5.2",
-        messages: [{ role: "system", content: systemPrompt }, ...history],
-        max_tokens: 300,
-        temperature: 0.5,
-      });
-      reply = completion.choices[0]?.message?.content?.trim() ?? "";
-    } catch {
-      reply =
-        "Thanks for reaching out — I want to make sure I get this right. " +
-        "Could you share a little more about what you need?";
-    }
+    const graph = await runOmniGraph(
+      {
+        customerId: conversation.customer_id,
+        caseId: conversation.id,
+        channel: channel as "voice" | "email" | "sms" | "fax",
+        input: userText,
+      },
+      {
+        loadContext: async () => this.getSharedContext(),
+        draft: async (state) => this.createDraftFromContext(state.input, state.context),
+        requiresApproval: (state) => state.channel === "email",
+      },
+    );
+    await this.persistGraphState(
+      conversation.case_id || conversation.id,
+      graph as unknown as Record<string, unknown>,
+      graph.status,
+    );
+    let reply = graph.draft ?? "";
     if (!reply) reply = "Could you say a bit more about that?";
-    await this.messages.add("assistant", reply);
 
     const now = this.sqlNow();
     const draftId = this.newId("msg");
@@ -460,11 +505,11 @@ export class InboxAgent extends Agent<InboxEnv, InboxState> {
        VALUES (?, ?, ?, 'outbound', 'draft', 'agent', NULL, ?, NULL, NULL, NULL, NULL, NULL, ?);`,
       draftId,
       conversation.id,
-      conversation.channel,
+      channel,
       reply,
       now,
     );
-    await this.touchConversation(conversation.id, conversation.channel);
+    await this.touchConversation(conversation.id, channel);
     await this.setConversationStatus(conversation.id, "awaiting_human");
 
     const draft = this.fetchOne<MessageRow>(
@@ -587,6 +632,36 @@ export class InboxAgent extends Agent<InboxEnv, InboxState> {
     return msg;
   }
 
+  /** Persist a system/agent notification so proactive sends enter shared context. */
+  async recordOutboundNotification(args: {
+    channel: Channel;
+    body: string;
+    customerLabel?: string | null;
+  }): Promise<MessageRow> {
+    await this.ensureSchema();
+    const conv = await this.findOrCreateConversation({
+      channel: args.channel,
+      customerLabel: args.customerLabel,
+    });
+    const now = this.sqlNow();
+    const id = this.newId("msg");
+    this.ctx.storage.sql.exec(
+      `INSERT INTO messages
+       (id, conversation_id, channel, direction, status, sender_kind, sender_op_id,
+        body, subject, message_id_hdr, in_reply_to, references_hdr, call_control_id, ts)
+       VALUES (?, ?, ?, 'outbound', 'sent', 'agent', NULL, ?, NULL, NULL, NULL, NULL, NULL, ?);`,
+      id,
+      conv.id,
+      args.channel,
+      args.body,
+      now,
+    );
+    await this.touchConversation(conv.id, args.channel);
+    const msg = this.fetchOne<MessageRow>(`SELECT * FROM messages WHERE id = ?;`, id);
+    if (!msg) throw new Error("failed to record outbound notification");
+    return msg;
+  }
+
   // ── Voice-specific lifecycle ─────────────────────────────────────────
 
   /**
@@ -629,11 +704,8 @@ export class InboxAgent extends Agent<InboxEnv, InboxState> {
     await this.setConversationStatus(conversationId, "open");
   }
 
-  // ── Channel send stubs ────────────────────────────────────────────────
-  // The actor never calls the channel API directly — that's the fetch handler's
-  // job because it has the API key + call_control_id. These methods exist so v1
-  // can fail loudly on disabled channels and v2 can flip them on cleanly.
-  // Email is enabled via the native Telnyx Email API in the fetch handler.
+  // ── Unsupported channel send stubs ───────────────────────────────────
+  // RCS and WhatsApp remain explicit failures until real adapters are added.
 
   async sendSMS(): Promise<never> {
     throw new ChannelDisabledError("sms", SCHEMA_VERSION);
@@ -1114,6 +1186,138 @@ export class InboxAgent extends Agent<InboxEnv, InboxState> {
       Date.now(),
       Date.now(),
     );
+  }
+
+  /** Set the canonical customer id on this actor before creating a case. */
+  async bindCustomer(customerId: string): Promise<void> {
+    await this.ensureSchema();
+    const state = await this.getState();
+    if (!state.customer_id || state.customer_id === "unknown") {
+      await this.setState({ ...state, customer_id: customerId });
+    }
+  }
+
+  /** Claim a webhook once so provider retries cannot duplicate interactions. */
+  async claimWebhook(eventId: string): Promise<boolean> {
+    await this.ensureSchema();
+    try {
+      this.ctx.storage.sql.exec(
+        `INSERT INTO webhook_events (event_id, claimed_at) VALUES (?, ?);`,
+        eventId,
+        Date.now(),
+      );
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async persistGraphState(
+    caseId: string,
+    state: Record<string, unknown>,
+    status: string,
+  ): Promise<void> {
+    await this.ensureSchema();
+    const now = Date.now();
+    this.ctx.storage.sql.exec(
+      `INSERT INTO graph_runs (id, case_id, status, state_json, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?);`,
+      this.newId("graph"),
+      caseId,
+      status,
+      JSON.stringify(state),
+      now,
+      now,
+    );
+  }
+
+  /** Register a verified channel address against the canonical customer actor. */
+  async registerIdentity(channel: string, address: string, customerId: string): Promise<void> {
+    await this.ensureSchema();
+    this.ctx.storage.sql.exec(
+      `CREATE TABLE IF NOT EXISTS customer_identities (
+        channel TEXT NOT NULL,
+        address TEXT NOT NULL,
+        customer_id TEXT NOT NULL,
+        verified INTEGER NOT NULL DEFAULT 0,
+        updated_at INTEGER NOT NULL,
+        PRIMARY KEY (channel, address)
+      );`,
+    );
+    this.ctx.storage.sql.exec(
+      `INSERT INTO customer_identities (channel, address, customer_id, verified, updated_at)
+       VALUES (?, ?, ?, 1, ?)
+       ON CONFLICT(channel, address) DO UPDATE SET customer_id = excluded.customer_id,
+       verified = 1, updated_at = excluded.updated_at;`,
+      channel,
+      address.trim().toLowerCase(),
+      customerId,
+      Date.now(),
+    );
+  }
+
+  async resolveIdentity(channel: string, address: string): Promise<string | null> {
+    await this.ensureSchema();
+    this.ctx.storage.sql.exec(
+      `CREATE TABLE IF NOT EXISTS customer_identities (
+        channel TEXT NOT NULL,
+        address TEXT NOT NULL,
+        customer_id TEXT NOT NULL,
+        verified INTEGER NOT NULL DEFAULT 0,
+        updated_at INTEGER NOT NULL,
+        PRIMARY KEY (channel, address)
+      );`,
+    );
+    const row = this.fetchOne<{ customer_id: string }>(
+      `SELECT customer_id FROM customer_identities WHERE channel = ? AND address = ? AND verified = 1;`,
+      channel,
+      address.trim().toLowerCase(),
+    );
+    return row?.customer_id ?? null;
+  }
+
+  /** Shared context is rebuilt from durable SQL, not a channel-local message log. */
+  private async getSharedContext(): Promise<Record<string, unknown>> {
+    await this.ensureSchema();
+    const patientRecord = await this.getPatientRecord();
+    const messages = this.fetchAll<MessageRow>(
+      `SELECT * FROM messages ORDER BY ts DESC LIMIT 40;`,
+    ).reverse();
+    return { appointment: patientRecord.appointment, lab_documents: patientRecord.lab_documents, messages };
+  }
+
+  private async createDraftFromContext(
+    userText: string,
+    context: Record<string, unknown>,
+  ): Promise<string> {
+    const record = context as Awaited<ReturnType<InboxAgent["getPatientRecord"]>> & {
+      messages: MessageRow[];
+    };
+    const history = (record.messages ?? []).map((m) => ({
+      role: m.sender_kind === "customer" ? "user" : "assistant",
+      content: `[${m.channel}] ${m.body}`,
+    }));
+    const appointment = record.appointment as Record<string, unknown> | null;
+    const documents = (record.lab_documents ?? []) as Array<Record<string, unknown>>;
+    const facts = [
+      appointment ? `appointment: ${JSON.stringify(appointment)}` : "",
+      documents.length ? `lab documents: ${JSON.stringify(documents)}` : "",
+    ].filter(Boolean).join("; ");
+    try {
+      const completion = await this.env.TELNYX.ai.openai.chat.createCompletion({
+        model: this.env.AI_MODEL ?? "zai-org/GLM-5.2",
+        messages: [
+          { role: "system", content: `${SYSTEM_PROMPT}\nShared customer context: ${facts}` },
+          ...history,
+          { role: "user", content: userText },
+        ],
+        max_tokens: 300,
+        temperature: 0.5,
+      });
+      return completion.choices[0]?.message?.content?.trim() ?? "";
+    } catch {
+      return "Thanks for reaching out — I want to make sure I get this right. Could you share a little more about what you need?";
+    }
   }
 
   async listRegisteredCustomers(): Promise<
