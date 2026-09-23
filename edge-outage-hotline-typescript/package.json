@@ -1,0 +1,18 @@
+{
+  "name": "edge-outage-hotline-typescript",
+  "version": "1.0.0",
+  "description": "Regional outage-reporting hotline on Telnyx Edge Compute — callers' outage reports land in one Stateful Actor per region, get classified in a single call to Telnyx's decision model endpoint, and roll up into a live incident dashboard served by the same function.",
+  "main": "src/index.ts",
+  "scripts": {
+    "deploy": "telnyx-edge ship",
+    "types": "telnyx-edge types",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@telnyx/edge-runtime": "^0.9.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "license": "MIT"
+}
