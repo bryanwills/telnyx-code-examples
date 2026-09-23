@@ -1,0 +1,33 @@
+name = "edge-outage-hotline-typescript"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+# One actor instance per region, created on demand via env.REGIONS.idFromName().
+[[actors]]
+binding = "REGIONS"
+type = "RegionAgent"
+
+# Single shared "global" instance: regions register themselves here on first
+# report so /api/summary can discover dynamic regions (e.g. new voice callers).
+[[actors]]
+binding = "HOTLINE_INDEX"
+type = "HotlineIndex"
+
+# Single shared "global" instance: the versioned classification taxonomy
+# (issue categories + policy flags, severity rubric, thresholds). Editable
+# via PUT /admin/config without a redeploy.
+[[actors]]
+binding = "HOTLINE_CONFIG"
+type = "HotlineConfig"
+
+[[secrets]]
+binding = "TELNYX_API_KEY"
+name = "TELNYX_API_KEY"
+
+[edge_compute]
+func_id = "b0765aa5-eb05-49a3-8771-481716899831"
+func_name = "edge-outage-hotline-typescript"
+
+[env_vars]
+# The AI Assistant that answers inbound calls on the hotline number.
+AI_ASSISTANT_ID = "assistant-f36f6e0a-c1bb-4964-8268-98ae2e30bcb9"

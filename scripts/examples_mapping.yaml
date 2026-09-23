@@ -3248,6 +3248,12 @@ examples:
     folder: network-incident-agent
 
   - product: ai
+    use_case: regional-outage-hotline
+    language: typescript
+    framework: telnyx-edge
+    folder: edge-outage-hotline-typescript
+
+  - product: ai
     use_case: "agent-message-replay"
     language: typescript
     framework: edge
