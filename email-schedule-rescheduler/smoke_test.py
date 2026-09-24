@@ -107,6 +107,24 @@ def test_iso_past_returns_iso_string():
     assert "T" in result
 
 
+def test_same_instant_matches_equivalent_formats():
+    """Z-suffixed and +00:00 variants of the same instant should match."""
+    assert app._same_instant("2026-01-01T00:00:00Z", "2026-01-01T00:00:00+00:00") is True
+
+
+def test_same_instant_rejects_different_times():
+    """Different instants should not match."""
+    assert app._same_instant("2026-01-01T00:00:00Z", "2026-01-01T00:00:01Z") is False
+
+
+def test_same_instant_accepts_datetime():
+    """Live-mode retrieve() returns scheduled_at as a datetime; comparison must handle it."""
+    from datetime import datetime, timezone
+
+    parsed = datetime(2026, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+    assert app._same_instant(parsed, "2026-01-01T00:00:00Z") is True
+
+
 def test_demo_mode_schedule_returns_id():
     """In demo mode, schedule_email should return a message ID without API calls."""
     # Ensure demo mode

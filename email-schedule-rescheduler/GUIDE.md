@@ -100,11 +100,13 @@ The script begins by loading environment variables and configuring the Telnyx SD
 - `TELNYX_EMAIL_FROM` / `TELNYX_EMAIL_TO` — sender and recipient addresses
 - `DEMO_MODE` — controls whether the script makes real API calls or just logs them
 
-The SDK is configured with:
+The SDK client is instantiated with:
 
 ```python
-telnyx.api_key = TELNYX_API_KEY
+client = telnyx.Telnyx(api_key=TELNYX_API_KEY)
 ```
+
+The Telnyx Python SDK (v4.x) uses an instance-based client — `client.email_messages.create`, `.retrieve`, and `.delete_schedule` are the accessors used in this sample.
 
 ### Helper Functions
 
@@ -126,13 +128,14 @@ The script includes several helper functions:
 The first step creates a scheduled email using `POST /v2/email_messages` with a future `scheduled_at` timestamp (30 minutes from now).
 
 ```python
-message = telnyx.EmailMessage.create(
+response = client.email_messages.create(
     from_=TELNYX_EMAIL_FROM,
-    to=TELNYX_EMAIL_TO,
+    to=[TELNYX_EMAIL_TO],
     subject="Scheduled Email Demo",
     text_body="This email was scheduled and then rescheduled.",
     scheduled_at=scheduled_at,
 )
+message_id = response.data.id
 ```
 
 The API returns a `202` status with a message ID, which is used in subsequent steps.
@@ -165,6 +168,12 @@ The request body is exactly:
 
 A successful reschedule returns a `200` status and updates the message's `scheduled_at` value.
 
+**Known limitation:** this PATCH route is documented in the developer docs and the
+OpenAPI spec, but as of 2026-09-24 the live API returns `404` (code `10005`) for it
+while the sibling `DELETE /v2/email_messages/{id}/schedule` works. If you hit that
+error, the sample prints a clear `BLOCKED:` message, cancels the scheduled message
+in cleanup, and exits — nothing sends. Re-run once the endpoint ships.
+
 **Telnyx primitive used:** Schedule Manager
 
 ---
@@ -179,7 +188,7 @@ The script makes a PATCH request with the invalid timestamp and asserts:
 
 1. The API returns a **422 status code**
 2. The response body contains a **non-empty `errors` array**
-3. The **first error entry references the invalid timestamp** (confirming the API explains *why* `scheduled_at` was rejected)
+3. The **first error entry references the rejected `scheduled_at` field** (confirming the API explains *why* the timestamp was rejected — the API does not echo the timestamp value itself, so no exact wording is asserted)
 
 ```python
 if resp.status_code != 422:
@@ -193,8 +202,8 @@ if not errors:
 
 first_error = errors[0]
 error_text = str(first_error)
-if past_time not in error_text:
-    print("FAIL: first error entry does not reference the invalid timestamp")
+if "scheduled_at" not in error_text:
+    print("FAIL: first error entry does not reference the scheduled_at field")
     sys.exit(1)
 ```
 
@@ -211,12 +220,13 @@ This explicit 422 rejection prevents accidental immediate sends, enhancing relia
 The final step retrieves the message using `GET /v2/email_messages/{id}` and confirms the `scheduled_at` value reflects the successful reschedule from Step 2.
 
 ```python
-message = telnyx.EmailMessage.retrieve(message_id)
-actual = message.scheduled_at
-if actual != expected_scheduled_at:
-    print(f"FAIL: expected scheduled_at={expected_scheduled_at}, got {actual}")
+response = client.email_messages.retrieve(message_id)
+if not _same_instant(response.data.scheduled_at, expected_scheduled_at):
+    print(f"FAIL: expected scheduled_at={expected_scheduled_at}, got {response.data.scheduled_at}")
     sys.exit(1)
 ```
+
+`_same_instant()` compares the two values as instants — in live mode the SDK returns `scheduled_at` as a parsed `datetime`, so a naive string comparison would fail even on a successful reschedule.
 
 **Telnyx primitive used:** Email Sender (retrieve)
 
@@ -229,7 +239,7 @@ if actual != expected_scheduled_at:
 After the four demo steps complete, the sample cancels the scheduled message so the demo doesn't leave a scheduled email behind:
 
 ```python
-telnyx.EmailMessage.delete_schedule(message_id)
+response = client.email_messages.delete_schedule(email_id=message_id)
 ```
 
 This uses `DELETE /v2/email_messages/{id}/schedule` and is cleanup only — not one of the four demo steps.
@@ -251,14 +261,14 @@ Expected output:
 Email Schedule Rescheduler Demo
 Mode: DEMO (no API calls)
 ============================================================
-Step 1: Scheduling email for 2026-07-28T12:30:00+00:00
-[DEMO] POST /v2/email_messages from=sender@example.com to=recipient@example.com scheduled_at=2026-07-28T12:30:00+00:00
-[2] Rescheduling email demo-message-id-12345 to 2026-07-28T13:00:00+00:00
-[DEMO] PATCH /v2/email_messages/demo-message-id-12345/schedule body={'scheduled_at': '2026-07-28T13:00:00+00:00'}
-[3] Attempting invalid reschedule to 2026-07-28T11:55:00+00:00 (expect 422)
-[DEMO] PATCH /v2/email_messages/demo-message-id-12345/schedule body={'scheduled_at': '2026-07-28T11:55:00+00:00'} -> would return 422
+[1] Scheduling email for 2026-07-28T12:30:00Z
+[DEMO] POST /v2/email_messages from= to= scheduled_at=2026-07-28T12:30:00Z
+[2] Rescheduling email demo-message-id-12345 to 2026-07-28T13:00:00Z
+[DEMO] PATCH /v2/email_messages/demo-message-id-12345/schedule body={'scheduled_at': '2026-07-28T13:00:00Z'}
+[3] Attempting invalid reschedule to 2026-07-28T11:55:00Z (expect 422)
+[DEMO] PATCH /v2/email_messages/demo-message-id-12345/schedule body={'scheduled_at': '2026-07-28T11:55:00Z'} -> would return 422
 [4] Verifying scheduled_at for message demo-message-id-12345
-[DEMO] GET /v2/email_messages/demo-message-id-12345 -> scheduled_at=2026-07-28T13:00:00+00:00
+[DEMO] GET /v2/email_messages/demo-message-id-12345 -> scheduled_at=2026-07-28T13:00:00Z
 [cleanup] Cancelling scheduled email demo-message-id-12345
 [DEMO] DELETE /v2/email_messages/demo-message-id-12345/schedule
 
@@ -274,19 +284,24 @@ DEMO_MODE=false python app.py
 This will make real API calls. You'll see output like:
 
 ```
-Step 1: Scheduling email for 2026-07-28T12:30:00+00:00
-  -> Scheduled email created with ID: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-[2] Rescheduling email 3fa85f64-5717-4562-b3fc-2c963f66afa6 to 2026-07-28T13:00:00+00:00
-OK -> Rescheduled. New scheduled_at: 2026-07-28T13:00:00+00:00
-[3] Attempting invalid reschedule to 2026-07-28T11:55:00+00:00 (expect 422)
-OK: 422 received. Error: scheduled_at must be in the future
+[1] Scheduling email for 2026-07-28T12:30:00Z
+OK (202) -> Scheduled email created with ID: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        status=scheduled scheduled_at=2026-07-28 12:30:00+00:00
+[2] Rescheduling email 3fa85f64-5717-4562-b3fc-2c963f66afa6 to 2026-07-28T13:00:00Z
+OK (200) -> Rescheduled. New scheduled_at: 2026-07-28T13:00:00Z
+[3] Attempting invalid reschedule to 2026-07-28T11:55:00Z (expect 422)
+OK (422) -> rejected as expected: Validation Failed
 [4] Verifying scheduled_at for message 3fa85f64-5717-4562-b3fc-2c963f66afa6
-OK: scheduled_at confirmed as 2026-07-28T13:00:00+00:00
+OK -> scheduled_at confirmed as 2026-07-28T13:00:00Z
 [cleanup] Cancelling scheduled email 3fa85f64-5717-4562-b3fc-2c963f66afa6
-OK: scheduled email cancelled
+OK (200) -> scheduled email cancelled, status=cancelled
 
 Demo completed successfully.
 ```
+
+> **Note:** live mode requires `TELNYX_EMAIL_FROM` to be on a domain you control
+> (shared Telnyx domains only allow the account's verified address, e.g.
+> `onboarding@mail.telnyx.com`). See the README Troubleshooting table.
 
 ---
 

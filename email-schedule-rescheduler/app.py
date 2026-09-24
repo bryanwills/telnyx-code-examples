@@ -7,11 +7,11 @@ a 422 error.
 
 Demo flow:
   1. Create a scheduled email via POST /v2/email_messages with a future
-     scheduled_at timestamp.
+     scheduled_at timestamp (the API responds 202 with a message ID).
   2. Reschedule the email to a new future time via
-     PATCH /v2/email_messages/{id}/schedule.
-  3. Attempt to reschedule to a past/invalid timestamp and verify the API
-     returns a 422 error.
+     PATCH /v2/email_messages/{id}/schedule (expected 200).
+  3. Attempt to reschedule to a past timestamp and verify the API returns
+     a 422 error whose errors array references the rejected scheduled_at.
   4. Retrieve the message via GET /v2/email_messages/{id} to confirm the
      updated scheduled_at value.
 
@@ -19,29 +19,24 @@ Cleanup: after verification, the scheduled message is cancelled via
 DELETE /v2/email_messages/{id}/schedule so the demo leaves nothing behind.
 
 ASSUMPTION: The Telnyx Python SDK (v4.181.0) exposes create/retrieve/
-delete_schedule for email messages but has NO patch-schedule method. The
-reschedule call is therefore implemented as a raw HTTP PATCH to
-https://api.telnyx.com/v2/email_messages/{id}/schedule, which is the
-documented API endpoint.
+delete_schedule for email messages via the instance client but has NO
+patch-schedule method. The reschedule call is therefore implemented as a
+raw HTTP PATCH to https://api.telnyx.com/v2/email_messages/{id}/schedule,
+which is the documented API endpoint.
 
 ASSUMPTION: DEMO_MODE=true (default) prints the requests it would make
 without hitting the API. Set DEMO_MODE=false to run against the live
 Telnyx API.
 
+KNOWN LIMITATION (verified against the live API 2026-09-24): the PATCH
+/v2/email_messages/{id}/schedule route is documented in the developer
+docs and OpenAPI spec, but the live API currently returns 404 (code
+10005) for it while the sibling DELETE route works. If you see that
+error, the platform-side endpoint is not yet available; steps 2-4 cannot
+be exercised live until it ships.
+
 Security: credentials are read from environment variables only. Never
 hardcode API keys. Sender/recipient addresses come from env vars.
-
-SELF-REVIEW:
-# ✅ All spec primitives implemented (Email Sender, Schedule Manager, Error Validator)
-# ✅ smoke_test.py verifies module load and function existence
-# ✅ Demo mode default (DEMO_MODE=true) — no real API calls by default
-# ✅ No credentials in code — all from env vars
-# ✅ Raw HTTP PATCH used for reschedule since SDK lacks patch-schedule method
-# ✅ 422 error validation checks status code AND errors array referencing timestamp
-# ✅ Cleanup via delete_schedule after verification
-# ASSUMPTION: SDK v4.181.0 has no patch-schedule method, so reschedule uses
-#   raw HTTP PATCH to the documented endpoint. If a future SDK adds this
-#   method, it can replace the raw call.
 """
 
 import os
@@ -51,6 +46,7 @@ from datetime import datetime, timedelta, timezone
 import requests
 import telnyx
 from dotenv import load_dotenv
+from telnyx import APIError
 
 # Load environment variables from .env file if present
 load_dotenv()
@@ -69,8 +65,8 @@ DEMO_MODE = os.getenv("DEMO_MODE", "true").lower() == "true"
 
 TELNYX_API_BASE = "https://api.telnyx.com/v2"
 
-# Configure the Telnyx SDK
-telnyx.api_key = TELNYX_API_KEY
+# Configure the Telnyx SDK (v4.x uses an instance-based client)
+client = telnyx.Telnyx(api_key=TELNYX_API_KEY)
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -78,13 +74,42 @@ telnyx.api_key = TELNYX_API_KEY
 
 
 def _iso_future(minutes: int) -> str:
-    """Return an ISO 8601 UTC timestamp `minutes` from now."""
-    return (datetime.now(timezone.utc) + timedelta(minutes=minutes)).isoformat()
+    """Return an ISO 8601 UTC timestamp `minutes` from now (Z suffix, no microseconds)."""
+    return (
+        (datetime.now(timezone.utc) + timedelta(minutes=minutes))
+        .isoformat(timespec="seconds")
+        .replace("+00:00", "Z")
+    )
 
 
 def _iso_past(minutes: int = 5) -> str:
-    """Return an ISO 8601 UTC timestamp `minutes` in the past."""
-    return (datetime.now(timezone.utc) - timedelta(minutes=minutes)).isoformat()
+    """Return an ISO 8601 UTC timestamp `minutes` in the past (Z suffix, no microseconds)."""
+    return (
+        (datetime.now(timezone.utc) - timedelta(minutes=minutes))
+        .isoformat(timespec="seconds")
+        .replace("+00:00", "Z")
+    )
+
+
+def _same_instant(value, expected) -> bool:
+    """Compare two timestamps as instants.
+
+    Handles both ISO 8601 strings (demo mode) and the parsed datetime
+    objects the SDK returns (live mode); tolerates Z vs +00:00 formats.
+    """
+
+    def _to_dt(v):
+        if isinstance(v, datetime):
+            return v
+        return datetime.fromisoformat(str(v).replace("Z", "+00:00"))
+
+    parsed_value = _to_dt(value)
+    parsed_expected = _to_dt(expected)
+    if parsed_value.tzinfo is None:
+        parsed_value = parsed_value.replace(tzinfo=timezone.utc)
+    if parsed_expected.tzinfo is None:
+        parsed_expected = parsed_expected.replace(tzinfo=timezone.utc)
+    return parsed_value == parsed_expected
 
 
 def _demo_log(message: str) -> None:
@@ -95,6 +120,12 @@ def _demo_log(message: str) -> None:
 def _auth_headers() -> dict:
     """Return the Authorization header for raw HTTP calls."""
     return {"Authorization": f"Bearer {TELNYX_API_KEY}"}
+
+
+def _error_detail(exc: APIError) -> str:
+    """Extract a readable message from an SDK APIError."""
+    parts = [getattr(exc, "title", None), getattr(exc, "description", None)]
+    return " — ".join(p for p in parts if p) or str(exc)
 
 
 # ---------------------------------------------------------------------------
@@ -109,7 +140,7 @@ def schedule_email() -> str:
     Returns the email message ID.
     """
     scheduled_at = _iso_future(30)  # 30 minutes from now
-    print(f"Step 1: Scheduling email for {scheduled_at}")
+    print(f"[1] Scheduling email for {scheduled_at}")
 
     if DEMO_MODE:
         _demo_log(
@@ -120,19 +151,20 @@ def schedule_email() -> str:
         return "demo-message-id-12345"
 
     try:
-        message = telnyx.EmailMessage.create(
+        response = client.email_messages.create(
             from_=TELNYX_EMAIL_FROM,
-            to=TELNYX_EMAIL_TO,
+            to=[TELNYX_EMAIL_TO],
             subject="Scheduled Email Demo",
             text_body="This email was scheduled and then rescheduled.",
             scheduled_at=scheduled_at,
         )
-    except telnyx.error.TelnyxError as exc:
-        print(f"ERROR: Failed to schedule email: {exc}")
+    except APIError as exc:
+        print(f"ERROR: Failed to schedule email: {_error_detail(exc)}")
         sys.exit(1)
 
-    message_id = message.id
-    print(f"  -> Scheduled email created with ID: {message_id}")
+    message_id = response.data.id
+    print(f"OK (202) -> Scheduled email created with ID: {message_id}")
+    print(f"        status={response.data.status} scheduled_at={response.data.scheduled_at}")
     return message_id
 
 
@@ -163,20 +195,30 @@ def reschedule_email(message_id: str, new_scheduled_at: str) -> dict:
         print(f"ERROR: reschedule request failed: {exc}")
         sys.exit(1)
 
+    if response.status_code == 404:
+        print(
+            "BLOCKED: PATCH /v2/email_messages/{id}/schedule is documented but not "
+            "deployed on the live API yet (404, code 10005). Steps 2-4 cannot be "
+            "verified live until the endpoint ships. The scheduled message is "
+            "cancelled in cleanup so it does not send. See the README Known limitation."
+        )
+        sys.exit(1)
+
     if response.status_code != 200:
         print(f"ERROR: reschedule failed with status {response.status_code}")
         print(response.text)
         sys.exit(1)
 
     data = response.json()
-    print(f"OK -> Rescheduled. New scheduled_at: {data['data']['scheduled_at']}")
+    print(f"OK (200) -> Rescheduled. New scheduled_at: {data['data']['scheduled_at']}")
     return data
 
 
 def attempt_invalid_reschedule(message_id: str) -> None:
     """
     Step 3: Attempt to reschedule to a past timestamp and verify the API
-    returns a 422 error with an errors array referencing the timestamp.
+    returns a 422 error with a non-empty errors array that references the
+    rejected scheduled_at field.
     """
     past_time = _iso_past(5)
     print(f"[3] Attempting invalid reschedule to {past_time} (expect 422)")
@@ -197,6 +239,14 @@ def attempt_invalid_reschedule(message_id: str) -> None:
         print(f"ERROR: invalid-reschedule request failed: {exc}")
         sys.exit(1)
 
+    if resp.status_code == 404:
+        print(
+            "BLOCKED: PATCH /v2/email_messages/{id}/schedule is documented but not "
+            "deployed on the live API yet (404, code 10005), so the 422 rejection "
+            "cannot be exercised. See the README Known limitation."
+        )
+        sys.exit(1)
+
     # Assert the 422 status code
     if resp.status_code != 422:
         print(f"FAIL: expected 422, got {resp.status_code}")
@@ -204,7 +254,8 @@ def attempt_invalid_reschedule(message_id: str) -> None:
         sys.exit(1)
 
     # Assert the error body contains a non-empty errors array whose first
-    # entry references the invalid timestamp.
+    # entry references the rejected scheduled_at field (the API does not
+    # echo the timestamp value itself, so do not assert exact wording).
     try:
         body = resp.json()
     except ValueError:
@@ -218,12 +269,12 @@ def attempt_invalid_reschedule(message_id: str) -> None:
 
     first_error = errors[0]
     error_text = str(first_error)
-    if past_time not in error_text:
-        print("FAIL: first error entry does not reference the invalid timestamp")
+    if "scheduled_at" not in error_text:
+        print("FAIL: first error entry does not reference the scheduled_at field")
         print(f"     error: {error_text}")
         sys.exit(1)
 
-    print(f"OK: 422 received. Error: {first_error.get('title', first_error)}")
+    print(f"OK (422) -> rejected as expected: {first_error.get('title', first_error)}")
 
 
 def verify_scheduled_at(message_id: str, expected_scheduled_at: str) -> None:
@@ -240,17 +291,17 @@ def verify_scheduled_at(message_id: str, expected_scheduled_at: str) -> None:
         return
 
     try:
-        message = telnyx.EmailMessage.retrieve(message_id)
-    except telnyx.error.TelnyxError as exc:
-        print(f"ERROR: failed to retrieve email: {exc}")
+        response = client.email_messages.retrieve(message_id)
+    except APIError as exc:
+        print(f"ERROR: failed to retrieve email: {_error_detail(exc)}")
         sys.exit(1)
 
-    actual = message.scheduled_at
-    if actual != expected_scheduled_at:
+    actual = response.data.scheduled_at
+    if not _same_instant(actual, expected_scheduled_at):
         print(f"FAIL: expected scheduled_at={expected_scheduled_at}, got {actual}")
         sys.exit(1)
 
-    print(f"OK: scheduled_at confirmed as {actual}")
+    print(f"OK -> scheduled_at confirmed as {actual}")
 
 
 def cleanup_schedule(message_id: str) -> None:
@@ -265,10 +316,10 @@ def cleanup_schedule(message_id: str) -> None:
         return
 
     try:
-        telnyx.EmailMessage.delete_schedule(message_id)
-        print("OK: scheduled email cancelled")
-    except telnyx.error.TelnyxError as exc:
-        print(f"WARN: cleanup failed (non-fatal): {exc}")
+        response = client.email_messages.delete_schedule(email_id=message_id)
+        print(f"OK (200) -> scheduled email cancelled, status={response.data.status}")
+    except APIError as exc:
+        print(f"WARN: cleanup failed (non-fatal): {_error_detail(exc)}")
 
 
 # ---------------------------------------------------------------------------
@@ -294,18 +345,21 @@ def main() -> None:
     # Step 1: schedule
     message_id = schedule_email()
 
-    # Step 2: reschedule to a new future time
-    new_scheduled_at = _iso_future(60)  # 60 minutes from now
-    reschedule_email(message_id, new_scheduled_at)
+    # Steps 2-4: reschedule, invalid reschedule, verify.
+    # Cleanup always runs (even when a step fails) so no scheduled email is left behind.
+    try:
+        # Step 2: reschedule to a new future time
+        new_scheduled_at = _iso_future(60)  # 60 minutes from now
+        reschedule_email(message_id, new_scheduled_at)
 
-    # Step 3: invalid reschedule (expect 422)
-    attempt_invalid_reschedule(message_id)
+        # Step 3: invalid reschedule (expect 422)
+        attempt_invalid_reschedule(message_id)
 
-    # Step 4: verify the updated scheduled_at
-    verify_scheduled_at(message_id, new_scheduled_at)
-
-    # Cleanup
-    cleanup_schedule(message_id)
+        # Step 4: verify the updated scheduled_at
+        verify_scheduled_at(message_id, new_scheduled_at)
+    finally:
+        # Cleanup: cancel the scheduled email
+        cleanup_schedule(message_id)
 
     print("\nDemo completed successfully.")
 
