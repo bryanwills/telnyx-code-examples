@@ -49,14 +49,33 @@ curl -X POST https://api.telnyx.com/v2/email_messages \
 {
   "data": {
     "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "from": "sender@example.com",
-    "to": "recipient@example.com",
+    "record_type": "email_message",
+    "from": { "email": "sender@example.com" },
+    "to": [{ "email": "recipient@example.com" }],
     "subject": "Scheduled Email Demo",
-    "text_body": "This email was scheduled and then rescheduled.",
-    "scheduled_at": "2026-08-01T12:30:00+00:00",
-    "status": "queued",
-    "created_at": "2026-08-01T10:00:00+00:00"
+    "scheduled_at": "2026-08-01T12:30:00.000000Z",
+    "status": "scheduled",
+    "created_at": "2026-08-01T10:00:00.850911Z"
   }
+}
+```
+
+### 422 Rejection of past timestamps
+
+If `scheduled_at` is in the past or otherwise invalid, the message is **not** created and nothing is sent:
+
+```json
+{
+  "errors": [
+    {
+      "code": "10015",
+      "title": "Validation Failed",
+      "detail": "scheduled_at must be in the future",
+      "source": {
+        "pointer": "/data/attributes/scheduled_at"
+      }
+    }
+  ]
 }
 ```
 
@@ -74,7 +93,14 @@ curl -X POST https://api.telnyx.com/v2/email_messages \
 
 ## PATCH /v2/email_messages/{id}/schedule
 
-Reschedules an already-scheduled email to a new delivery time. The new timestamp must be in the future.
+Reschedules an already-scheduled email to a new delivery time. The new timestamp must be in the future. Only the delivery time changes — the message ID, content, recipients, tags, and metadata remain unchanged.
+
+> **Availability note (verified 2026-09-24):** this route is documented in the
+> [Send Email guide](https://developers.telnyx.com/docs/messaging/email/send-email)
+> and the OpenAPI spec (`RescheduleEmailMessage`), but the live API currently
+> returns `404` with code `10005` for PATCH while the sibling
+> `DELETE /v2/email_messages/{id}/schedule` works. Until it ships, the sample
+> exercises steps 2-4 in demo mode and surfaces a `BLOCKED:` message in live mode.
 
 ### Path Parameters
 
@@ -101,28 +127,29 @@ curl -X PATCH https://api.telnyx.com/v2/email_messages/8f85f64-5717-4562-b3fc-2c
 
 ### Response — 200 OK
 
+The response matches the single-message GET representation — the message keeps its ID and stays `scheduled`, with the new delivery time:
+
 ```json
 {
   "data": {
     "id": "8f85f64-5717-4562-b3fc-2c963f66afa6",
-    "scheduled_at": "2026-08-01T11:30:00+00:00",
-    "status": "queued",
-    "updated_at": "2026-08-01T10:05:00+00:00"
+    "scheduled_at": "2026-08-01T11:30:00.000000Z",
+    "status": "scheduled"
   }
 }
 ```
 
 ### Response — 422 Unprocessable Entity
 
-Returned when the `scheduled_at` timestamp is in the past or otherwise invalid. The email is **not** sent immediately and its status remains unchanged.
+Returned when the `scheduled_at` timestamp is in the past or otherwise invalid. The email is **not** sent immediately and its status remains unchanged:
 
 ```json
 {
   "errors": [
     {
-      "code": "10010",
-      "title": "Invalid scheduled_at timestamp",
-      "detail": "scheduled_at must be a future timestamp. Received: 2026-08-01T09:55:00+00:00",
+      "code": "10015",
+      "title": "Validation Failed",
+      "detail": "scheduled_at must be in the future",
       "source": {
         "pointer": "/data/attributes/scheduled_at"
       }
@@ -135,11 +162,12 @@ Returned when the `scheduled_at` timestamp is in the past or otherwise invalid. 
 
 | Code | Description |
 |------|-------------|
-| 200 | Reschedule successful. Returns the updated `scheduled_at`. |
+| 200 | Reschedule successful. Returns the message with the updated `scheduled_at`. |
 | 400 | Invalid request body or malformed JSON. |
 | 401 | Unauthorized. Invalid or missing API key. |
 | 404 | Email message with the given `id` not found. |
-| 422 | Unprocessable entity. `scheduled_at` is in the past or otherwise invalid. |
+| 409 | The message is no longer scheduled, or its scheduled-send worker has already started processing it. |
+| 422 | Unprocessable entity. `scheduled_at` is missing, invalid ISO 8601, or not in the future. |
 | 500 | Internal server error. |
 
 ---

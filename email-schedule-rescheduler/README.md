@@ -28,6 +28,13 @@ Telnyx provides the AI Communications Infrastructure that powers this email sche
 | GET | `/v2/email_messages/{id}` | Retrieve the email to confirm the updated `scheduled_at` value |
 | DELETE | `/v2/email_messages/{id}/schedule` | Cancel the scheduled email (cleanup only) |
 
+> **Known limitation (verified 2026-09-24):** the PATCH reschedule route is documented
+> in the [Send Email guide](https://developers.telnyx.com/docs/messaging/email/send-email)
+> and the OpenAPI spec, but the live API currently returns `404` (code `10005`) for it
+> while the sibling DELETE route works. Until the endpoint ships, live mode verifies
+> steps 1 and 4 plus cleanup, and prints a clear `BLOCKED:` message for steps 2-3.
+> Demo mode (default) exercises the full four-step flow without API calls.
+
 ## Architecture
 
 The sample is a single Python script that runs the four demo steps sequentially. It uses the Telnyx Python SDK for creating and retrieving email messages, and raw HTTP PATCH for the reschedule call (the SDK does not expose a patch-schedule method). The script supports a safe demo mode (default) that logs requests without hitting the API, and a live mode that makes real API calls.
@@ -62,10 +69,10 @@ The sample is a single Python script that runs the four demo steps sequentially.
 
 | Variable | Type | Example | Required | Description | Where to get it |
 |----------|------|---------|----------|-------------|-----------------|
-| `DEMO_MODE` | `string` | `your_demo_mode_here` | **yes** | DEMO_MODE | — |
-| `TELNYX_API_KEY` | `string` | `your_telnyx_api_key_here` | **yes** | TELNYX_API_KEY | — |
-| `TELNYX_EMAIL_FROM` | `string` | `your_telnyx_email_from_here` | **yes** | TELNYX_EMAIL_FROM | — |
-| `TELNYX_EMAIL_TO` | `string` | `your_telnyx_email_to_here` | **yes** | TELNYX_EMAIL_TO | — |
+| `TELNYX_API_KEY` | `string` | `your_telnyx_api_key_here` | **yes** | Telnyx API key (required in live mode) | [Mission Control → API Keys](https://portal.telnyx.com/#/app/api-keys) |
+| `TELNYX_EMAIL_FROM` | `string` | `onboarding@mail.telnyx.com` | **yes** | Sender email address (required in live mode) | A domain you verified, or your Telnyx shared-domain sender |
+| `TELNYX_EMAIL_TO` | `string` | `your_recipient_email@example.com` | **yes** | Recipient email address (required in live mode) | Any reachable inbox |
+| `DEMO_MODE` | `string` | `true` | no | `true` (default) logs requests without API calls; `false` runs live | Set in `.env` |
 
 ## Setup
 
@@ -86,8 +93,8 @@ The sample is a single Python script that runs the four demo steps sequentially.
 
    ```bash
    TELNYX_API_KEY=your_telnyx_api_key_here
-   TELNYX_EMAIL_FROM=your_telnyx_email_from_here
-   TELNYX_EMAIL_TO=your_telnyx_email_to_here
+   TELNYX_EMAIL_FROM=onboarding@mail.telnyx.com
+   TELNYX_EMAIL_TO=your_recipient_email@example.com
    DEMO_MODE=true
    ```
 
@@ -153,9 +160,10 @@ Cancels a scheduled email message.
 |-------|--------------|----------|
 | `TELNYX_API_KEY is required when DEMO_MODE=false` | The API key is not set in the environment | Set `TELNYX_API_KEY` in your `.env` file |
 | `TELNYX_EMAIL_FROM and TELNYX_EMAIL_TO are required in live mode` | Sender/recipient addresses are missing | Set `TELNYX_EMAIL_FROM` and `TELNYX_EMAIL_TO` in your `.env` file |
+| `Shared domain from-address must be onboarding@mail.telnyx.com` | The sender is not on a domain you control | Verify your own domain, or send from `onboarding@mail.telnyx.com` / `onboarding@msgtelnyx.com` |
+| `Shared domain sends are restricted to your account's verified email address` | Sending from a shared domain to another recipient | Use your Telnyx account's verified email as `TELNYX_EMAIL_TO`, or send from a verified custom domain |
 | `ERROR: Failed to schedule email` | Invalid API key or invalid email addresses | Verify your credentials and email addresses |
-| `ERROR: reschedule failed with status 422` | Attempted to reschedule to a past or invalid timestamp | Use a future timestamp for rescheduling |
-| `FAIL: expected 422, got <status>` | The API did not reject the invalid timestamp | Verify the timestamp is in the past and the request format is correct |
+| `BLOCKED: PATCH /v2/email_messages/{id}/schedule ... 404` | The reschedule endpoint is documented but not yet deployed on the live API | Wait for the endpoint to ship, then re-run live mode; the sample cancels the scheduled message in cleanup so nothing sends |
 
 ## Agent Discovery
 
@@ -165,8 +173,8 @@ Cancels a scheduled email message.
 
 ## Related Examples
 
-- [Email Sender](https://github.com/team-telnyx/telnyx-code-examples/tree/main/email-sender)
-- [Email Webhook Handler](https://github.com/team-telnyx/telnyx-code-examples/tree/main/email-webhook-handler)
+- [AI Email Agent](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-email-agent-python/README.md)
+- [Email Inbox Demo](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/email-inbox-demo/README.md)
 
 ## Resources
 

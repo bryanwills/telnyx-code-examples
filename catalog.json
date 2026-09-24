@@ -3,8 +3,8 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-09-23T23:04:52Z",
-  "example_count": 556,
+  "generated_at": "2026-09-24T20:59:36Z",
+  "example_count": 557,
   "examples": [
     {
       "folder": "route-phone-calls-to-ai-agent-python",
@@ -5009,6 +5009,15 @@
       "language": "typescript",
       "framework": "edge",
       "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/sub-agent-orchestrator-actor"
+    },
+    {
+      "folder": "email-schedule-rescheduler",
+      "title": "Email Schedule Rescheduler",
+      "description": "Schedule an email, reschedule it to a new future time, and verify invalid reschedule attempts are rejected with a 422 error.",
+      "product": "ai",
+      "language": "python",
+      "framework": "flask",
+      "url": "https://github.com/team-telnyx/telnyx-code-examples/tree/main/email-schedule-rescheduler"
     }
   ]
 }
