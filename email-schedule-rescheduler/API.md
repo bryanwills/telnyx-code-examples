@@ -95,13 +95,6 @@ If `scheduled_at` is in the past or otherwise invalid, the message is **not** cr
 
 Reschedules an already-scheduled email to a new delivery time. The new timestamp must be in the future. Only the delivery time changes — the message ID, content, recipients, tags, and metadata remain unchanged.
 
-> **Availability note (verified 2026-09-24):** this route is documented in the
-> [Send Email guide](https://developers.telnyx.com/docs/messaging/email/send-email)
-> and the OpenAPI spec (`RescheduleEmailMessage`), but the live API currently
-> returns `404` with code `10005` for PATCH while the sibling
-> `DELETE /v2/email_messages/{id}/schedule` works. Until it ships, the sample
-> exercises steps 2-4 in demo mode and surfaces a `BLOCKED:` message in live mode.
-
 ### Path Parameters
 
 | Parameter | Type | Required | Description |

@@ -28,12 +28,10 @@ Telnyx provides the AI Communications Infrastructure that powers this email sche
 | GET | `/v2/email_messages/{id}` | Retrieve the email to confirm the updated `scheduled_at` value |
 | DELETE | `/v2/email_messages/{id}/schedule` | Cancel the scheduled email (cleanup only) |
 
-> **Known limitation (verified 2026-09-24):** the PATCH reschedule route is documented
-> in the [Send Email guide](https://developers.telnyx.com/docs/messaging/email/send-email)
-> and the OpenAPI spec, but the live API currently returns `404` (code `10005`) for it
-> while the sibling DELETE route works. Until the endpoint ships, live mode verifies
-> steps 1 and 4 plus cleanup, and prints a clear `BLOCKED:` message for steps 2-3.
-> Demo mode (default) exercises the full four-step flow without API calls.
+All four steps verified live on 2026-09-25: POST → `202`, PATCH reschedule → `200`,
+past-timestamp PATCH → `422` with the message still `scheduled`, and GET reflects
+the new `scheduled_at`. Demo mode (default) exercises the same four-step flow
+without API calls.
 
 ## Architecture
 
@@ -163,7 +161,6 @@ Cancels a scheduled email message.
 | `Shared domain from-address must be onboarding@mail.telnyx.com` | The sender is not on a domain you control | Verify your own domain, or send from `onboarding@mail.telnyx.com` / `onboarding@msgtelnyx.com` |
 | `Shared domain sends are restricted to your account's verified email address` | Sending from a shared domain to another recipient | Use your Telnyx account's verified email as `TELNYX_EMAIL_TO`, or send from a verified custom domain |
 | `ERROR: Failed to schedule email` | Invalid API key or invalid email addresses | Verify your credentials and email addresses |
-| `BLOCKED: PATCH /v2/email_messages/{id}/schedule ... 404` | The reschedule endpoint is documented but not yet deployed on the live API | Wait for the endpoint to ship, then re-run live mode; the sample cancels the scheduled message in cleanup so nothing sends |
 
 ## Agent Discovery
 
