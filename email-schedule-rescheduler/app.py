@@ -28,12 +28,11 @@ ASSUMPTION: DEMO_MODE=true (default) prints the requests it would make
 without hitting the API. Set DEMO_MODE=false to run against the live
 Telnyx API.
 
-KNOWN LIMITATION (verified against the live API 2026-09-24): the PATCH
-/v2/email_messages/{id}/schedule route is documented in the developer
-docs and OpenAPI spec, but the live API currently returns 404 (code
-10005) for it while the sibling DELETE route works. If you see that
-error, the platform-side endpoint is not yet available; steps 2-4 cannot
-be exercised live until it ships.
+VERIFIED LIVE (2026-09-25): the full four-step flow passes against the
+live API — POST returns 202 with the message ID, PATCH reschedule
+returns 200 with the new timestamp, a past-timestamp PATCH is rejected
+with 422 (errors[0] references scheduled_at) and the message stays
+scheduled, and GET reflects the updated scheduled_at.
 
 Security: credentials are read from environment variables only. Never
 hardcode API keys. Sender/recipient addresses come from env vars.
@@ -195,13 +194,8 @@ def reschedule_email(message_id: str, new_scheduled_at: str) -> dict:
         print(f"ERROR: reschedule request failed: {exc}")
         sys.exit(1)
 
-    if response.status_code == 404:
-        print(
-            "BLOCKED: PATCH /v2/email_messages/{id}/schedule is documented but not "
-            "deployed on the live API yet (404, code 10005). Steps 2-4 cannot be "
-            "verified live until the endpoint ships. The scheduled message is "
-            "cancelled in cleanup so it does not send. See the README Known limitation."
-        )
+    if response.status_code == 409:
+        print(f"ERROR: message is no longer scheduled (409): {response.text}")
         sys.exit(1)
 
     if response.status_code != 200:
@@ -237,14 +231,6 @@ def attempt_invalid_reschedule(message_id: str) -> None:
         resp = requests.patch(url, json=payload, headers=_auth_headers(), timeout=30)
     except requests.RequestException as exc:
         print(f"ERROR: invalid-reschedule request failed: {exc}")
-        sys.exit(1)
-
-    if resp.status_code == 404:
-        print(
-            "BLOCKED: PATCH /v2/email_messages/{id}/schedule is documented but not "
-            "deployed on the live API yet (404, code 10005), so the 422 rejection "
-            "cannot be exercised. See the README Known limitation."
-        )
         sys.exit(1)
 
     # Assert the 422 status code

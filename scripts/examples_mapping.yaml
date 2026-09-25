@@ -1103,6 +1103,12 @@ examples:
     folder: omnichannel-ai-receptionist-python
 
   - product: ai
+    use_case: omnichannel-ai-agent
+    language: python
+    framework: flask
+    folder: omnichannel-ai-agent-python
+
+  - product: ai
     use_case: policy-renewal-campaign
     language: python
     framework: flask

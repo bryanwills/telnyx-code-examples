@@ -168,12 +168,6 @@ The request body is exactly:
 
 A successful reschedule returns a `200` status and updates the message's `scheduled_at` value.
 
-**Known limitation:** this PATCH route is documented in the developer docs and the
-OpenAPI spec, but as of 2026-09-24 the live API returns `404` (code `10005`) for it
-while the sibling `DELETE /v2/email_messages/{id}/schedule` works. If you hit that
-error, the sample prints a clear `BLOCKED:` message, cancels the scheduled message
-in cleanup, and exits — nothing sends. Re-run once the endpoint ships.
-
 **Telnyx primitive used:** Schedule Manager
 
 ---
