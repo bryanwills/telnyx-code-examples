@@ -3,7 +3,7 @@
   "description": "Production-ready code examples for Telnyx AI Communications Infrastructure.",
   "homepage": "https://developers.telnyx.com",
   "repository": "https://github.com/team-telnyx/telnyx-code-examples",
-  "generated_at": "2026-09-29T18:01:38Z",
+  "generated_at": "2026-09-29T19:16:56Z",
   "example_count": 560,
   "examples": [
     {
@@ -5039,7 +5039,7 @@
     },
     {
       "folder": "chargeback-adjudication",
-      "title": "Chargeback Adjudication with Jev Decision Models",
+      "title": "Chargeback Adjudication with Telnyx Decision Models",
       "description": "A durable actor that adjudicates payment chargebacks using Telnyx Decision Models, manages regulatory deadlines, and maintains an append-only audit ledger.",
       "product": "ai",
       "language": "typescript",

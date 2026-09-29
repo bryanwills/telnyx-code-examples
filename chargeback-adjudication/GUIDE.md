@@ -1,6 +1,6 @@
 # Chargeback Adjudication — Developer Guide
 
-A step-by-step walkthrough of the `chargeback-adjudication` sample: a durable Telnyx Edge actor that adjudicates payment chargebacks using the Jev Decision Models API, enforces regulatory deadlines, and maintains an append-only audit ledger.
+A step-by-step walkthrough of the `chargeback-adjudication` sample: a durable Telnyx Edge actor that adjudicates payment chargebacks using the Telnyx Decision Models API, enforces regulatory deadlines, and maintains an append-only audit ledger.
 
 ---
 
@@ -41,7 +41,7 @@ DEMO_MODE=true
 
 | Variable | Description | Default |
 |---|---|---|
-| `TELNYX_API_KEY` | Your Telnyx API key (used for Jev Decision Models calls) | *(required)* |
+| `TELNYX_API_KEY` | Your Telnyx API key (used for Telnyx Decision Models calls) | *(required)* |
 | `RESPONSE_DEADLINE_DAYS` | Fallback chargeback response deadline in days | `7` |
 | `REVIEWER_ONCALL_E164` | Phone number to page for fraud holds | *(required for live mode)* |
 | `DEMO_MODE` | When `true`, SMS is logged instead of sent | `true` |
@@ -88,7 +88,7 @@ The actor owns:
 - **The evidence file** — order details, delivery confirmation, and prior contact history
 - **The deadline engine** — a self-scheduling timer that auto-loses unanswered chargebacks
 - **The audit ledger** — an append-only SQL table recording every decision and re-evaluation
-- **The decision policy** — rules that translate Jev's verdict into customer-facing actions
+- **The decision policy** — rules that translate the Decision Model's verdict into customer-facing actions
 
 ### Step 1: Chargeback Webhook → Actor Birth
 
@@ -128,12 +128,12 @@ const contactRows = await db.prepare("SELECT * FROM contactLog WHERE customer = 
 
 These tables are seeded with mock rows during `onChargeback` via the `seedEvidence` method. In production, these would be replaced with calls to the merchant's orders API.
 
-### Step 3: Jev Decision Models Call
+### Step 3: Telnyx Decision Models Call
 
-The `judgeWithJev` method calls the Jev Decision Models API (`POST /v2/ai/typesafe/v1/systemone`) with all three question types in a single shared-state call:
+The `judgeWithDecisionModel` method calls the Telnyx Decision Models API (`POST /v2/ai/typesafe/v1/systemone`) with all three question types in a single shared-state call:
 
 ```typescript
-// src/index.ts — judgeWithJev method
+// src/index.ts — judgeWithDecisionModel method
 const body = {
   model: "telnyx/decision-flash",
   state,
@@ -148,7 +148,7 @@ const body = {
 The call includes bounded retry with jitter for `429`/`502`-class responses:
 
 ```typescript
-// src/index.ts — retry loop in judgeWithJev
+// src/index.ts — retry loop in judgeWithDecisionModel
 for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
   const res = await fetch(url, { method: "POST", headers: { Authorization: `Bearer ${apiKey}` }, ... });
   if (res.ok) return await res.json();
@@ -159,7 +159,7 @@ for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
 
 ### Step 4: Decision Policy
 
-The `applyPolicy` method translates Jev's verdict into actions:
+The `applyPolicy` method translates the Decision Model's verdict into actions:
 
 ```typescript
 // src/index.ts — applyPolicy method
@@ -197,7 +197,7 @@ The `decided` flag is the second guard (belt-and-suspenders): the stable task ID
 
 ### Step 5: Deadline Timer
 
-When Jev returns `request_evidence`, the actor arms a deadline timer:
+When the Decision Model returns `request_evidence`, the actor arms a deadline timer:
 
 ```typescript
 // src/index.ts — request_evidence case in applyPolicy
@@ -235,13 +235,13 @@ if (path === "/webhook/inbound-message" && req.method === "POST") {
 }
 ```
 
-The `onNewEvidence` method re-assembles the evidence (including the new media URL), re-runs Jev with the full prior history, and appends to the audit ledger:
+The `onNewEvidence` method re-assembles the evidence (including the new media URL), re-runs the Decision Model with the full prior history, and appends to the audit ledger:
 
 ```typescript
 // src/index.ts — onNewEvidence method
 async onNewEvidence(text: string, mediaUrl?: string): Promise<void> {
   const evidence = await this.assembleEvidence(mediaUrl);
-  const v = await this.judgeWithJev({ ...evidence, newEvidence: text });
+  const v = await this.judgeWithDecisionModel({ ...evidence, newEvidence: text });
   await this.appendAudit("re-evaluated", v);
   await this.applyPolicy(v);
 }
@@ -292,7 +292,7 @@ To switch to live mode:
 2. Provide a real `REVIEWER_ONCALL_E164` phone number
 3. Ensure `TELNYX_API_KEY` is set as a secret
 
-In live mode, SMS messages are sent via the Telnyx Messaging API, and the Jev Decision Models API is called with real credentials.
+In live mode, SMS messages are sent via the Telnyx Messaging API, and the Telnyx Decision Models API is called with real credentials.
 
 ---
 
@@ -324,7 +324,7 @@ This deploys the actor and Edge fetch handler to Telnyx Edge.
 | **Agent SQL** (`SqlDatabase`) | Append-only `audit` ledger, `reviewQueue` table, and seeded mock evidence tables |
 | **Scheduled Tasks** (`schedule()`) | `decide:<disputeId>` task (exactly-once decision) and `respond:<disputeId>` deadline timer |
 | **Messaging** (`TELNYX.messages.send`) | Customer decision SMS and fraud hold notification to reviewer on-call |
-| **Secrets** (`SECRETS.get`) | Retrieves `TELNYX_API_KEY` for Jev Decision Models API calls |
+| **Secrets** (env `TELNYX_API_KEY`) | Bearer token for Telnyx Decision Models API calls (platform-injected via `[[secrets]]`) |
 | **Webhook Seam** (Edge `fetch`) | `/webhook/chargeback` (actor birth) and `/webhook/inbound-message` (re-evaluation) |
 
 ---
