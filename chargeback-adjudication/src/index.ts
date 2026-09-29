@@ -1,4 +1,3 @@
-```typescript
 // SELF-REVIEW:
 // ✅ Agent SDK (Agent base class) used for durable DisputeCase actor
 // ✅ Jev Decision Models: choice + score + noul in one shared-state call
@@ -16,7 +15,7 @@
 //   TELNYX binding does not yet expose the typesafe endpoint in v0.15.1).
 //   The TELNYX binding is used for messages.send (zero-credential).
 
-import { Agent, type Env, type ActorNamespace, type SqlDatabase, type Secrets } from "@telnyx/edge-runtime";
+import { Agent, type Env, type ActorNamespace, type ActorStub, type IdFromNameOptions, type SqlDatabase } from "@telnyx/edge-runtime";
 
 export interface DisputeState {
   disputeId: string;
@@ -33,17 +32,24 @@ export interface DisputeState {
     contactLog: Array<Record<string, unknown>>;
     mediaUrl: string | null;
   };
+  [key: string]: unknown;
+}
+
+type DisputeStub = ActorStub & Pick<DisputeCase, "onChargeback" | "onNewEvidence">;
+
+interface DisputeNamespace extends ActorNamespace {
+  idFromName(name: string, options?: IdFromNameOptions): DisputeStub;
 }
 
 export interface DisputeEnv extends Env {
-  DISPUTES: ActorNamespace;
+  DISPUTES: DisputeNamespace;
   DISPUTE_DB: SqlDatabase;
   TELNYX: {
     messages: {
       send: (params: { to: string; from?: string; text: string }) => Promise<unknown>;
     };
   };
-  SECRETS: Secrets;
+  TELNYX_API_KEY: string;
   RESPONSE_DEADLINE_DAYS: string;
   REVIEWER_ONCALL_E164: string;
   DEMO_MODE: string;
@@ -162,15 +168,16 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
   // --- Assemble evidence file ---
   private async assembleEvidence(mediaUrl?: string): Promise<Record<string, unknown>> {
     const db = this.env.DISPUTE_DB;
-    const orderId = this.state.orderId || this.state.disputeId;
+    const s = await this.getState();
+    const orderId = s.orderId || s.disputeId;
     const orderRow = await db.prepare("SELECT * FROM orders WHERE orderId = ?").bind(orderId).first();
     const deliveryRow = await db.prepare("SELECT * FROM deliveries WHERE orderId = ?").bind(orderId).first();
-    const contactRows = await db.prepare("SELECT * FROM contactLog WHERE customer = ?").bind(this.state.customer).all();
+    const contactRows = await db.prepare("SELECT * FROM contactLog WHERE customer = ?").bind(s.customer).all();
 
     const evidence = {
       order: orderRow || null,
       delivery: deliveryRow || null,
-      contactLog: contactRows || [],
+      contactLog: contactRows.results || [],
       mediaUrl: mediaUrl || null,
     };
 
@@ -180,7 +187,7 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
 
   // --- Jev Decision Models call ---
   private async judgeWithJev(state: Record<string, unknown>): Promise<Record<string, unknown>> {
-    const apiKey = await this.env.SECRETS.get("TELNYX_API_KEY");
+    const apiKey = this.env.TELNYX_API_KEY;
     const url = "https://api.telnyx.com/v2/ai/typesafe/v1/systemone";
 
     const body = {
@@ -248,8 +255,9 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
     const score = (v.score as number) || 0;
     const noul = (v.noul as number) || 0;
 
-    const customerPhone = this.state.customer;
-    const disputeId = this.state.disputeId;
+    const s = await this.getState();
+    const customerPhone = s.customer;
+    const disputeId = s.disputeId;
 
     await this.appendAudit("decision", { choice, score, noul });
 
@@ -265,7 +273,7 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
       return;
     }
 
-    if (this.state.decided) return; // exactly-once guard
+    if (s.decided) return; // exactly-once guard
 
     switch (choice) {
       case "approve_rebate":
@@ -276,7 +284,7 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
         await this.sendSms(customerPhone, `We need more evidence for chargeback ${disputeId}. Please reply with a delivery photo or details.`);
         await this.setState({ status: "awaiting_evidence", verdict: v, decided: true });
         // Arm the deadline timer
-        this.schedule(this.state.deadlineMs / 1000, "deadline", {}, { id: "respond:" + disputeId });
+        this.schedule(s.deadlineMs / 1000, "deadline", {}, { id: "respond:" + disputeId });
         break;
       case "deny":
         await this.sendSms(customerPhone, `Your chargeback ${disputeId} could not be approved.`);
@@ -289,7 +297,7 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
 
   // --- Decide task handler ---
   async decide(): Promise<void> {
-    if (this.state.decided) return;
+    if ((await this.getState()).decided) return;
     const evidence = await this.assembleEvidence();
     const v = await this.judgeWithJev(evidence);
     await this.applyPolicy(v);
@@ -297,10 +305,11 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
 
   // --- Deadline task handler ---
   async deadline(): Promise<void> {
-    if (!this.state.decided) {
+    const s = await this.getState();
+    if (!s.decided) {
       await this.setState({ status: "auto_lost" });
       await this.appendAudit("auto_lost", { reason: "deadline expired" });
-      await this.sendSms(this.state.customer, `Chargeback ${this.state.disputeId} was auto-lost: no response before deadline.`);
+      await this.sendSms(s.customer, `Chargeback ${s.disputeId} was auto-lost: no response before deadline.`);
     }
   }
 
@@ -314,9 +323,10 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
 
   // --- Append-only audit ledger ---
   private async appendAudit(event: string, payload: Record<string, unknown>): Promise<void> {
+    const s = await this.getState();
     await this.env.DISPUTE_DB
       .prepare("INSERT INTO audit VALUES (?, ?, ?, ?)")
-      .bind(this.state.disputeId, new Date().toISOString(), event, JSON.stringify(payload))
+      .bind(s.disputeId, new Date().toISOString(), event, JSON.stringify(payload))
       .all();
   }
 
@@ -331,28 +341,53 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
 }
 
 // --- Edge fetch handler: webhook seam ---
+type ChargebackPayload = {
+  disputeId: string;
+  customer: string;
+  amount: number;
+  orderId: string;
+  respondBy?: string;
+};
+
+type InboundPayload = {
+  disputeId: string;
+  text?: string;
+  mediaUrl?: string;
+};
+
+function parseJson<T>(raw: string): T | null {
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+}
+
 export default {
   async fetch(req: Request, e: DisputeEnv): Promise<Response> {
     const url = new URL(req.url);
     const path = url.pathname;
 
     if (path === "/webhook/chargeback" && req.method === "POST") {
-      const payload = await req.json();
+      const payload = parseJson<ChargebackPayload>(await req.text());
+      if (!payload || !payload.disputeId || !payload.customer || !payload.orderId) {
+        return new Response(JSON.stringify({ error: "disputeId, customer, and orderId required" }), { status: 400 });
+      }
       const stub = e.DISPUTES.idFromName(payload.disputeId);
       const result = await stub.onChargeback(payload);
       return new Response(JSON.stringify(result), { status: 200 });
     }
 
     if (path === "/webhook/inbound-message" && req.method === "POST") {
-      const payload = await req.json();
-      const { disputeId, text, mediaUrl } = payload;
-      if (!disputeId) return new Response(JSON.stringify({ error: "disputeId required" }), { status: 400 });
-      const stub = e.DISPUTES.idFromName(disputeId);
-      await stub.onNewEvidence(text, mediaUrl);
+      const payload = parseJson<InboundPayload>(await req.text());
+      if (!payload || !payload.disputeId) {
+        return new Response(JSON.stringify({ error: "disputeId required" }), { status: 400 });
+      }
+      const stub = e.DISPUTES.idFromName(payload.disputeId);
+      await stub.onNewEvidence(payload.text || "", payload.mediaUrl);
       return new Response(JSON.stringify({ ok: true }), { status: 200 });
     }
 
     return new Response("Not found", { status: 404 });
   },
 };
-```

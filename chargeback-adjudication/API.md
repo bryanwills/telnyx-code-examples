@@ -1,4 +1,3 @@
-```markdown
 # API Reference — Chargeback Adjudication
 
 This document describes the HTTP endpoints exposed by the `chargeback-adjudication` Edge sample. All routes are handled by the single Edge `fetch` entry point in `src/index.ts`.
@@ -196,4 +195,3 @@ POST https://api.telnyx.com/v2/ai/typesafe/v1/systemone
 - On `429` or `502`-class responses, the actor retries up to `MAX_RETRIES` (5) times with jittered exponential backoff (base 1s, doubling, capped at 30s, plus random jitter).
 - Honors `Retry-After` header if present.
 - Throws after exhausting retries.
-```

@@ -1,90 +1,49 @@
-```typescript
-import { describe, it, expect } from "vitest";
+import assert from "node:assert";
 import { Agent } from "@telnyx/edge-runtime";
-import { DisputeCase, type DisputeState, type DisputeEnv } from "./src/index";
+import mod, { DisputeCase, type DisputeState } from "./src/index";
 
-describe("DisputeCase actor", () => {
-  it("extends Agent", () => {
-    expect(DisputeCase.prototype).toBeInstanceOf(Agent);
-  });
+const proto = DisputeCase.prototype as unknown as Record<string, unknown>;
 
-  it("has initialState method", () => {
-    expect(typeof DisputeCase.prototype.initialState).toBe("function");
-  });
-
-  it("has onChargeback method", () => {
-    expect(typeof DisputeCase.prototype.onChargeback).toBe("function");
-  });
-
-  it("has decide method", () => {
-    expect(typeof DisputeCase.prototype.decide).toBe("function");
-  });
-
-  it("has deadline method", () => {
-    expect(typeof DisputeCase.prototype.deadline).toBe("function");
-  });
-
-  it("has onNewEvidence method", () => {
-    expect(typeof DisputeCase.prototype.onNewEvidence).toBe("function");
-  });
-
-  it("initialState returns valid DisputeState", () => {
-    const proto = DisputeCase.prototype as any;
-    const state = proto.initialState.call({});
-    expect(state.disputeId).toBe("");
-    expect(state.customer).toBe("");
-    expect(state.status).toBe("pending");
-    expect(state.decided).toBe(false);
-    expect(state.evidence).toEqual({
-      order: null,
-      delivery: null,
-      contactLog: [],
-      mediaUrl: null,
-    });
-  });
-
-  it("DisputeState interface is exported", () => {
-    const dummy: DisputeState = {
-      disputeId: "test",
-      customer: "test",
-      order: null,
-      status: "pending",
-      verdict: null,
-      decided: false,
-      deadlineMs: 0,
-      evidence: { order: null, delivery: null, contactLog: [], mediaUrl: null },
-    };
-    expect(dummy.disputeId).toBe("test");
-  });
-
-  it("DisputeEnv interface is exported", () => {
-    const dummy: DisputeEnv = {} as any;
-    expect(dummy).toBeDefined();
-  });
-});
-
-describe("Module exports", () => {
-  it("default export has fetch handler", async () => {
-    const mod = await import("./src/index");
-    expect(typeof mod.default.fetch).toBe("function");
-  });
-
-  it("DisputeCase is exported", () => {
-    expect(DisputeCase).toBeDefined();
-  });
-});
-
-// Run smoke test directly with tsx
-async function runSmokeTest() {
-  console.log("✅ smoke_test.ts: All checks passed");
-  console.log("  - DisputeCase extends Agent");
-  console.log("  - onChargeback, decide, deadline, onNewEvidence methods exist");
-  console.log("  - initialState returns valid DisputeState");
-  console.log("  - Default fetch handler exported");
-  console.log("  - DisputeState and DisputeEnv interfaces exported");
+function check(name: string, condition: boolean): void {
+  assert.ok(condition, name);
+  console.log(`  ✓ ${name}`);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  runSmokeTest();
-}
-```
+check("DisputeCase extends Agent", DisputeCase.prototype instanceof Agent);
+check("has initialState method", typeof proto.initialState === "function");
+check("has onChargeback method", typeof proto.onChargeback === "function");
+check("has decide method", typeof proto.decide === "function");
+check("has deadline method", typeof proto.deadline === "function");
+check("has onNewEvidence method", typeof proto.onNewEvidence === "function");
+
+const initial = (proto.initialState as () => DisputeState).call({});
+assert.deepEqual(initial, {
+  disputeId: "",
+  customer: "",
+  orderId: "",
+  order: null,
+  status: "pending",
+  verdict: null,
+  decided: false,
+  deadlineMs: 0,
+  evidence: { order: null, delivery: null, contactLog: [], mediaUrl: null },
+});
+console.log("  ✓ initialState returns valid DisputeState");
+
+const dummy: DisputeState = {
+  disputeId: "test",
+  customer: "test",
+  orderId: "test",
+  order: null,
+  status: "pending",
+  verdict: null,
+  decided: false,
+  deadlineMs: 0,
+  evidence: { order: null, delivery: null, contactLog: [], mediaUrl: null },
+};
+check("DisputeState shape typechecks", dummy.disputeId === "test");
+
+check("default export has fetch handler", typeof mod.fetch === "function");
+check("DisputeCase is exported", typeof DisputeCase === "function");
+
+console.log("✅ smoke_test.ts: All checks passed");

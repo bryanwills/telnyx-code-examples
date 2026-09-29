@@ -1,4 +1,3 @@
-```toml
 name = "chargeback-adjudication"
 main = "src/index.ts"
 compatibility_date = "2026-07-28"
@@ -21,4 +20,3 @@ id = "<sqldb-namespace-uuid>"
 RESPONSE_DEADLINE_DAYS = "7"
 REVIEWER_ONCALL_E164 = "+1555XXXXXXXX"
 DEMO_MODE = "true"
-```

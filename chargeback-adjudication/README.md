@@ -1,4 +1,3 @@
-```markdown
 ---
 name: chargeback-adjudication
 title: "Chargeback Adjudication with Jev Decision Models"
@@ -261,4 +260,3 @@ The `judgeWithJev` method calls `POST /v2/ai/typesafe/v1/systemone` and expects 
 - [Messaging: Send Message Documentation](https://developers.telnyx.com/docs/messaging/messages/send-message)
 - [Stateful Actors Documentation](https://developers.telnyx.com/docs/edge-compute/stateful-actors)
 - [Telnyx Pricing](https://telnyx.com/pricing)
-```

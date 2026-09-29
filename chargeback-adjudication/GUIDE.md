@@ -1,4 +1,3 @@
-```markdown
 # Chargeback Adjudication — Developer Guide
 
 A step-by-step walkthrough of the `chargeback-adjudication` sample: a durable Telnyx Edge actor that adjudicates payment chargebacks using the Jev Decision Models API, enforces regulatory deadlines, and maintains an append-only audit ledger.
@@ -338,4 +337,3 @@ This deploys the actor and Edge fetch handler to Telnyx Edge.
 - [Agent SDK Scheduled Tasks](https://developers.telnyx.com/docs/agent-sdk/scheduled-tasks) — Timers and recurring tasks
 - [Messaging: Send Message Documentation](https://developers.telnyx.com/docs/messaging/messages/send-message) — Sending SMS via the Telnyx binding
 - [Stateful Actors Documentation](https://developers.telnyx.com/docs/edge-compute/stateful-actors) — Durable entities and actor lifecycle
-```
