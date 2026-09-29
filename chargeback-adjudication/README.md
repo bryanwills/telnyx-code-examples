@@ -1,6 +1,6 @@
 ---
 name: chargeback-adjudication
-title: "Chargeback Adjudication with Jev Decision Models"
+title: "Chargeback Adjudication with Telnyx Decision Models"
 description: "A durable actor that adjudicates payment chargebacks using Telnyx Decision Models, manages regulatory deadlines, and maintains an append-only audit ledger."
 language: typescript
 framework: edge
@@ -9,13 +9,13 @@ telnyx_products: [AI Communications Infrastructure, Decision Models, Messaging, 
 
 # chargeback-adjudication
 
-A durable Telnyx Edge actor that adjudicates payment chargebacks using Jev Decision Models, manages regulatory deadlines, and maintains an append-only audit ledger.
+A durable Telnyx Edge actor that adjudicates payment chargebacks using Telnyx Decision Models, manages regulatory deadlines, and maintains an append-only audit ledger.
 
 ## The Story
 
 A regional medical clinic processes hundreds of patient payments each month through its payment processor. When a patient disputes a charge — whether due to a billing error, a forgotten copay, or a genuine fraud attempt — the clinic has a narrow window to respond with evidence or risk an automatic loss of the funds. If the dispute is mishandled, the clinic loses revenue, faces compliance scrutiny, and erodes patient trust. The clinic's billing team needs a system that never forgets a deadline, never loses evidence, and can re-evaluate a case when new information arrives days later.
 
-The actor IS the dispute case. Born the moment a chargeback webhook fires, it assembles the evidence file — the original order, the delivery confirmation, the prior contact history — and calls the Jev Decision Models API to rule live: approve a rebate, request more evidence, or deny the claim. It arms a deadline timer that will auto-lose the case if no response arrives in time, and it keeps an append-only audit ledger that an examiner can replay months later. When the patient replies with a photo of their delivered medication, the actor re-wakes with the full prior transcript, re-runs Jev with the new fact, and updates the verdict. If the platform reboots mid-decision, the actor survives — its state, its deadline, and its ledger all durable across restarts. The rest of this README is the API surface of that story.
+The actor IS the dispute case. Born the moment a chargeback webhook fires, it assembles the evidence file — the original order, the delivery confirmation, the prior contact history — and calls the Telnyx Decision Models API to rule live: approve a rebate, request more evidence, or deny the claim. It arms a deadline timer that will auto-lose the case if no response arrives in time, and it keeps an append-only audit ledger that an examiner can replay months later. When the patient replies with a photo of their delivered medication, the actor re-wakes with the full prior transcript, re-runs the Decision Model with the new fact, and updates the verdict. If the platform reboots mid-decision, the actor survives — its state, its deadline, and its ledger all durable across restarts. The rest of this README is the API surface of that story.
 
 ## Why Telnyx
 
@@ -52,7 +52,7 @@ Telnyx provides **AI Communications Infrastructure** — the durable, programmab
 │                       │  ┌────────────────────────────────┐  │    │
 │                       │  │  decide() task handler          │  │    │
 │                       │  │  1. assembleEvidence() → SQL    │  │    │
-│                       │  │  2. judgeWithJev(evidence)      │  │    │
+│                       │  │  2. Decision Model call                 │
 │                       │  │     → POST /systemone           │  │    │
 │                       │  │     → choice + score + noul     │  │    │
 │                       │  │  3. applyPolicy(verdict)        │  │    │
@@ -70,7 +70,7 @@ Telnyx provides **AI Communications Infrastructure** — the durable, programmab
 │                       │  ┌────────────────────────────────┐  │    │
 │                       │  │  onNewEvidence(text, mediaUrl)  │  │    │
 │                       │  │  1. assembleEvidence(mediaUrl)  │  │    │
-│                       │  │  2. judgeWithJev(evidence)      │  │    │
+│                       │  │  2. Decision Model call                 │
 │                       │  │  3. appendAudit("re-evaluated") │  │    │
 │                       │  │  4. applyPolicy(verdict)        │  │    │
 │                       │  └────────────────────────────────┘  │    │
@@ -82,7 +82,7 @@ Telnyx provides **AI Communications Infrastructure** — the durable, programmab
 │                       └──────────────────────────────────────┘    │
 │                                                                     │
 │  ┌────────────────────────────────────────────────────────────────┐ │
-│  │  Jev Decision Models API                                       │ │
+│  │  Telnyx Decision Models API                                    │ │
 │  │  POST /v2/ai/typesafe/v1/systemone                             │ │
 │  │  { model, state, questions: [choice, score, noul] }            │ │
 │  └────────────────────────────────────────────────────────────────┘ │
@@ -197,17 +197,17 @@ Re-wakes an existing `DisputeCase` actor with new customer evidence.
 | Method | Trigger | Description |
 |---|---|---|
 | `onChargeback(payload)` | Webhook | Birth path: seeds evidence, computes deadline, arms `decide` task |
-| `decide()` | Scheduled task (`decide:<id>`) | Assembles evidence, calls Jev, applies policy |
+| `decide()` | Scheduled task (`decide:<id>`) | Assembles evidence, calls the Decision Model, applies policy |
 | `deadline()` | Scheduled task (`respond:<id>`) | Auto-loses the case if no decision was made in time |
-| `onNewEvidence(text, mediaUrl)` | Webhook | Re-evaluates with new evidence, re-runs Jev, updates verdict |
-| `applyPolicy(verdict)` | Internal | Routes based on Jev's `choice` + `noul` score |
-| `judgeWithJev(state)` | Internal | Calls Jev Decision Models API with retry/backoff |
+| `onNewEvidence(text, mediaUrl)` | Webhook | Re-evaluates with new evidence, re-runs the Decision Model, updates verdict |
+| `applyPolicy(verdict)` | Internal | Routes based on the Decision Model's `choice` + `noul` score |
+| `judgeWithDecisionModel(state)` | Internal | Calls Telnyx Decision Models API with retry/backoff |
 | `assembleEvidence(mediaUrl?)` | Internal | Pulls order, delivery, contact log from SQL |
 | `appendAudit(event, payload)` | Internal | Appends to the durable audit ledger |
 
-### Jev Decision Models Response
+### Telnyx Decision Models Response
 
-The `judgeWithJev` method calls `POST /v2/ai/typesafe/v1/systemone` and expects a response containing:
+The `judgeWithDecisionModel` method calls `POST /v2/ai/typesafe/v1/systemone` and expects a response containing:
 
 | Field | Type | Description |
 |---|---|---|
@@ -217,7 +217,7 @@ The `judgeWithJev` method calls `POST /v2/ai/typesafe/v1/systemone` and expects 
 
 ### Decision Policy
 
-| Jev Output | Action |
+| Decision Model Output | Action |
 |---|---|
 | `noul > 0.8` | Route to human reviewer: insert into `reviewQueue`, SMS reviewer on-call, SMS customer "under manual review" — **never auto-rebate** |
 | `choice = approve_rebate` | SMS customer "refund issued", set status `approved`, mark `decided = true` |
@@ -230,8 +230,8 @@ The `judgeWithJev` method calls `POST /v2/ai/typesafe/v1/systemone` and expects 
 | Issue | Cause | Solution |
 |---|---|---|
 | Actor not found on webhook | `DISPUTES` binding not configured in `telnyx.toml` | Ensure `[[actors]]` section maps `binding = "DISPUTES"` to `type = "DisputeCase"` |
-| Jev API returns 429 | Rate limited | The built-in retry/backoff handles this; check `Retry-After` header is honored |
-| Jev API returns 502 | Transient gateway error | Retry with jittered backoff (up to 5 attempts) |
+| Decision Model API returns 429 | Rate limited | The built-in retry/backoff handles this; check `Retry-After` header is honored |
+| Decision Model API returns 502 | Transient gateway error | Retry with jittered backoff (up to 5 attempts) |
 | Deadline timer doesn't fire | Actor was killed before `schedule()` completed | The `decide:<id>` task id is stable; retries converge to the same task |
 | SMS not sent | `DEMO_MODE` is `true` | Set `DEMO_MODE=false` in `.env` to send real SMS |
 | `TELNYX_API_KEY` not found | Secret not set | Run `telnyx-edge secrets add TELNYX_API_KEY "<your_key>"` |

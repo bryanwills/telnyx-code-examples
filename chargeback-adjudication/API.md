@@ -65,7 +65,7 @@ curl -X POST https://<edge-url>/webhook/chargeback \
 
 ## POST /webhook/inbound-message
 
-Re-wakes an existing `DisputeCase` actor when a customer replies with new evidence (e.g., a delivery photo via MMS). The actor re-assembles the full evidence file (including prior transcript from agent SQL), re-runs Jev with the new fact, updates the verdict, and appends to the append-only audit ledger.
+Re-wakes an existing `DisputeCase` actor when a customer replies with new evidence (e.g., a delivery photo via MMS). The actor re-assembles the full evidence file (including prior transcript from agent SQL), re-runs the Decision Model with the new fact, updates the verdict, and appends to the append-only audit ledger.
 
 ### Request
 
@@ -73,7 +73,7 @@ Re-wakes an existing `DisputeCase` actor when a customer replies with new eviden
 |-------------|--------|----------|-----------------------------------------------------------------------------|
 | `disputeId` | string | Yes      | The dispute ID of the actor to re-wake.                                     |
 | `text`      | string | Yes      | The inbound message text content (customer's written evidence or reply).   |
-| `mediaUrl`  | string | No       | URL to MMS media (e.g., a delivery photo). Passed into Jev state as `evidence.mediaUrl`. |
+| `mediaUrl`  | string | No       | URL to MMS media (e.g., a delivery photo). Passed into the Decision Model state as `evidence.mediaUrl`. |
 
 ### Example Request
 
@@ -128,24 +128,24 @@ These are not HTTP endpoints but are invoked internally by the Agent SDK's task 
 
 Armed at case birth with delay 0. Invokes `DisputeCase.decide()` which:
 1. Assembles the evidence file from agent SQL (orders, deliveries, contactLog).
-2. Calls Jev Decision Models (`POST /v2/ai/typesafe/v1/systemone`) with `choice`, `score`, and `noul` questions in shared state.
+2. Calls Telnyx Decision Models (`POST /v2/ai/typesafe/v1/systemone`) with `choice`, `score`, and `noul` questions in shared state.
 3. Applies the decision policy via `applyPolicy()`.
 
 The stable task ID (`decide:<disputeId>`) ensures exactly-once execution across retries. The `decided` flag is a secondary guard.
 
 ### `deadline` task (`respond:<disputeId>`)
 
-Armed when Jev returns `choice=request_evidence`. Fires after `deadlineMs` (computed from `respondBy` payload or `RESPONSE_DEADLINE_DAYS` env fallback). If the case is still undecided, marks `status: "auto_lost"` and appends an `auto_lost` audit row. Survives pod restarts via durable scheduling.
+Armed when the Decision Model returns `choice=request_evidence`. Fires after `deadlineMs` (computed from `respondBy` payload or `RESPONSE_DEADLINE_DAYS` env fallback). If the case is still undecided, marks `status: "auto_lost"` and appends an `auto_lost` audit row. Survives pod restarts via durable scheduling.
 
 ### `onNewEvidence` method
 
-Invoked by the `/webhook/inbound-message` handler. Re-assembles evidence with the new media URL, re-runs Jev, appends a `re-evaluated` audit row, and re-applies policy.
+Invoked by the `/webhook/inbound-message` handler. Re-assembles evidence with the new media URL, re-runs the Decision Model, appends a `re-evaluated` audit row, and re-applies policy.
 
 ---
 
-## Jev Decision Models API (External)
+## Telnyx Decision Models API (External)
 
-The actor calls the Jev Decision Models API directly via `fetch` (the `TELNYX` binding in v0.15.1 does not yet expose the typesafe endpoint).
+The actor calls the Telnyx Decision Models API directly via `fetch` (the `TELNYX` binding in v0.15.1 does not yet expose the typesafe endpoint).
 
 ### Endpoint
 

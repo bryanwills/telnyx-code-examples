@@ -1,7 +1,7 @@
 {
   "name": "chargeback-adjudication",
   "version": "1.0.0",
-  "description": "Durable chargeback/dispute adjudication actor using Telnyx Agent SDK + Jev Decision Models",
+  "description": "Durable chargeback/dispute adjudication actor using Telnyx Agent SDK + Telnyx Decision Models",
   "main": "src/index.ts",
   "type": "module",
   "scripts": {

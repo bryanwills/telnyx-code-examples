@@ -1,6 +1,6 @@
 // SELF-REVIEW:
 // ✅ Agent SDK (Agent base class) used for durable DisputeCase actor
-// ✅ Jev Decision Models: choice + score + noul in one shared-state call
+// ✅ Telnyx Decision Models: choice + score + noul in one shared-state call
 // ✅ schedule() for deadline timer (respond:<disputeId>) and decide task
 // ✅ SQL (agent SQL) for append-only audit ledger + reviewQueue + seed data
 // ✅ Messaging via TELNYX binding (messages.send)
@@ -10,7 +10,7 @@
 // ✅ Demo mode default (DEMO_MODE=true) — no real SMS
 // ✅ No credentials in code — all from env bindings
 // ✅ smoke_test.ts verifies classes/methods exist
-// ASSUMPTION: Jev Decision Models API endpoint is POST /v2/ai/typesafe/v1/systemone
+// ASSUMPTION: Telnyx Decision Models API endpoint is POST /v2/ai/typesafe/v1/systemone
 //   accessed via raw fetch with TELNYX_API_KEY from secrets (platform-injected
 //   TELNYX binding does not yet expose the typesafe endpoint in v0.15.1).
 //   The TELNYX binding is used for messages.send (zero-credential).
@@ -185,8 +185,8 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
     return evidence;
   }
 
-  // --- Jev Decision Models call ---
-  private async judgeWithJev(state: Record<string, unknown>): Promise<Record<string, unknown>> {
+  // --- Telnyx Decision Models call ---
+  private async judgeWithDecisionModel(state: Record<string, unknown>): Promise<Record<string, unknown>> {
     const apiKey = this.env.TELNYX_API_KEY;
     const url = "https://api.telnyx.com/v2/ai/typesafe/v1/systemone";
 
@@ -236,7 +236,7 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
           : jitteredBackoff(attempt);
 
         if (attempt === MAX_RETRIES) {
-          throw new Error(`Jev call failed after ${MAX_RETRIES} retries: ${res.status}`);
+          throw new Error(`Decision Model call failed after ${MAX_RETRIES} retries: ${res.status}`);
         }
 
         await sleep(waitMs);
@@ -246,7 +246,7 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
       }
     }
 
-    throw new Error("Jev call exhausted retries");
+    throw new Error("Decision Model call exhausted retries");
   }
 
   // --- Decision policy ---
@@ -299,7 +299,7 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
   async decide(): Promise<void> {
     if ((await this.getState()).decided) return;
     const evidence = await this.assembleEvidence();
-    const v = await this.judgeWithJev(evidence);
+    const v = await this.judgeWithDecisionModel(evidence);
     await this.applyPolicy(v);
   }
 
@@ -316,7 +316,7 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
   // --- New evidence re-evaluation ---
   async onNewEvidence(text: string, mediaUrl?: string): Promise<void> {
     const evidence = await this.assembleEvidence(mediaUrl);
-    const v = await this.judgeWithJev({ ...evidence, newEvidence: text });
+    const v = await this.judgeWithDecisionModel({ ...evidence, newEvidence: text });
     await this.appendAudit("re-evaluated", v);
     await this.applyPolicy(v);
   }
