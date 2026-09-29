@@ -1,0 +1,21 @@
+```json
+{
+  "name": "chargeback-adjudication",
+  "version": "1.0.0",
+  "description": "Durable chargeback/dispute adjudication actor using Telnyx Agent SDK + Jev Decision Models",
+  "main": "src/index.ts",
+  "scripts": {
+    "deploy": "telnyx-edge ship",
+    "types": "telnyx-edge types",
+    "test": "vitest run",
+    "smoke": "tsx smoke_test.ts"
+  },
+  "dependencies": {
+    "@telnyx/edge-runtime": "^0.15.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "vitest": "^2.0.0"
+  }
+}
+```
