@@ -207,13 +207,13 @@ Re-wakes an existing `DisputeCase` actor with new customer evidence.
 
 ### Telnyx Decision Models Response
 
-The `judgeWithDecisionModel` method calls `POST /v2/ai/typesafe/v1/systemone` and expects a response containing:
+The `judgeWithDecisionModel` method calls `POST /v2/ai/typesafe/v1/systemone` with `{ state, questions }` (state is a JSON string; `choice` uses a criteria map, `score` a criteria rubric) and reads per-question results from `answers`:
 
 | Field | Type | Description |
 |---|---|---|
-| `choice` | `string` | One of: `approve_rebate`, `request_evidence`, `deny` |
-| `score` | `number` | Probability of losing the dispute (0–100) |
-| `noul` | `number` | Fraud likelihood (0 or 1) |
+| `answers.decision.choice` | `string` | One of: `approve_rebate`, `request_evidence`, `deny` |
+| `answers.loseProb.score` | `number` | Probability of losing the dispute (0–1) |
+| `answers.fraud.noul` | `number` | Fraud likelihood (0–1) |
 
 ### Decision Policy
 
@@ -231,6 +231,7 @@ The `judgeWithDecisionModel` method calls `POST /v2/ai/typesafe/v1/systemone` an
 |---|---|---|
 | Actor not found on webhook | `DISPUTES` binding not configured in `telnyx.toml` | Ensure `[[actors]]` section maps `binding = "DISPUTES"` to `type = "DisputeCase"` |
 | Decision Model API returns 429 | Rate limited | The built-in retry/backoff handles this; check `Retry-After` header is honored |
+| Decision Model API returns 4xx | Malformed request or auth failure | Non-retryable; the actor throws immediately with the response body |
 | Decision Model API returns 502 | Transient gateway error | Retry with jittered backoff (up to 5 attempts) |
 | Deadline timer doesn't fire | Actor was killed before `schedule()` completed | The `decide:<id>` task id is stable; retries converge to the same task |
 | SMS not sent | `DEMO_MODE` is `true` | Set `DEMO_MODE=false` in `.env` to send real SMS |

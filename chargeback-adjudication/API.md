@@ -165,33 +165,79 @@ POST https://api.telnyx.com/v2/ai/typesafe/v1/systemone
 
 | Field       | Type     | Description                                                                 |
 |-------------|----------|-----------------------------------------------------------------------------|
-| `model`     | string   | The decision model identifier: `"telnyx/decision-flash"`.                   |
-| `state`     | object   | The shared state block containing the assembled evidence file.              |
-| `questions` | array    | Array of question objects (see below).                                      |
+| `state`     | string   | JSON-serialized shared state containing the assembled evidence file.        |
+| `questions` | object   | Map of question id → question object (see below).                            |
 
 #### Question Object Schema
 
 | Field          | Type    | Required | Description                                                                 |
 |----------------|---------|----------|-----------------------------------------------------------------------------|
 | `type`         | string  | Yes      | One of: `"choice"`, `"score"`, `"noul"`.                                    |
-| `id`           | string  | Yes      | Identifier for the question result.                                         |
-| `options`      | array/number | Yes (choice/score) | For `choice`: array of option strings. For `score`: max integer (100). For `noul`: omitted (binary 0/1). |
 | `instructions` | string  | Yes      | Prompt instructions for the model.                                          |
+| `criteria`     | object/array | choice/score | For `choice`: map of option key → description. For `score`: array of rubric band descriptions. Omitted for `noul`. |
 
-### Response
-
-**Status: 200 OK** — JSON object containing the model's answers keyed by question `id`:
+Example request:
 
 ```json
 {
-  "decision": "approve_rebate",
-  "loseProb": 15,
-  "fraud": 0
+  "state": "{\"order\":{...},\"delivery\":{...}}",
+  "questions": {
+    "decision": {
+      "type": "choice",
+      "instructions": "Rule on the chargeback.",
+      "criteria": {
+        "approve_rebate": "Delivery evidence supports the customer's order.",
+        "request_evidence": "Evidence is inconclusive; more proof is needed.",
+        "deny": "Evidence supports the merchant; deny the dispute."
+      }
+    },
+    "loseProb": {
+      "type": "score",
+      "instructions": "0=we clearly win, 100=we clearly lose.",
+      "criteria": ["0-25 clearly win", "25-75 uncertain", "75-100 clearly lose"]
+    },
+    "fraud": {
+      "type": "noul",
+      "instructions": "1 if this looks like a fraud attempt, else 0."
+    }
+  }
 }
 ```
+
+### Response
+
+**Status: 200 OK** — JSON object with per-question results under `answers`, keyed by question id:
+
+```json
+{
+  "model": "telnyx/decision-pro",
+  "answers": {
+    "decision": {
+      "type": "choice",
+      "choice": "deny",
+      "probabilities": { "approve_rebate": 0.32, "request_evidence": 0.002, "deny": 0.68 },
+      "confidence": 0.42
+    },
+    "loseProb": {
+      "type": "score",
+      "score": 0.45,
+      "legend": { "0": "0-25 clearly win", "1": "25-75 uncertain", "2": "75-100 clearly lose" },
+      "confidence": 0.33
+    },
+    "fraud": {
+      "type": "noul",
+      "noul": 0.05
+    }
+  },
+  "usage": { "input_tokens": 339, "output_tokens": 4, "cached_input_tokens": 0 }
+}
+```
+
+The actor reads `answers.decision.choice`, `answers.loseProb.score`, and `answers.fraud.noul`.
 
 ### Retry Behavior
 
 - On `429` or `502`-class responses, the actor retries up to `MAX_RETRIES` (5) times with jittered exponential backoff (base 1s, doubling, capped at 30s, plus random jitter).
+- Non-retryable `4xx` responses (other than `429`) throw immediately with the response body snippet.
 - Honors `Retry-After` header if present.
 - Throws after exhausting retries.
