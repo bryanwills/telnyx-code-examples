@@ -11,8 +11,8 @@
 // ✅ No credentials in code — all from env bindings
 // ✅ smoke_test.ts verifies classes/methods exist
 // ASSUMPTION: Telnyx Decision Models API endpoint is POST /v2/ai/typesafe/v1/systemone
-//   accessed via raw fetch with TELNYX_API_KEY from secrets (platform-injected
-//   TELNYX binding does not yet expose the typesafe endpoint in v0.15.1).
+//   (BETA, same endpoint verified in edge-outage-hotline-typescript). State is a
+//   JSON string; questions use criteria maps; responses nest under `answers`.
 //   The TELNYX binding is used for messages.send (zero-credential).
 
 import { Agent, type Env, type ActorNamespace, type ActorStub, type IdFromNameOptions, type SqlDatabase } from "@telnyx/edge-runtime";
@@ -49,6 +49,7 @@ export interface DisputeEnv extends Env {
       send: (params: { to: string; from?: string; text: string }) => Promise<unknown>;
     };
   };
+  SECRETS: { get: (handle: string) => Promise<string> };
   TELNYX_API_KEY: string;
   RESPONSE_DEADLINE_DAYS: string;
   REVIEWER_ONCALL_E164: string;
@@ -186,32 +187,44 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
   }
 
   // --- Telnyx Decision Models call ---
+  private async resolveApiKey(): Promise<string> {
+    if (this.env.TELNYX_API_KEY) return this.env.TELNYX_API_KEY;
+    try {
+      return await this.env.SECRETS.get("TELNYX_API_KEY");
+    } catch {
+      throw new Error("TELNYX_API_KEY is not configured (neither env var nor secret binding)");
+    }
+  }
+
   private async judgeWithDecisionModel(state: Record<string, unknown>): Promise<Record<string, unknown>> {
-    const apiKey = this.env.TELNYX_API_KEY;
+    const apiKey = await this.resolveApiKey();
     const url = "https://api.telnyx.com/v2/ai/typesafe/v1/systemone";
 
+    // Beta endpoint: sends exactly `state` (a string) and `questions`.
+    // `choice` uses a criteria map, `score` a criteria rubric array, and the
+    // response nests per-question results under `answers`.
     const body = {
-      model: "telnyx/decision-flash",
-      state,
-      questions: [
-        {
+      state: JSON.stringify(state),
+      questions: {
+        decision: {
           type: "choice",
-          id: "decision",
-          options: ["approve_rebate", "request_evidence", "deny"],
           instructions: "Rule on the chargeback.",
+          criteria: {
+            approve_rebate: "Delivery evidence supports the customer's order.",
+            request_evidence: "Evidence is inconclusive; more proof is needed.",
+            deny: "Evidence supports the merchant; deny the dispute.",
+          },
         },
-        {
+        loseProb: {
           type: "score",
-          id: "loseProb",
-          options: 100,
           instructions: "0=we clearly win, 100=we clearly lose.",
+          criteria: ["0-25 clearly win", "25-75 uncertain", "75-100 clearly lose"],
         },
-        {
+        fraud: {
           type: "noul",
-          id: "fraud",
           instructions: "1 if this looks like a fraud attempt, else 0.",
         },
-      ],
+      },
     };
 
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
@@ -228,6 +241,11 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
 
         if (res.ok) {
           return await res.json();
+        }
+
+        // 4xx (except 429) is a permanent failure — do not burn retries on it.
+        if (res.status !== 429 && res.status >= 400 && res.status < 500) {
+          throw new Error(`Decision Model API rejected the request (HTTP ${res.status}): ${(await res.text()).slice(0, 200)}`);
         }
 
         const retryAfter = res.headers.get("Retry-After");
@@ -251,9 +269,10 @@ export class DisputeCase extends Agent<DisputeEnv, DisputeState> {
 
   // --- Decision policy ---
   private async applyPolicy(v: Record<string, unknown>): Promise<void> {
-    const choice = v.choice as string;
-    const score = (v.score as number) || 0;
-    const noul = (v.noul as number) || 0;
+    const answers = (v.answers ?? {}) as Record<string, Record<string, unknown>>;
+    const choice = (answers.decision?.choice as string) || "";
+    const score = (answers.loseProb?.score as number) || 0;
+    const noul = (answers.fraud?.noul as number) || 0;
 
     const s = await this.getState();
     const customerPhone = s.customer;

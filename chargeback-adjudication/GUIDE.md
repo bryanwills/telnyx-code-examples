@@ -130,20 +130,36 @@ These tables are seeded with mock rows during `onChargeback` via the `seedEviden
 
 ### Step 3: Telnyx Decision Models Call
 
-The `judgeWithDecisionModel` method calls the Telnyx Decision Models API (`POST /v2/ai/typesafe/v1/systemone`) with all three question types in a single shared-state call:
+The `judgeWithDecisionModel` method calls the Telnyx Decision Models API (`POST /v2/ai/typesafe/v1/systemone`) with all three question types in a single shared-state call. `state` is a JSON string; each question declares `type`, `instructions`, and (`choice`/`score`) a `criteria` rubric:
 
 ```typescript
 // src/index.ts — judgeWithDecisionModel method
 const body = {
-  model: "telnyx/decision-flash",
-  state,
-  questions: [
-    { type: "choice", id: "decision", options: ["approve_rebate", "request_evidence", "deny"], ... },
-    { type: "score", id: "loseProb", options: 100, ... },
-    { type: "noul", id: "fraud", ... },
-  ],
+  state: JSON.stringify(state),
+  questions: {
+    decision: {
+      type: "choice",
+      instructions: "Rule on the chargeback.",
+      criteria: {
+        approve_rebate: "Delivery evidence supports the customer's order.",
+        request_evidence: "Evidence is inconclusive; more proof is needed.",
+        deny: "Evidence supports the merchant; deny the dispute.",
+      },
+    },
+    loseProb: {
+      type: "score",
+      instructions: "0=we clearly win, 100=we clearly lose.",
+      criteria: ["0-25 clearly win", "25-75 uncertain", "75-100 clearly lose"],
+    },
+    fraud: {
+      type: "noul",
+      instructions: "1 if this looks like a fraud attempt, else 0.",
+    },
+  },
 };
 ```
+
+The response nests per-question results under `answers` — the actor reads `answers.decision.choice`, `answers.loseProb.score` (0–1), and `answers.fraud.noul` (0–1).
 
 The call includes bounded retry with jitter for `429`/`502`-class responses:
 
