@@ -767,6 +767,12 @@ examples:
     folder: quiz-generator-python
 
   - product: ai
+    use_case: agent-instruction-scanner
+    language: python
+    framework: cli
+    folder: trustedrouter-telnyx-agent-instruction-scanner
+
+  - product: ai
     use_case: call-recording-redactor
     language: python
     framework: flask

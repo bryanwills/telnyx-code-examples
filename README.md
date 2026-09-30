@@ -391,7 +391,7 @@ Send, track, and automate email workflows with the [Telnyx Email API](https://te
 </details>
 
 <details open>
-<summary><h2>AI Assistants</h2> <em>(155 examples)</em></summary>
+<summary><h2>AI Assistants</h2> <em>(156 examples)</em></summary>
 
 Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assistants) - LLM-powered agents for voice and messaging automation.
 
@@ -541,6 +541,7 @@ Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assis
 | [sub-agent-orchestrator-actor](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/sub-agent-orchestrator-actor/README.md) | Typescript | A persistent parent actor that spawns child actors for parallel transcription jobs, tracks their lifecycle, resumes interrupted runs without redoing finished work, persists a per-file scorecard to KV, and self-cleans on completion — built on @telnyx/edge-runtime 0.15.2. |
 | [texml-voicemail-drop-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/texml-voicemail-drop-python/README.md) | Python | Leave pre-recorded voicemails at scale via TeXML. |
 | [three-way-ai-interpreter-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/three-way-ai-interpreter-python/README.md) | Python | Two humans speak different languages on the same call. AI translates in real-time and speaks the translation to each party. |
+| [trustedrouter-telnyx-agent-instruction-scanner](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/trustedrouter-telnyx-agent-instruction-scanner/README.md) | Python | Scan repository instruction files (AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, README.md) for guidance that could derail an AI coding agent — powered by GLM 5.3 Flash on Telnyx, routed through TrustedRouter with Telnyx-only, no-fallback routing. |
 | [update-ai-assistant-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/update-ai-assistant-python/README.md) | Python | Update an existing Telnyx AI Assistant's configuration, model, system prompt, and tools via the API. |
 | [venue-sales-concierge](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/venue-sales-concierge/README.md) | Node.js | Telnyx-branded venue microsite + AI sales concierge on Edge Compute — per-planner Stateful Actors carry conversations across SMS and voice, live SQLDB availability, lead qualification, in-browser WebRTC voice, email brochures, and automated one-week follow-up calls. |
 | [video-room-ai-meeting-moderator-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/video-room-ai-meeting-moderator-python/README.md) | Python | Video Room AI Meeting Moderator - create video rooms with AI-powered agenda tracking and time management. |
