@@ -83,7 +83,7 @@ Clone both repositories side by side (the demo target repo is the thing being sc
 ```bash
 mkdir agent-scan-demo && cd agent-scan-demo
 git clone https://github.com/team-telnyx/telnyx-code-examples.git
-git clone https://github.com/sonamg-droid/agent-instructions-demo.git
+git clone https://github.com/'your-repo'.git
 
 cd telnyx-code-examples/trustedrouter-telnyx-agent-instruction-scanner
 python -m venv .venv
